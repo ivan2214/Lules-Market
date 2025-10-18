@@ -1,0 +1,242 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// Better Auth tables
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  sessions Session[]
+  accounts Account[]
+  business Business?
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  token String
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  accountId    String
+  providerId   String
+  userId       String
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  password     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+  @@map("verification")
+}
+
+// Business and subscription models
+
+model Business {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  logo        Image?  @relation("Logo")
+  coverImage  Image?  @relation("CoverImage")
+  phone       String?
+  whatsapp    String?
+  email       String?
+  website     String?
+  facebook    String?
+  instagram   String?
+  twitter     String?
+  address     String?
+  category    String?
+  hours       String?
+
+  // Subscription
+  plan          SubscriptionPlan   @default(FREE)
+  planStatus    SubscriptionStatus @default(ACTIVE)
+  planExpiresAt DateTime?
+
+  // Owner
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relations
+  products Product[]
+  payments Payment[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  businessView businessView[]
+
+  @@index([plan])
+  @@index([planStatus])
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Float?
+  category    String?
+  featured    Boolean @default(false) // Only for PREMIUM plan
+  active      Boolean @default(true)
+
+  // Business relation
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  images      Image[]
+  productView productView[]
+
+  @@index([businessId])
+  @@index([featured])
+  @@index([active])
+  @@index([category])
+}
+
+model Payment {
+  id            String  @id @default(cuid())
+  amount        Float
+  currency      String  @default("ARS")
+  status        String // pending, approved, rejected
+  paymentMethod String?
+
+  // Mercado Pago data
+  mpPaymentId String? @unique
+  mpStatus    String?
+
+  // Plan purchased
+  plan SubscriptionPlan
+
+  // Business relation
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([businessId])
+  @@index([status])
+}
+
+model Image {
+  key            String    @unique
+  url            String    @unique
+  isMainImage    Boolean   @default(false)
+  name           String?
+  size           Float?
+  // relations
+  product        Product?  @relation(fields: [productId], references: [id])
+  productId      String?
+  logoBusinessId String?   @unique
+  logoBusiness   Business? @relation("Logo", fields: [logoBusinessId], references: [id])
+
+  coverBusinessId String?   @unique
+  coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id])
+
+  @@index([productId])
+  @@index([coverBusinessId])
+  @@index([logoBusinessId])
+}
+
+model productView {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  referrer  String?
+
+  @@index([productId])
+}
+
+model businessView {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+
+  createdAt DateTime @default(now())
+  referrer  String?
+
+  @@index([businessId])
+}
+
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  requestId   String    @unique
+  eventType   String
+  mpId        String? // id objeto MP (payment id, etc)
+  payload     Json
+  createdAt   DateTime  @default(now())
+  processed   Boolean   @default(false)
+  processedAt DateTime?
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  EXPIRED
+}
