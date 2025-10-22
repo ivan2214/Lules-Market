@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { requireBusiness } from "./auth-actions";
+import { requireBusiness } from "../data/business/require-busines";
 
 export async function trackProductView(productId: string, referrer?: string) {
   try {

@@ -1,23 +1,24 @@
 import { redirect } from "next/navigation";
 import type React from "react";
-import { requireAuth } from "@/app/actions/auth-actions";
+
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
 import prisma from "@/lib/prisma";
+import { requireUser } from "../data/user/require-user";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await requireAuth();
+  const session = await requireUser();
 
   if (!session) {
     redirect("/auth/signin");
   }
 
   const existsUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: session.id },
     include: {
       business: {
         include: {

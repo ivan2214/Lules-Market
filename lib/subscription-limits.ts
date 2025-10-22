@@ -28,20 +28,3 @@ export const SUBSCRIPTION_LIMITS = {
 export function getSubscriptionLimits(plan: SubscriptionPlan) {
   return SUBSCRIPTION_LIMITS[plan];
 }
-
-export function canAddProduct(
-  currentCount: number,
-  plan: SubscriptionPlan,
-): boolean {
-  const limits = getSubscriptionLimits(plan);
-  if (limits.maxProducts === -1) return true;
-  return currentCount < limits.maxProducts;
-}
-
-export function canFeatureProduct(plan: SubscriptionPlan): boolean {
-  return getSubscriptionLimits(plan).canFeatureProducts;
-}
-
-export function hasStatistics(plan: SubscriptionPlan): boolean {
-  return getSubscriptionLimits(plan).hasStatistics;
-}

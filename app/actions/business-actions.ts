@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { Prisma } from "@/app/generated/prisma";
 import prisma from "@/lib/prisma";
-import { requireAuth } from "./auth-actions";
+import { requireUser } from "../data/user/require-user";
 
 export async function createBusiness(data: {
   name: string;
@@ -17,11 +17,11 @@ export async function createBusiness(data: {
   twitter?: string;
   address?: string;
 }) {
-  const session = await requireAuth();
+  const session = await requireUser();
 
   // Check if user already has a business
   const existingBusiness = await prisma.business.findUnique({
-    where: { userId: session.user.id },
+    where: { userId: session.id },
   });
 
   if (existingBusiness) {
@@ -31,7 +31,7 @@ export async function createBusiness(data: {
   const business = await prisma.business.create({
     data: {
       ...data,
-      userId: session.user.id,
+      userId: session.id,
     },
   });
 
@@ -53,10 +53,10 @@ export async function updateBusiness(data: {
   twitter?: string;
   address?: string;
 }) {
-  const session = await requireAuth();
+  const session = await requireUser();
 
   const business = await prisma.business.findUnique({
-    where: { userId: session.user.id },
+    where: { userId: session.id },
   });
 
   if (!business) {
@@ -94,10 +94,10 @@ export async function updateBusiness(data: {
 }
 
 export async function getBusiness() {
-  const session = await requireAuth();
+  const session = await requireUser();
 
   const business = await prisma.business.findUnique({
-    where: { userId: session.user.id },
+    where: { userId: session.id },
     include: {
       logo: true,
       coverImage: true,

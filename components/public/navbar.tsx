@@ -1,7 +1,7 @@
 import { Store } from "lucide-react";
 
 import Link from "next/link";
-import { getSession } from "@/app/actions/auth-actions";
+import { getCurrentUser } from "@/app/data/user/require-user";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import { UserMenu } from "../auth/user-menu";
@@ -9,10 +9,10 @@ import { SearchForm } from "../search-form";
 import { PublicMenuMobile } from "./menu-mobile";
 
 export async function PublicNavbar() {
-  const session = await getSession();
+  const session = await getCurrentUser();
   const user = await prisma.user.findUnique({
     where: {
-      id: session?.user?.id || "",
+      id: session?.id || "",
     },
     include: {
       business: {

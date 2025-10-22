@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import prisma from "@/lib/prisma";
-import { requireBusiness } from "./auth-actions";
+import { requireBusiness } from "../data/business/require-busines";
 
 export async function upgradePlan(plan: SubscriptionPlan) {
   const { business } = await requireBusiness();

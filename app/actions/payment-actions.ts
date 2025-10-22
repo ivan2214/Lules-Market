@@ -4,7 +4,7 @@ import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
-import { requireBusiness } from "./auth-actions";
+import { requireBusiness } from "../data/business/require-busines";
 
 export async function createPaymentPreference(plan: SubscriptionPlan) {
   const { business } = await requireBusiness();
