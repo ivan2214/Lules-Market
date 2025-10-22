@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Uploader } from "../uploader";
+import { Uploader } from "../uploader/uploader";
 
 const CATEGORIES = [
   "Restaurante",

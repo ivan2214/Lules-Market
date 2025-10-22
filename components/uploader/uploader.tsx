@@ -4,15 +4,15 @@ import { useCallback, useState } from "react";
 import { type FileRejection, useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { useS3Uploader } from "@/hooks/use-s3-uploader";
-import {./uploader/uploader.helpers
+import { canUploadMoreFiles, isValueArray } from "./uploader.helpers";
+// Tipos y helpers extraídos a módulos separados para modularidad.
+import type { UploadedFile, UploaderProps } from "./uploader.types";
+import {
   AvatarVariant,
   CompactVariant,
   DefaultVariant,
   MinimalVariant,
-} from "./uploader/uploader.variants";
-import { canUploadMoreFiles, isValueArray } from "./uploader.helpers";
-// Tipos y helpers extraídos a módulos separados para modularidad.
-import type { UploadedFile, UploaderProps } from "./uploader.types";
+} from "./uploader.variants";
 
 export function Uploader({
   variant = "default",

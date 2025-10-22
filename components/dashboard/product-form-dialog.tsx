@@ -48,7 +48,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Uploader } from "../uploader";
+import { Uploader } from "../uploader/uploader";
 
 interface ProductFormDialogProps {
   canFeature: boolean;
