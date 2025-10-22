@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { BusinessDTO } from "@/app/data/business/business.dto";
 import type { Business, Image } from "@/app/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,52 +33,16 @@ const CATEGORIES = [
 ];
 
 interface BusinessProfileFormProps {
-  business: Business & {
-    logo: Image | null;
-    coverImage: Image | null;
-  };
+  business: BusinessDTO;
 }
 
 export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  async function handleSubmit(formData: FormData) {
-    /*     setLoading(true);
-    try {
-      const result = await updateBusiness({
-        name: formData.get("name") as string,
-        description: formData.get("description") as string,
-        address: formData.get("address") as string,
-        phone: formData.get("phone") as string,
-        email: formData.get("email") as string,
-        website: formData.get("website") as string,
-        logo: formData.get("logo") as string,
-        whatsapp: formData.get("whatsapp") as string,
-        instagram: formData.get("instagram") as string,
-        facebook: formData.get("facebook") as string,
-        twitter: formData.get("twitter") as string,
-      });
-
-      if (result) {
-        toast.success("Perfil actualizado exitosamente");
-        router.refresh();
-      } else {
-        toast.error(result || "Error al actualizar el perfil");
-      }
-    } catch {
-      toast.error("Error inesperado");
-    } finally {
-      setLoading(false);
-    } */
-  }
-
   return (
-    <form action={handleSubmit} className="space-y-6">
+    <form className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">Nombre del Negocio *</Label>
-          <Input id="name" name="name" defaultValue={business.name} required />
+          <Input id="name" name="name" />
         </div>
 
         <div className="space-y-2">
@@ -221,16 +186,11 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.back()}
-          disabled={loading}
-        >
+        <Button type="button" variant="outline">
           Cancelar
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button type="submit">
+          {/* {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
           Guardar Cambios
         </Button>
       </div>

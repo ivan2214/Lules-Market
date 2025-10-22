@@ -30,8 +30,8 @@ interface PlanCardProps {
     limitations?: string[];
     popular?: boolean;
   };
-  currentPlan: SubscriptionPlan;
-  planStatus: SubscriptionStatus;
+  currentPlan?: SubscriptionPlan | null;
+  planStatus?: SubscriptionStatus | null;
 }
 
 export function PlanCard({ plan, currentPlan }: PlanCardProps) {
@@ -78,14 +78,14 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
         </div>
 
         <div className="space-y-2">
-          {plan.features.map((feature, i) => (
-            <div key={i} className="flex items-start gap-2">
+          {plan.features.map((feature) => (
+            <div key={feature} className="flex items-start gap-2">
               <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <span className="text-sm">{feature}</span>
             </div>
           ))}
-          {plan.limitations?.map((limitation, i) => (
-            <div key={i} className="flex items-start gap-2 opacity-50">
+          {plan.limitations?.map((limitation) => (
+            <div key={limitation} className="flex items-start gap-2 opacity-50">
               <span className="text-sm line-through">{limitation}</span>
             </div>
           ))}
@@ -111,7 +111,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
   );
 }
 
-function getPlanLevel(plan: SubscriptionPlan): number {
+function getPlanLevel(plan?: SubscriptionPlan | null): number {
   const levels = { FREE: 0, BASIC: 1, PREMIUM: 2 };
-  return levels[plan];
+  return levels[plan || "FREE"];
 }

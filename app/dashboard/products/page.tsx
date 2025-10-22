@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
-import { getBusiness } from "@/app/actions/business-actions";
+import { BusinessDAL } from "@/app/data/business/business.dal";
 import { ProductDAL } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
@@ -9,18 +9,16 @@ import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 export default async function ProductsPage() {
   const productDAL = await ProductDAL.public();
-  const [products, business] = await Promise.all([
-    productDAL.getProductsByBusinessId(),
-    getBusiness(),
-  ]);
-
+  const businessDAL = await BusinessDAL.create();
+  const business = await businessDAL.getMyBusiness();
+  const products = await productDAL.getProductsByBusinessId();
   if (!business) {
     return null;
   }
 
   const limits = getSubscriptionLimits(business.plan);
   const canAdd =
-    limits.maxProducts === -1 || business._count.products < limits.maxProducts;
+    limits.maxProducts === -1 || business.products < limits.maxProducts;
 
   return (
     <div className="space-y-6">
@@ -28,7 +26,7 @@ export default async function ProductsPage() {
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Productos</h1>
           <p className="text-muted-foreground">
-            {business._count.products} de{" "}
+            {business.products} de{" "}
             {limits.maxProducts === -1 ? "ilimitados" : limits.maxProducts}{" "}
             productos
           </p>

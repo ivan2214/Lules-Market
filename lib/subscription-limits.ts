@@ -1,7 +1,16 @@
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { PLAN_PRICES } from "./constants";
 
-export const SUBSCRIPTION_LIMITS = {
+export const SUBSCRIPTION_LIMITS: Record<
+  SubscriptionPlan,
+  {
+    maxProducts: number;
+    canFeatureProducts: boolean;
+    hasStatistics: boolean;
+    searchPriority: number;
+    price: number;
+  }
+> = {
   FREE: {
     maxProducts: 10,
     canFeatureProducts: false,
@@ -23,8 +32,9 @@ export const SUBSCRIPTION_LIMITS = {
     searchPriority: 1,
     price: PLAN_PRICES.PREMIUM, // ARS
   },
-} as const;
+};
 
-export function getSubscriptionLimits(plan: SubscriptionPlan) {
+export function getSubscriptionLimits(plan?: SubscriptionPlan | null) {
+  if (!plan) return SUBSCRIPTION_LIMITS.FREE;
   return SUBSCRIPTION_LIMITS[plan];
 }

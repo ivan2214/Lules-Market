@@ -1,21 +1,21 @@
 import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getBusiness } from "@/app/actions/business-actions";
+
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
+import { BusinessDAL } from "../data/business/business.dal";
 
 export default async function DashboardPage() {
-  const business = await getBusiness();
-
-  if (!business) {
-    redirect("/dashboard/setup");
-  }
-
+  const businessDAL = await BusinessDAL.create();
+  const business = await businessDAL.getMyBusiness();
+  const productsBusiness = await businessDAL.getBusinessProducts({
+    limit: 5,
+    offset: 0,
+  });
   const limits = getSubscriptionLimits(business.plan);
-  const productCount = business._count.products;
+  const productCount = business.products;
   const productLimit =
     limits.maxProducts === -1 ? "Ilimitado" : limits.maxProducts;
 
@@ -131,14 +131,14 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {business.products.length > 0 && (
+      {productsBusiness.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Productos Recientes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {business.products.slice(0, 5).map((product) => (
+              {productsBusiness.slice(0, 5).map((product) => (
                 <div
                   key={product.id}
                   className="flex items-center justify-between"

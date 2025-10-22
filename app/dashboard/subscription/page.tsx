@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getBusiness } from "@/app/actions/business-actions";
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
+import { BusinessDAL } from "@/app/data/business/business.dal";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,8 @@ import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
 export default async function SubscriptionPage() {
-  const business = await getBusiness();
+  const businessDAL = await BusinessDAL.create();
+  const business = await businessDAL.getMyBusiness();
 
   if (!business) {
     redirect("/dashboard/setup");
@@ -120,10 +121,10 @@ export default async function SubscriptionPage() {
             <div className="text-right">
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
-                {business._count.products} /{" "}
-                {SUBSCRIPTION_LIMITS[business.plan].maxProducts === -1
+                {business.products} /{" "}
+                {SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts === -1
                   ? "∞"
-                  : SUBSCRIPTION_LIMITS[business.plan].maxProducts}
+                  : SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts}
               </p>
             </div>
           </div>

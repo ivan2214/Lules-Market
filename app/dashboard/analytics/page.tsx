@@ -1,8 +1,7 @@
 import { Eye, Package, Store, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { getAnalytics } from "@/app/actions/analytics-actions";
-import { getBusiness } from "@/app/actions/business-actions";
+import { BusinessDAL } from "@/app/data/business/business.dal";
 import { AnalyticsChart } from "@/components/dashboard/analytics-chart";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { Button } from "@/components/ui/button";
@@ -20,11 +19,8 @@ export default async function AnalyticsPage({
 }: {
   searchParams: Promise<{ period?: "7d" | "30d" | "90d" }>;
 }) {
-  const business = await getBusiness();
-
-  if (!business) {
-    redirect("/dashboard/setup");
-  }
+  const businessDAL = await BusinessDAL.create();
+  const business = await businessDAL.getMyBusiness();
 
   const limits = getSubscriptionLimits(business.plan);
 
