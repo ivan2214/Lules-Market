@@ -234,6 +234,16 @@ export class ProductDAL {
           },
         });
       }
+      // 🔹 Nuevo: actualiza si cambió cuál es la imagen principal
+      for (const img of images) {
+        const existing = existingImages.find((e) => e.key === img.key);
+        if (existing && existing.isMainImage !== img.isMainImage) {
+          await prisma.image.update({
+            where: { key: img.key },
+            data: { isMainImage: img.isMainImage },
+          });
+        }
+      }
 
       const updated = await prisma.product.update({
         where: { id: productId },

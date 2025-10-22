@@ -50,7 +50,7 @@ export function Uploader({
   maxFiles = 5,
   maxSize = 10,
   accept = ["image/*"],
-  preview = "grid",
+  preview = "list",
   onChange,
   value,
   disabled = false,
@@ -465,60 +465,199 @@ export function Uploader({
         )}
 
         {isValueArray(value) && value?.length > 0 ? (
-          <Card>
-            <CardContent className="grid grid-cols-2 gap-2">
-              {value?.map((file) => (
-                <div key={file.key} className="group relative">
-                  {isImage(file) ? (
-                    <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-                      <ImageWithSkeleton
-                        src={file.url || "/placeholder.svg"}
-                        alt={file.name || "Imagen"}
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-square items-center justify-center rounded-lg bg-gray-100">
-                      <File className="h-8 w-8 text-gray-400" />
-                    </div>
-                  )}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        disabled={disabled}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Estas seguro de eliminar esta imagen?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta acción no se puede deshacer. Es permanente (no se
-                          puede recuperar, deberas subir una nueva).
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive text-white hover:bg-destructive/90"
-                          onClick={() => removeFile(file.key)}
+          preview === "grid" ? (
+            <Card>
+              <CardContent className="grid grid-cols-2 gap-2">
+                {value
+                  ?.toSorted(
+                    (a, b) => Number(b.isMainImage) - Number(a.isMainImage),
+                  )
+                  .map((file) => (
+                    <div key={file.key} className="group relative">
+                      {isImage(file) ? (
+                        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+                          <ImageWithSkeleton
+                            src={file.url || "/placeholder.svg"}
+                            alt={file.name || "Imagen"}
+                            className="object-cover"
+                          />
+                          {file.isMainImage && (
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="outline"
+                              className="absolute top-2 left-2 h-6 w-6"
+                            >
+                              <StarIcon className="h-4 w-4 text-yellow-500" />
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex aspect-square items-center justify-center rounded-lg bg-gray-100">
+                          <File className="h-8 w-8 text-gray-400" />
+                        </div>
+                      )}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                            disabled={disabled}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Estas seguro de eliminar esta imagen?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta acción no se puede deshacer. Es permanente
+                              (no se puede recuperar, deberas subir una nueva).
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-destructive text-white hover:bg-destructive/90"
+                              onClick={() => removeFile(file.key)}
+                            >
+                              Eliminar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                      {!file.isMainImage && (
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="outline"
+                          disabled={disabled}
+                          className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                          onClick={() => handleMainImage(file.key)}
                         >
-                          Eliminar
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                          <StarIcon className="h-4 w-4 text-yellow-500" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-2">
+              {value
+                ?.toSorted(
+                  (a, b) => Number(b.isMainImage) - Number(a.isMainImage),
+                )
+                .map((file) => (
+                  <Card key={file.key} className="group relative">
+                    <CardContent className="mt-2 flex items-center justify-between gap-3">
+                      {isImage(file) ? (
+                        <div className="relative h-16 w-16 overflow-hidden rounded-md bg-gray-100">
+                          <ImageWithSkeleton
+                            src={file.url || "/placeholder.svg"}
+                            alt={file.name || "Imagen"}
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded bg-gray-100">
+                          <File className="h-6 w-6 text-gray-400" />
+                        </div>
+                      )}
+
+                      <div className="flex flex-col items-start gap-2">
+                        <p className="line-clamp-6 truncate font-medium text-sm">
+                          {file.name
+                            ? file.name.length > 20
+                              ? // biome-ignore lint/style/useTemplate: <>
+                                file.name.slice(0, 20) + "…"
+                              : file.name
+                            : "Archivo"}
+                        </p>
+
+                        {file.size && (
+                          <p className="text-gray-500 text-xs">
+                            {formatFileSize(file.size)}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
+                          <Check className="h-3 w-3" />
+                          Subido
+                        </Badge>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="h-6 w-6"
+                              disabled={disabled}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Estas seguro de eliminar esta imagen?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta acción no se puede deshacer. Es permanente
+                                (no se puede recuperar, deberas subir una
+                                nueva).
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-destructive text-white hover:bg-destructive/90"
+                                onClick={() => removeFile(file.key)}
+                              >
+                                Eliminar
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </CardContent>
+                    {!file.isMainImage && (
+                      <Button
+                        title="Imagen principal"
+                        type="button"
+                        size="icon"
+                        variant="outline"
+                        disabled={disabled}
+                        className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        onClick={() => handleMainImage(file.key)}
+                      >
+                        <StarIcon className="h-4 w-4 text-yellow-500" />
+                      </Button>
+                    )}
+                    {file.isMainImage && (
+                      <Button
+                        title="Marcar como principal"
+                        type="button"
+                        size="icon"
+                        variant="outline"
+                        className="absolute top-2 left-2 h-6 w-6"
+                      >
+                        <StarIcon className="h-4 w-4 text-yellow-500" />
+                      </Button>
+                    )}
+                  </Card>
+                ))}
+            </div>
+          )
         ) : (
           isUploadedFile(value) && (
             <Card className="w-fit">
@@ -531,6 +670,16 @@ export function Uploader({
                         alt={value.name || "Imagen"}
                         className="object-cover"
                       />
+                      {value.isMainImage && (
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="outline"
+                          className="absolute top-2 left-2 h-6 w-6"
+                        >
+                          <StarIcon className="h-4 w-4 text-yellow-500" />
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <div className="flex aspect-square items-center justify-center rounded-lg bg-gray-100">
@@ -570,6 +719,18 @@ export function Uploader({
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+                  {!value.isMainImage && (
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="outline"
+                      disabled={disabled}
+                      className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      onClick={() => handleMainImage(value.key)}
+                    >
+                      <StarIcon className="h-4 w-4 text-yellow-500" />
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -658,91 +819,95 @@ export function Uploader({
 
           {preview === "grid" ? (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-              {value?.map((file) => (
-                <div key={file.key} className="group relative">
-                  <Card className="overflow-hidden p-0">
-                    <CardContent className="p-0">
-                      {isImage(file) ? (
-                        <div className="relative h-20 w-20 overflow-hidden">
-                          <ImageWithSkeleton
-                            src={file.url || "/placeholder.svg"}
-                            alt={file.name || "Imagen"}
-                            className="aspect-square h-full w-full object-cover"
-                          />
-                          {file.isMainImage && (
-                            <Button
-                              type="button"
-                              size="icon"
-                              variant="outline"
-                              className="absolute top-2 left-2 h-6 w-6"
-                            >
-                              <StarIcon className="h-4 w-4 text-yellow-500" />
-                            </Button>
+              {value
+                ?.toSorted(
+                  (a, b) => Number(b.isMainImage) - Number(a.isMainImage),
+                )
+                .map((file) => (
+                  <div key={file.key} className="group relative">
+                    <Card className="overflow-hidden p-0">
+                      <CardContent className="p-0">
+                        {isImage(file) ? (
+                          <div className="relative h-20 w-20 overflow-hidden">
+                            <ImageWithSkeleton
+                              src={file.url || "/placeholder.svg"}
+                              alt={file.name || "Imagen"}
+                              className="aspect-square h-full w-full object-cover"
+                            />
+                            {file.isMainImage && (
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="outline"
+                                className="absolute top-2 left-2 h-6 w-6"
+                              >
+                                <StarIcon className="h-4 w-4 text-yellow-500" />
+                              </Button>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex aspect-square items-center justify-center bg-gray-50">
+                            <File className="h-12 w-12 text-gray-400" />
+                          </div>
+                        )}
+                        <div className="p-3">
+                          <p className="truncate font-medium text-xs">
+                            {file.name || "Archivo"}
+                          </p>
+                          {file.size && (
+                            <p className="text-gray-500 text-xs">
+                              {formatFileSize(file.size)}
+                            </p>
                           )}
                         </div>
-                      ) : (
-                        <div className="flex aspect-square items-center justify-center bg-gray-50">
-                          <File className="h-12 w-12 text-gray-400" />
-                        </div>
-                      )}
-                      <div className="p-3">
-                        <p className="truncate font-medium text-xs">
-                          {file.name || "Archivo"}
-                        </p>
-                        {file.size && (
-                          <p className="text-gray-500 text-xs">
-                            {formatFileSize(file.size)}
-                          </p>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
+                      </CardContent>
+                    </Card>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="-top-2 -right-2 absolute h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                          disabled={disabled}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Estas seguro de eliminar esta imagen?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer. Es permanente.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-white hover:bg-destructive/90"
+                            onClick={() => removeFile(file.key)}
+                          >
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    {!file.isMainImage && (
                       <Button
                         type="button"
-                        variant="destructive"
                         size="icon"
-                        className="-top-2 -right-2 absolute h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        variant="outline"
                         disabled={disabled}
+                        className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        onClick={() => handleMainImage(file.key)}
                       >
-                        <X className="h-3 w-3" />
+                        <StarIcon className="h-4 w-4 text-yellow-500" />
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Estas seguro de eliminar esta imagen?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta acción no se puede deshacer. Es permanente.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive text-white hover:bg-destructive/90"
-                          onClick={() => removeFile(file.key)}
-                        >
-                          Eliminar
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                  {!file.isMainImage && (
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="outline"
-                      disabled={disabled}
-                      className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                      onClick={() => handleMainImage(file.key)}
-                    >
-                      <StarIcon className="h-4 w-4 text-yellow-500" />
-                    </Button>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                ))}
             </div>
           ) : (
             <div className="space-y-2">

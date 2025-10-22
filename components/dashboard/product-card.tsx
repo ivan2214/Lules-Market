@@ -20,6 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { ProductFormDialog } from "./product-form-dialog";
 
@@ -67,7 +68,7 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
         <div className="relative mb-4 aspect-square overflow-hidden rounded-lg bg-muted">
           {product.images[0] ? (
             <ImageWithSkeleton
-              src={product.images[0].url || "/placeholder.svg"}
+              src={mainImage(product.images) || "/placeholder.svg"}
               alt={product.name}
               className="h-full w-full object-cover"
             />

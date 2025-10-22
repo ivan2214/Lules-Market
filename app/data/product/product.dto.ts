@@ -5,7 +5,7 @@ export const ImageCreateInputSchema = z.object({
   url: z.string().url("La URL de la imagen es inválida"),
   key: z.string().min(1, "La llave de la imagen es requerida"),
   name: z.string().min(1, "El nombre de la imagen es requerido").optional(),
-  isMainImage: z.boolean().optional(),
+  isMainImage: z.boolean(),
   size: z
     .number()
     .min(0, "El tamaño de la imagen debe ser mayor o igual a 0")

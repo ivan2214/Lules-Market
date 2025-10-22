@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { type HTMLAttributes, startTransition, useState } from "react";
+import { type HTMLAttributes, startTransition, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import {
@@ -75,6 +75,16 @@ export function ProductFormDialog({
   isViewMode = false,
 }: ProductFormDialogProps) {
   const router = useRouter();
+  const actionOptions = useMemo(
+    () => ({
+      showToasts: true,
+      onSuccess() {
+        setOpen(false);
+        router.refresh();
+      },
+    }),
+    [router],
+  );
 
   const schema = product
     ? ProductUpdateInputSchema.extend({ mode: z.literal("update") })
@@ -115,18 +125,12 @@ export function ProductFormDialog({
   const { execute, pending } = useAction(
     product ? updateProductAction : createProductAction,
     {},
-    {
-      showToasts: true,
-      onSuccess() {
-        setOpen(false);
-        router.refresh();
-      },
-    },
+    actionOptions,
   );
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} modal>
       <DialogTrigger asChild>
         {trigger || (
           <Button type="button" className={className}>
@@ -135,7 +139,7 @@ export function ProductFormDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto overflow-x-hidden">
         <DialogHeader>
           <DialogTitle>
             {isViewMode
@@ -284,7 +288,6 @@ export function ProductFormDialog({
                           console.log("Imagenes actualizadas", value);
                         }}
                         variant="compact"
-                        preview="grid"
                         placeholder="Sube 1 imagen o máximo 4"
                         maxSize={1024 * 1024 * 5}
                         maxFiles={4}
