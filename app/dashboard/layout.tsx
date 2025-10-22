@@ -18,6 +18,14 @@ export default async function DashboardLayout({
 
   const existsUser = await prisma.user.findUnique({
     where: { id: session.user.id },
+    include: {
+      business: {
+        include: {
+          logo: true,
+          coverImage: true,
+        },
+      },
+    },
   });
 
   if (!existsUser) {
@@ -30,7 +38,7 @@ export default async function DashboardLayout({
         <DashboardSidebar />
       </div>
       <div className="flex flex-1 flex-col overflow-hidden">
-        <DashboardHeader />
+        <DashboardHeader user={existsUser} />
         <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6">
           {children}
         </main>

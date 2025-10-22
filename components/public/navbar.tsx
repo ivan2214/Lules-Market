@@ -1,12 +1,28 @@
-import { Store, User } from "lucide-react";
+import { Store } from "lucide-react";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/actions/auth-actions";
+import prisma from "@/lib/prisma";
+import { UserMenu } from "../auth/user-menu";
 import { SearchForm } from "../search-form";
+import { PublicMenuMobile } from "./menu-mobile";
 
 export async function PublicNavbar() {
   const session = await getSession();
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session?.user?.id || "",
+    },
+    include: {
+      business: {
+        include: {
+          logo: true,
+          coverImage: true,
+        },
+      },
+    },
+  });
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-10">
@@ -16,24 +32,34 @@ export async function PublicNavbar() {
           <span className="hidden sm:inline">Comercios Locales</span>
         </Link>
         <SearchForm />
-        <nav className="flex items-center gap-2 overflow-x-scroll">
-          <Button asChild variant="ghost">
-            <Link href="/explorar">Explorar</Link>
-          </Button>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex">
+              <Button asChild variant="ghost">
+                <Link href="/explorar">Explorar</Link>
+              </Button>
+            </div>
+            <UserMenu user={user} />
+            <div className="flex md:hidden">
+              <PublicMenuMobile isLoggedIn={!!user} />
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="flex md:hidden">
+              <PublicMenuMobile />
+            </div>
+            <nav className="hidden items-center gap-2 overflow-x-scroll md:flex">
+              <Button asChild variant="ghost">
+                <Link href="/explorar">Explorar</Link>
+              </Button>
 
-          {session ? (
-            <Button asChild>
-              <Link href="/dashboard">
-                <User className="mr-2 h-4 w-4" />
-                Mi Panel
-              </Link>
-            </Button>
-          ) : (
-            <Button asChild>
-              <Link href="/para-comercios">Para comercios</Link>
-            </Button>
-          )}
-        </nav>
+              <Button asChild>
+                <Link href="/para-comercios">Para comercios</Link>
+              </Button>
+            </nav>
+          </>
+        )}
       </div>
     </header>
   );

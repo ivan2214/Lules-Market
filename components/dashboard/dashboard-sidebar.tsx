@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 const navigation = [
   { name: "Inicio", href: "/dashboard", icon: LayoutDashboard },
@@ -56,6 +57,11 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
           );
         })}
       </nav>
+      <div className="mt-auto w-full px-3">
+        <Button asChild className="w-full">
+          <Link href="/">Volver al inicio</Link>
+        </Button>
+      </div>
     </aside>
   );
 }

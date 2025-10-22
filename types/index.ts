@@ -8,16 +8,11 @@ import type {
   Product as ProductPrisma,
   productView,
   SubscriptionPlan,
+  User as UserPrisma,
 } from "@/app/generated/prisma";
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image?: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface User extends UserPrisma {
+  business: Business | null;
 }
 
 export interface Business extends BusinessPrisma {
