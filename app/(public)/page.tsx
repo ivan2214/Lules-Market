@@ -103,10 +103,10 @@ export default async function HomePage() {
         <section className="py-20">
           <div className="container mx-auto mb-8 flex items-center justify-between">
             <div>
-              <h2 className="font-bold text-3xl tracking-tight">
+              <h2 className="font-bold text-2xl tracking-tight md:text-3xl">
                 Productos Destacados
               </h2>
-              <p className="mt-2 text-muted-foreground">
+              <p className="mt-2 text-muted-foreground text-sm md:text-lg">
                 Descubre lo que ofrecen los comercios locales
               </p>
             </div>
