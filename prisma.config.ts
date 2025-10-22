@@ -2,7 +2,7 @@ import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
-  migrations: {
+  /* migrations: {
     seed: `pnpm exec tsx prisma/seed.ts`,
-  },
+  }, */
 });
