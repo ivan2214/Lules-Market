@@ -8,8 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useMediaUploader } from "@/hooks/use-media-uploader";
-import { PROJECT_KEY } from "@/lib/constants";
+import { useS3Uploader } from "@/hooks/use-s3-uploader";
 import { cn } from "@/lib/utils";
 import { ImageWithSkeleton } from "./image-with-skeleton";
 import {
@@ -59,10 +58,7 @@ export function Uploader({
 }: UploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const {
-    uploadToMediaService: uploadToS3,
-    deleteFromMediaService: deleteFromS3,
-  } = useMediaUploader(PROJECT_KEY);
+  const { uploadToS3, deleteFromS3 } = useS3Uploader();
 
   const isUploadedFile = (
     val: UploadedFile | UploadedFile[] | null | undefined,

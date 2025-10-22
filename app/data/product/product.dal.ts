@@ -1,11 +1,6 @@
 import "server-only";
 
-import {
-  confirmImages,
-  deleteImageFromMediaService,
-} from "@/app/actions/image-action";
 import type { ActionResult } from "@/hooks/use-action";
-import { PROJECT_KEY } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { requireBusiness } from "../business/require-busines";
 import { getCurrentUser, requireUser } from "../user/require-user";
@@ -134,13 +129,6 @@ export class ProductDAL {
         });
       }
 
-      try {
-        await confirmImages(images);
-      } catch (err) {
-        console.error("Error confirmando imágenes", err);
-        return { errorMessage: "Error confirmando imágenes" };
-      }
-
       const product = await prisma.product.create({
         data: {
           name,
@@ -232,17 +220,12 @@ export class ProductDAL {
       );
 
       if (imagesToDelete.length) {
-        for (const image of imagesToDelete) {
-          await deleteImageFromMediaService(image.key, PROJECT_KEY);
-        }
-
         await prisma.image.deleteMany({
           where: { key: { in: imagesToDelete.map((img) => img.key) } },
         });
       }
 
       for (const img of imagesToCreate) {
-        await confirmImages(imagesToCreate);
         await prisma.image.create({
           data: {
             ...img,
@@ -282,7 +265,7 @@ export class ProductDAL {
     }
   }
 
-  async deleteProduct(productId: string, projectKey: string) {
+  async deleteProduct(productId: string) {
     try {
       const user = await requireUser();
       const { business } = await requireBusiness();
@@ -324,7 +307,6 @@ export class ProductDAL {
       });
 
       for (const image of product.images) {
-        await deleteImageFromMediaService(image.key, projectKey);
         await prisma.image.delete({
           where: {
             key: image.key,

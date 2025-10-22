@@ -8,11 +8,10 @@ import type {
   ProductUpdateInput,
 } from "@/app/data/product/product.dto";
 import type { ActionResult } from "@/hooks/use-action";
-import { PROJECT_KEY } from "@/lib/constants";
 
 export async function createProductAction(
   _prevState: ActionResult,
-  input: ProductCreateInput,
+  input: ProductCreateInput
 ): Promise<ActionResult> {
   try {
     const dal = await ProductDAL.create();
@@ -29,7 +28,7 @@ export async function createProductAction(
 
 export async function updateProductAction(
   _prevState: ActionResult,
-  input: ProductUpdateInput,
+  input: ProductUpdateInput
 ): Promise<ActionResult> {
   try {
     const dal = await ProductDAL.create();
@@ -45,11 +44,11 @@ export async function updateProductAction(
 }
 
 export async function deleteProductAction(
-  input: ProductDeleteInput,
+  input: ProductDeleteInput
 ): Promise<ActionResult> {
   try {
     const dal = await ProductDAL.create();
-    await dal.deleteProduct(input.productId, PROJECT_KEY);
+    await dal.deleteProduct(input.productId);
     return { successMessage: "Producto eliminado con éxito" };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

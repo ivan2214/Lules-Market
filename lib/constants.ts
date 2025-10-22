@@ -60,5 +60,3 @@ export const CONTACT_TYPES = {
   facebook: "Facebook",
   instagram: "Instagram",
 } as const;
-
-export const PROJECT_KEY = process.env.NEXT_PUBLIC_PROJECT_KEY as string;
