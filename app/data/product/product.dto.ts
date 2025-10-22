@@ -1,6 +1,5 @@
-import type { Prisma } from "@/app/generated/prisma";
-import "server-only";
 import { z } from "zod";
+import type { Prisma } from "@/app/generated/prisma";
 
 export const ImageCreateInputSchema = z.object({
   url: z.string().url("La URL de la imagen es inválida"),
