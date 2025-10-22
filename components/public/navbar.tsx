@@ -9,14 +9,14 @@ export async function PublicNavbar() {
   const session = await getSession();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 px-10 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-10">
+      <div className="flex h-16 w-full items-center justify-between gap-2">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <Store className="h-6 w-6" />
           <span className="hidden sm:inline">Comercios Locales</span>
         </Link>
         <SearchForm />
-        <nav className="hidden items-center gap-2 lg:flex">
+        <nav className="flex items-center gap-2 overflow-x-scroll">
           <Button asChild variant="ghost">
             <Link href="/explorar">Explorar</Link>
           </Button>
@@ -29,14 +29,9 @@ export async function PublicNavbar() {
               </Link>
             </Button>
           ) : (
-            <>
-              <Button asChild variant="ghost">
-                <Link href="/auth/signin">Iniciar Sesión</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/auth/signup">Registrarse</Link>
-              </Button>
-            </>
+            <Button asChild>
+              <Link href="/auth">Para comercios</Link>
+            </Button>
           )}
         </nav>
       </div>

@@ -21,21 +21,12 @@ const navigation = [
   { name: "Configuración", href: "/dashboard/settings", icon: Settings },
 ];
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ onClose }: { onClose: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r lg:bg-muted/40">
-      <div className="flex h-16 items-center border-b px-6">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2 font-semibold"
-        >
-          <Store className="h-6 w-6" />
-          <span>Mi Comercio</span>
-        </Link>
-      </div>
-      <nav className="flex-1 space-y-1 px-3 py-4">
+    <aside className="lg:w-64 lg:flex-col lg:border-r lg:bg-muted/40">
+      <nav className="flex-1 px-3">
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -48,6 +39,7 @@ export function DashboardSidebar() {
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
+              onClick={onClose}
             >
               <item.icon className="h-5 w-5" />
               {item.name}

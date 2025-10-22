@@ -17,7 +17,7 @@ export const SearchForm = () => {
   }
 
   return (
-    <form onSubmit={handleSearch} className="mx-auto max-w-md flex-1">
+    <form onSubmit={handleSearch} className="mx-auto lg:max-w-md lg:flex-1">
       <div className="relative">
         <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
         <Input
