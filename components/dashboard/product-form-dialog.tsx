@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type React from "react";
 import { type HTMLAttributes, startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -73,7 +74,7 @@ export function ProductFormDialog({
   className,
   isViewMode = false,
 }: ProductFormDialogProps) {
-  console.log(product);
+  const router = useRouter();
 
   const schema = product
     ? ProductUpdateInputSchema.extend({ mode: z.literal("update") })
@@ -118,6 +119,7 @@ export function ProductFormDialog({
       showToasts: true,
       onSuccess() {
         setOpen(false);
+        router.refresh();
       },
     },
   );

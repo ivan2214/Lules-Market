@@ -15,8 +15,12 @@ export async function createProductAction(
 ): Promise<ActionResult> {
   try {
     const dal = await ProductDAL.create();
-    await dal.createProduct(input);
-    return { successMessage: "Producto creado con éxito" };
+    const result = await dal.createProduct(input);
+    if (result.errorMessage) {
+      return { errorMessage: result.errorMessage };
+    }
+
+    return { successMessage: result.successMessage };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return { errorMessage: message };
@@ -32,8 +36,12 @@ export async function updateProductAction(
 ): Promise<ActionResult> {
   try {
     const dal = await ProductDAL.create();
-    await dal.createProduct(input);
-    return { successMessage: "Producto creado con éxito" };
+    const result = await dal.updateProduct(input);
+    if (result.errorMessage) {
+      return { errorMessage: result.errorMessage };
+    }
+
+    return { successMessage: result.successMessage };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return { errorMessage: message };

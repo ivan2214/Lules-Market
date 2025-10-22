@@ -1,5 +1,6 @@
 import "server-only";
 
+import { deleteS3Object } from "@/app/actions/s3";
 import type { ActionResult } from "@/hooks/use-action";
 import prisma from "@/lib/prisma";
 import { requireBusiness } from "../business/require-busines";
@@ -311,6 +312,9 @@ export class ProductDAL {
           where: {
             key: image.key,
           },
+        });
+        await deleteS3Object({
+          key: image.key,
         });
       }
 
