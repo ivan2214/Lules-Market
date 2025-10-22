@@ -42,6 +42,7 @@ interface UploaderProps {
   disabled?: boolean;
   className?: string;
   placeholder?: string;
+  folder: string;
 }
 
 export function Uploader({
@@ -55,10 +56,11 @@ export function Uploader({
   disabled = false,
   className,
   placeholder,
+  folder,
 }: UploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const { uploadToS3, deleteFromS3 } = useS3Uploader();
+  const { uploadToS3, deleteFromS3 } = useS3Uploader(folder);
 
   const isUploadedFile = (
     val: UploadedFile | UploadedFile[] | null | undefined,

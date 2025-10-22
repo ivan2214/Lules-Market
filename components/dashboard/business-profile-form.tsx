@@ -1,10 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
-import type { Business, Image } from "@/app/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -175,12 +171,12 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
         <div className="flex items-center justify-evenly">
           <div className="space-y-2">
             <Label htmlFor="logo">Logo</Label>
-            <Uploader variant="avatar" onChange={() => {}} />
+            <Uploader folder="busines" variant="avatar" onChange={() => {}} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="coverImage">Imagen de Portada</Label>
-            <Uploader variant="compact" onChange={() => {}} />
+            <Uploader folder="busines" variant="compact" onChange={() => {}} />
           </div>
         </div>
       </div>

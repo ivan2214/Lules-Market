@@ -276,6 +276,7 @@ export function ProductFormDialog({
                     <FormLabel htmlFor="images">Imágenes</FormLabel>
                     <FormControl>
                       <Uploader
+                        folder="products"
                         onChange={(value) => {
                           field.onChange(value);
                           console.log("Imagenes actualizadas", value);

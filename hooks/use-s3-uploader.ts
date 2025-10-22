@@ -10,7 +10,7 @@ interface UseS3UploaderResult {
   error: string | null;
 }
 
-export function useS3Uploader(): UseS3UploaderResult {
+export function useS3Uploader(folder: string): UseS3UploaderResult {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,6 +25,7 @@ export function useS3Uploader(): UseS3UploaderResult {
         filename,
         contentType,
         size,
+        folder,
       });
       if ("error" in result) {
         setError(result?.error || "Error al generar URL prefirmada");
