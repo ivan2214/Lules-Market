@@ -28,9 +28,9 @@ export const CarrouselProducts: React.FC<CarrouselProductsProps> = ({
       ]}
       className="w-full max-w-6xl"
     >
-      <CarouselContent className="lg:-ml-48">
+      <CarouselContent className="-ml-40 lg:-ml-48">
         {products.map((product) => (
-          <CarouselItem className="basis-1/5 lg:pl-48" key={product.id}>
+          <CarouselItem className="basis-1/5 pl-40 lg:pl-48" key={product.id}>
             <ProductPublicCard product={product} />
           </CarouselItem>
         ))}
