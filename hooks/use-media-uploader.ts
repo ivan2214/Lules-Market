@@ -23,6 +23,7 @@ export function useMediaUploader(projectKey = PROJECT_KEY) {
         "MEDIA_SERVICE_URL IN uploadToMediaService ",
         MEDIA_SERVICE_URL
       );
+      console.log(file);
 
       const res = await fetch(`${MEDIA_SERVICE_URL}/files/upload-url`, {
         method: "POST",
@@ -33,6 +34,8 @@ export function useMediaUploader(projectKey = PROJECT_KEY) {
           projectKey,
         }),
       });
+
+      console.log("Error:", res);
 
       const data = await res.json();
       if (!res.ok || !data.url || !data.key)

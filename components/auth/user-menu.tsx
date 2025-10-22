@@ -32,7 +32,6 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
     .map((n) => n[0])
     .join("")
     .toUpperCase();
-  console.log(user);
 
   return (
     <DropdownMenu>

@@ -49,7 +49,7 @@ export async function PublicNavbar() {
             <div className="flex md:hidden">
               <PublicMenuMobile />
             </div>
-            <nav className="hidden items-center gap-2 overflow-x-scroll md:flex">
+            <nav className="hidden items-center gap-2 md:flex">
               <Button asChild variant="ghost">
                 <Link href="/explorar">Explorar</Link>
               </Button>
