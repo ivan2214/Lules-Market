@@ -6,6 +6,15 @@ import type React from "react";
 import { type HTMLAttributes, startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import {
+  createProductAction,
+  updateProductAction,
+} from "@/app/actions/product.action";
+import {
+  ProductCreateInputSchema,
+  type ProductCreateOrUpdateInput,
+  ProductUpdateInputSchema,
+} from "@/app/data/product/product.dto";
 import type { Image } from "@/app/generated/prisma";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,13 +36,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAction } from "@/hooks/use-action";
-import { createProduct, updateProduct } from "@/lib/actions/product-actions";
 import { CATEGORIES } from "@/lib/constants";
-import {
-  type CreateOrUpdateProductSchemaInput,
-  CreateProductSchema,
-  UpdateProductSchema,
-} from "@/schemas/product";
 import { Checkbox } from "../ui/checkbox";
 import {
   Form,
@@ -73,9 +76,9 @@ export function ProductFormDialog({
   console.log(product);
 
   const schema = product
-    ? UpdateProductSchema.extend({ mode: z.literal("update") })
-    : CreateProductSchema.extend({ mode: z.literal("create") });
-  const form = useForm<CreateOrUpdateProductSchemaInput>({
+    ? ProductUpdateInputSchema.extend({ mode: z.literal("update") })
+    : ProductCreateInputSchema.extend({ mode: z.literal("create") });
+  const form = useForm<ProductCreateOrUpdateInput>({
     // biome-ignore lint/suspicious/noExplicitAny: <reason>
     resolver: zodResolver(schema as any),
     defaultValues: product?.id
@@ -109,7 +112,7 @@ export function ProductFormDialog({
   });
 
   const { execute, pending } = useAction(
-    product ? updateProduct : createProduct,
+    product ? updateProductAction : createProductAction,
     {},
     {
       showToasts: true,

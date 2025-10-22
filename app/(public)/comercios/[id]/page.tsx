@@ -264,17 +264,6 @@ export default async function BusinessPage({
             <ProductGrid
               products={business.products.map((p) => ({
                 ...p,
-                business: {
-                  id: business.id,
-                  name: business.name,
-                  plan: business.plan,
-                  whatsapp: business.whatsapp,
-                  phone: business.phone,
-                  email: business.email,
-                  facebook: business.facebook,
-                  instagram: business.instagram,
-                  twitter: business.twitter,
-                },
               }))}
             />
           )}

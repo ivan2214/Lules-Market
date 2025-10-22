@@ -1,12 +1,12 @@
-import type { PlanType } from "@/types";
+import type { SubscriptionPlan } from "@/app/generated/prisma";
 
-export const PLAN_PRICES: Record<PlanType, number> = {
+export const PLAN_PRICES: Record<SubscriptionPlan, number> = {
   FREE: 0,
   BASIC: 15000,
   PREMIUM: 20000,
 };
 
-export const PLAN_NAMES: Record<PlanType, string> = {
+export const PLAN_NAMES: Record<SubscriptionPlan, string> = {
   FREE: "Gratuito",
   BASIC: "Básico",
   PREMIUM: "Premium",

@@ -4,6 +4,7 @@ import { Edit, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { deleteProductAction } from "@/app/actions/product.action";
 import type { Image as ImagePrisma } from "@/app/generated/prisma";
 import {
   AlertDialog,
@@ -19,8 +20,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { deleteProduct } from "@/lib/actions/product-actions";
-import { PROJECT_KEY } from "@/lib/constants";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { ProductFormDialog } from "./product-form-dialog";
 
@@ -45,7 +44,9 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
   async function handleDelete() {
     setLoading(true);
     try {
-      const result = await deleteProduct(product.id, PROJECT_KEY);
+      const result = await deleteProductAction({
+        productId: product.id,
+      });
       if (result) {
         toast.success("Producto eliminado");
         router.refresh();

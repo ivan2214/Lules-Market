@@ -112,19 +112,7 @@ export async function getPublicProducts(params?: {
     prisma.product.findMany({
       where,
       include: {
-        business: {
-          select: {
-            id: true,
-            name: true,
-            plan: true,
-            whatsapp: true,
-            phone: true,
-            email: true,
-            facebook: true,
-            instagram: true,
-            twitter: true,
-          },
-        },
+        business: true,
         images: true,
       },
       orderBy,

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -11,7 +12,7 @@ import {
 import { getBusiness } from "@/lib/actions/business-actions";
 import { getSubscriptionHistory } from "@/lib/actions/subscription-actions";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
-import type { IconComponentName, PlanType } from "@/types";
+import type { IconComponentName } from "@/types";
 
 export default async function SubscriptionPage() {
   const business = await getBusiness();
@@ -23,7 +24,7 @@ export default async function SubscriptionPage() {
   const payments = await getSubscriptionHistory();
 
   const plans: {
-    name: PlanType;
+    name: SubscriptionPlan;
     title: string;
     price: number;
     icon: IconComponentName;
