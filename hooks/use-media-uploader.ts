@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PROJECT_KEY } from "@/lib/constants";
+
 
 interface UploadResult {
   key?: string;
@@ -10,7 +10,7 @@ interface UploadResult {
 
 const MEDIA_SERVICE_URL = process.env.NEXT_PUBLIC_MEDIA_SERVICE_URL;
 
-export function useMediaUploader(projectKey = PROJECT_KEY) {
+export function useMediaUploader(projectKey = "default_project") {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
