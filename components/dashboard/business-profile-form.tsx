@@ -173,11 +173,11 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
             <Label htmlFor="logo">Logo</Label>
             <Uploader folder="busines" variant="avatar" onChange={() => {}} />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="coverImage">Imagen de Portada</Label>
             <Uploader folder="busines" variant="compact" onChange={() => {}} />
           </div>
+          n
         </div>
       </div>
 

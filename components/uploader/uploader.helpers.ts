@@ -1,6 +1,6 @@
-import type { UploadedFile } from "./uploader.types";
-
 // Helpers extraídos del componente original para mejorar modularidad
+
+import type { UploadedFile } from "./uploader.types";
 
 /**
  * Formatea bytes a una representación legible.
@@ -18,7 +18,8 @@ export const formatFileSize = (bytes: number): string => {
  */
 export const isImage = (file: UploadedFile): boolean => {
   const isImg =
-    file.name?.match(/\.(jpg|jpeg|png|gif|webp)$/i) || file.url?.includes("image");
+    file.name?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
+    file.url?.includes("image");
 
   return !!isImg;
 };

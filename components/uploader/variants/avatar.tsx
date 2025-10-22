@@ -1,0 +1,106 @@
+"use client";
+
+import { Upload, X } from "lucide-react";
+import { ImageWithSkeleton } from "@/components/image-with-skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import type { UploadedFile } from "../uploader.types";
+import type { VariantCommonProps } from "./types";
+
+export function AvatarVariant(props: VariantCommonProps) {
+  const {
+    className,
+    disabled,
+    placeholder,
+    value,
+    uploading,
+    getRootProps,
+    getInputProps,
+    canUploadMoreFiles,
+    removeFile,
+  } = props;
+
+  return (
+    <div className={cn("space-y-2", className)}>
+      {!uploading && canUploadMoreFiles(value, props.maxFiles) && (
+        <div
+          {...getRootProps()}
+          className={cn(
+            "h-32 w-32 cursor-pointer rounded-full border-2 border-dashed p-4 text-center transition-colors",
+            props.isDragActive
+              ? "border-red-500 bg-red-50"
+              : "border-gray-300 hover:border-gray-400",
+            disabled && "cursor-not-allowed opacity-50",
+          )}
+        >
+          <input {...getInputProps()} />
+          <Upload className="mx-auto mb-2 text-gray-400" />
+          <p className="text-gray-600 text-xs">
+            {placeholder || "Arrastra archivos o haz clic para seleccionar"}
+          </p>
+        </div>
+      )}
+
+      {uploading && <div className="h-2 bg-gray-100" />}
+
+      {value && !Array.isArray(value) && (
+        <Card className="w-fit">
+          <CardContent className="flex items-center gap-4">
+            <div className="group relative h-32 w-32">
+              <ImageWithSkeleton
+                src={(value as UploadedFile).url || "/placeholder.svg"}
+                alt={(value as UploadedFile).name || "Avatar"}
+                className="h-full min-h-32 w-full min-w-32 rounded-full border-4 border-gray-200"
+              />
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                    disabled={disabled}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Estas seguro de eliminar esta imagen?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción no se puede deshacer. Es permanente (no se
+                      puede recuperar, deberas subir una nueva).
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-white hover:bg-destructive/90"
+                      onClick={() => removeFile((value as UploadedFile).key)}
+                    >
+                      Eliminar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
