@@ -30,7 +30,7 @@ export async function PublicNavbar() {
             </Button>
           ) : (
             <Button asChild>
-              <Link href="/auth">Para comercios</Link>
+              <Link href="/para-comercios">Para comercios</Link>
             </Button>
           )}
         </nav>

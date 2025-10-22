@@ -1,26 +1,5 @@
-import type { Image } from "@/app/generated/prisma";
+import type { Product } from "@/types";
 import { ProductPublicCard } from "./product-public-card";
-
-interface Product {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number | null;
-  images: Image[];
-  category: string | null;
-  featured: boolean;
-  business: {
-    id: string;
-    name: string;
-    plan: string;
-    whatsapp: string | null;
-    phone: string | null;
-    email: string | null;
-    facebook: string | null;
-    instagram: string | null;
-    twitter: string | null;
-  };
-}
 
 interface ProductGridProps {
   products: Product[];

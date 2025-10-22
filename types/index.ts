@@ -1,10 +1,14 @@
 // Type definitions for the platform
 
 import type { icons } from "lucide-react";
-
-export type PlanType = "FREE" | "BASIC" | "PREMIUM";
-export type PlanStatus = "ACTIVE" | "EXPIRED" | "CANCELLED";
-export type PaymentStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+import type {
+  Business as BusinessPrisma,
+  Image,
+  Payment as PaymentPrisma,
+  Product as ProductPrisma,
+  productView,
+  SubscriptionPlan,
+} from "@/app/generated/prisma";
 
 export interface User {
   id: string;
@@ -16,53 +20,20 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface Business {
-  id: string;
-  userId: string;
-  name: string;
-  description?: string;
-  category: string;
-  phone?: string;
-  email?: string;
-  whatsapp?: string;
-  website?: string;
-  facebook?: string;
-  instagram?: string;
-  address?: string;
-  logo?: string;
-  plan: PlanType;
-  planStatus: PlanStatus;
-  planExpiresAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+export interface Business extends BusinessPrisma {
+  logo?: Image | null;
+  coverImage?: Image | null;
+  plan: SubscriptionPlan;
 }
 
-export interface Product {
-  id: string;
-  businessId: string;
-  name: string;
-  description?: string;
-  price?: number;
-  images: string[];
-  category: string;
-  active: boolean;
-  featured: boolean;
-  views: number;
-  createdAt: Date;
-  updatedAt: Date;
-  business?: Business;
+export interface Product extends ProductPrisma {
+  images?: Image[] | null;
+  views?: productView[] | null;
+  business?: Business | null;
 }
 
-export interface Payment {
-  id: string;
-  businessId: string;
-  amount: number;
-  plan: PlanType;
-  status: PaymentStatus;
-  mercadoPagoId?: string;
-  mercadoPagoStatus?: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface Payment extends PaymentPrisma {
+  plan: SubscriptionPlan;
 }
 
 export interface Analytics {

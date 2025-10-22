@@ -46,8 +46,8 @@ export function DashboardHeader() {
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <Sheet open={isOpen} onOpenChange={handleOpenChange}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="lg:hidden">
+        <SheetTrigger asChild className="lg:hidden">
+          <Button variant="ghost" size="icon">
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>

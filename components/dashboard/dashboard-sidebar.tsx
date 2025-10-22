@@ -21,12 +21,21 @@ const navigation = [
   { name: "Configuración", href: "/dashboard/settings", icon: Settings },
 ];
 
-export function DashboardSidebar({ onClose }: { onClose: () => void }) {
+export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
     <aside className="lg:w-64 lg:flex-col lg:border-r lg:bg-muted/40">
-      <nav className="flex-1 px-3">
+      <div className="hidden h-16 items-center border-b px-6 lg:flex">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 font-semibold"
+        >
+          <Store className="h-6 w-6" />
+          <span>Mi Comercio</span>
+        </Link>
+      </div>
+      <nav className="flex-1 px-3 lg:py-4">
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
