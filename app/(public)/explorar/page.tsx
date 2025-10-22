@@ -1,6 +1,10 @@
 import { ArrowDownAZ, ArrowUpAZ, Package } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  getPublicBusinesses,
+  getPublicProducts,
+} from "@/app/actions/public-actions";
 import { ProductGrid } from "@/components/public/product-grid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,10 +15,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  getPublicBusinesses,
-  getPublicProducts,
-} from "@/lib/actions/public-actions";
 import { createSearchUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {

@@ -1,8 +1,8 @@
 import { Store } from "lucide-react";
 
 import Link from "next/link";
+import { getSession } from "@/app/actions/auth-actions";
 import { Button } from "@/components/ui/button";
-import { getSession } from "@/lib/actions/auth-actions";
 import prisma from "@/lib/prisma";
 import { UserMenu } from "../auth/user-menu";
 import { SearchForm } from "../search-form";

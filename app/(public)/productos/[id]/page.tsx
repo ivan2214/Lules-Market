@@ -3,17 +3,17 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { trackProductView } from "@/app/actions/analytics-actions";
+import {
+  getPublicProduct,
+  getPublicProducts,
+} from "@/app/actions/public-actions";
 import { DynamicIcon } from "@/components/dynamic-icon";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { PublicFooter } from "@/components/public/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { trackProductView } from "@/lib/actions/analytics-actions";
-import {
-  getPublicProduct,
-  getPublicProducts,
-} from "@/lib/actions/public-actions";
 import type { IconComponentName } from "@/types";
 
 type ContactMethod = {

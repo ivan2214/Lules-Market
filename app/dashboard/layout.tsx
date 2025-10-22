@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import type React from "react";
+import { requireAuth } from "@/app/actions/auth-actions";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
-import { requireAuth } from "@/lib/actions/auth-actions";
 import prisma from "@/lib/prisma";
 
 export default async function DashboardLayout({

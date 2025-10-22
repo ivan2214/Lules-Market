@@ -1,6 +1,8 @@
 import { Eye, Package, Store, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getAnalytics } from "@/app/actions/analytics-actions";
+import { getBusiness } from "@/app/actions/business-actions";
 import { AnalyticsChart } from "@/components/dashboard/analytics-chart";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
 import { Button } from "@/components/ui/button";
@@ -11,8 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAnalytics } from "@/lib/actions/analytics-actions";
-import { getBusiness } from "@/lib/actions/business-actions";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 export default async function AnalyticsPage({

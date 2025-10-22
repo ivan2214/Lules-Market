@@ -1,10 +1,10 @@
 import "server-only";
 
-import type { ActionResult } from "@/hooks/use-action";
 import {
   confirmImages,
   deleteImageFromMediaService,
-} from "@/lib/actions/image-action";
+} from "@/app/actions/image-action";
+import type { ActionResult } from "@/hooks/use-action";
 import { PROJECT_KEY } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { requireBusiness } from "../business/require-busines";

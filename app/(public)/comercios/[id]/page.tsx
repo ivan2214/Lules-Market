@@ -10,16 +10,16 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { trackBusinessView } from "@/app/actions/analytics-actions";
+import {
+  getPublicBusiness,
+  getPublicBusinesses,
+} from "@/app/actions/public-actions";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { PublicFooter } from "@/components/public/footer";
 import { ProductGrid } from "@/components/public/product-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { trackBusinessView } from "@/lib/actions/analytics-actions";
-import {
-  getPublicBusiness,
-  getPublicBusinesses,
-} from "@/lib/actions/public-actions";
 
 type Props = {
   params: Promise<{ id: string }>;

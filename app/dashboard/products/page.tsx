@@ -1,10 +1,10 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
+import { getBusiness } from "@/app/actions/business-actions";
 import { ProductDAL } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { getBusiness } from "@/lib/actions/business-actions";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 export default async function ProductsPage() {

@@ -1,5 +1,5 @@
 "use server";
-import { PROJECT_KEY } from "../constants";
+import { PROJECT_KEY } from "../../lib/constants";
 
 const MEDIA_SERVICE_URL = process.env.NEXT_PUBLIC_MEDIA_SERVICE_URL;
 

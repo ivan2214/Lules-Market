@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getBusiness } from "@/app/actions/business-actions";
 import { BusinessProfileForm } from "@/components/dashboard/business-profile-form";
 import {
   Card,
@@ -7,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getBusiness } from "@/lib/actions/business-actions";
 
 export default async function BusinessPage() {
   const business = await getBusiness();

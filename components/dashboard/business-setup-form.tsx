@@ -4,11 +4,11 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
+import { createBusiness } from "@/app/actions/business-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createBusiness } from "@/lib/actions/business-actions";
 
 export function BusinessSetupForm() {
   const router = useRouter();

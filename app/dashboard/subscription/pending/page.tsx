@@ -1,6 +1,7 @@
 import { Clock } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getPayment } from "@/app/actions/payment-actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getPayment } from "@/lib/actions/payment-actions";
 import type { MercadoPagoCallbackParams } from "@/types";
 
 export default async function PaymentPendingPage({

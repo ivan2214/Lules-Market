@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 import {
+  getCategories,
+  getPublicBusinesses,
+} from "@/app/actions/public-actions";
+import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  getCategories,
-  getPublicBusinesses,
-} from "@/lib/actions/public-actions";
 import { FiltersSidebar } from "./components/filters-sidebar";
 
 interface ExplorarLayoutFormProps {

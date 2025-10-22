@@ -1,10 +1,10 @@
 import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getBusiness } from "@/app/actions/business-actions";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getBusiness } from "@/lib/actions/business-actions";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 export default async function DashboardPage() {

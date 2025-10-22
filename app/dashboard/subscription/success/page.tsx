@@ -1,6 +1,10 @@
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import {
+  getPayment,
+  processPaymentSuccess,
+} from "@/app/actions/payment-actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  getPayment,
-  processPaymentSuccess,
-} from "@/lib/actions/payment-actions";
 import type { MercadoPagoCallbackParams } from "@/types";
 
 export default async function PaymentSuccessPage({

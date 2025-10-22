@@ -4,9 +4,9 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { createPaymentPreference } from "@/app/actions/payment-actions";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { Button } from "@/components/ui/button";
-import { createPaymentPreference } from "@/lib/actions/payment-actions";
 
 interface CheckoutButtonProps {
   plan: SubscriptionPlan;

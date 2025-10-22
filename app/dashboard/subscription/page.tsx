@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { getBusiness } from "@/app/actions/business-actions";
+import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getBusiness } from "@/lib/actions/business-actions";
-import { getSubscriptionHistory } from "@/lib/actions/subscription-actions";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
