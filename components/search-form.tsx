@@ -1,13 +1,28 @@
 "use client";
 
 import { Search } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
+import { getPublicProducts } from "@/app/actions/public-actions";
+import type { ProductDTO } from "@/app/data/product/product.dto";
+import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/utils/format";
+import { mainImage } from "@/utils/main-image";
+import { ImageWithSkeleton } from "./image-with-skeleton";
+import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 
 export const SearchForm = () => {
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const [results, setResults] = useState<{
+    products: ProductDTO[];
+    total: number;
+  }>({ products: [], total: 0 });
+
+  // ref para el debounce timer (usamos window.setTimeout que devuelve number en el navegador)
+  const debounceRef = useRef<number | null>(null);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -15,19 +30,98 @@ export const SearchForm = () => {
       router.push(`/explorar?search=${encodeURIComponent(search)}`);
     }
   }
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value.trim() || e.target.value === "") {
+      setResults({ products: [], total: 0 });
+      setSearch("");
+      return;
+    }
+    const value = e.target.value;
+    setSearch(value);
+
+    // Debounce: espera 300ms antes de hacer la llamada, cancela la anterior si existe
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = window.setTimeout(() => {
+      startTransition(async () => {
+        const { products, total } = await getPublicProducts({ search: value });
+        setResults({ products, total });
+      });
+    }, 300);
+  };
+
+  // limpiar el timer al desmontar
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   return (
-    <form onSubmit={handleSearch} className="mx-auto lg:max-w-md lg:flex-1">
-      <div className="relative">
-        <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Buscar productos o comercios..."
-          className="pl-10"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-    </form>
+    <section className="relative mx-auto w-full max-w-lg">
+      <form onSubmit={handleSearch}>
+        <div className="relative">
+          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Buscar productos o comercios..."
+            className="pl-10"
+            value={search}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+      </form>
+      {/* preview de los resultados que habira */}
+      <section
+        className={cn(
+          "absolute z-50 mt-2 flex h-auto max-h-60 w-full max-w-md flex-1 flex-col items-center gap-4 overflow-y-scroll rounded-md bg-white p-5 opacity-0 shadow-lg transition-opacity duration-200 ease-in lg:max-w-lg",
+          search && "opacity-100",
+        )}
+      >
+        {results.products.length ? (
+          results.products.map((product) => (
+            <div
+              key={product.id}
+              className="flex w-full items-center justify-start gap-2 border-b pb-2 last:border-0 last:pb-0"
+            >
+              <div className="h-12 w-12">
+                <ImageWithSkeleton
+                  src={
+                    mainImage(product.images || []) ||
+                    product.images?.[0].url ||
+                    ""
+                  }
+                  alt={product.name}
+                  className="rounded object-cover"
+                />
+              </div>
+              <div>
+                <Link
+                  href={`/productos/${product.id}`}
+                  className="font-semibold text-sm hover:underline"
+                >
+                  {product.name}
+                </Link>
+                <span className="font-extralight text-sm">
+                  ARS {formatCurrency(product.price || 0, "ARS")}
+                </span>
+              </div>
+              <div className="ml-auto">
+                <Badge variant="outline" className="text-xs">
+                  {product.category ? product.category : "Sin categoría"}
+                </Badge>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="mx-auto flex w-full flex-1 items-center justify-center py-10">
+            <p className="mx-auto text-muted-foreground text-sm">
+              No se encontraron resultados
+            </p>
+          </div>
+        )}
+      </section>
+    </section>
   );
 };
