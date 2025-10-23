@@ -1,6 +1,5 @@
 import { ArrowLeft, Star, Store } from "lucide-react";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { trackProductView } from "@/app/actions/analytics-actions";
@@ -134,10 +133,7 @@ export default async function ProductPage({ params }: Props) {
     notFound();
   }
 
-  // Track view
-  const headersList = await headers();
-  const referrer = headersList.get("referer") || undefined;
-  await trackProductView(id, referrer);
+  await trackProductView(id);
 
   const contactMethods: ContactMethod[] = [
     {

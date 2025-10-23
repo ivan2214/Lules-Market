@@ -1,10 +1,13 @@
 "use server";
 
+import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 import { requireBusiness } from "../data/business/require-busines";
 
-export async function trackProductView(productId: string, referrer?: string) {
+export async function trackProductView(productId: string) {
   try {
+    const currentHeaders = await headers();
+    const referrer = currentHeaders.get("referer") || undefined;
     await prisma.productView.create({
       data: {
         productId,
@@ -16,8 +19,10 @@ export async function trackProductView(productId: string, referrer?: string) {
   }
 }
 
-export async function trackBusinessView(businessId: string, referrer?: string) {
+export async function trackBusinessView(businessId: string) {
   try {
+    const currentHeaders = await headers();
+    const referrer = currentHeaders.get("referer") || undefined;
     await prisma.businessView.create({
       data: {
         businessId,
@@ -131,7 +136,7 @@ export async function getAnalytics(period: "7d" | "30d" | "90d" = "30d") {
 
 export async function getProductAnalytics(
   productId: string,
-  period: "7d" | "30d" | "90d" = "30d"
+  period: "7d" | "30d" | "90d" = "30d",
 ) {
   const { business } = await requireBusiness();
 

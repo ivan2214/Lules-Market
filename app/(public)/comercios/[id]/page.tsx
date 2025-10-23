@@ -7,7 +7,6 @@ import {
   Phone,
 } from "lucide-react";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { trackBusinessView } from "@/app/actions/analytics-actions";
@@ -151,10 +150,7 @@ export default async function BusinessPage({
     notFound();
   }
 
-  // Track view
-  const headersList = await headers();
-  const referrer = headersList.get("referer") || undefined;
-  await trackBusinessView(id, referrer);
+  await trackBusinessView(id);
 
   return (
     <div className="container py-8">
