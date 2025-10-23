@@ -1,8 +1,9 @@
-import type { Product } from "@/types";
+import type { ProductDTO } from "@/app/data/product/product.dto";
+
 import { ProductPublicCard } from "./product-public-card";
 
 interface ProductGridProps {
-  products: Product[];
+  products: ProductDTO[];
 }
 
 export function ProductGrid({ products }: ProductGridProps) {

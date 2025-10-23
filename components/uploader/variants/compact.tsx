@@ -185,7 +185,7 @@ export function CompactVariant(props: VariantCommonProps) {
                         <p className="line-clamp-6 truncate font-medium text-sm">
                           {file.name
                             ? file.name.length > 20
-                              ? file.name.slice(0, 20) + "…"
+                              ? `${file.name.slice(0, 20)}…`
                               : file.name
                             : "Archivo"}
                         </p>

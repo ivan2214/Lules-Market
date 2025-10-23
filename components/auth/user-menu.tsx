@@ -2,8 +2,8 @@
 import { LayoutDashboard, LogOut, Settings, Store } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { UserDTO } from "@/app/data/user/user.dto";
 import { signOut } from "@/lib/auth-client";
-import type { User as UserType } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -16,7 +16,7 @@ import {
 } from "../ui/dropdown-menu";
 
 interface UserMenuProps {
-  user: UserType;
+  user: UserDTO;
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {

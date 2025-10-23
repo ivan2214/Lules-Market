@@ -1,13 +1,13 @@
 import { Star, Store } from "lucide-react";
 import Link from "next/link";
+import type { ProductDTO } from "@/app/data/product/product.dto";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import type { Product } from "@/types";
 import { formatCurrency } from "@/utils/format";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 
 interface ProductPublicCardProps {
-  product: Product;
+  product: ProductDTO;
 }
 
 export function ProductPublicCard({ product }: ProductPublicCardProps) {

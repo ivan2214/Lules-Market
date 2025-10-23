@@ -3,6 +3,7 @@ import "server-only";
 import { deleteS3Object } from "@/app/actions/s3";
 import type { ActionResult } from "@/hooks/use-action";
 import prisma from "@/lib/prisma";
+
 import { requireBusiness } from "../business/require-busines";
 import { getCurrentUser, requireUser } from "../user/require-user";
 import {
@@ -20,7 +21,7 @@ import {
 
 export class ProductDAL {
   // biome-ignore lint/correctness/noUnusedPrivateClassMembers: <>
-  private constructor(private readonly userId: string) {}
+  private constructor(private readonly userId: string) { }
 
   static async create() {
     const user = await requireUser();
@@ -33,22 +34,62 @@ export class ProductDAL {
     return new ProductDAL(user?.id ?? "");
   }
 
-  async listProducts(): Promise<ProductDTO[]> {
-    const rows = await prisma.product.findMany({
-      orderBy: { createdAt: "desc" },
+  async listFeaturedProducts(): Promise<ProductDTO[]> {
+    return await prisma.product.findMany({
+      where: {
+        active: true,
+      },
+      include: {
+        business: {
+          include: {
+            logo: true,
+            coverImage: true,
+          },
+        },
+        images: true,
+        productView: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
-    return rows.map((r) => ({
-      id: r.id,
-      name: r.name,
-      description: r.description,
-      price: r.price,
-      category: r.category,
-      featured: r.featured,
-      active: r.active,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
-    }));
+  }
+
+  async listProductsGroupedByCategory(): Promise<Record<string, ProductDTO[]>> {
+    const allProducts = await prisma.product.findMany({
+      where: {
+        active: true,
+      },
+      include: {
+        business: {
+          include: {
+            logo: true,
+            coverImage: true,
+          },
+        },
+        images: true,
+        productView: true,
+      },
+    });
+
+    const allCategories = allProducts.map(
+      (product) => product.category?.toLowerCase() || "",
+    );
+    const uniqueCategories = [...new Set(allCategories)];
+
+    const productsByCategory = uniqueCategories.splice(0, 10).reduce(
+      (acc, category) => {
+        acc[category] = allProducts.filter(
+          (product) =>
+            product.category?.toLowerCase() === category.toLowerCase(),
+        );
+        return acc;
+      },
+      {} as Record<string, ProductDTO[]>,
+    );
+
+    return productsByCategory;
   }
 
   async getProductsByBusinessId() {
@@ -111,7 +152,7 @@ export class ProductDAL {
 
       // Crear imágenes que no existan
       const imagesToCreate = images.filter(
-        (image) => !imagesDB.some((dbImage) => dbImage.url === image.url)
+        (image) => !imagesDB.some((dbImage) => dbImage.url === image.url),
       );
 
       // Crear imágenes en la base de datos
@@ -217,7 +258,7 @@ export class ProductDAL {
 
       // Imágenes a borrar → existen en DB pero no vienen en el request
       const imagesToDelete = existingImages.filter(
-        (img) => !incomingKeys.has(img.key)
+        (img) => !incomingKeys.has(img.key),
       );
 
       if (imagesToDelete.length) {
@@ -290,7 +331,7 @@ export class ProductDAL {
         {
           id: productId,
           businesId: user.id,
-        }
+        },
       );
 
       const product = await prisma.product.findFirst({

@@ -15,7 +15,7 @@ import { canEditBusiness } from "./business.policy";
 import { requireBusiness } from "./require-busines";
 
 export class BusinessDAL {
-  private constructor(private readonly userId: string) {}
+  private constructor(private readonly userId: string) { }
 
   static async create() {
     const user = await requireUser();
@@ -37,12 +37,15 @@ export class BusinessDAL {
         _count: { select: { products: true } },
       },
     });
+    if (!business) {
+      throw new Error("No tienes un negocio registrado");
+    }
 
     return {
       ...business,
       products: business?._count.products ?? 0,
-      logo: business?.logo ? business.logo.url : null,
-      coverImage: business?.coverImage ? business.coverImage.url : null,
+      logo: business?.logo,
+      coverImage: business?.coverImage,
     };
   }
 

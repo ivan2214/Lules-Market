@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CarrouselProducts } from "@/components/carrousel-products";
 import { Button } from "@/components/ui/button";
-import prisma from "@/lib/prisma";
-import type { Product } from "@/types";
+import { ProductDAL } from "../data/product/product.dal";
 
 // Metadata para SEO
 export const metadata: Metadata = {
@@ -46,55 +45,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const featuredProducts = await prisma.product.findMany({
-    where: {
-      active: true,
-    },
-    include: {
-      business: {
-        include: {
-          logo: true,
-          coverImage: true,
-        },
-      },
-      images: true,
-      productView: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const productDAL = await ProductDAL.public();
+  const featuredProducts = await productDAL.listFeaturedProducts();
 
-  const allProducts = await prisma.product.findMany({
-    where: {
-      active: true,
-    },
-    include: {
-      business: {
-        include: {
-          logo: true,
-          coverImage: true,
-        },
-      },
-      images: true,
-      productView: true,
-    },
-  });
-
-  const allCategories = allProducts.map(
-    (product) => product.category?.toLowerCase() || "",
-  );
-  const uniqueCategories = [...new Set(allCategories)];
-
-  const productsByCategory = uniqueCategories.splice(0, 10).reduce(
-    (acc, category) => {
-      acc[category] = allProducts.filter(
-        (product) => product.category?.toLowerCase() === category.toLowerCase(),
-      );
-      return acc;
-    },
-    {} as Record<string, Product[]>,
-  );
+  const productsByCategory = productDAL.listProductsGroupedByCategory();
 
   return (
     <div className="mx-auto flex flex-col gap-y-20 py-5 md:py-10">

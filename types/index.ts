@@ -2,32 +2,15 @@
 
 import type { icons } from "lucide-react";
 import type {
-  Business as BusinessPrisma,
-  Image,
-  Payment as PaymentPrisma,
-  Product as ProductPrisma,
-  productView,
-  SubscriptionPlan,
-  User as UserPrisma,
+  Payment as PaymentPrisma, SubscriptionPlan
 } from "@/app/generated/prisma";
 
-export interface User extends UserPrisma {
-  business: Business | null;
-}
 
-export interface Business extends BusinessPrisma {
-  logo?: Image | null;
-  coverImage?: Image | null;
-  plan: SubscriptionPlan;
-}
 
-export interface Product extends ProductPrisma {
-  images?: Image[] | null;
-  views?: productView[] | null;
-  business?: Business | null;
-}
 
-export interface Payment extends PaymentPrisma {
+
+
+export interface PaymentDTO extends PaymentPrisma {
   plan: SubscriptionPlan;
 }
 

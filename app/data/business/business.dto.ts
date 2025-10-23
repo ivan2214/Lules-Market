@@ -1,9 +1,9 @@
 import { z } from "zod";
-import {
-  type Image,
-  type Prisma,
-  SubscriptionPlan,
-  SubscriptionStatus,
+import type {
+  Business as BusinessPrisma,
+  Image,
+  Prisma,
+  SubscriptionPlan
 } from "@/app/generated/prisma";
 
 export const BusinessCreateInputSchema = z.object({
@@ -30,44 +30,12 @@ export const BusinessUpdateInputSchema = BusinessCreateInputSchema.extend({
 
 export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
 
-export const BusinessSchema = z.object({
-  id: z.string().nullish(),
-  name: z.string().nullish(),
-  description: z.string().nullish(),
-  phone: z.string().nullish(),
-  whatsapp: z.string().nullish(),
-  email: z.string().nullish(),
-  website: z.string().nullish(),
-  facebook: z.string().nullish(),
-  instagram: z.string().nullish(),
-  twitter: z.string().nullish(),
-  address: z.string().nullish(),
-  createdAt: z.date().nullish(),
-  updatedAt: z.date().nullish(),
-  products: z.number(),
-  plan: z
-    .enum([
-      SubscriptionPlan.FREE,
-      SubscriptionPlan.PREMIUM,
-      SubscriptionPlan.BASIC,
-    ])
-    .nullish(),
-  planExpiresAt: z.date().nullish(),
-  planStatus: z
-    .enum([
-      SubscriptionStatus.ACTIVE,
-      SubscriptionStatus.INACTIVE,
-      SubscriptionStatus.CANCELLED,
-      SubscriptionStatus.EXPIRED,
-    ])
-    .nullish(),
-  logo: z.string().nullish(),
-  coverImage: z.string().nullish(),
-  category: z.string().nullish(),
-  hours: z.string().nullish(),
-});
-
-export type BusinessDTO = z.infer<typeof BusinessSchema>;
+export interface BusinessDTO extends BusinessPrisma {
+  logo?: Image | null;
+  coverImage?: Image | null;
+  plan: SubscriptionPlan;
+  products?: number;
+}
 
 export type BusinessProductDTO = {
   id: string;

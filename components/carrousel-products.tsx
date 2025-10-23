@@ -1,5 +1,6 @@
 "use client";
 import Autoplay from "embla-carousel-autoplay";
+import type { ProductDTO } from "@/app/data/product/product.dto";
 import { ProductPublicCard } from "@/components/public/product-public-card";
 import {
   Carousel,
@@ -8,9 +9,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import type { Product } from "@/types";
 
-type CarrouselProductsProps = { products: Product[] };
+type CarrouselProductsProps = { products: ProductDTO[] };
 
 export const CarrouselProducts: React.FC<CarrouselProductsProps> = ({
   products,

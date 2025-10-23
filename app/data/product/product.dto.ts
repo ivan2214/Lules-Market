@@ -1,5 +1,12 @@
 import { z } from "zod";
-import type { Prisma } from "@/app/generated/prisma";
+
+import type {
+  Image,
+  Prisma,
+  Product as ProductPrisma,
+  productView,
+} from "@/app/generated/prisma";
+import type { BusinessDTO } from "../business/business.dto";
 
 export const ImageCreateInputSchema = z.object({
   url: z.string().url("La URL de la imagen es inválida"),
@@ -28,7 +35,7 @@ export const ProductCreateInputSchema = z.object({
   active: z.boolean().optional(),
   images: ImageCreateInputSchema.array().min(
     1,
-    "Se requiere al menos una imagen"
+    "Se requiere al menos una imagen",
   ),
 }) satisfies z.ZodType<
   Omit<Prisma.ProductCreateWithoutImagesInput, "business">
@@ -59,16 +66,8 @@ export const ProductDeleteInputSchema = z.object({
 
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 
-export const ProductSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().nullish(),
-  price: z.number().nullish(),
-  category: z.string().nullish(),
-  featured: z.boolean(),
-  active: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-
-export type ProductDTO = z.infer<typeof ProductSchema>;
+export interface ProductDTO extends ProductPrisma {
+  images?: Image[] | null;
+  views?: productView[] | null;
+  business?: BusinessDTO | null;
+}

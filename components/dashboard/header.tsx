@@ -3,6 +3,7 @@
 import { Menu, Store } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import type { UserDTO } from "@/app/data/user/user.dto";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -10,11 +11,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { User as UserType } from "@/types";
 import { UserMenu } from "../auth/user-menu";
 import { DashboardSidebar } from "./dashboard-sidebar";
 
-export function DashboardHeader({ user }: { user: UserType }) {
+export function DashboardHeader({ user }: { user: UserDTO }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {

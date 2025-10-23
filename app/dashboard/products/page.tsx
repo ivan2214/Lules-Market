@@ -18,7 +18,7 @@ export default async function ProductsPage() {
 
   const limits = getSubscriptionLimits(business.plan);
   const canAdd =
-    limits.maxProducts === -1 || business.products < limits.maxProducts;
+    limits.maxProducts === -1 || (business?.products || 0) < limits.maxProducts;
 
   return (
     <div className="space-y-6">
