@@ -1,9 +1,9 @@
 import "server-only";
 
 import { deleteS3Object } from "@/app/actions/s3";
+import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import prisma from "@/lib/prisma";
-
 import { requireBusiness } from "../business/require-busines";
 import { getCurrentUser, requireUser } from "../user/require-user";
 import {
@@ -34,6 +34,74 @@ export class ProductDAL {
     return new ProductDAL(user?.id ?? "");
   }
 
+  async listAllProducts(
+    {
+      limit, page, search,
+      sort,
+      businessId,
+      category,
+    }: {
+      search?: string;
+      category?: string;
+      businessId?: string;
+      page: number;
+      limit: number;
+      sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+    }
+  ): Promise<{ products: ProductDTO[]; total: number, pages: number; currentPage: number }> {
+
+
+    const where: Prisma.ProductWhereInput = {
+      active: true,
+      business: {
+        planStatus: "ACTIVE" as const,
+      },
+      ...(businessId && { businessId }),
+      ...(category && { category }),
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: "insensitive" as const } },
+          { description: { contains: search, mode: "insensitive" as const } },
+        ],
+      }),
+    };
+
+    const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
+      { featured: "desc" },
+      { business: { plan: "asc" as const } },
+      { createdAt: "desc" },
+    ];
+
+    if (sort) {
+      const [field, direction] = sort.split("_") as [
+        Prisma.SortOrder,
+        Prisma.SortOrderInput,
+      ];
+      orderBy.unshift({ [field]: direction });
+    }
+
+    const [products, total] = await prisma.$transaction([
+      prisma.product.findMany({
+        where,
+        include: {
+          business: true,
+          images: true,
+        },
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    return {
+      products,
+      total,
+      pages: Math.ceil(total / limit),
+      currentPage: page,
+    };
+  }
+
   async listFeaturedProducts(): Promise<ProductDTO[]> {
     return await prisma.product.findMany({
       where: {
@@ -53,7 +121,6 @@ export class ProductDAL {
         createdAt: "desc",
       },
     });
-
   }
 
   async listProductsGroupedByCategory(): Promise<Record<string, ProductDTO[]>> {
@@ -90,6 +157,24 @@ export class ProductDAL {
     );
 
     return productsByCategory;
+  }
+
+  async getProductById(productId: string): Promise<ProductDTO | null> {
+    const product = await prisma.product.findFirst({
+      where: {
+        id: productId,
+        active: true,
+        business: {
+          planStatus: "ACTIVE",
+        },
+      },
+      include: {
+        business: true,
+        images: true,
+      },
+    });
+
+    return product;
   }
 
   async getProductsByBusinessId() {

@@ -2,9 +2,9 @@ import { z } from "zod";
 import type {
   Business as BusinessPrisma,
   Image,
-  Prisma,
-  SubscriptionPlan
+  Prisma, SubscriptionPlan
 } from "@/app/generated/prisma";
+import type { ProductDTO } from "../product/product.dto";
 
 export const BusinessCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -34,7 +34,7 @@ export interface BusinessDTO extends BusinessPrisma {
   logo?: Image | null;
   coverImage?: Image | null;
   plan: SubscriptionPlan;
-  products?: number;
+  products?: ProductDTO[] | null;
 }
 
 export type BusinessProductDTO = {

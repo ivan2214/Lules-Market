@@ -15,7 +15,7 @@ export default async function DashboardPage() {
     offset: 0,
   });
   const limits = getSubscriptionLimits(business.plan);
-  const productCount = business.products;
+  const productCount = business.products?.length || 0;
   const productLimit =
     limits.maxProducts === -1 ? "Ilimitado" : limits.maxProducts;
 

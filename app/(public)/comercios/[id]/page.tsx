@@ -252,7 +252,7 @@ export default async function BusinessPage({
         {/* Products */}
         <div>
           <h2 className="mb-6 font-bold text-2xl">Productos</h2>
-          {business.products.length === 0 ? (
+          {!business.products || !business.products.length ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground">
@@ -261,11 +261,7 @@ export default async function BusinessPage({
               </CardContent>
             </Card>
           ) : (
-            <ProductGrid
-              products={business.products.map((p) => ({
-                ...p,
-              }))}
-            />
+            <ProductGrid products={business.products} />
           )}
         </div>
       </div>

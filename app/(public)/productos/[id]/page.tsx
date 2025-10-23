@@ -15,11 +15,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { IconComponentName } from "@/types";
+import { mainImage } from "@/utils/main-image";
 
 type ContactMethod = {
   icon: IconComponentName;
   label: string;
-  value: string | null;
+  value?: string | null;
   href?: string | null;
 };
 
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
 
-  const ogImages = product.images.map((image) => ({
+  const ogImages = product.images?.map((image) => ({
     url: image.url,
     width: 1200,
     height: 630,
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const keywords = [
     product.name,
     product.category || "",
-    product.business.name,
+    product.business?.name,
     "comprar online",
     "Argentina",
     "Lules Market",
@@ -62,7 +63,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   ].filter(Boolean);
 
   return {
-    title: `${product.name} | ${product.business.name} | Lules Market`,
+    title: `${product.name} | ${product.business?.name} | Lules Market`,
     description: seoDescription,
     keywords: keywords.join(", "),
     robots: {
@@ -83,7 +84,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: product.name,
       siteName: "Lules Market",
       description: seoDescription,
-      images: ogImages.length
+      images: ogImages?.length
         ? ogImages
         : [
             {
@@ -100,7 +101,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: product.name,
       description: seoDescription,
-      images: ogImages.length
+      images: ogImages?.length
         ? [ogImages[0].url]
         : ["https://lules-market.vercel.app/og-image.jpg"],
       creator: "@lulesmarket",
@@ -108,8 +109,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     authors: [
       {
-        name: product.business.name,
-        url: `https://lules-market.vercel.app/comercios/${product.business.id}`,
+        name: product.business?.name,
+        url: `https://lules-market.vercel.app/comercios/${product.business?.id}`,
       },
     ],
     category: product.category,
@@ -142,40 +143,40 @@ export default async function ProductPage({ params }: Props) {
     {
       icon: "MessageCircle" as IconComponentName,
       label: "WhatsApp",
-      value: product.business.whatsapp,
-      href: product.business.whatsapp
-        ? `https://wa.me/${product.business.whatsapp.replace(/\D/g, "")}`
+      value: product.business?.whatsapp,
+      href: product.business?.whatsapp
+        ? `https://wa.me/${product.business?.whatsapp.replace(/\D/g, "")}`
         : null,
     },
     {
       icon: "Phone" as IconComponentName,
       label: "Teléfono",
-      value: product.business.phone,
-      href: `tel:${product.business.phone}`,
+      value: product.business?.phone,
+      href: `tel:${product.business?.phone}`,
     },
     {
       icon: "Mail" as IconComponentName,
       label: "Email",
-      value: product.business.email,
-      href: `mailto:${product.business.email}`,
+      value: product.business?.email,
+      href: `mailto:${product.business?.email}`,
     },
     {
       icon: "Facebook" as IconComponentName,
       label: "Facebook",
-      value: product.business.facebook,
-      href: product.business.facebook,
+      value: product.business?.facebook,
+      href: product.business?.facebook,
     },
     {
       icon: "Instagram" as IconComponentName,
       label: "Instagram",
-      value: product.business.instagram,
-      href: product.business.instagram,
+      value: product.business?.instagram,
+      href: product.business?.instagram,
     },
     {
       icon: "Twitter" as IconComponentName,
       label: "Twitter",
-      value: product.business.twitter,
-      href: product.business.twitter,
+      value: product.business?.twitter,
+      href: product.business?.twitter,
     },
   ].filter((method) => method.value);
 
@@ -192,9 +193,9 @@ export default async function ProductPage({ params }: Props) {
         {/* Images */}
         <div className="space-y-4">
           <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-            {product.images[0] ? (
+            {product.images ? (
               <ImageWithSkeleton
-                src={product.images[0].url || "/placeholder.svg"}
+                src={mainImage(product.images) || "/placeholder.svg"}
                 alt={product.name}
                 className="h-full w-full object-cover"
               />
@@ -210,7 +211,7 @@ export default async function ProductPage({ params }: Props) {
               </Badge>
             )}
           </div>
-          {product.images.length > 1 && (
+          {product.images && product.images?.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
               {product.images.slice(1, 5).map((image, i) => (
                 <div
@@ -259,9 +260,9 @@ export default async function ProductPage({ params }: Props) {
               <div className="mb-4 flex items-center gap-3">
                 <Store className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="font-semibold">{product.business.name}</p>
+                  <p className="font-semibold">{product.business?.name}</p>
                   <Link
-                    href={`/comercios/${product.business.id}`}
+                    href={`/comercios/${product.business?.id}`}
                     className="text-muted-foreground text-sm hover:underline"
                   >
                     Ver más productos

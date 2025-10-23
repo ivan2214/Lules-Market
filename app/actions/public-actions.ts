@@ -1,7 +1,9 @@
 "use server";
 
-import type { Prisma } from "@/app/generated/prisma";
 import prisma from "@/lib/prisma";
+import { BusinessDAL } from "../data/business/business.dal";
+import { ProductDAL } from "../data/product/product.dal";
+import type { ProductDTO } from "../data/product/product.dto";
 
 export async function getPublicBusinesses(params?: {
   search?: string;
@@ -9,50 +11,15 @@ export async function getPublicBusinesses(params?: {
   page?: number;
   limit?: number;
 }) {
+  const businessDAL = await BusinessDAL.public();
   const { search, category, page = 1, limit = 12 } = params || {};
+  const { businesses, total } = await businessDAL.listAllBusinesses({
+    search,
+    category,
+    page,
+    limit,
+  });
 
-  const where: Prisma.BusinessWhereInput = {
-    planStatus: "ACTIVE" as const,
-    products: {
-      some: {
-        active: true,
-      },
-    },
-    ...(search && {
-      OR: [
-        { name: { contains: search, mode: "insensitive" as const } },
-        { description: { contains: search, mode: "insensitive" as const } },
-      ],
-    }),
-    ...(category && { category }),
-  };
-
-  const [businesses, total] = await prisma.$transaction([
-    prisma.business.findMany({
-      where,
-      include: {
-        products: {
-          where: { active: true },
-          take: 4,
-          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-        },
-        logo: true,
-        _count: {
-          select: { products: true },
-        },
-      },
-      orderBy: [
-        // Premium businesses first
-        {
-          plan: "asc" as const,
-        },
-        { createdAt: "desc" },
-      ],
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.business.count({ where }),
-  ]);
 
   return {
     businesses,
@@ -69,103 +36,49 @@ export async function getPublicProducts(params?: {
   page?: number;
   limit?: number;
   sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-}) {
+}): Promise<{
+  products: ProductDTO[];
+  total: number;
+  pages: number;
+  currentPage: number;
+}> {
   const {
     search,
     category,
     businessId,
     page = 1,
-    limit = 24,
+    limit = 12,
     sort,
   } = params || {};
-
-  const where: Prisma.ProductWhereInput = {
-    active: true,
-    business: {
-      planStatus: "ACTIVE" as const,
-    },
-    ...(businessId && { businessId }),
-    ...(category && { category }),
-    ...(search && {
-      OR: [
-        { name: { contains: search, mode: "insensitive" as const } },
-        { description: { contains: search, mode: "insensitive" as const } },
-      ],
-    }),
-  };
-
-  const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
-    { featured: "desc" },
-    { business: { plan: "asc" as const } },
-    { createdAt: "desc" },
-  ];
-
-  if (sort) {
-    const [field, direction] = sort.split("_") as [
-      Prisma.SortOrder,
-      Prisma.SortOrderInput
-    ];
-    orderBy.unshift({ [field]: direction });
-  }
-
-  const [products, total] = await prisma.$transaction([
-    prisma.product.findMany({
-      where,
-      include: {
-        business: true,
-        images: true,
-      },
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
-    prisma.product.count({ where }),
-  ]);
+  const productDAL = await ProductDAL.public();
+  const { products, total, pages, currentPage } =
+    await productDAL.listAllProducts({
+      search,
+      category,
+      businessId,
+      page,
+      limit,
+      sort,
+    });
 
   return {
     products,
     total,
-    pages: Math.ceil(total / limit),
-    currentPage: page,
+    pages,
+    currentPage,
   };
 }
 
 export async function getPublicBusiness(businessId: string) {
-  const business = await prisma.business.findFirst({
-    where: {
-      id: businessId,
-      planStatus: "ACTIVE",
-    },
-    include: {
-      logo: true,
-      coverImage: true,
-      products: {
-        include: {
-          images: true,
-        },
-        where: { active: true },
-        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-      },
-    },
-  });
+  const businessDAL = await BusinessDAL.public();
+  const business = businessDAL.getBusinessById(businessId);
 
   return business;
 }
 
 export async function getPublicProduct(productId: string) {
-  const product = await prisma.product.findFirst({
-    where: {
-      id: productId,
-      active: true,
-      business: {
-        planStatus: "ACTIVE",
-      },
-    },
-    include: {
-      business: true,
-      images: true,
-    },
-  });
+  const productDAL = await ProductDAL.public();
+  const product = productDAL.getProductById(productId);
 
   return product;
 }

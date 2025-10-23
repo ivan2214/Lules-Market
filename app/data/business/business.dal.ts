@@ -28,13 +28,97 @@ export class BusinessDAL {
     return new BusinessDAL(user?.id ?? "");
   }
 
+  async listAllBusinesses({
+    search,
+    category,
+    limit, page
+  }: {
+    search?: string;
+    category?: string;
+    page: number;
+    limit: number;
+  }) {
+
+    const where: Prisma.BusinessWhereInput = {
+      planStatus: "ACTIVE" as const,
+      products: {
+        some: {
+          active: true,
+        },
+      },
+      ...(search && {
+        OR: [
+          { name: { contains: search, mode: "insensitive" as const } },
+          { description: { contains: search, mode: "insensitive" as const } },
+        ],
+      }),
+      ...(category && { category }),
+    };
+
+    const [businesses, total] = await prisma.$transaction([
+      prisma.business.findMany({
+        where,
+        include: {
+          products: {
+            where: { active: true },
+            take: 4,
+            orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+          },
+          logo: true,
+          _count: {
+            select: { products: true },
+          },
+        },
+        orderBy: [
+          // Premium businesses first
+          {
+            plan: "asc" as const,
+          },
+          { createdAt: "desc" },
+        ],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.business.count({ where }),
+    ]);
+
+    return { businesses, total };
+  }
+
+  async getBusinessById(businessId: string): Promise<BusinessDTO | null> {
+    const business = await prisma.business.findFirst({
+      where: {
+        id: businessId,
+        planStatus: "ACTIVE",
+      },
+      include: {
+        logo: true,
+        coverImage: true,
+        products: {
+          include: {
+            images: true,
+          },
+          where: { active: true },
+          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+        },
+      },
+    });
+    return business;
+  }
+
   async getMyBusiness(): Promise<BusinessDTO> {
     const business = await prisma.business.findUnique({
       where: { userId: this.userId },
       include: {
         logo: true,
         coverImage: true,
-        _count: { select: { products: true } },
+        products: {
+          include: {
+            images: true,
+          },
+          where: { active: true },
+          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+        },
       },
     });
     if (!business) {
@@ -43,7 +127,7 @@ export class BusinessDAL {
 
     return {
       ...business,
-      products: business?._count.products ?? 0,
+      products: business?.products ?? [],
       logo: business?.logo,
       coverImage: business?.coverImage,
     };

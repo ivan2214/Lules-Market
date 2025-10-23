@@ -121,7 +121,7 @@ export default async function SubscriptionPage() {
             <div className="text-right">
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
-                {business.products} /{" "}
+                {business.products?.length ?? 0} /{" "}
                 {SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts === -1
                   ? "∞"
                   : SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts}
