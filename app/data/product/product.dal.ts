@@ -5,7 +5,7 @@ import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import prisma from "@/lib/prisma";
 import { requireBusiness } from "../business/require-busines";
-import { getCurrentUser, requireUser } from "../user/require-user";
+import { requireUser } from "../user/require-user";
 import {
   type ProductCreateInput,
   ProductCreateInputSchema,
@@ -21,7 +21,7 @@ import {
 
 export class ProductDAL {
   // biome-ignore lint/correctness/noUnusedPrivateClassMembers: <>
-  private constructor(private readonly userId: string) { }
+  private constructor(private readonly userId?: string) { }
 
   static async create() {
     const user = await requireUser();
@@ -29,9 +29,8 @@ export class ProductDAL {
   }
 
   static async public() {
-    // For read-only access without requiring auth (e.g., public list)
-    const user = await getCurrentUser();
-    return new ProductDAL(user?.id ?? "");
+
+    return new ProductDAL();
   }
 
   async listAllProducts(

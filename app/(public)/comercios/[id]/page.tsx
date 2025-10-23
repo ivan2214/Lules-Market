@@ -15,7 +15,6 @@ import {
   getPublicBusinesses,
 } from "@/app/actions/public-actions";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
-import { PublicFooter } from "@/components/public/footer";
 import { ProductGrid } from "@/components/public/product-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -153,7 +152,7 @@ export default async function BusinessPage({
   await trackBusinessView(id);
 
   return (
-    <div className="container py-8">
+    <div className="container mx-auto py-8">
       <Button asChild variant="ghost" className="mb-6">
         <Link href="/explorar">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -261,7 +260,6 @@ export default async function BusinessPage({
           )}
         </div>
       </div>
-      <PublicFooter />
     </div>
   );
 }

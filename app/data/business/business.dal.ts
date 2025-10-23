@@ -2,7 +2,7 @@ import "server-only";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import prisma from "@/lib/prisma";
-import { getCurrentUser, requireUser } from "../user/require-user";
+import { requireUser } from "../user/require-user";
 import {
   type BusinessCreateInput,
   BusinessCreateInputSchema,
@@ -15,7 +15,7 @@ import { canEditBusiness } from "./business.policy";
 import { requireBusiness } from "./require-busines";
 
 export class BusinessDAL {
-  private constructor(private readonly userId: string) { }
+  private constructor(private readonly userId?: string) { }
 
   static async create() {
     const user = await requireUser();
@@ -24,8 +24,7 @@ export class BusinessDAL {
   }
 
   static async public() {
-    const user = await getCurrentUser();
-    return new BusinessDAL(user?.id ?? "");
+    return new BusinessDAL();
   }
 
   async listAllBusinesses({
