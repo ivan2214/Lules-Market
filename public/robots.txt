@@ -1,0 +1,13 @@
+# robots.txt para Lules Market
+# Permitir acceso a todos los bots
+
+User-agent: *
+Allow: /
+
+# Rutas privadas - no indexar
+Disallow: /dashboard/
+Disallow: /auth/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://lules-market.vercel.app/sitemap.xml

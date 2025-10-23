@@ -7,8 +7,10 @@ import {
   getPublicProduct,
   getPublicProducts,
 } from "@/app/actions/public-actions";
+import { ProductSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
 import type { IconComponentName } from "@/types";
+import { mainImage } from "@/utils/main-image";
 import { BusinessCard } from "./components/business-card";
 import { ProductImages } from "./components/product-images";
 import { ProductInfo } from "./components/product-info";
@@ -178,6 +180,16 @@ export default async function ProductPage({ params }: Props) {
   ];
   return (
     <div className="container space-y-8 p-8">
+      <ProductSchema
+        name={product.name}
+        description={product.description || ""}
+        price={product.price || 0}
+        image={mainImage(product.images || [])}
+        seller={{
+          name: product.business?.name || "",
+          url: `https://lules-market.vercel.app/comercios/${product.business?.id}`,
+        }}
+      />
       <Button asChild variant="ghost">
         <Link href="/explorar" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver

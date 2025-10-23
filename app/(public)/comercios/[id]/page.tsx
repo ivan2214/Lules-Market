@@ -7,6 +7,7 @@ import {
   getPublicBusiness,
   getPublicBusinesses,
 } from "@/app/actions/public-actions";
+import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
 import { BusinessHeader } from "./components/business-header";
 import { BusinessProducts } from "./components/business-products";
@@ -155,6 +156,15 @@ export default async function BusinessPage({
 
   return (
     <div className="container mx-auto space-y-8 py-8">
+      <LocalBusinessSchema
+        name={business.name}
+        description={business.description || ""}
+        address={business.address || ""}
+        phone={business.phone || ""}
+        email={business.email || ""}
+        image={business.logo?.url || ""}
+        url={`https://lules-market.vercel.app/comercios/${id}`}
+      />
       <Button asChild variant="ghost">
         <Link href="/explorar" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver
