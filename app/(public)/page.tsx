@@ -50,8 +50,6 @@ export default async function HomePage() {
 
   const productsByCategory = await productDAL.listProductsGroupedByCategory();
 
-  console.log(productsByCategory);
-
   return (
     <div className="mx-auto flex flex-col gap-y-20 py-5 md:py-10">
       {/* Featured Products */}
