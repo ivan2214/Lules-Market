@@ -1,5 +1,4 @@
-import { Store } from "lucide-react";
-
+import Image from "next/image";
 import Link from "next/link";
 import { getCurrentUser } from "@/app/data/user/require-user";
 import { Button } from "@/components/ui/button";
@@ -25,11 +24,18 @@ export async function PublicNavbar() {
   });
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-10">
-      <div className="flex h-16 w-full items-center justify-between gap-2">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-          <Store className="h-6 w-6" />
-          <span className="hidden sm:inline">Comercios Locales</span>
+    <header className="container sticky top-0 z-50 mx-auto w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-10">
+      <div className="flex h-14 w-full items-center justify-between gap-2 lg:h-20">
+        <Link href="/">
+          <div className="w-20 lg:w-32">
+            <Image
+              src="/logo-tp.png"
+              className="h-full w-full object-cover"
+              width={48}
+              height={48}
+              alt=""
+            />
+          </div>
         </Link>
         <SearchForm />
         {user ? (

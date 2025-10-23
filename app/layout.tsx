@@ -18,9 +18,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Comercios Locales - Tu vitrina digital",
+  title: "Lules Market - Tu vitrina digital",
   description:
-    "Plataforma para pequeños comercios locales. Publica tus productos y servicios, aumenta tu visibilidad y atrae más clientes.",
+    "Plataforma para comercios locales. Publica tus productos y servicios, aumenta tu visibilidad y atrae más clientes.",
   keywords: [
     "comercios locales",
     "negocios",
@@ -41,6 +41,13 @@ export default function RootLayout({
       className={`${inter.variable} ${poppins.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          async
+          crossOrigin="anonymous"
+          src="https://tweakcn.com/live-preview.min.js"
+        />
+      </head>
       <body className="mx-auto font-sans antialiased">
         {children}
         <Toaster />
