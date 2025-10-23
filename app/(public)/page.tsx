@@ -1,6 +1,8 @@
+import { Box, ShoppingCart, Store, User } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CarrouselProducts } from "@/components/carrousel-products";
+import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { ProductDAL } from "../data/product/product.dal";
 
@@ -53,7 +55,7 @@ export default async function HomePage() {
   return (
     <div className="mx-auto flex flex-col gap-y-20 p-5 md:py-10">
       {/* Featured Products */}
-      {featuredProducts.length > 0 && (
+      {featuredProducts.length > 0 ? (
         <section>
           <div className="mb-8 flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col items-start gap-2">
@@ -71,26 +73,50 @@ export default async function HomePage() {
 
           <CarrouselProducts products={featuredProducts} />
         </section>
+      ) : (
+        <EmptyState
+          title="No hay productos destacados"
+          description="No hay productos destacados"
+          icons={[ShoppingCart, Box, User]}
+        />
       )}
 
-      {Object.entries(productsByCategory).map(([category, products]) => (
-        <section key={category}>
-          <div className="mb-8 flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="font-bold text-3xl tracking-tight">
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </h2>
+      {Object.entries(productsByCategory).length > 0 ? (
+        Object.entries(productsByCategory).map(([category, products]) => (
+          <section key={category}>
+            <div className="mb-8 flex w-full flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="font-bold text-3xl tracking-tight">
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </h2>
+              </div>
+              <Button asChild>
+                <Link href={`/explorar?category=${category}`}>
+                  Ver productos por{" "}
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </Link>
+              </Button>
             </div>
-            <Button asChild>
-              <Link href={`/explorar?category=${category}`}>
-                Ver productos por{" "}
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </Link>
-            </Button>
-          </div>
-          <CarrouselProducts products={products} />
+            {products.length > 0 ? (
+              <CarrouselProducts products={products} />
+            ) : (
+              <EmptyState
+                title="No hay productos disponibles"
+                description={`No hay productos disponibles por ${category.charAt(0).toUpperCase() + category.slice(1)}`}
+                icons={[Box, Store]}
+              />
+            )}
+          </section>
+        ))
+      ) : (
+        <section className="flex items-center justify-center">
+          <EmptyState
+            title="No hay productos disponibles"
+            description="No hay productos disponibles por categoría"
+            icons={[Box, Store]}
+          />
         </section>
-      ))}
+      )}
     </div>
   );
 }

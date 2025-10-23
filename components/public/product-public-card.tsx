@@ -18,7 +18,7 @@ export function ProductPublicCard({ product }: ProductPublicCardProps) {
           <ImageWithSkeleton
             src={product.images[0].url || "/placeholder.svg"}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform hover:scale-105"
+            className="h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-muted-foreground">
