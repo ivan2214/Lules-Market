@@ -1,23 +1,16 @@
-import {
-  ArrowLeft,
-  Globe,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { trackBusinessView } from "@/app/actions/analytics-actions";
 import {
   getPublicBusiness,
   getPublicBusinesses,
 } from "@/app/actions/public-actions";
-import { ImageWithSkeleton } from "@/components/image-with-skeleton";
-import { ProductGrid } from "@/components/public/product-grid";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { BusinessHeader } from "./components/business-header";
+import { BusinessProducts } from "./components/business-products";
+import { ContactCard } from "./components/contact-card";
+import { SimilarBusinesses } from "./components/similar-businesses";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -149,117 +142,35 @@ export default async function BusinessPage({
     notFound();
   }
 
-  await trackBusinessView(id);
+  // Comercios de la misma categoría
+  const allBusinesses = await getPublicBusinesses();
+  const similarBusinesses = allBusinesses.businesses.filter(
+    (b) => b.id !== id && b.category === business.category,
+  );
 
   return (
-    <div className="container mx-auto py-8">
-      <Button asChild variant="ghost" className="mb-6">
-        <Link href="/explorar">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Volver
+    <div className="container mx-auto space-y-8 py-8">
+      <Button asChild variant="ghost">
+        <Link href="/explorar" className="flex items-center">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver
         </Link>
       </Button>
 
-      <div className="space-y-8">
-        {/* Business Header */}
-        <div className="flex flex-col gap-6 md:flex-row">
-          {business.logo && (
-            <div className="h-32 w-32 shrink-0 overflow-hidden rounded-lg bg-muted">
-              <ImageWithSkeleton
-                src={business.logo.url || "/placeholder.svg"}
-                alt={business.name}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          )}
-          <div className="flex-1">
-            <h1 className="font-bold text-3xl tracking-tight">
-              {business.name}
-            </h1>
-            {business.description && (
-              <p className="mt-2 text-muted-foreground leading-relaxed">
-                {business.description}
-              </p>
-            )}
+      <BusinessHeader
+        businessId={id}
+        name={business.name}
+        description={business.description}
+        logo={business.logo}
+        address={business.address}
+        phone={business.phone}
+        email={business.email}
+      />
 
-            <div className="mt-4 flex flex-wrap gap-4">
-              {business.address && (
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{business.address}</span>
-                </div>
-              )}
-              {business.phone && (
-                <a
-                  href={`tel:${business.phone}`}
-                  className="flex items-center gap-2 text-sm hover:underline"
-                >
-                  <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span>{business.phone}</span>
-                </a>
-              )}
-              {business.email && (
-                <a
-                  href={`mailto:${business.email}`}
-                  className="flex items-center gap-2 text-sm hover:underline"
-                >
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span>{business.email}</span>
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
+      <ContactCard whatsapp={business.whatsapp} website={business.website} />
 
-        {/* Contact Card */}
-        <Card>
-          <CardContent className="pt-6">
-            <h2 className="mb-4 font-semibold">Contactar</h2>
-            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
-              {business.whatsapp && (
-                <Button asChild variant="outline" className="bg-transparent">
-                  <a
-                    href={`https://wa.me/${business.whatsapp.replace(/\D/g, "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    WhatsApp
-                  </a>
-                </Button>
-              )}
-              {business.website && (
-                <Button asChild variant="outline" className="bg-transparent">
-                  <a
-                    href={business.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Globe className="mr-2 h-4 w-4" />
-                    Sitio Web
-                  </a>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      <BusinessProducts products={business.products} />
 
-        {/* Products */}
-        <div>
-          <h2 className="mb-6 font-bold text-2xl">Productos</h2>
-          {!business.products || !business.products.length ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">
-                  Este negocio aún no tiene productos publicados
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <ProductGrid products={business.products} />
-          )}
-        </div>
-      </div>
+      <SimilarBusinesses businesses={similarBusinesses} />
     </div>
   );
 }
