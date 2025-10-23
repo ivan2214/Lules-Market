@@ -1,5 +1,4 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { trackBusinessView } from "@/app/actions/analytics-actions";
 import type { Image } from "@/app/generated/prisma";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 
@@ -20,10 +19,7 @@ export async function BusinessHeader({
   address,
   phone,
   email,
-  businessId,
 }: Props) {
-  await trackBusinessView(businessId);
-
   return (
     <div className="flex flex-col gap-6 md:flex-row">
       {logo && (

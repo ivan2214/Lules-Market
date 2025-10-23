@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { trackBusinessView } from "@/app/actions/analytics-actions";
 import {
   getPublicBusiness,
   getPublicBusinesses,
@@ -16,6 +17,8 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // read route params
   const { id } = await params;
@@ -26,6 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!business) {
     notFound();
   }
+
+  await trackBusinessView(id);
 
   // Preparar imágenes para OpenGraph
   const ogImages = [];

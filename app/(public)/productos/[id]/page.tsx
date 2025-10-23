@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, Store } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,21 +7,14 @@ import {
   getPublicProduct,
   getPublicProducts,
 } from "@/app/actions/public-actions";
-import { DynamicIcon } from "@/components/dynamic-icon";
-import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { PublicFooter } from "@/components/public/footer";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import type { IconComponentName } from "@/types";
-import { mainImage } from "@/utils/main-image";
+import { BusinessCard } from "./components/business-card";
+import { ProductImages } from "./components/product-images";
+import { ProductInfo } from "./components/product-info";
 
-type ContactMethod = {
-  icon: IconComponentName;
-  label: string;
-  value?: string | null;
-  href?: string | null;
-};
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -125,178 +118,94 @@ export async function generateStaticParams() {
   return products.map((product) => ({ id: product.id }));
 }
 
+interface ContactMethod {
+  icon: IconComponentName;
+  label: string;
+  value?: string | null;
+  href?: string | null;
+}
+
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const product = await getPublicProduct(id);
-
   if (!product) {
     notFound();
   }
-
   await trackProductView(id);
 
   const contactMethods: ContactMethod[] = [
     {
-      icon: "MessageCircle" as IconComponentName,
       label: "WhatsApp",
       value: product.business?.whatsapp,
       href: product.business?.whatsapp
         ? `https://wa.me/${product.business?.whatsapp.replace(/\D/g, "")}`
         : null,
+      icon: "MessageCircle",
     },
     {
-      icon: "Phone" as IconComponentName,
       label: "Teléfono",
       value: product.business?.phone,
-      href: `tel:${product.business?.phone}`,
+      href: product.business?.phone
+        ? `tel:${product.business?.phone}`
+        : undefined,
+      icon: "Phone",
     },
     {
-      icon: "Mail" as IconComponentName,
       label: "Email",
       value: product.business?.email,
-      href: `mailto:${product.business?.email}`,
+      href: product.business?.email
+        ? `mailto:${product.business?.email}`
+        : undefined,
+      icon: "Mail",
     },
     {
-      icon: "Facebook" as IconComponentName,
       label: "Facebook",
       value: product.business?.facebook,
       href: product.business?.facebook,
+      icon: "Facebook",
     },
     {
-      icon: "Instagram" as IconComponentName,
       label: "Instagram",
       value: product.business?.instagram,
       href: product.business?.instagram,
+      icon: "Instagram",
     },
     {
-      icon: "Twitter" as IconComponentName,
       label: "Twitter",
       value: product.business?.twitter,
       href: product.business?.twitter,
+      icon: "Twitter",
     },
-  ].filter((method) => method.value);
-
+  ];
   return (
-    <div className="container py-8">
-      <Button asChild variant="ghost" className="mb-6">
-        <Link href="/explorar">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Volver
+    <div className="container space-y-8 py-8">
+      <Button asChild variant="ghost">
+        <Link href="/explorar" className="flex items-center">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Volver
         </Link>
       </Button>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        {/* Images */}
-        <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-            {product.images ? (
-              <ImageWithSkeleton
-                src={mainImage(product.images) || "/placeholder.svg"}
-                alt={product.name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-muted-foreground">
-                Sin imagen
-              </div>
-            )}
-            {product.featured && (
-              <Badge className="absolute top-4 right-4 bg-amber-500">
-                <Star className="mr-1 h-3 w-3" />
-                Destacado
-              </Badge>
-            )}
-          </div>
-          {product.images && product.images?.length > 1 && (
-            <div className="grid grid-cols-4 gap-4">
-              {product.images.slice(1, 5).map((image, i) => (
-                <div
-                  key={image.key}
-                  className="aspect-square overflow-hidden rounded-lg bg-muted"
-                >
-                  <ImageWithSkeleton
-                    src={image.url || "/placeholder.svg"}
-                    alt={`${product.name} ${i + 2}`}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Product Info */}
+        <ProductImages
+          images={product.images}
+          name={product.name}
+          featured={product.featured}
+        />
         <div className="space-y-6">
-          <div>
-            {product.category && (
-              <Badge className="mb-2">{product.category}</Badge>
-            )}
-            <h1 className="font-bold text-3xl tracking-tight">
-              {product.name}
-            </h1>
-            <p className="mt-4 font-bold text-3xl">
-              {product.price
-                ? `$${product.price.toLocaleString()}`
-                : "Consultar precio"}
-            </p>
-          </div>
-
-          {product.description && (
-            <div>
-              <h2 className="mb-2 font-semibold">Descripción</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {product.description}
-              </p>
-            </div>
-          )}
-
-          {/* Business Info */}
-          <Card>
-            <CardContent className="pt-6">
-              <div className="mb-4 flex items-center gap-3">
-                <Store className="h-5 w-5 text-muted-foreground" />
-                <div>
-                  <p className="font-semibold">{product.business?.name}</p>
-                  <Link
-                    href={`/comercios/${product.business?.id}`}
-                    className="text-muted-foreground text-sm hover:underline"
-                  >
-                    Ver más productos
-                  </Link>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-semibold text-sm">
-                  Contactar al vendedor:
-                </h3>
-                <div className="grid gap-2">
-                  {contactMethods.map((method) => (
-                    <Button
-                      key={method.label}
-                      asChild
-                      variant="outline"
-                      className="justify-start bg-transparent"
-                    >
-                      <a
-                        href={method.href || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <DynamicIcon
-                          name={method.icon}
-                          className="mr-2 h-4 w-4"
-                        />
-                        {method.label}
-                      </a>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ProductInfo
+            name={product.name}
+            price={product.price}
+            category={product.category}
+            description={product.description}
+          />
+          <BusinessCard
+            name={product.business?.name}
+            id={product.business?.id}
+            contactMethods={contactMethods.filter((method) => method.value)}
+          />
         </div>
       </div>
+
       <PublicFooter />
     </div>
   );
