@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { BusinessDAL } from "@/app/data/business/business.dal";
 import type {
   BusinessCreateInput,
@@ -13,13 +14,14 @@ export async function createBusinessAction(data: BusinessCreateInput) {
     const dal = await BusinessDAL.create();
 
     const result: ActionResult = await dal.createBusiness(data);
-    if (result.errorMessage) {
-      return { errorMessage: result.errorMessage };
+
+    if (result.successMessage) {
+      // Revalidate cache tags when business is created
+      revalidateTag(CACHE_TAGS.BUSINESSES, 'max');
+      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, 'max');
     }
 
-    return {
-      successMessage: result.successMessage,
-    };
+    return result;
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return { errorMessage: message };
@@ -35,6 +37,13 @@ export async function updateBusinessAction(data: BusinessUpdateInput) {
 
     if (result.errorMessage) {
       return { errorMessage: result.errorMessage };
+    }
+
+    if (result.successMessage && result.data) {
+      // Revalidate cache tags when business is updated
+      revalidateTag(CACHE_TAGS.BUSINESSES, 'max');
+      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, 'max');
+      revalidateTag(CACHE_TAGS.businessById(result.data.id), 'max');
     }
 
     return { successMessage: result.successMessage };

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 
 import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
@@ -33,7 +34,7 @@ export class ProductDAL {
     return new ProductDAL();
   }
 
-  async listAllProducts(
+  listAllProducts = cache(async (
     {
       limit, page, search,
       sort,
@@ -47,7 +48,7 @@ export class ProductDAL {
       limit: number;
       sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
     }
-  ): Promise<{ products: ProductDTO[]; total: number, pages: number; currentPage: number }> {
+  ): Promise<{ products: ProductDTO[]; total: number, pages: number; currentPage: number }> => {
 
 
     const where: Prisma.ProductWhereInput = {
@@ -99,9 +100,9 @@ export class ProductDAL {
       pages: Math.ceil(total / limit),
       currentPage: page,
     };
-  }
+  });
 
-  async listFeaturedProducts(): Promise<ProductDTO[]> {
+  listFeaturedProducts = cache(async (): Promise<ProductDTO[]> => {
     return await prisma.product.findMany({
       where: {
         active: true,
@@ -120,9 +121,9 @@ export class ProductDAL {
         createdAt: "desc",
       },
     });
-  }
+  });
 
-  async listProductsGroupedByCategory(): Promise<Record<string, ProductDTO[]>> {
+  listProductsGroupedByCategory = cache(async (): Promise<Record<string, ProductDTO[]>> => {
     const allProducts = await prisma.product.findMany({
       where: {
         active: true,
@@ -156,9 +157,9 @@ export class ProductDAL {
     );
 
     return productsByCategory;
-  }
+  });
 
-  async getProductById(productId: string): Promise<ProductDTO | null> {
+  getProductById = cache(async (productId: string): Promise<ProductDTO | null> => {
     const product = await prisma.product.findFirst({
       where: {
         id: productId,
@@ -174,9 +175,9 @@ export class ProductDAL {
     });
 
     return product;
-  }
+  });
 
-  async getProductsByBusinessId() {
+  getProductsByBusinessId = cache(async () => {
     const { business } = await requireBusiness();
 
     const products = await prisma.product.findMany({
@@ -188,7 +189,7 @@ export class ProductDAL {
     });
 
     return products;
-  }
+  });
 
   async createProduct(data: ProductCreateInput): Promise<ActionResult> {
     try {

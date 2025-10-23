@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import prisma from "@/lib/prisma";
@@ -27,7 +28,7 @@ export class BusinessDAL {
     return new BusinessDAL();
   }
 
-  async listAllBusinesses({
+  listAllBusinesses = cache(async ({
     search,
     category,
     limit, page
@@ -36,7 +37,7 @@ export class BusinessDAL {
     category?: string;
     page: number;
     limit: number;
-  }) {
+  }) => {
 
     const where: Prisma.BusinessWhereInput = {
       planStatus: "ACTIVE" as const,
@@ -82,9 +83,9 @@ export class BusinessDAL {
     ]);
 
     return { businesses, total };
-  }
+  });
 
-  async getBusinessById(businessId: string): Promise<BusinessDTO | null> {
+  getBusinessById = cache(async (businessId: string): Promise<BusinessDTO | null> => {
     const business = await prisma.business.findFirst({
       where: {
         id: businessId,
@@ -103,9 +104,9 @@ export class BusinessDAL {
       },
     });
     return business;
-  }
+  });
 
-  async getMyBusiness(): Promise<BusinessDTO> {
+  getMyBusiness = cache(async (): Promise<BusinessDTO> => {
     const business = await prisma.business.findUnique({
       where: { userId: this.userId },
       include: {
@@ -130,7 +131,7 @@ export class BusinessDAL {
       logo: business?.logo,
       coverImage: business?.coverImage,
     };
-  }
+  });
 
   async createBusiness(data: BusinessCreateInput): Promise<ActionResult> {
     const validated = BusinessCreateInputSchema.safeParse(data);
@@ -258,13 +259,13 @@ export class BusinessDAL {
     }
   }
 
-  async getBusinessProducts({
+  getBusinessProducts = cache(async ({
     limit,
     offset,
   }: {
     limit: number;
     offset: number;
-  }): Promise<BusinessProductDTO[]> {
+  }): Promise<BusinessProductDTO[]> => {
     const products = await prisma.product.findMany({
       where: { business: { userId: this.userId } },
       take: limit,
@@ -276,5 +277,5 @@ export class BusinessDAL {
     });
 
     return products;
-  }
+  });
 }
