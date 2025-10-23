@@ -2,7 +2,8 @@ import { z } from "zod";
 import type {
   Business as BusinessPrisma,
   Image,
-  Prisma, SubscriptionPlan
+  Prisma,
+  SubscriptionPlan,
 } from "@/app/generated/prisma";
 import type { ProductDTO } from "../product/product.dto";
 

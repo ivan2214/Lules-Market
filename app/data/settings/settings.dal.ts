@@ -5,7 +5,7 @@ import { requireUser } from "../user/require-user";
 import type { AccountUpdateInput } from "./settings.dto";
 
 export class SettingsDAL {
-  private constructor() { }
+  private constructor() {}
 
   static async create() {
     const user = await requireUser();

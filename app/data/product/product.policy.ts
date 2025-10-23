@@ -18,7 +18,7 @@ export function canCreateProduct(user: PolicyUser | null) {
 
 export function canEditProduct(
   user: PolicyUser | null,
-  product: { id: string; businesId?: string }
+  product: { id: string; businesId?: string },
 ) {
   if (!user) return false;
   if (product.businesId && product.businesId === user.id) return true;
@@ -27,14 +27,14 @@ export function canEditProduct(
 
 export function canDeleteProduct(
   user: PolicyUser | null,
-  product: { id: string; businesId?: string }
+  product: { id: string; businesId?: string },
 ) {
   return canEditProduct(user, product);
 }
 
 export function canAddProduct(
   currentCount: number,
-  plan: SubscriptionPlan
+  plan: SubscriptionPlan,
 ): boolean {
   const limits = getSubscriptionLimits(plan);
   if (limits.maxProducts === -1) return true;

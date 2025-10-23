@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
-import { getPublicBusinesses, getPublicProducts } from "./actions/public-actions";
+import {
+  getPublicBusinesses,
+  getPublicProducts,
+} from "./actions/public-actions";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://lules-market.vercel.app";

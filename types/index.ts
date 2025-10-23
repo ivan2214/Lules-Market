@@ -2,13 +2,9 @@
 
 import type { icons } from "lucide-react";
 import type {
-  Payment as PaymentPrisma, SubscriptionPlan
+  Payment as PaymentPrisma,
+  SubscriptionPlan,
 } from "@/app/generated/prisma";
-
-
-
-
-
 
 export interface PaymentDTO extends PaymentPrisma {
   plan: SubscriptionPlan;

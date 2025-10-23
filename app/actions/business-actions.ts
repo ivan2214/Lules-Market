@@ -1,13 +1,13 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache-tags";
 import { BusinessDAL } from "@/app/data/business/business.dal";
 import type {
   BusinessCreateInput,
   BusinessUpdateInput,
 } from "@/app/data/business/business.dto";
 import type { ActionResult } from "@/hooks/use-action";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 
 export async function createBusinessAction(data: BusinessCreateInput) {
   try {
@@ -17,8 +17,8 @@ export async function createBusinessAction(data: BusinessCreateInput) {
 
     if (result.successMessage) {
       // Revalidate cache tags when business is created
-      revalidateTag(CACHE_TAGS.BUSINESSES, 'max');
-      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, 'max');
+      revalidateTag(CACHE_TAGS.BUSINESSES, "max");
+      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, "max");
     }
 
     return result;
@@ -41,9 +41,9 @@ export async function updateBusinessAction(data: BusinessUpdateInput) {
 
     if (result.successMessage && result.data) {
       // Revalidate cache tags when business is updated
-      revalidateTag(CACHE_TAGS.BUSINESSES, 'max');
-      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, 'max');
-      revalidateTag(CACHE_TAGS.businessById(result.data.id), 'max');
+      revalidateTag(CACHE_TAGS.BUSINESSES, "max");
+      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, "max");
+      revalidateTag(CACHE_TAGS.businessById(result.data.id), "max");
     }
 
     return { successMessage: result.successMessage };

@@ -1,11 +1,14 @@
 import "server-only";
 
-import { getAnalytics, getProductAnalytics } from "@/app/actions/analytics-actions";
+import {
+  getAnalytics,
+  getProductAnalytics,
+} from "@/app/actions/analytics-actions";
 import { requireBusiness } from "../business/require-busines";
 import type { AnalyticsDTO, AnalyticsPeriod } from "./analytics.dto";
 
 export class AnalyticsDAL {
-  private constructor() { }
+  private constructor() {}
 
   static async create() {
     await requireBusiness();
@@ -17,7 +20,10 @@ export class AnalyticsDAL {
     return await getAnalytics(period);
   }
 
-  async getProductAnalytics(productId: string, period: AnalyticsPeriod = "30d") {
+  async getProductAnalytics(
+    productId: string,
+    period: AnalyticsPeriod = "30d",
+  ) {
     return await getProductAnalytics(productId, period);
   }
 }

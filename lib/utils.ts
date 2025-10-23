@@ -13,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function createSearchUrl(
   currentParams: Record<string, string | undefined>,
-  updates: Record<string, string | undefined>
+  updates: Record<string, string | undefined>,
 ): string {
   // Crear una copia de los parámetros actuales
   const newParams = { ...currentParams };

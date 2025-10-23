@@ -16,7 +16,7 @@ import { canEditBusiness } from "./business.policy";
 import { requireBusiness } from "./require-busines";
 
 export class BusinessDAL {
-  private constructor(private readonly userId?: string) { }
+  private constructor(private readonly userId?: string) {}
 
   static async create() {
     const user = await requireUser();
@@ -28,83 +28,87 @@ export class BusinessDAL {
     return new BusinessDAL();
   }
 
-  listAllBusinesses = cache(async ({
-    search,
-    category,
-    limit, page
-  }: {
-    search?: string;
-    category?: string;
-    page: number;
-    limit: number;
-  }) => {
-
-    const where: Prisma.BusinessWhereInput = {
-      planStatus: "ACTIVE" as const,
-      products: {
-        some: {
-          active: true,
+  listAllBusinesses = cache(
+    async ({
+      search,
+      category,
+      limit,
+      page,
+    }: {
+      search?: string;
+      category?: string;
+      page: number;
+      limit: number;
+    }) => {
+      const where: Prisma.BusinessWhereInput = {
+        planStatus: "ACTIVE" as const,
+        products: {
+          some: {
+            active: true,
+          },
         },
-      },
-      ...(search && {
-        OR: [
-          { name: { contains: search, mode: "insensitive" as const } },
-          { description: { contains: search, mode: "insensitive" as const } },
-        ],
-      }),
-      ...(category && { category }),
-    };
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }),
+        ...(category && { category }),
+      };
 
-    const [businesses, total] = await prisma.$transaction([
-      prisma.business.findMany({
-        where,
+      const [businesses, total] = await prisma.$transaction([
+        prisma.business.findMany({
+          where,
+          include: {
+            products: {
+              where: { active: true },
+              take: 4,
+              orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+            },
+            logo: true,
+            _count: {
+              select: { products: true },
+            },
+          },
+          orderBy: [
+            // Premium businesses first
+            {
+              plan: "asc" as const,
+            },
+            { createdAt: "desc" },
+          ],
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.business.count({ where }),
+      ]);
+
+      return { businesses, total };
+    },
+  );
+
+  getBusinessById = cache(
+    async (businessId: string): Promise<BusinessDTO | null> => {
+      const business = await prisma.business.findFirst({
+        where: {
+          id: businessId,
+          planStatus: "ACTIVE",
+        },
         include: {
+          logo: true,
+          coverImage: true,
           products: {
+            include: {
+              images: true,
+            },
             where: { active: true },
-            take: 4,
             orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
           },
-          logo: true,
-          _count: {
-            select: { products: true },
-          },
         },
-        orderBy: [
-          // Premium businesses first
-          {
-            plan: "asc" as const,
-          },
-          { createdAt: "desc" },
-        ],
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.business.count({ where }),
-    ]);
-
-    return { businesses, total };
-  });
-
-  getBusinessById = cache(async (businessId: string): Promise<BusinessDTO | null> => {
-    const business = await prisma.business.findFirst({
-      where: {
-        id: businessId,
-        planStatus: "ACTIVE",
-      },
-      include: {
-        logo: true,
-        coverImage: true,
-        products: {
-          include: {
-            images: true,
-          },
-          where: { active: true },
-          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-        },
-      },
-    });
-    return business;
-  });
+      });
+      return business;
+    },
+  );
 
   getMyBusiness = cache(async (): Promise<BusinessDTO> => {
     const business = await prisma.business.findUnique({
@@ -259,23 +263,25 @@ export class BusinessDAL {
     }
   }
 
-  getBusinessProducts = cache(async ({
-    limit,
-    offset,
-  }: {
-    limit: number;
-    offset: number;
-  }): Promise<BusinessProductDTO[]> => {
-    const products = await prisma.product.findMany({
-      where: { business: { userId: this.userId } },
-      take: limit,
-      skip: offset,
-      orderBy: { createdAt: "desc" },
-      include: {
-        images: true,
-      },
-    });
+  getBusinessProducts = cache(
+    async ({
+      limit,
+      offset,
+    }: {
+      limit: number;
+      offset: number;
+    }): Promise<BusinessProductDTO[]> => {
+      const products = await prisma.product.findMany({
+        where: { business: { userId: this.userId } },
+        take: limit,
+        skip: offset,
+        orderBy: { createdAt: "desc" },
+        include: {
+          images: true,
+        },
+      });
 
-    return products;
-  });
+      return products;
+    },
+  );
 }

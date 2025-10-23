@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 
-
 interface UploadResult {
   key?: string;
   presignedUrl?: string;
@@ -21,7 +20,7 @@ export function useMediaUploader(projectKey = "default_project") {
     try {
       console.log(
         "MEDIA_SERVICE_URL IN uploadToMediaService ",
-        MEDIA_SERVICE_URL
+        MEDIA_SERVICE_URL,
       );
       console.log(file);
 
@@ -60,11 +59,11 @@ export function useMediaUploader(projectKey = "default_project") {
     try {
       const res = await fetch(
         `${MEDIA_SERVICE_URL}/files/${encodeURIComponent(
-          key
+          key,
         )}?projectKey=${projectKey}`, // <-- enviamos projectKey
         {
           method: "DELETE",
-        }
+        },
       );
       const data = await res.json();
       if (!data.success) {

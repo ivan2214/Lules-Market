@@ -3,7 +3,7 @@ import { deleteS3Object, generatePresignedUploadUrl } from "@/app/actions/s3";
 
 interface UseS3UploaderResult {
   uploadToS3: (
-    file: File
+    file: File,
   ) => Promise<{ key?: string; presignedUrl?: string; error?: string }>;
   deleteFromS3: (key: string) => Promise<{ success: boolean; error?: string }>;
   uploading: boolean;
@@ -15,7 +15,7 @@ export function useS3Uploader(folder: string): UseS3UploaderResult {
   const [error, setError] = useState<string | null>(null);
 
   const uploadToS3 = async (
-    file: File
+    file: File,
   ): Promise<{ key?: string; presignedUrl?: string; error?: string }> => {
     setUploading(true);
     setError(null);

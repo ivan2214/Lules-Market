@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const AnalyticsPeriodSchema = z.enum(["7d", "30d", "90d"]).default("30d");
+export const AnalyticsPeriodSchema = z
+  .enum(["7d", "30d", "90d"])
+  .default("30d");
 export type AnalyticsPeriod = z.infer<typeof AnalyticsPeriodSchema>;
 
 export type DailyView = {

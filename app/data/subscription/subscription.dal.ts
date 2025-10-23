@@ -14,7 +14,7 @@ import { requireBusiness } from "../business/require-busines";
 import type { PaymentDTO, PaymentPreferenceResult } from "./subscription.dto";
 
 export class SubscriptionDAL {
-  private constructor() { }
+  private constructor() {}
 
   static async create() {
     await requireBusiness();

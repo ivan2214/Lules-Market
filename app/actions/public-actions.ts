@@ -1,8 +1,8 @@
 "use server";
 
 import { unstable_cache } from "next/cache";
+import { CACHE_REVALIDATE, CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
-import { CACHE_TAGS, CACHE_REVALIDATE } from "@/lib/cache-tags";
 import { BusinessDAL } from "../data/business/business.dal";
 import { ProductDAL } from "../data/product/product.dal";
 import type { ProductDTO } from "../data/product/product.dto";
@@ -14,7 +14,7 @@ export async function getPublicBusinesses(params?: {
   limit?: number;
 }) {
   const { search, category, page = 1, limit = 12 } = params || {};
-  
+
   return unstable_cache(
     async () => {
       const businessDAL = await BusinessDAL.public();
@@ -36,7 +36,7 @@ export async function getPublicBusinesses(params?: {
     {
       tags: [CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES],
       revalidate: CACHE_REVALIDATE.SHORT,
-    }
+    },
   )();
 }
 
@@ -61,7 +61,7 @@ export async function getPublicProducts(params?: {
     limit = 12,
     sort,
   } = params || {};
-  
+
   return unstable_cache(
     async () => {
       const productDAL = await ProductDAL.public();
@@ -82,11 +82,17 @@ export async function getPublicProducts(params?: {
         currentPage,
       };
     },
-    [`public-products-${search}-${category}-${businessId}-${page}-${limit}-${sort}`],
+    [
+      `public-products-${search}-${category}-${businessId}-${page}-${limit}-${sort}`,
+    ],
     {
-      tags: [CACHE_TAGS.PUBLIC_PRODUCTS, CACHE_TAGS.PRODUCTS, businessId ? CACHE_TAGS.businessById(businessId) : ''].filter(Boolean),
+      tags: [
+        CACHE_TAGS.PUBLIC_PRODUCTS,
+        CACHE_TAGS.PRODUCTS,
+        businessId ? CACHE_TAGS.businessById(businessId) : "",
+      ].filter(Boolean),
       revalidate: CACHE_REVALIDATE.SHORT,
-    }
+    },
   )();
 }
 
@@ -99,9 +105,13 @@ export async function getPublicBusiness(businessId: string) {
     },
     [`public-business-${businessId}`],
     {
-      tags: [CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES, CACHE_TAGS.businessById(businessId)],
+      tags: [
+        CACHE_TAGS.PUBLIC_BUSINESSES,
+        CACHE_TAGS.BUSINESSES,
+        CACHE_TAGS.businessById(businessId),
+      ],
       revalidate: CACHE_REVALIDATE.MEDIUM,
-    }
+    },
   )();
 }
 
@@ -114,9 +124,13 @@ export async function getPublicProduct(productId: string) {
     },
     [`public-product-${productId}`],
     {
-      tags: [CACHE_TAGS.PUBLIC_PRODUCTS, CACHE_TAGS.PRODUCTS, CACHE_TAGS.productById(productId)],
+      tags: [
+        CACHE_TAGS.PUBLIC_PRODUCTS,
+        CACHE_TAGS.PRODUCTS,
+        CACHE_TAGS.productById(productId),
+      ],
       revalidate: CACHE_REVALIDATE.MEDIUM,
-    }
+    },
   )();
 }
 
@@ -139,10 +153,10 @@ export async function getCategories() {
 
       return categories.map((c) => c.category).filter(Boolean) as string[];
     },
-    ['categories'],
+    ["categories"],
     {
       tags: [CACHE_TAGS.CATEGORIES, CACHE_TAGS.PRODUCTS],
       revalidate: CACHE_REVALIDATE.LONG,
-    }
+    },
   )();
 }

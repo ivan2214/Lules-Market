@@ -22,7 +22,7 @@ import {
 
 export class ProductDAL {
   // biome-ignore lint/correctness/noUnusedPrivateClassMembers: <>
-  private constructor(private readonly userId?: string) { }
+  private constructor(private readonly userId?: string) {}
 
   static async create() {
     const user = await requireUser();
@@ -30,13 +30,14 @@ export class ProductDAL {
   }
 
   static async public() {
-
     return new ProductDAL();
   }
 
-  listAllProducts = cache(async (
-    {
-      limit, page, search,
+  listAllProducts = cache(
+    async ({
+      limit,
+      page,
+      search,
       sort,
       businessId,
       category,
@@ -47,60 +48,63 @@ export class ProductDAL {
       page: number;
       limit: number;
       sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-    }
-  ): Promise<{ products: ProductDTO[]; total: number, pages: number; currentPage: number }> => {
-
-
-    const where: Prisma.ProductWhereInput = {
-      active: true,
-      business: {
-        planStatus: "ACTIVE" as const,
-      },
-      ...(businessId && { businessId }),
-      ...(category && { category }),
-      ...(search && {
-        OR: [
-          { name: { contains: search, mode: "insensitive" as const } },
-          { description: { contains: search, mode: "insensitive" as const } },
-        ],
-      }),
-    };
-
-    const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
-      { featured: "desc" },
-      { business: { plan: "asc" as const } },
-      { createdAt: "desc" },
-    ];
-
-    if (sort) {
-      const [field, direction] = sort.split("_") as [
-        Prisma.SortOrder,
-        Prisma.SortOrderInput,
-      ];
-      orderBy.unshift({ [field]: direction });
-    }
-
-    const [products, total] = await prisma.$transaction([
-      prisma.product.findMany({
-        where,
-        include: {
-          business: true,
-          images: true,
+    }): Promise<{
+      products: ProductDTO[];
+      total: number;
+      pages: number;
+      currentPage: number;
+    }> => {
+      const where: Prisma.ProductWhereInput = {
+        active: true,
+        business: {
+          planStatus: "ACTIVE" as const,
         },
-        orderBy,
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.product.count({ where }),
-    ]);
+        ...(businessId && { businessId }),
+        ...(category && { category }),
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }),
+      };
 
-    return {
-      products,
-      total,
-      pages: Math.ceil(total / limit),
-      currentPage: page,
-    };
-  });
+      const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
+        { featured: "desc" },
+        { business: { plan: "asc" as const } },
+        { createdAt: "desc" },
+      ];
+
+      if (sort) {
+        const [field, direction] = sort.split("_") as [
+          Prisma.SortOrder,
+          Prisma.SortOrderInput,
+        ];
+        orderBy.unshift({ [field]: direction });
+      }
+
+      const [products, total] = await prisma.$transaction([
+        prisma.product.findMany({
+          where,
+          include: {
+            business: true,
+            images: true,
+          },
+          orderBy,
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.product.count({ where }),
+      ]);
+
+      return {
+        products,
+        total,
+        pages: Math.ceil(total / limit),
+        currentPage: page,
+      };
+    },
+  );
 
   listFeaturedProducts = cache(async (): Promise<ProductDTO[]> => {
     return await prisma.product.findMany({
@@ -123,59 +127,63 @@ export class ProductDAL {
     });
   });
 
-  listProductsGroupedByCategory = cache(async (): Promise<Record<string, ProductDTO[]>> => {
-    const allProducts = await prisma.product.findMany({
-      where: {
-        active: true,
-      },
-      include: {
-        business: {
-          include: {
-            logo: true,
-            coverImage: true,
+  listProductsGroupedByCategory = cache(
+    async (): Promise<Record<string, ProductDTO[]>> => {
+      const allProducts = await prisma.product.findMany({
+        where: {
+          active: true,
+        },
+        include: {
+          business: {
+            include: {
+              logo: true,
+              coverImage: true,
+            },
+          },
+          images: true,
+          productView: true,
+        },
+      });
+
+      const allCategories = allProducts.map(
+        (product) => product.category?.toLowerCase() || "",
+      );
+      const uniqueCategories = [...new Set(allCategories)];
+
+      const productsByCategory = uniqueCategories.splice(0, 10).reduce(
+        (acc, category) => {
+          acc[category] = allProducts.filter(
+            (product) =>
+              product.category?.toLowerCase() === category.toLowerCase(),
+          );
+          return acc;
+        },
+        {} as Record<string, ProductDTO[]>,
+      );
+
+      return productsByCategory;
+    },
+  );
+
+  getProductById = cache(
+    async (productId: string): Promise<ProductDTO | null> => {
+      const product = await prisma.product.findFirst({
+        where: {
+          id: productId,
+          active: true,
+          business: {
+            planStatus: "ACTIVE",
           },
         },
-        images: true,
-        productView: true,
-      },
-    });
-
-    const allCategories = allProducts.map(
-      (product) => product.category?.toLowerCase() || "",
-    );
-    const uniqueCategories = [...new Set(allCategories)];
-
-    const productsByCategory = uniqueCategories.splice(0, 10).reduce(
-      (acc, category) => {
-        acc[category] = allProducts.filter(
-          (product) =>
-            product.category?.toLowerCase() === category.toLowerCase(),
-        );
-        return acc;
-      },
-      {} as Record<string, ProductDTO[]>,
-    );
-
-    return productsByCategory;
-  });
-
-  getProductById = cache(async (productId: string): Promise<ProductDTO | null> => {
-    const product = await prisma.product.findFirst({
-      where: {
-        id: productId,
-        active: true,
-        business: {
-          planStatus: "ACTIVE",
+        include: {
+          business: true,
+          images: true,
         },
-      },
-      include: {
-        business: true,
-        images: true,
-      },
-    });
+      });
 
-    return product;
-  });
+      return product;
+    },
+  );
 
   getProductsByBusinessId = cache(async () => {
     const { business } = await requireBusiness();
