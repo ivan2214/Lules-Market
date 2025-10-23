@@ -24,8 +24,10 @@ const ExplorarLayout: React.FC<ExplorarLayoutFormProps> = async ({
     <SidebarProvider>
       <FiltersSidebar categories={categories} businesses={businesses} />
       <SidebarInset>
-        <SidebarTrigger className="" />
-        <div className="flex flex-1 flex-col gap-4 p-5">{children}</div>
+        <SidebarTrigger className="m-5 lg:m-0" />
+        <div className="mx-auto flex flex-1 flex-col gap-4 py-5">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
