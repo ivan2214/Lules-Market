@@ -1,6 +1,7 @@
 import { Eye, Package, Store, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { getAnalytics } from "@/app/actions/analytics-actions";
+import { AnalyticsDAL } from "@/app/data/analytics/analytics.dal";
+import type { AnalyticsPeriod } from "@/app/data/analytics/analytics.dto";
 import { BusinessDAL } from "@/app/data/business/business.dal";
 import { AnalyticsChart } from "@/components/dashboard/analytics-chart";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
@@ -54,7 +55,8 @@ export default async function AnalyticsPage({
   }
 
   const period = (await searchParams).period || "30d";
-  const analytics = await getAnalytics(period);
+  const analyticsDAL = await AnalyticsDAL.create();
+  const analytics = await analyticsDAL.getAnalytics(period as AnalyticsPeriod);
 
   return (
     <div className="space-y-6">

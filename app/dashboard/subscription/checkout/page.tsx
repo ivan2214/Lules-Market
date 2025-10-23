@@ -82,8 +82,8 @@ export default async function CheckoutPage({
             <div>
               <h4 className="mb-3 font-semibold">Incluye:</h4>
               <ul className="space-y-2">
-                {features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2">
+                {features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2">
                     <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                     <span>{feature}</span>
                   </li>

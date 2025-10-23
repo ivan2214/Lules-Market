@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { BusinessDAL } from "@/app/data/business/business.dal";
+import { SubscriptionDAL } from "@/app/data/subscription/subscription.dal";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,8 @@ export default async function SubscriptionPage() {
     redirect("/dashboard/setup");
   }
 
-  const payments = await getSubscriptionHistory();
+  const subscriptionDAL = await SubscriptionDAL.create();
+  const payments = await subscriptionDAL.getHistory();
 
   const plans: {
     name: SubscriptionPlan;

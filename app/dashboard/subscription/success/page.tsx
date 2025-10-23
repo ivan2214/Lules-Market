@@ -1,10 +1,8 @@
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  getPayment,
-  processPaymentSuccess,
-} from "@/app/actions/payment-actions";
+import { processPaymentSuccess } from "@/app/actions/payment-actions";
+import { SubscriptionDAL } from "@/app/data/subscription/subscription.dal";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,7 +35,8 @@ export default async function PaymentSuccessPage({
   // Process payment success
   await processPaymentSuccess({ paymentIdMP, paymentIdDB });
 
-  const payment = await getPayment({ paymentIdDB });
+  const subscriptionDAL = await SubscriptionDAL.create();
+  const payment = await subscriptionDAL.getPayment(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");
