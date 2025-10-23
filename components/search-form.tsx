@@ -100,6 +100,15 @@ export const SearchForm = () => {
                 <Link
                   href={`/productos/${product.id}`}
                   className="font-semibold text-sm hover:underline"
+                  title={product.name}
+                  aria-label={product.name}
+                  onClick={() => {
+                    setSearch("");
+                    setResults({
+                      products: [],
+                      total: 0,
+                    });
+                  }}
                 >
                   {product.name}
                 </Link>

@@ -7,7 +7,6 @@ import {
   getPublicProduct,
   getPublicProducts,
 } from "@/app/actions/public-actions";
-import { PublicFooter } from "@/components/public/footer";
 import { Button } from "@/components/ui/button";
 import type { IconComponentName } from "@/types";
 import { BusinessCard } from "./components/business-card";
@@ -178,7 +177,7 @@ export default async function ProductPage({ params }: Props) {
     },
   ];
   return (
-    <div className="container space-y-8 py-8">
+    <div className="container space-y-8 p-8">
       <Button asChild variant="ghost">
         <Link href="/explorar" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver
@@ -205,8 +204,6 @@ export default async function ProductPage({ params }: Props) {
           />
         </div>
       </div>
-
-      <PublicFooter />
     </div>
   );
 }
