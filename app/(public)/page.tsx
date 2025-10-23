@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: "Lules Market",
     images: [
       {
-        url: "https://lules-market.vercel.app/og-image.jpg",
+        url: "https://lules-market.vercel.app/logo.webp",
         width: 1200,
         height: 630,
         alt: "Lules Market - Plataforma para comercios locales",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
     description:
       "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio.",
-    images: ["https://lules-market.vercel.app/og-image.jpg"],
+    images: ["https://lules-market.vercel.app/logo.webp"],
   },
   robots: {
     index: true,
