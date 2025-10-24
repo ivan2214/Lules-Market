@@ -1,21 +1,15 @@
-import { ArrowDownAZ, ArrowUpAZ, Package } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
   getPublicBusinesses,
   getPublicProducts,
 } from "@/app/actions/public-actions";
+import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { ProductGrid } from "@/components/public/product-grid";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { createSearchUrl } from "@/lib/utils";
+import { ActiveFilters } from "./components/active-filters";
+import { Order } from "./components/order";
 
 export const metadata: Metadata = {
   title: "Explorar Productos - Lules Market",
@@ -63,6 +57,7 @@ export default async function ExplorePage({
     sort: params.sort,
   });
 
+  const hasParams = Object.keys(params).length > 0;
   const { businesses } = await getPublicBusinesses();
 
   return (
@@ -79,62 +74,7 @@ export default async function ExplorePage({
         </div>
 
         {/* Ordenamiento */}
-        <div className="mt-4 sm:mt-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                {params.sort === "price_asc" ? (
-                  "Precio: Menor a Mayor"
-                ) : params.sort === "price_desc" ? (
-                  "Precio: Mayor a Menor"
-                ) : params.sort === "name_asc" ? (
-                  <>
-                    <ArrowDownAZ className="h-4 w-4" /> Nombre: A-Z
-                  </>
-                ) : params.sort === "name_desc" ? (
-                  <>
-                    <ArrowUpAZ className="h-4 w-4" /> Nombre: Z-A
-                  </>
-                ) : (
-                  "Ordenar por"
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href={createSearchUrl(params, { sort: "name_asc" })}>
-                  <ArrowDownAZ className="mr-2 h-4 w-4" /> Nombre: A-Z
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={createSearchUrl(params, { sort: "name_desc" })}>
-                  <ArrowUpAZ className="mr-2 h-4 w-4" /> Nombre: Z-A
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={createSearchUrl(params, { sort: "price_asc" })}>
-                  Precio: Menor a Mayor
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={createSearchUrl(params, { sort: "price_desc" })}>
-                  Precio: Mayor a Menor
-                </Link>
-              </DropdownMenuItem>
-              {params.sort && (
-                <DropdownMenuItem asChild>
-                  <Link href={createSearchUrl(params, { sort: undefined })}>
-                    Quitar ordenamiento
-                  </Link>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <Order params={params} />
       </div>
 
       {/* Active Filters */}
@@ -142,90 +82,23 @@ export default async function ExplorePage({
         params.category ||
         params.businessId ||
         params.sort) && (
-        <div className="mb-6 flex flex-wrap items-center gap-2">
-          <span className="text-muted-foreground text-sm">
-            Filtros activos:
-          </span>
-          {params.search && (
-            <Badge variant="secondary">
-              Búsqueda: {params.search}
-              <Link
-                href={createSearchUrl(params, { search: undefined })}
-                className="ml-2"
-              >
-                ×
-              </Link>
-            </Badge>
-          )}
-          {params.category && (
-            <Badge variant="secondary">
-              Categoría: {params.category}
-              <Link
-                href={createSearchUrl(params, { category: undefined })}
-                className="ml-2"
-              >
-                ×
-              </Link>
-            </Badge>
-          )}
-          {params.businessId && (
-            <Badge variant="secondary">
-              Negocio:{" "}
-              {businesses.find((b) => b.id === params.businessId)?.name ||
-                params.businessId}
-              <Link
-                href={createSearchUrl(params, { businessId: undefined })}
-                className="ml-2"
-              >
-                ×
-              </Link>
-            </Badge>
-          )}
-          {params.sort && (
-            <Badge variant="secondary">
-              Ordenamiento:{" "}
-              {params.sort === "price_asc"
-                ? "Precio: Menor a Mayor"
-                : params.sort === "price_desc"
-                  ? "Precio: Mayor a Menor"
-                  : params.sort === "name_asc"
-                    ? "Nombre: A-Z"
-                    : "Nombre: Z-A"}
-              <Link
-                href={createSearchUrl(params, { sort: undefined })}
-                className="ml-2"
-              >
-                ×
-              </Link>
-            </Badge>
-          )}
-          {(params.search ||
-            params.category ||
-            params.businessId ||
-            params.sort) && (
-            <Button variant="ghost" size="sm" asChild className="ml-auto">
-              <Link href="/explorar">Limpiar todos</Link>
-            </Button>
-          )}
-        </div>
+        <ActiveFilters params={params} businesses={businesses} />
       )}
 
       {/* Products Grid */}
       {products.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Package className="h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 font-semibold text-lg">
-              No se encontraron productos
-            </h3>
-            <p className="mt-2 text-muted-foreground text-sm">
-              Intenta con otros términos de búsqueda
-            </p>
-            <Button asChild className="mt-4 bg-transparent" variant="outline">
-              <Link href="/explorar">Ver todos los productos</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <EmptyStateSearch
+          title={
+            hasParams
+              ? "No se encontraron productos"
+              : "No hay productos disponibles"
+          }
+          description={
+            hasParams
+              ? "Intenta con otros términos de búsqueda"
+              : "No hay productos disponibles"
+          }
+        />
       ) : (
         <>
           <ProductGrid products={products} />

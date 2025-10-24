@@ -2,7 +2,7 @@ import { Box, ShoppingCart, Store, User } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CarrouselProducts } from "@/components/carrousel-products";
-import { EmptyState } from "@/components/empty-state";
+import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
 import { Button } from "@/components/ui/button";
 import { ProductDAL } from "../data/product/product.dal";
 
@@ -74,7 +74,7 @@ export default async function HomePage() {
           <CarrouselProducts products={featuredProducts} />
         </section>
       ) : (
-        <EmptyState
+        <EmptyStateCustomMessage
           title="No hay productos destacados"
           description="No hay productos destacados"
           icons={[ShoppingCart, Box, User]}
@@ -100,7 +100,7 @@ export default async function HomePage() {
             {products.length > 0 ? (
               <CarrouselProducts products={products} />
             ) : (
-              <EmptyState
+              <EmptyStateCustomMessage
                 title="No hay productos disponibles"
                 description={`No hay productos disponibles por ${category.charAt(0).toUpperCase() + category.slice(1)}`}
                 icons={[Box, Store]}
@@ -110,7 +110,7 @@ export default async function HomePage() {
         ))
       ) : (
         <section className="flex items-center justify-center">
-          <EmptyState
+          <EmptyStateCustomMessage
             title="No hay productos disponibles"
             description="No hay productos disponibles por categoría"
             icons={[Box, Store]}
