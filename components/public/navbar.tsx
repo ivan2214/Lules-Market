@@ -25,14 +25,14 @@ export async function PublicNavbar() {
 
   return (
     <header className="container sticky top-0 z-50 mx-auto w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-10">
-      <div className="flex w-full items-center justify-between gap-2">
+      <div className="flex h-14 w-full items-center justify-between gap-2">
         <Link href="/">
-          <div className="h-20 w-20 border">
+          <div className="w-32">
             <Image
               src="/logo-tp.png"
               width={48}
               height={48}
-              className="aspect-square h-full w-full object-cover object-center"
+              className="h-full w-full object-cover"
               alt=""
             />
           </div>
