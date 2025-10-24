@@ -61,7 +61,7 @@ export default async function ExplorePage({
   const { businesses } = await getPublicBusinesses();
 
   return (
-    <>
+    <section className="mx-auto w-full py-5 lg:px-10">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">
@@ -87,18 +87,20 @@ export default async function ExplorePage({
 
       {/* Products Grid */}
       {products.length === 0 ? (
-        <EmptyStateSearch
-          title={
-            hasParams
-              ? "No se encontraron productos"
-              : "No hay productos disponibles"
-          }
-          description={
-            hasParams
-              ? "Intenta con otros términos de búsqueda"
-              : "No hay productos disponibles"
-          }
-        />
+        <section className="mx-auto flex w-full items-center justify-center">
+          <EmptyStateSearch
+            title={
+              hasParams
+                ? "No se encontraron productos"
+                : "No hay productos disponibles"
+            }
+            description={
+              hasParams
+                ? "Intenta con otros términos de búsqueda"
+                : "No hay productos disponibles"
+            }
+          />
+        </section>
       ) : (
         <>
           <ProductGrid products={products} />
@@ -150,6 +152,6 @@ export default async function ExplorePage({
           )}
         </>
       )}
-    </>
+    </section>
   );
 }
