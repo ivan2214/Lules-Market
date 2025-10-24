@@ -1,14 +1,21 @@
-import { Store } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export function PublicFooter() {
   return (
-    <footer className="container mx-auto mt-auto border-t bg-muted/40 p-5 lg:p-10">
+    <footer className="container mx-auto mt-auto border-t p-5 lg:p-10">
       <div className="grid gap-8 md:grid-cols-4">
-        <div className="space-y-4">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-            <Store className="h-6 w-6" />
-            <span>Comercios Locales</span>
+        <div className="flex flex-col items-start gap-2">
+          <Link href="/">
+            <div className="w-32">
+              <Image
+                src="/logo-tp.png"
+                width={48}
+                height={48}
+                className="h-full w-full object-cover"
+                alt="Logo Lules Market"
+              />
+            </div>
           </Link>
           <p className="text-muted-foreground text-sm">
             Tu vitrina digital para conectar con clientes locales
@@ -100,8 +107,8 @@ export function PublicFooter() {
 
       <div className="mt-8 border-t pt-8 text-center text-muted-foreground text-sm">
         <p>
-          &copy; {new Date().getFullYear()} Comercios Locales. Todos los
-          derechos reservados.
+          &copy; {new Date().getFullYear()} Lules Market. Todos los derechos
+          reservados.
         </p>
       </div>
     </footer>
