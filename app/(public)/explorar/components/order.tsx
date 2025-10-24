@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowDownAZ, ArrowUpAZ, Link } from "lucide-react";
+import { ArrowDownAZ, ArrowUpAZ } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
