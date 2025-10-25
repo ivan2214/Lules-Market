@@ -2,7 +2,7 @@
 import { LayoutDashboard, LogOut, Settings, Store } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { UserDTO } from "@/app/data/user/user.dto";
+import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { signOut } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -16,10 +16,10 @@ import {
 } from "../ui/dropdown-menu";
 
 interface UserMenuProps {
-  user: UserDTO;
+  business: BusinessDTO;
 }
 
-export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
+export const UserMenu: React.FC<UserMenuProps> = ({ business }) => {
   const router = useRouter();
   const handleSignOut = async () => {
     await signOut();
@@ -27,7 +27,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
     router.refresh();
   };
 
-  const initials = user?.name
+  const initials = business?.name
     ?.split(" ")
     .map((n) => n[0])
     .join("")
@@ -42,8 +42,8 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
         >
           <Avatar>
             <AvatarImage
-              src={user?.business?.logo?.url || ""}
-              alt={user?.name || ""}
+              src={business.logo?.url || ""}
+              alt={business.name || ""}
             />
             <AvatarFallback>{initials || "U"}</AvatarFallback>
           </Avatar>
@@ -53,16 +53,18 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage
-              src={user?.business?.logo?.url || ""}
-              alt={user?.name || ""}
+              src={business.logo?.url || ""}
+              alt={business.name || ""}
             />
             <AvatarFallback>{initials || "U"}</AvatarFallback>
           </Avatar>
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
-              <p className="font-medium text-sm leading-none">{user?.name}</p>
+              <p className="font-medium text-sm leading-none">
+                {business.name}
+              </p>
               <p className="text-muted-foreground text-xs leading-none">
-                {user?.email}
+                {business.email}
               </p>
             </div>
           </DropdownMenuLabel>
@@ -75,10 +77,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link
-            href={`/comercios/${user?.business?.id}`}
-            className="cursor-pointer"
-          >
+          <Link href={`/comercios/${business.id}`} className="cursor-pointer">
             <Store className="mr-2 h-4 w-4" />
             Perfil publico
           </Link>

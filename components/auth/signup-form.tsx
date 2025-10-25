@@ -1,115 +1,177 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type React from "react";
-import { useState } from "react";
+import { startTransition } from "react";
+import { businessSignUpAction } from "@/app/actions/auth-actions";
+import { BusinessSignUpInputSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signUp } from "@/lib/auth-client";
+import { InputGroup } from "@/components/ui/input-group";
+import { useAction } from "@/hooks/use-action";
 
 export function SignUpForm() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
-
-    if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden");
-      setLoading(false);
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const { error } = await signUp.email({
-        email,
-        password,
-        name,
-        callbackURL: "/dashboard/setup",
-      });
-
-      if (error) {
-        setError(error.message || "Error al crear la cuenta");
-      } else {
+  const { execute, pending } = useAction(
+    businessSignUpAction,
+    {},
+    {
+      showToasts: true,
+      onSuccess: () => {
         router.push("/dashboard/setup");
-        router.refresh();
-      }
-    } catch {
-      setError("Error al crear la cuenta");
-    } finally {
-      setLoading(false);
-    }
-  }
+      },
+    },
+  );
+
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validators: {
+      onSubmit: BusinessSignUpInputSchema,
+      onChange: BusinessSignUpInputSchema,
+      onBlur: BusinessSignUpInputSchema,
+    },
+    onSubmit: ({ value }) => {
+      startTransition(() => {
+        execute(value);
+      });
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="rounded-lg bg-destructive/10 p-3 text-destructive text-sm">
-          {error}
-        </div>
-      )}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="space-y-4"
+      id="signup-form"
+    >
+      <FieldGroup>
+        <form.Field name="name">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Nombre Completo</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Juan Pérez"
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-      <div className="space-y-2">
-        <Label htmlFor="name">Nombre Completo</Label>
-        <Input id="name" name="name" required placeholder="Juan Pérez" />
-      </div>
+        <form.Field name="email">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="tu@email.com"
+                  type="email"
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          required
-          placeholder="tu@email.com"
-        />
-      </div>
+        <form.Field name="password">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Contraseña</FieldLabel>
+                <InputGroup>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="••••••••"
+                    aria-invalid={isInvalid}
+                    type="password"
+                  />
+                </InputGroup>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Contraseña</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          required
-          placeholder="••••••••"
-          minLength={8}
-        />
-        <p className="text-muted-foreground text-xs">Mínimo 8 caracteres</p>
-      </div>
+        <form.Field name="confirmPassword">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Confirmar Contraseña
+                </FieldLabel>
+                <InputGroup>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="••••••••"
+                    aria-invalid={isInvalid}
+                    type="password"
+                  />
+                </InputGroup>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+      </FieldGroup>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
-        <Input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          required
-          placeholder="••••••••"
-        />
-      </div>
-
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Crear Cuenta
-      </Button>
+      <Field orientation="horizontal">
+        <Button
+          type="reset"
+          variant="outline"
+          onClick={() => form.reset()}
+          disabled={pending}
+        >
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={pending} form="signup-form">
+          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Crear Cuenta
+        </Button>
+      </Field>
     </form>
   );
 }

@@ -3,7 +3,7 @@
 import { Menu, Store } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { UserDTO } from "@/app/data/user/user.dto";
+import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,7 +14,7 @@ import {
 import { UserMenu } from "../auth/user-menu";
 import { DashboardSidebar } from "./dashboard-sidebar";
 
-export function DashboardHeader({ user }: { user: UserDTO }) {
+export function DashboardHeader({ business }: { business: BusinessDTO }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
@@ -45,7 +45,7 @@ export function DashboardHeader({ user }: { user: UserDTO }) {
 
       <div className="flex-1" />
 
-      <UserMenu user={user} />
+      <UserMenu business={business} />
     </header>
   );
 }

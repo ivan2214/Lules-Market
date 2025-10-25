@@ -2,6 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import { businessSignInAction } from "@/app/actions/auth-actions";
 import { BusinessSignInInputSchema } from "@/app/schemas/auth";
@@ -17,11 +18,15 @@ import { InputGroup } from "@/components/ui/input-group";
 import { useAction } from "@/hooks/use-action";
 
 export function SignInForm() {
+  const router = useRouter();
   const { execute, pending } = useAction(
     businessSignInAction,
     {},
     {
       showToasts: true,
+      onSuccess: () => {
+        router.push("/dashboard");
+      },
     },
   );
 

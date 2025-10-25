@@ -9,6 +9,11 @@ export const requireBusiness = cache(async () => {
 
   const business = await prisma.business.findUnique({
     where: { userId: session.id },
+    include: {
+      logo: true,
+      coverImage: true,
+      user: true,
+    },
   });
 
   if (!business) {

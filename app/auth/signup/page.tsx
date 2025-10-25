@@ -15,7 +15,9 @@ export default function SignUpPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Crear Cuenta</CardTitle>
           <CardDescription>
-            Regístrate para comenzar a publicar tus productos
+            Crea tus credenciales de acceso para comenzar a publicar tus
+            productos. Luego deberás agregar los datos de tu comercio para
+            completar el registro.
           </CardDescription>
         </CardHeader>
         <CardContent>
