@@ -1,82 +1,119 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import type React from "react";
-import { useState } from "react";
+import { startTransition } from "react";
+import { businessSignInAction } from "@/app/actions/auth-actions";
+import { BusinessSignInInputSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth-client";
+import { InputGroup } from "@/components/ui/input-group";
+import { useAction } from "@/hooks/use-action";
 
 export function SignInForm() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { execute, pending } = useAction(
+    businessSignInAction,
+    {},
+    {
+      showToasts: true,
+    },
+  );
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    try {
-      const { error } = await signIn.email({
-        email,
-        password,
-        callbackURL: "/dashboard",
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    validators: {
+      onSubmit: BusinessSignInInputSchema,
+      onChange: BusinessSignInInputSchema,
+      onBlur: BusinessSignInInputSchema,
+    },
+    onSubmit: ({ value }) => {
+      startTransition(() => {
+        execute(value);
       });
-
-      if (error) {
-        setError(error.message || "Error al iniciar sesión");
-      } else {
-        router.push("/dashboard");
-        router.refresh();
-      }
-    } catch {
-      setError("Error al iniciar sesión");
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="rounded-lg bg-destructive/10 p-3 text-destructive text-sm">
-          {error}
-        </div>
-      )}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="space-y-4"
+      id="signin-form"
+    >
+      <FieldGroup>
+        <form.Field name="email">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="tu@email.com"
+                  type="email"
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+        <form.Field name="password">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <InputGroup>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="••••••••"
+                    aria-invalid={isInvalid}
+                    type="password"
+                  />
+                </InputGroup>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+      </FieldGroup>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          required
-          placeholder="tu@email.com"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="password">Contraseña</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          required
-          placeholder="••••••••"
-        />
-      </div>
-
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Iniciar Sesión
-      </Button>
+      <Field orientation="horizontal">
+        <Button
+          type="reset"
+          variant="outline"
+          onClick={() => form.reset()}
+          disabled={pending}
+        >
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={pending} form="signin-form">
+          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Iniciar Sesión
+        </Button>
+      </Field>
     </form>
   );
 }
