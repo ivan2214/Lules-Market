@@ -57,7 +57,7 @@ export function ProductPublicCard({ product }: ProductPublicCardProps) {
           )}
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0f">
+      <CardFooter className="p-4 pt-0">
         <Link href={`/comercios/${product.business?.id}`} className="w-full">
           <div className="flex items-center justify-start gap-2 text-muted-foreground text-sm hover:text-foreground">
             <figure>

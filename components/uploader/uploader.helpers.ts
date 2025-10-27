@@ -18,6 +18,7 @@ export const formatFileSize = (bytes: number): string => {
  */
 export const isImage = (file: UploadedFile): boolean => {
   const isImg =
+    file.url?.includes("https://picsum.photos") ||
     file.name?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
     file.url?.includes("image");
 

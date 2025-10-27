@@ -1,19 +1,17 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { type HTMLAttributes, startTransition, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import z from "zod";
+import type { ZodType, z } from "zod";
 import {
   createProductAction,
   updateProductAction,
 } from "@/app/actions/product.action";
 import {
   ProductCreateInputSchema,
-  type ProductCreateOrUpdateInput,
   ProductUpdateInputSchema,
 } from "@/app/data/product/product.dto";
 import type { Image } from "@/app/generated/prisma";
@@ -27,27 +25,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useAction } from "@/hooks/use-action";
 import { CATEGORIES } from "@/lib/constants";
-import { Checkbox } from "../ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
 import { Uploader } from "../uploader/uploader";
 
 interface ProductFormDialogProps {
@@ -68,13 +66,14 @@ interface ProductFormDialogProps {
 }
 
 export function ProductFormDialog({
-  canFeature = false,
   product,
   trigger,
   className,
   isViewMode = false,
 }: ProductFormDialogProps) {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
+
   const actionOptions = useMemo(
     () => ({
       showToasts: true,
@@ -86,15 +85,17 @@ export function ProductFormDialog({
     [router],
   );
 
-  const schema = product
-    ? ProductUpdateInputSchema.extend({ mode: z.literal("update") })
-    : ProductCreateInputSchema.extend({ mode: z.literal("create") });
-  const form = useForm<ProductCreateOrUpdateInput>({
-    // biome-ignore lint/suspicious/noExplicitAny: <reason>
-    resolver: zodResolver(schema as any),
+  const { execute, pending } = useAction(
+    product ? updateProductAction : createProductAction,
+    {},
+    actionOptions,
+  );
+
+  const schema = product ? ProductUpdateInputSchema : ProductCreateInputSchema;
+
+  const form = useForm({
     defaultValues: product?.id
       ? {
-          mode: "update",
           productId: product.id,
           name: product.name,
           description: product.description || "",
@@ -111,7 +112,6 @@ export function ProductFormDialog({
           featured: product.featured,
         }
       : {
-          mode: "create",
           name: "",
           description: "",
           price: 0,
@@ -120,14 +120,30 @@ export function ProductFormDialog({
           active: true,
           featured: false,
         },
-  });
+    validators: {
+      onSubmit: zodValidator(schema),
+      onChange: zodValidator(schema),
+      onBlur: zodValidator(schema),
+    },
+    onSubmit: ({ value }) => {
+      console.log("submite en form");
 
-  const { execute, pending } = useAction(
-    product ? updateProductAction : createProductAction,
-    {},
-    actionOptions,
-  );
-  const [open, setOpen] = useState(false);
+      const data =
+        "productId" in value
+          ? {
+              ...value,
+              productId: value.productId,
+            }
+          : { ...value };
+
+      startTransition(() => {
+        execute(data);
+      });
+    },
+    onSubmitInvalid: ({ formApi }) => {
+      console.log("Invalid:", formApi.getAllErrors());
+    },
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen} modal>
@@ -156,199 +172,238 @@ export function ProductFormDialog({
                 : "Completa los datos para crear un nuevo producto"}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            aria-disabled={isViewMode}
-            onSubmit={form.handleSubmit(() => {
-              if (isViewMode) {
-                return;
-              }
 
-              const data = form.getValues();
-
-              startTransition(() => {
-                execute({
-                  ...data,
-                  productId:
-                    "productId" in data ? data.productId : (product?.id ?? ""),
-                });
-              });
-            })}
-          >
-            <div className="grid gap-4 py-4">
-              <FormField
-                control={form.control}
-                name="name"
-                disabled={isViewMode}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="name">Nombre del producto *</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Ingresa el nombre del producto"
-                        disabled={isViewMode}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                disabled={isViewMode}
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="description">Descripción</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        disabled={isViewMode}
-                        className="resize-none"
-                        placeholder="Describe tu producto..."
-                        rows={4}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  disabled={isViewMode}
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Precio</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isViewMode}
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="0.00"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  disabled={isViewMode}
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Categoría *</FormLabel>
-                      <Select
-                        disabled={isViewMode}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una categoría" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CATEGORIES.map((cat) => (
-                            <SelectItem key={cat} value={cat}>
-                              {cat}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormDescription />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="images"
-                disabled={isViewMode}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="images">Imágenes</FormLabel>
-                    <FormControl>
-                      <Uploader
-                        folder="products"
-                        onChange={(value) => {
-                          field.onChange(value);
-                          console.log("Imagenes actualizadas", value);
-                        }}
-                        variant="compact"
-                        placeholder="Sube 1 imagen o máximo 4"
-                        maxSize={1024 * 1024 * 5}
-                        maxFiles={4}
-                        value={field.value}
-                        disabled={isViewMode}
-                      />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {product && (
-                <div className="flex items-center gap-4">
-                  <FormField
-                    disabled={isViewMode}
-                    control={form.control}
-                    name="active"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Producto activo</FormLabel>
-                        <FormControl>
-                          <Checkbox
-                            disabled={isViewMode}
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormDescription />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {canFeature && (
-                    <FormField
-                      disabled={isViewMode}
-                      control={form.control}
-                      name="featured"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Destacar producto</FormLabel>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormDescription />
-                          <FormMessage />
-                        </FormItem>
-                      )}
+        <form
+          id="product-form"
+          aria-disabled={isViewMode}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (isViewMode) return;
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <FieldGroup>
+            <form.Field name="name">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="Nombre del producto"
+                      aria-invalid={isInvalid}
+                      disabled={isViewMode || pending}
                     />
-                  )}
-                </div>
-              )}
-            </div>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="description">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor="product-form">Descripción</FieldLabel>
+                    <Textarea
+                      id="product-form"
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="Describe el producto"
+                      className="min-h-[120px]"
+                      disabled={isViewMode || pending}
+                    />
+                    <FieldDescription>Describe el producto</FieldDescription>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="price">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Precio</FieldLabel>
+                    <Input
+                      type="number"
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                      placeholder="Precio del producto"
+                      aria-invalid={isInvalid}
+                      disabled={isViewMode || pending}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="category">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field orientation="responsive" data-invalid={isInvalid}>
+                    <FieldContent>
+                      <FieldLabel htmlFor={field.name}>Categoría</FieldLabel>
+                      <FieldDescription>
+                        Selecciona la categoría del producto
+                      </FieldDescription>
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </FieldContent>
+                    <Select
+                      name={field.name}
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                      disabled={isViewMode || pending}
+                      aria-invalid={isInvalid}
+                    >
+                      <SelectTrigger
+                        id="product-form"
+                        aria-invalid={isInvalid}
+                        className="min-w-[120px]"
+                      >
+                        <SelectValue placeholder="Seleccionar categoría" />
+                      </SelectTrigger>
+                      <SelectContent position="item-aligned">
+                        <SelectItem value="auto">
+                          Seleccionar categoría
+                        </SelectItem>
+                        <SelectSeparator />
+                        {CATEGORIES.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="featured">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field orientation="horizontal" data-invalid={isInvalid}>
+                    <FieldContent>
+                      <FieldLabel htmlFor="product-form">Destacado</FieldLabel>
+                      <FieldDescription>
+                        Destaca este producto en la lista de productos.
+                      </FieldDescription>
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </FieldContent>
+                    <Switch
+                      id="product-form"
+                      name={field.name}
+                      checked={field.state.value}
+                      onCheckedChange={field.handleChange}
+                      aria-invalid={isInvalid}
+                      disabled={isViewMode || pending}
+                    />
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="active">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field orientation="horizontal" data-invalid={isInvalid}>
+                    <FieldContent>
+                      <FieldLabel htmlFor="product-form">Activo</FieldLabel>
+                      <FieldDescription>
+                        Activa este producto para que sea visible en la lista de
+                        productos.
+                      </FieldDescription>
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </FieldContent>
+                    <Switch
+                      id="product-form"
+                      name={field.name}
+                      checked={field.state.value}
+                      onCheckedChange={field.handleChange}
+                      aria-invalid={isInvalid}
+                      disabled={isViewMode || pending}
+                    />
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="images">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Imagenes</FieldLabel>
+                    <Uploader
+                      folder="products"
+                      onChange={(value) => {
+                        const images = (
+                          Array.isArray(value) ? value : value ? [value] : []
+                        ).map((file) => ({
+                          url: file.url,
+                          key: file.key,
+                          name: file.name ?? undefined,
+                          isMainImage: file.isMainImage ?? false,
+                          size: file.size ?? undefined,
+                        }));
+                        field.handleChange(images);
+                        console.log("Imagenes actualizadas", images);
+                      }}
+                      variant="compact"
+                      placeholder="Sube 1 imagen o máximo 4"
+                      maxSize={1024 * 1024 * 5}
+                      maxFiles={4}
+                      value={field.state.value}
+                      disabled={isViewMode || pending || isInvalid}
+                      aria-invalid={isInvalid}
+                    />
 
-            {!isViewMode && (
-              <DialogFooter>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+
+          {!isViewMode && (
+            <DialogFooter>
+              <Field orientation="horizontal">
                 <Button
                   type="button"
                   variant="outline"
@@ -361,11 +416,29 @@ export function ProductFormDialog({
                   {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {product ? "Actualizar" : "Crear Producto"}
                 </Button>
-              </DialogFooter>
-            )}
-          </form>
-        </Form>
+              </Field>
+            </DialogFooter>
+          )}
+        </form>
       </DialogContent>
     </Dialog>
   );
+}
+
+function zodValidator<T extends ZodType>(
+  schema: T,
+): (props: {
+  value: z.infer<T>;
+}) => true | { [K in keyof z.infer<T>]?: string } {
+  return ({ value }) => {
+    const result = schema.safeParse(value);
+    if (result.success) return true;
+
+    const errors: { [K in keyof z.infer<T>]?: string } = {};
+    for (const issue of result.error.issues) {
+      const key = issue.path[0] as keyof z.infer<T>;
+      if (key && !errors[key]) errors[key] = issue.message;
+    }
+    return errors;
+  };
 }

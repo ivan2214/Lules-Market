@@ -54,6 +54,7 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: true,
   },
   reactCompiler: true,
+  cacheComponents: true,
 };
 
 export default nextConfig;

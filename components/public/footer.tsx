@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getCurrentYear } from "@/utils/date";
 
-export function PublicFooter() {
+export async function PublicFooter() {
+  const year = await getCurrentYear();
+
   return (
     <footer className="container mx-auto mt-auto border-t p-5 lg:p-10">
       <div className="grid gap-8 md:grid-cols-4">
@@ -106,10 +109,7 @@ export function PublicFooter() {
       </div>
 
       <div className="mt-8 border-t pt-8 text-center text-muted-foreground text-sm">
-        <p>
-          &copy; {new Date().getFullYear()} Lules Market. Todos los derechos
-          reservados.
-        </p>
+        <p>&copy; {year} Lules Market. Todos los derechos reservados.</p>
       </div>
     </footer>
   );

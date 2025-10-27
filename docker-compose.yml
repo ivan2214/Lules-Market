@@ -1,17 +1,17 @@
 services:
   postgres:
-    image: postgres:14
+    image: postgres:16-alpine
     container_name: lulesmarket-postgres
     restart: always
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=lulesmarket-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lulesmarket-db
     volumes:
       - lulesmarket-db:/var/lib/postgresql/data
 
 volumes:
   lulesmarket-db:
-    driver: "local"
+    driver: local

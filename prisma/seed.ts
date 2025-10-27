@@ -73,7 +73,7 @@ async function main() {
     });
 
     // ---- PRODUCTS ----
-    for (let j = 0; j < 5; j++) {
+    for (let j = 0; j < 10; j++) {
       const product = await prisma.product.create({
         data: {
           name: faker.commerce.productName(),
@@ -96,17 +96,21 @@ async function main() {
       });
 
       // ---- PRODUCT IMAGES ----
-      const images = Array.from({
-        length: faker.number.int({ min: 1, max: 3 }),
-      }).map(() => ({
-        key: faker.string.uuid(),
-        url: faker.image.urlPicsumPhotos({ width: 600, height: 600 }),
-        isMainImage: false,
-        productId: product.id,
-        name: faker.commerce.productAdjective(),
-        size: faker.number.float({ min: 100, max: 1500 }),
-      }));
-      await prisma.image.createMany({ data: images });
+      const imagesPerProduct = faker.number.int({ min: 1, max: 5 });
+      let isFirstImage = true;
+      for (let k = 0; k < imagesPerProduct; k++) {
+        await prisma.image.create({
+          data: {
+            key: faker.string.uuid(),
+            url: faker.image.urlPicsumPhotos({ width: 600, height: 600 }),
+            isMainImage: isFirstImage,
+            productId: product.id,
+            name: faker.commerce.productAdjective(),
+            size: faker.number.float({ min: 100, max: 1500 }),
+          },
+        });
+        isFirstImage = false;
+      }
     }
 
     // ---- PAYMENTS ----
