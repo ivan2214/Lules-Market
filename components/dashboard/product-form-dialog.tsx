@@ -5,7 +5,6 @@ import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { type HTMLAttributes, startTransition, useMemo, useState } from "react";
-import type { ZodType, z } from "zod";
 import {
   createProductAction,
   updateProductAction,
@@ -85,13 +84,9 @@ export function ProductFormDialog({
     [router],
   );
 
-  const { execute, pending } = useAction(
-    product ? updateProductAction : createProductAction,
-    {},
-    actionOptions,
-  );
+  const action = product ? updateProductAction : createProductAction;
 
-  const schema = product ? ProductUpdateInputSchema : ProductCreateInputSchema;
+  const { execute, pending } = useAction(action, {}, actionOptions);
 
   const form = useForm({
     defaultValues: product?.id
@@ -120,13 +115,21 @@ export function ProductFormDialog({
           active: true,
           featured: false,
         },
-    validators: {
-      onSubmit: zodValidator(schema),
-      onChange: zodValidator(schema),
-      onBlur: zodValidator(schema),
-    },
+    // Elimina los validators de aquí
     onSubmit: ({ value }) => {
       console.log("submite en form");
+
+      // Valida manualmente según el contexto
+      const schema = product
+        ? ProductUpdateInputSchema
+        : ProductCreateInputSchema;
+
+      const validation = schema.safeParse(value);
+
+      if (!validation.success) {
+        console.log("Invalid:", validation.error.issues);
+        return;
+      }
 
       const data =
         "productId" in value
@@ -140,11 +143,7 @@ export function ProductFormDialog({
         execute(data);
       });
     },
-    onSubmitInvalid: ({ formApi }) => {
-      console.log("Invalid:", formApi.getAllErrors());
-    },
   });
-
   return (
     <Dialog open={open} onOpenChange={setOpen} modal>
       <DialogTrigger asChild>
@@ -423,22 +422,4 @@ export function ProductFormDialog({
       </DialogContent>
     </Dialog>
   );
-}
-
-function zodValidator<T extends ZodType>(
-  schema: T,
-): (props: {
-  value: z.infer<T>;
-}) => true | { [K in keyof z.infer<T>]?: string } {
-  return ({ value }) => {
-    const result = schema.safeParse(value);
-    if (result.success) return true;
-
-    const errors: { [K in keyof z.infer<T>]?: string } = {};
-    for (const issue of result.error.issues) {
-      const key = issue.path[0] as keyof z.infer<T>;
-      if (key && !errors[key]) errors[key] = issue.message;
-    }
-    return errors;
-  };
 }

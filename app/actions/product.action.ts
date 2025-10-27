@@ -49,6 +49,10 @@ export async function updateProductAction(
       return { errorMessage: result.errorMessage };
     }
 
+    if (!input.productId) {
+      return { errorMessage: "El ID del producto es requerido" };
+    }
+
     if (result.successMessage) {
       // Revalidate cache tags when product is updated
       revalidateTag(CACHE_TAGS.PRODUCTS, "max");

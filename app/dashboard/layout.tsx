@@ -1,7 +1,8 @@
 import type React from "react";
-
+import { Suspense } from "react";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { DashboardHeader } from "@/components/dashboard/header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { requireBusiness } from "../data/business/require-busines";
 
 export default async function DashboardLayout({
@@ -14,13 +15,42 @@ export default async function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden">
       <div className="hidden lg:flex">
-        <DashboardSidebar />
+        <Suspense fallback={<DashboardSidebarSkeleton />}>
+          <DashboardSidebar />
+        </Suspense>
       </div>
       <div className="flex flex-1 flex-col overflow-hidden">
-        <DashboardHeader business={business} />
+        <Suspense fallback={<DashboardHeaderSkeleton />}>
+          <DashboardHeader business={business} />
+        </Suspense>
         <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6">
           {children}
         </main>
+      </div>
+    </div>
+  );
+}
+
+function DashboardHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between p-4 md:p-6">
+      <div className="flex items-center space-x-2">
+        <Skeleton className="h-8 w-8 rounded-full" />
+        <div className="space-y-0.5">
+          <Skeleton className="h-4 w-20 rounded" />
+          <Skeleton className="h-3 w-16 rounded" />
+        </div>
+      </div>
+      <Skeleton className="h-8 w-8 rounded-full" />
+    </div>
+  );
+}
+
+function DashboardSidebarSkeleton() {
+  return (
+    <div className="flex h-screen overflow-hidden">
+      <div className="hidden lg:flex">
+        <Skeleton className="h-full w-64" />
       </div>
     </div>
   );
