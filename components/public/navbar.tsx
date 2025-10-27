@@ -9,17 +9,13 @@ import { PublicMenuMobile } from "./menu-mobile";
 
 export async function PublicNavbar() {
   const session = await getCurrentUser();
-  const user = await prisma.user.findUnique({
+  const business = await prisma.business.findUnique({
     where: {
       id: session?.id || "",
     },
     include: {
-      business: {
-        include: {
-          logo: true,
-          coverImage: true,
-        },
-      },
+      logo: true,
+      coverImage: true,
     },
   });
 
@@ -38,16 +34,16 @@ export async function PublicNavbar() {
           </div>
         </Link>
         <SearchForm />
-        {user ? (
+        {business ? (
           <div className="flex items-center gap-2">
             <div className="hidden md:flex">
               <Button asChild variant="ghost">
                 <Link href="/explorar">Explorar</Link>
               </Button>
             </div>
-            <UserMenu user={user} />
+            <UserMenu business={business} />
             <div className="flex md:hidden">
-              <PublicMenuMobile isLoggedIn={!!user} />
+              <PublicMenuMobile isLoggedIn={!!business} />
             </div>
           </div>
         ) : (
