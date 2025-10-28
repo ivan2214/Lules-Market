@@ -175,9 +175,11 @@ model Business {
   // Banned
   bannedBusinesses BannedBusiness[]
 
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  businessView businessView[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  businessView     businessView[]
+  trial            Trial?
+  couponRedemption CouponRedemption[]
 
   @@index([plan])
   @@index([planStatus])
@@ -287,6 +289,51 @@ model WebhookEvent {
   processed   Boolean   @default(false)
   processedAt DateTime?
 }
+
+model Trial {
+  id          String           @id @default(cuid())
+  businessId  String           @unique
+  business    Business         @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  plan        SubscriptionPlan @default(PREMIUM)
+  expiresAt   DateTime
+  activatedAt DateTime         @default(now())
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Coupon {
+  id           String           @id @default(cuid())
+  code         String           @unique
+  plan         SubscriptionPlan @default(PREMIUM)
+  durationDays Int              @default(30)
+  maxUses      Int? // opcional, para limitar cantidad total de usos
+  usedCount    Int              @default(0)
+  expiresAt    DateTime? // opcional, para que el cupón caduque
+  active       Boolean          @default(true)
+
+  // Cupones canjeados
+  redemptions CouponRedemption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CouponRedemption {
+  id         String   @id @default(cuid())
+  couponId   String
+  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  redeemedAt DateTime @default(now())
+
+  @@index([businessId])
+  @@index([couponId])
+}
+
+/**
+ * ENUM
+ */
 
 enum SubscriptionPlan {
   FREE
