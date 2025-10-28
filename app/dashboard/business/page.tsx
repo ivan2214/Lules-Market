@@ -1,4 +1,4 @@
-import { BusinessDAL } from "@/app/data/business/business.dal";
+import { getMyBusiness } from "@/app/data/business/business.dal";
 import { BusinessProfileForm } from "@/components/dashboard/business-profile-form";
 import {
   Card,
@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/card";
 
 export default async function BusinessPage() {
-  const businessDAL = await BusinessDAL.create();
-  const business = await businessDAL.getMyBusiness();
+  const business = await getMyBusiness();
 
   return (
     <div className="space-y-6">

@@ -23,13 +23,3 @@ export const CACHE_TAGS = {
   ANALYTICS: "analytics",
   analyticsById: (id: string) => `analytics-${id}`,
 } as const;
-
-/**
- * Cache revalidation times (in seconds)
- */
-export const CACHE_REVALIDATE = {
-  SHORT: 60, // 1 minute - for frequently changing data
-  MEDIUM: 300, // 5 minutes - for moderately changing data
-  LONG: 600, // 10 minutes - for rarely changing data
-  VERY_LONG: 3600, // 1 hour - for static-like data
-} as const;

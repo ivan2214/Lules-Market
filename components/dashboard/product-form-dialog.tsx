@@ -11,9 +11,9 @@ import {
 } from "@/app/actions/product.action";
 import {
   ProductCreateInputSchema,
+  type ProductDTO,
   ProductUpdateInputSchema,
 } from "@/app/data/product/product.dto";
-import type { Image } from "@/app/generated/prisma";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,16 +49,7 @@ import { Uploader } from "../uploader/uploader";
 
 interface ProductFormDialogProps {
   canFeature: boolean;
-  product?: {
-    id: string;
-    name: string;
-    description: string | null;
-    price: number | null;
-    category: string;
-    images: Image[];
-    active: boolean;
-    featured: boolean;
-  };
+  product?: ProductDTO;
   trigger?: React.ReactNode;
   className?: HTMLAttributes<"button">["className"];
   isViewMode?: boolean;
@@ -96,7 +87,7 @@ export function ProductFormDialog({
           description: product.description || "",
           price: product.price || 0,
           category: product.category,
-          images: product.images.map((img) => ({
+          images: product?.images?.map((img) => ({
             url: img.url,
             key: img.key,
             name: img.name ?? undefined,
@@ -277,7 +268,7 @@ export function ProductFormDialog({
                     </FieldContent>
                     <Select
                       name={field.name}
-                      value={field.state.value}
+                      value={field.state.value || undefined}
                       onValueChange={field.handleChange}
                       disabled={isViewMode || pending}
                       aria-invalid={isInvalid}

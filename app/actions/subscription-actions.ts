@@ -1,58 +1,28 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
-import prisma from "@/lib/prisma";
-import { requireBusiness } from "../data/business/require-busines";
+import * as SubscriptionDAL from "../data/subscription/subscription.dal";
+
+export async function createPaymentPreference(plan: SubscriptionPlan) {
+  return SubscriptionDAL.createPaymentPreference(plan);
+}
 
 export async function upgradePlan(plan: SubscriptionPlan) {
-  const { business } = await requireBusiness();
-
-  if (business.plan === plan) {
-    throw new Error("Ya tienes este plan activo");
-  }
-
-  // This will be completed when Mercado Pago is integrated
-  // For now, just update the plan
-  const updated = await prisma.business.update({
-    where: { id: business.id },
-    data: {
-      plan,
-      planStatus: "ACTIVE",
-      planExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    },
-  });
-
-  revalidatePath("/dashboard/subscription");
-  revalidatePath("/dashboard");
-  return updated;
+  return SubscriptionDAL.upgradePlan(plan);
 }
 
 export async function cancelSubscription() {
-  const { business } = await requireBusiness();
-
-  if (business.plan === "FREE") {
-    throw new Error("No tienes una suscripción activa");
-  }
-
-  const updated = await prisma.business.update({
-    where: { id: business.id },
-    data: {
-      planStatus: "CANCELLED",
-    },
-  });
-
-  revalidatePath("/dashboard/subscription");
-  return updated;
+  return SubscriptionDAL.cancelSubscription();
 }
 
 export async function getSubscriptionHistory() {
-  const { business } = await requireBusiness();
+  return SubscriptionDAL.getSubscriptionHistory();
+}
 
-  const payments = await prisma.payment.findMany({
-    where: { businessId: business.id },
-    orderBy: { createdAt: "desc" },
-  });
+export async function startTrial(plan: SubscriptionPlan = "PREMIUM") {
+  return SubscriptionDAL.startTrial(plan);
+}
 
-  return payments;
+export async function redeemCoupon(code: string) {
+  return SubscriptionDAL.redeemCoupon(code);
 }

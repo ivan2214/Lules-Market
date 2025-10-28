@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { deleteProductAction } from "@/app/actions/product.action";
-import type { Image as ImagePrisma } from "@/app/generated/prisma";
+import type { ProductDTO } from "@/app/data/product/product.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,16 +25,7 @@ import { ImageWithSkeleton } from "../image-with-skeleton";
 import { ProductFormDialog } from "./product-form-dialog";
 
 interface ProductCardProps {
-  product: {
-    id: string;
-    name: string;
-    description: string | null;
-    price: number | null;
-    images: ImagePrisma[];
-    category: string | null;
-    featured: boolean;
-    active: boolean;
-  };
+  product: ProductDTO;
   canFeature: boolean;
 }
 
@@ -66,7 +57,7 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
     <Card>
       <CardContent className="p-4">
         <div className="relative mb-4 aspect-square overflow-hidden rounded-lg bg-muted">
-          {product.images[0] ? (
+          {product.images?.[0] ? (
             <ImageWithSkeleton
               src={mainImage(product.images) || "/placeholder.svg"}
               alt={product.name}

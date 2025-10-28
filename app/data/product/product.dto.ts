@@ -30,7 +30,8 @@ export const ProductCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   description: z.string().min(1, "La descripción es requerida"),
   price: z.number().min(0, "El precio debe ser mayor o igual a 0"),
-  category: z.string().min(1, "La categoría es requerida"),
+  // opcional string o undefined o null
+  category: z.string().min(1, "La categoría es requerida").optional().nullish(),
   featured: z.boolean().optional(),
   active: z.boolean().optional(),
   images: ImageCreateInputSchema.array().min(
@@ -58,7 +59,7 @@ export const ProductDeleteInputSchema = z.object({
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 
 export interface ProductDTO extends ProductPrisma {
-  images?: Image[] | null;
+  images: Image[];
   views?: productView[] | null;
   business?: BusinessDTO | null;
 }

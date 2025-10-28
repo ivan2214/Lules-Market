@@ -1,17 +1,15 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
-import { BusinessDAL } from "@/app/data/business/business.dal";
-import { ProductDAL } from "@/app/data/product/product.dal";
+import { getMyBusiness } from "@/app/data/business/business.dal";
+import { getProductsByBusinessId } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 export default async function ProductsPage() {
-  const productDAL = await ProductDAL.public();
-  const businessDAL = await BusinessDAL.create();
-  const business = await businessDAL.getMyBusiness();
-  const products = await productDAL.getProductsByBusinessId();
+  const business = await getMyBusiness();
+  const products = await getProductsByBusinessId();
   if (!business) {
     return null;
   }

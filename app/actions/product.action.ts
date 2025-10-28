@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { ProductDAL } from "@/app/data/product/product.dal";
+
 import type {
   ProductCreateInput,
   ProductDeleteInput,
@@ -9,14 +9,18 @@ import type {
 } from "@/app/data/product/product.dto";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
+import {
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} from "../data/product/product.dal";
 
 export async function createProductAction(
   _prevState: ActionResult,
   input: ProductCreateInput,
 ): Promise<ActionResult> {
   try {
-    const dal = await ProductDAL.create();
-    const result = await dal.createProduct(input);
+    const result = await createProduct(input);
     if (result.errorMessage) {
       return { errorMessage: result.errorMessage };
     }
@@ -43,8 +47,7 @@ export async function updateProductAction(
   input: ProductUpdateInput,
 ): Promise<ActionResult> {
   try {
-    const dal = await ProductDAL.create();
-    const result = await dal.updateProduct(input);
+    const result = await updateProduct(input);
     if (result.errorMessage) {
       return { errorMessage: result.errorMessage };
     }
@@ -75,8 +78,7 @@ export async function deleteProductAction(
   input: ProductDeleteInput,
 ): Promise<ActionResult> {
   try {
-    const dal = await ProductDAL.create();
-    await dal.deleteProduct(input.productId);
+    await deleteProduct(input.productId);
 
     // Revalidate cache tags when product is deleted
     revalidateTag(CACHE_TAGS.PRODUCTS, "max");

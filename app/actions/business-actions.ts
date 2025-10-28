@@ -1,19 +1,18 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { BusinessDAL } from "@/app/data/business/business.dal";
+
 import type {
   BusinessCreateInput,
   BusinessUpdateInput,
 } from "@/app/data/business/business.dto";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
+import { createBusiness, updateBusiness } from "../data/business/business.dal";
 
 export async function createBusinessAction(data: BusinessCreateInput) {
   try {
-    const dal = await BusinessDAL.create();
-
-    const result: ActionResult = await dal.createBusiness(data);
+    const result: ActionResult = await createBusiness(data);
 
     if (result.successMessage) {
       // Revalidate cache tags when business is created
@@ -32,8 +31,7 @@ export async function createBusinessAction(data: BusinessCreateInput) {
 
 export async function updateBusinessAction(data: BusinessUpdateInput) {
   try {
-    const dal = await BusinessDAL.create();
-    const result: ActionResult = await dal.updateBusiness(data);
+    const result: ActionResult = await updateBusiness(data);
 
     if (result.errorMessage) {
       return { errorMessage: result.errorMessage };

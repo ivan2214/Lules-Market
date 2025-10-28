@@ -4,7 +4,10 @@ import Link from "next/link";
 import { CarrouselProducts } from "@/components/carrousel-products";
 import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
 import { Button } from "@/components/ui/button";
-import { ProductDAL } from "../data/product/product.dal";
+import {
+  listFeaturedProducts,
+  listProductsGroupedByCategory,
+} from "../data/product/product.dal";
 
 // Metadata para SEO
 export const metadata: Metadata = {
@@ -47,10 +50,9 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const productDAL = await ProductDAL.public();
-  const featuredProducts = await productDAL.listFeaturedProducts();
+  const featuredProducts = await listFeaturedProducts();
 
-  const productsByCategory = await productDAL.listProductsGroupedByCategory();
+  const productsByCategory = await listProductsGroupedByCategory();
 
   return (
     <div className="mx-auto flex flex-col gap-y-20 p-5 md:py-10">

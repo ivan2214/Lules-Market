@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { BusinessDAL } from "@/app/data/business/business.dal";
-import { SubscriptionDAL } from "@/app/data/subscription/subscription.dal";
+import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
+import { getMyBusiness } from "@/app/data/business/business.dal";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -15,15 +15,13 @@ import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
 export default async function SubscriptionPage() {
-  const businessDAL = await BusinessDAL.create();
-  const business = await businessDAL.getMyBusiness();
+  const business = await getMyBusiness();
 
   if (!business) {
     redirect("/dashboard/setup");
   }
 
-  const subscriptionDAL = await SubscriptionDAL.create();
-  const payments = await subscriptionDAL.getHistory();
+  const payments = await getSubscriptionHistory();
 
   const plans: {
     name: SubscriptionPlan;

@@ -37,14 +37,3 @@ export interface BusinessDTO extends BusinessPrisma {
   plan: SubscriptionPlan;
   products?: ProductDTO[] | null;
 }
-
-export type BusinessProductDTO = {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number | null;
-  category: string | null;
-  images: Image[];
-  active: boolean;
-  featured: boolean;
-};

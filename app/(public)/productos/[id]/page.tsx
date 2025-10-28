@@ -2,7 +2,6 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { trackProductView } from "@/app/actions/analytics-actions";
 import {
   getPublicProduct,
   getPublicProducts,
@@ -15,17 +14,12 @@ import { BusinessCard } from "./components/business-card";
 import { ProductImages } from "./components/product-images";
 import { ProductInfo } from "./components/product-info";
 
-export const dynamic = "force-dynamic";
-
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // read route params
   const { id } = await params;
-
-  // fetch data
   const product = await getPublicProduct(id);
 
   if (!product) {
@@ -39,12 +33,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alt: product.name,
   }));
 
-  // Crear una descripción optimizada para SEO
   const seoDescription = product.description
     ? `${product.description.substring(0, 155)}${product.description.length > 155 ? "..." : ""}`
     : `Compra ${product.name} en Lules Market. Productos de calidad en Argentina.`;
 
-  // Crear keywords basadas en el producto
   const keywords = [
     product.name,
     product.category || "",
@@ -126,13 +118,20 @@ interface ContactMethod {
   href?: string | null;
 }
 
+/* // ✅ Componente separado para tracking (usa headers)
+async function ProductViewTracker({ productId }: { productId: string }) {
+  const { trackProductView } = await import("@/app/actions/analytics-actions");
+  await trackProductView(productId);
+  return null;
+}
+ */
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const product = await getPublicProduct(id);
+
   if (!product) {
     notFound();
   }
-  await trackProductView(id);
 
   const contactMethods: ContactMethod[] = [
     {
@@ -178,8 +177,14 @@ export default async function ProductPage({ params }: Props) {
       icon: "Twitter",
     },
   ];
+
   return (
     <div className="container space-y-8 p-8">
+      {/* ✅ Tracking envuelto en Suspense */}
+      {/*   <Suspense fallback={null}>
+        <ProductViewTracker productId={id} />
+      </Suspense>
+ */}
       <ProductSchema
         name={product.name}
         description={product.description || ""}

@@ -1,11 +1,10 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
-import { CACHE_REVALIDATE, CACHE_TAGS } from "@/lib/cache-tags";
+import { cacheLife, cacheTag } from "next/cache";
+import * as BusinessDAL from "@/app/data/business/business.dal";
+import * as ProductDAL from "@/app/data/product/product.dal";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
-import { BusinessDAL } from "../data/business/business.dal";
-import { ProductDAL } from "../data/product/product.dal";
-import type { ProductDTO } from "../data/product/product.dto";
 
 export async function getPublicBusinesses(params?: {
   search?: string;
@@ -15,29 +14,13 @@ export async function getPublicBusinesses(params?: {
 }) {
   const { search, category, page = 1, limit = 12 } = params || {};
 
-  return unstable_cache(
-    async () => {
-      const businessDAL = await BusinessDAL.public();
-      const { businesses, total } = await businessDAL.listAllBusinesses({
-        search,
-        category,
-        page,
-        limit,
-      });
-
-      return {
-        businesses,
-        total,
-        pages: Math.ceil(total / limit),
-        currentPage: page,
-      };
-    },
-    [`public-businesses-${search}-${category}-${page}-${limit}`],
-    {
-      tags: [CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES],
-      revalidate: CACHE_REVALIDATE.SHORT,
-    },
-  )();
+  // Llamar directamente a la función del DAL
+  return BusinessDAL.listAllBusinesses({
+    search,
+    category,
+    page,
+    limit,
+  });
 }
 
 export async function getPublicProducts(params?: {
@@ -47,12 +30,7 @@ export async function getPublicProducts(params?: {
   page?: number;
   limit?: number;
   sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-}): Promise<{
-  products: ProductDTO[];
-  total: number;
-  pages: number;
-  currentPage: number;
-}> {
+}) {
   const {
     search,
     category,
@@ -62,101 +40,43 @@ export async function getPublicProducts(params?: {
     sort,
   } = params || {};
 
-  return unstable_cache(
-    async () => {
-      const productDAL = await ProductDAL.public();
-      const { products, total, pages, currentPage } =
-        await productDAL.listAllProducts({
-          search,
-          category,
-          businessId,
-          page,
-          limit,
-          sort,
-        });
-
-      return {
-        products,
-        total,
-        pages,
-        currentPage,
-      };
-    },
-    [
-      `public-products-${search}-${category}-${businessId}-${page}-${limit}-${sort}`,
-    ],
-    {
-      tags: [
-        CACHE_TAGS.PUBLIC_PRODUCTS,
-        CACHE_TAGS.PRODUCTS,
-        businessId ? CACHE_TAGS.businessById(businessId) : "",
-      ].filter(Boolean),
-      revalidate: CACHE_REVALIDATE.SHORT,
-    },
-  )();
+  // Llamar directamente a la función del DAL
+  return ProductDAL.listAllProducts({
+    search,
+    category,
+    businessId,
+    page,
+    limit,
+    sort,
+  });
 }
 
 export async function getPublicBusiness(businessId: string) {
-  return unstable_cache(
-    async () => {
-      const businessDAL = await BusinessDAL.public();
-      const business = await businessDAL.getBusinessById(businessId);
-      return business;
-    },
-    [`public-business-${businessId}`],
-    {
-      tags: [
-        CACHE_TAGS.PUBLIC_BUSINESSES,
-        CACHE_TAGS.BUSINESSES,
-        CACHE_TAGS.businessById(businessId),
-      ],
-      revalidate: CACHE_REVALIDATE.MEDIUM,
-    },
-  )();
+  return BusinessDAL.getBusinessById(businessId);
 }
 
 export async function getPublicProduct(productId: string) {
-  return unstable_cache(
-    async () => {
-      const productDAL = await ProductDAL.public();
-      const product = await productDAL.getProductById(productId);
-      return product;
-    },
-    [`public-product-${productId}`],
-    {
-      tags: [
-        CACHE_TAGS.PUBLIC_PRODUCTS,
-        CACHE_TAGS.PRODUCTS,
-        CACHE_TAGS.productById(productId),
-      ],
-      revalidate: CACHE_REVALIDATE.MEDIUM,
-    },
-  )();
+  return ProductDAL.getProductById(productId);
 }
 
 export async function getCategories() {
-  return unstable_cache(
-    async () => {
-      const categories = await prisma.product.findMany({
-        where: {
-          active: true,
-          category: { not: null },
-          business: {
-            planStatus: "ACTIVE",
-          },
-        },
-        select: {
-          category: true,
-        },
-        distinct: ["category"],
-      });
+  "use cache";
+  cacheLife("days");
+  cacheTag(CACHE_TAGS.CATEGORIES, CACHE_TAGS.PRODUCTS);
 
-      return categories.map((c) => c.category).filter(Boolean) as string[];
+  const categories = await prisma.product.findMany({
+    where: {
+      active: true,
+      category: { not: null },
+      business: {
+        planStatus: "ACTIVE",
+      },
     },
-    ["categories"],
-    {
-      tags: [CACHE_TAGS.CATEGORIES, CACHE_TAGS.PRODUCTS],
-      revalidate: CACHE_REVALIDATE.LONG,
+    select: {
+      category: true,
     },
-  )();
+    distinct: ["category"],
+  });
+
+  return categories.map((c) => c.category).filter(Boolean) as string[];
 }

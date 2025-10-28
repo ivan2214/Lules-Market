@@ -30,14 +30,6 @@ export default function TerminosPage() {
         <h1 className="mb-4 font-bold text-4xl tracking-tight">
           Términos y Condiciones
         </h1>
-        <p className="text-muted-foreground">
-          Última actualización:{" "}
-          {new Date().toLocaleDateString("es-ES", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
       </div>
 
       <div className="space-y-6">

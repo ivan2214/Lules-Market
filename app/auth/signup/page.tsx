@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { SignUpForm } from "@/components/auth/signup-form";
+import { SignUpFormSkeleton } from "@/components/skeletons/sign-up-form-skeleton";
 import {
   Card,
   CardContent,
@@ -21,7 +23,9 @@ export default function SignUpPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <SignUpForm />
+          <Suspense fallback={<SignUpFormSkeleton />}>
+            <SignUpForm />
+          </Suspense>
           <p className="mt-4 text-center text-muted-foreground text-sm">
             ¿Ya tienes cuenta?{" "}
             <Link href="/auth/signin" className="font-medium underline">

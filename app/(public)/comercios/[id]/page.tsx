@@ -2,7 +2,6 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { trackBusinessView } from "@/app/actions/analytics-actions";
 import {
   getPublicBusiness,
   getPublicBusinesses,
@@ -18,22 +17,14 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export const dynamic = "force-dynamic";
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // read route params
   const { id } = await params;
-
-  // fetch data
   const business = await getPublicBusiness(id);
 
   if (!business) {
     notFound();
   }
 
-  await trackBusinessView(id);
-
-  // Preparar imágenes para OpenGraph
   const ogImages = [];
 
   if (business.coverImage) {
@@ -54,12 +45,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
   }
 
-  // Crear una descripción optimizada para SEO
   const seoDescription = business.description
     ? `${business.description.substring(0, 155)}${business.description.length > 155 ? "..." : ""}`
     : `Descubre ${business.name} en Lules Market. Comercio local en Argentina con productos de calidad.`;
 
-  // Crear keywords basadas en el comercio
   const keywords = [
     business.name,
     business.category || "",
@@ -136,6 +125,13 @@ export async function generateStaticParams() {
   return businesses.map((business) => ({ id: business.id }));
 }
 
+/* // ✅ Componente separado para tracking (usa headers)
+async function BusinessViewTracker({ businessId }: { businessId: string }) {
+  const { trackBusinessView } = await import("@/app/actions/analytics-actions");
+  await trackBusinessView(businessId);
+  return null;
+} */
+
 export default async function BusinessPage({
   params,
 }: {
@@ -156,6 +152,11 @@ export default async function BusinessPage({
 
   return (
     <div className="container mx-auto space-y-8 py-8">
+      {/* ✅ Tracking envuelto en Suspense */}
+      {/*  <Suspense fallback={null}>
+        <BusinessViewTracker businessId={id} />
+      </Suspense> */}
+
       <LocalBusinessSchema
         name={business.name}
         description={business.description || ""}
