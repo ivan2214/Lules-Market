@@ -1,6 +1,6 @@
 import "server-only";
 
-import { headers } from "next/headers";
+import { cacheLife, cacheTag } from "next/cache";
 import prisma from "@/lib/prisma";
 import { requireBusiness } from "../business/require-busines";
 import type { AnalyticsPeriod } from "./analytics.dto";
@@ -9,8 +9,13 @@ import type { AnalyticsPeriod } from "./analytics.dto";
 // FUNCIONES PRIVADAS (Requieren autenticación)
 // ========================================
 
-export async function getAnalytics(period: AnalyticsPeriod = "30d") {
-  const { business } = await requireBusiness();
+export async function getAnalytics(
+  period: AnalyticsPeriod = "30d",
+  businessId: string
+) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("analytics");
 
   const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
   const startDate = new Date();
@@ -20,7 +25,7 @@ export async function getAnalytics(period: AnalyticsPeriod = "30d") {
   const productViews = await prisma.productView.findMany({
     where: {
       product: {
-        businessId: business.id,
+        businessId: businessId,
       },
       createdAt: {
         gte: startDate,
@@ -39,7 +44,7 @@ export async function getAnalytics(period: AnalyticsPeriod = "30d") {
   // Get business views
   const businessViews = await prisma.businessView.findMany({
     where: {
-      businessId: business.id,
+      businessId: businessId,
       createdAt: {
         gte: startDate,
       },
@@ -84,8 +89,7 @@ export async function getAnalytics(period: AnalyticsPeriod = "30d") {
 
   const topProducts = Object.entries(productViewCounts)
     .map(([id, data]) => ({ id, ...data }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+    .sort((a, b) => b.count - a.count);
 
   // Referrer stats
   const referrerCounts: Record<string, number> = {};
@@ -111,7 +115,7 @@ export async function getAnalytics(period: AnalyticsPeriod = "30d") {
 
 export async function getProductAnalytics(
   productId: string,
-  period: AnalyticsPeriod = "30d",
+  period: AnalyticsPeriod = "30d"
 ) {
   const { business } = await requireBusiness();
 
@@ -167,34 +171,4 @@ export async function getProductAnalytics(
     totalViews: views.length,
     dailyViews: sortedDailyViews,
   };
-}
-
-export async function trackProductView(productId: string) {
-  try {
-    const currentHeaders = await headers();
-    const referrer = currentHeaders.get("referer") || undefined;
-    await prisma.productView.create({
-      data: {
-        productId,
-        referrer,
-      },
-    });
-  } catch (error) {
-    console.error("Error tracking product view:", error);
-  }
-}
-
-export async function trackBusinessView(businessId: string) {
-  try {
-    const currentHeaders = await headers();
-    const referrer = currentHeaders.get("referer") || undefined;
-    await prisma.businessView.create({
-      data: {
-        businessId,
-        referrer,
-      },
-    });
-  } catch (error) {
-    console.error("Error tracking business view:", error);
-  }
 }

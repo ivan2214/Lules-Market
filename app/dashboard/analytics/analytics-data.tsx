@@ -1,4 +1,4 @@
-import { getAnalytics } from "@/app/actions/analytics-actions";
+import { getAnalytics } from "@/app/data/analytics/analytics.dal";
 import type { AnalyticsPeriod } from "@/app/data/analytics/analytics.dto";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
@@ -54,7 +54,7 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
     // Fetch analytics data
     let data: AnalyticsData;
     try {
-      const analytics = await getAnalytics(period);
+      const analytics = await getAnalytics(period, business.id);
       data = {
         totalViews: analytics?.totalViews ?? 0,
         productViews: analytics?.productViews ?? 0,
