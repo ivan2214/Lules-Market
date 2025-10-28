@@ -90,16 +90,19 @@ export async function processPaymentSuccess({
       throw new Error("Pago no encontrado en Mercado Pago");
     }
 
-    if (mpPayment.status !== "approved") {
+    const status = mpPayment.status;
+
+    if (status !== "approved") {
       await prisma.payment.update({
         where: { id: paymentIdDB },
         data: {
           status: "rejected",
-          mpStatus: mpPayment.status,
+          mpStatus: status,
         },
       });
       return null;
     }
+    // ✅ Actualiza pago aprobado
 
     const payment = await prisma.payment.findUnique({
       where: { id: paymentIdDB },
@@ -115,7 +118,7 @@ export async function processPaymentSuccess({
       where: { id: paymentIdDB },
       data: {
         status: "approved",
-        mpStatus: "approved",
+        mpStatus: status,
         paymentMethod: mpPayment.payment_method_id,
         amount: mpPayment.transaction_amount,
         currency: mpPayment.currency_id,
@@ -129,6 +132,21 @@ export async function processPaymentSuccess({
         plan: payment.plan,
         planStatus: "ACTIVE",
         planExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      },
+    });
+
+    // ✅ Actualiza métricas diarias
+    const today = new Date().toISOString().slice(0, 10);
+    await prisma.analytics.upsert({
+      where: { date: today },
+      update: {
+        totalPayments: { increment: 1 },
+        totalRevenue: { increment: mpPayment.transaction_amount },
+      },
+      create: {
+        date: new Date(),
+        totalPayments: 1,
+        totalRevenue: mpPayment.transaction_amount,
       },
     });
 
@@ -165,8 +183,6 @@ export async function processPaymentFailure({
 
 export async function getPayment({ paymentIdDB }: { paymentIdDB: string }) {
   try {
-    console.log("Getting payment for paymentId:", paymentIdDB);
-
     const payment = await prisma.payment.findUnique({
       where: { id: paymentIdDB },
       include: { business: true },
@@ -177,4 +193,105 @@ export async function getPayment({ paymentIdDB }: { paymentIdDB: string }) {
     console.error("Error getting payment:", error);
     throw error;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   NUEVAS FUNCIONES PARA TRIALS Y CUPONES
+--------------------------------------------------------------------------- */
+
+export async function startTrial(plan: SubscriptionPlan = "PREMIUM") {
+  const { business } = await requireBusiness();
+
+  // Verifica si ya tiene un trial activo
+  const existingTrial = await prisma.trial.findUnique({
+    where: { businessId: business.id },
+  });
+
+  if (existingTrial?.isActive) throw new Error("Ya tenés un trial activo.");
+
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 días
+
+  await prisma.trial.create({
+    data: {
+      businessId: business.id,
+      plan,
+      expiresAt,
+    },
+  });
+
+  await prisma.business.update({
+    where: { id: business.id },
+    data: {
+      plan,
+      planStatus: "ACTIVE",
+      planExpiresAt: expiresAt,
+    },
+  });
+
+  // Registrar en analíticas
+  const today = new Date().toISOString().slice(0, 10);
+  await prisma.analytics.upsert({
+    where: { date: today },
+    update: {
+      totalTrials: { increment: 1 },
+      activeTrials: { increment: 1 },
+    },
+    create: {
+      date: new Date(),
+      totalTrials: 1,
+      activeTrials: 1,
+    },
+  });
+
+  return { message: "Trial iniciado con éxito", expiresAt };
+}
+
+export async function redeemCoupon(code: string) {
+  const { business } = await requireBusiness();
+
+  const coupon = await prisma.coupon.findUnique({ where: { code } });
+  if (!coupon || !coupon.active) throw new Error("Cupón inválido o expirado.");
+
+  if (coupon.expiresAt && new Date() > coupon.expiresAt)
+    throw new Error("El cupón ya expiró.");
+
+  if (coupon.maxUses && coupon.usedCount >= coupon.maxUses)
+    throw new Error("El cupón ya alcanzó su límite de usos.");
+
+  const expiresAt = new Date(
+    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000,
+  );
+
+  await prisma.couponRedemption.create({
+    data: { couponId: coupon.id, businessId: business.id },
+  });
+
+  await prisma.coupon.update({
+    where: { id: coupon.id },
+    data: { usedCount: { increment: 1 } },
+  });
+
+  await prisma.business.update({
+    where: { id: business.id },
+    data: {
+      plan: coupon.plan,
+      planStatus: "ACTIVE",
+      planExpiresAt: expiresAt,
+    },
+  });
+
+  // Registrar en analíticas
+  const today = new Date().toISOString().slice(0, 10);
+  await prisma.analytics.upsert({
+    where: { date: today },
+    update: {
+      totalRedemptions: { increment: 1 },
+    },
+    create: {
+      date: new Date(),
+      totalRedemptions: 1,
+    },
+  });
+
+  return { message: "Cupón aplicado correctamente", expiresAt };
 }

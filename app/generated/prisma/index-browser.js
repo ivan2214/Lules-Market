@@ -280,6 +280,48 @@ exports.Prisma.WebhookEventScalarFieldEnum = {
   processedAt: 'processedAt'
 };
 
+exports.Prisma.AnalyticsScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  totalTrials: 'totalTrials',
+  activeTrials: 'activeTrials',
+  totalCoupons: 'totalCoupons',
+  totalRedemptions: 'totalRedemptions',
+  totalPayments: 'totalPayments',
+  totalRevenue: 'totalRevenue'
+};
+
+exports.Prisma.TrialScalarFieldEnum = {
+  id: 'id',
+  businessId: 'businessId',
+  plan: 'plan',
+  expiresAt: 'expiresAt',
+  activatedAt: 'activatedAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  plan: 'plan',
+  durationDays: 'durationDays',
+  maxUses: 'maxUses',
+  usedCount: 'usedCount',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CouponRedemptionScalarFieldEnum = {
+  id: 'id',
+  couponId: 'couponId',
+  businessId: 'businessId',
+  redeemedAt: 'redeemedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -338,7 +380,11 @@ exports.Prisma.ModelName = {
   Image: 'Image',
   productView: 'productView',
   businessView: 'businessView',
-  WebhookEvent: 'WebhookEvent'
+  WebhookEvent: 'WebhookEvent',
+  Analytics: 'Analytics',
+  Trial: 'Trial',
+  Coupon: 'Coupon',
+  CouponRedemption: 'CouponRedemption'
 };
 
 /**

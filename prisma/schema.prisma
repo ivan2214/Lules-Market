@@ -311,9 +311,20 @@ model WebhookEvent {
 
 /**
  * ===============================================================
- * PLANES GRATUITOS Y CUPONES
+ * PLANES GRATUITOS, CUPONES Y ANALITICAS
  * ===============================================================
  */
+
+model Analytics {
+  id               String   @id @default(cuid())
+  date             DateTime @unique
+  totalTrials      Int      @default(0)
+  activeTrials     Int      @default(0)
+  totalCoupons     Int      @default(0)
+  totalRedemptions Int      @default(0)
+  totalPayments    Int      @default(0)
+  totalRevenue     Float    @default(0)
+}
 
 model Trial {
   id          String           @id @default(cuid())

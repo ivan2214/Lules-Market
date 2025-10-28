@@ -1,5 +1,4 @@
 // prisma/seed.ts
-
 import { faker } from "@faker-js/faker";
 import { auth } from "@/lib/auth";
 import { PrismaClient } from "../app/generated/prisma";
@@ -21,6 +20,7 @@ async function main() {
     });
 
     // ---- BUSINESS ----
+    const plan = faker.helpers.arrayElement(["FREE", "BASIC", "PREMIUM"]);
     const business = await prisma.business.create({
       data: {
         name: faker.company.name(),
@@ -30,26 +30,13 @@ async function main() {
         email: faker.internet.email(),
         website: faker.internet.url(),
         address: faker.location.streetAddress(),
-        plan: "BASIC",
+        plan,
         planStatus: "ACTIVE",
         userId: user.id,
       },
     });
 
-    const randomPastDateLast90Days = faker.date.recent({
-      refDate: new Date(),
-      days: 90,
-    });
-
-    await prisma.businessView.create({
-      data: {
-        businessId: business.id,
-        referrer: faker.internet.url(),
-        createdAt: randomPastDateLast90Days,
-      },
-    });
-
-    // ---- BUSINESS IMAGES (logo + cover) ----
+    // ---- BUSINESS IMAGES ----
     await prisma.image.create({
       data: {
         key: faker.string.uuid(),
@@ -73,7 +60,8 @@ async function main() {
     });
 
     // ---- PRODUCTS ----
-    for (let j = 0; j < 10; j++) {
+    const productCount = faker.number.int({ min: 5, max: 15 });
+    for (let j = 0; j < productCount; j++) {
       const product = await prisma.product.create({
         data: {
           name: faker.commerce.productName(),
@@ -81,19 +69,21 @@ async function main() {
           price: parseFloat(faker.commerce.price({ min: 10, max: 5000 })),
           category: faker.commerce.department(),
           businessId: business.id,
+          featured: faker.datatype.boolean(),
         },
       });
-      const randomPastDateLast90Days = faker.date.recent({
-        refDate: new Date(),
-        days: 90,
-      });
-      await prisma.productView.create({
-        data: {
-          productId: product.id,
-          referrer: faker.internet.url(),
-          createdAt: randomPastDateLast90Days,
-        },
-      });
+
+      // ---- PRODUCT VIEWS ----
+      const viewsCount = faker.number.int({ min: 0, max: 20 });
+      for (let v = 0; v < viewsCount; v++) {
+        await prisma.productView.create({
+          data: {
+            productId: product.id,
+            referrer: faker.internet.url(),
+            createdAt: faker.date.recent({ days: 90 }),
+          },
+        });
+      }
 
       // ---- PRODUCT IMAGES ----
       const imagesPerProduct = faker.number.int({ min: 1, max: 5 });
@@ -114,16 +104,112 @@ async function main() {
     }
 
     // ---- PAYMENTS ----
-    await prisma.payment.create({
-      data: {
-        amount: faker.number.float({ min: 1000, max: 10000 }),
-        currency: "ARS",
-        status: faker.helpers.arrayElement(["pending", "approved", "rejected"]),
-        paymentMethod: faker.helpers.arrayElement(["card", "pix", "transfer"]),
-        plan: faker.helpers.arrayElement(["FREE", "BASIC", "PREMIUM"]),
-        businessId: business.id,
-        mpPaymentId: faker.string.uuid(),
-        mpStatus: faker.helpers.arrayElement(["approved", "rejected"]),
+    const paymentCount = faker.number.int({ min: 1, max: 3 });
+    for (let p = 0; p < paymentCount; p++) {
+      const paymentPlan = faker.helpers.arrayElement([
+        "FREE",
+        "BASIC",
+        "PREMIUM",
+      ]);
+      const status = faker.helpers.arrayElement([
+        "pending",
+        "approved",
+        "rejected",
+      ]);
+      await prisma.payment.create({
+        data: {
+          amount: faker.number.float({ min: 1000, max: 10000 }),
+          currency: "ARS",
+          status,
+          paymentMethod: faker.helpers.arrayElement([
+            "card",
+            "pix",
+            "transfer",
+          ]),
+          plan: paymentPlan,
+          businessId: business.id,
+          mpPaymentId: faker.string.uuid(),
+          mpStatus: status === "approved" ? "approved" : "rejected",
+        },
+      });
+    }
+
+    // ---- TRIALS ----
+    if (faker.datatype.boolean()) {
+      const isActive = faker.datatype.boolean();
+      const expiresAt = isActive
+        ? faker.date.soon({ days: 7 })
+        : faker.date.past({ years: 0.1 });
+      await prisma.trial.create({
+        data: {
+          businessId: business.id,
+          plan: "PREMIUM",
+          expiresAt,
+          isActive,
+        },
+      });
+    }
+
+    // ---- COUPONS ----
+    const couponCount = faker.number.int({ min: 1, max: 3 });
+    for (let c = 0; c < couponCount; c++) {
+      const maxUses = faker.number.int({ min: 1, max: 10 });
+      const usedCount = faker.number.int({ min: 0, max: maxUses });
+      const expiresAt = faker.datatype.boolean()
+        ? faker.date.soon({ days: 60 })
+        : undefined;
+
+      const coupon = await prisma.coupon.create({
+        data: {
+          code: faker.string.alpha({ length: 8 }).toUpperCase(),
+          plan: "PREMIUM",
+          durationDays: 30,
+          maxUses,
+          usedCount,
+          expiresAt,
+        },
+      });
+
+      // ---- COUPON REDEMPTIONS ----
+      const redemptionCount = faker.number.int({ min: 0, max: usedCount });
+      for (let r = 0; r < redemptionCount; r++) {
+        await prisma.couponRedemption.create({
+          data: {
+            couponId: coupon.id,
+            businessId: business.id,
+          },
+        });
+      }
+    }
+
+    // ---- BUSINESS VIEWS ----
+    const viewsCount = faker.number.int({ min: 1, max: 10 });
+    for (let v = 0; v < viewsCount; v++) {
+      await prisma.businessView.create({
+        data: {
+          businessId: business.id,
+          referrer: faker.internet.url(),
+          createdAt: faker.date.recent({ days: 90 }),
+        },
+      });
+    }
+
+    // ---- ANALYTICS ----
+    const today = new Date();
+    await prisma.analytics.upsert({
+      where: { date: today },
+      update: {
+        totalPayments: { increment: paymentCount },
+        totalTrials: { increment: 1 },
+        activeTrials: { increment: 1 },
+        totalRedemptions: { increment: couponCount },
+      },
+      create: {
+        date: today,
+        totalPayments: paymentCount,
+        totalTrials: 1,
+        activeTrials: 1,
+        totalRedemptions: couponCount,
       },
     });
   }
