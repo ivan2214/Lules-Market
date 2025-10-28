@@ -122,6 +122,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   const { businesses } = await getPublicBusinesses();
+
+  // fallback si no hay negocios
+  if (!businesses.length) {
+    return [{ id: "default" }]; // id que haga sentido para tu app
+  }
+
   return businesses.map((business) => ({ id: business.id }));
 }
 

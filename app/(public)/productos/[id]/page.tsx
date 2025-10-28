@@ -108,6 +108,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   const { products } = await getPublicProducts();
+
+  if (!products.length) {
+    return [{ id: "default" }]; // fallback para que el build no falle
+  }
+
   return products.map((product) => ({ id: product.id }));
 }
 
