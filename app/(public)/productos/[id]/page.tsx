@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   getPublicProduct,
   getPublicProducts,
@@ -13,6 +14,7 @@ import { mainImage } from "@/utils/main-image";
 import { BusinessCard } from "./components/business-card";
 import { ProductImages } from "./components/product-images";
 import { ProductInfo } from "./components/product-info";
+import { ProductViewTracker } from "./components/product-view-tracker";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -123,13 +125,6 @@ interface ContactMethod {
   href?: string | null;
 }
 
-/* // ✅ Componente separado para tracking (usa headers)
-async function ProductViewTracker({ productId }: { productId: string }) {
-  const { trackProductView } = await import("@/app/actions/analytics-actions");
-  await trackProductView(productId);
-  return null;
-}
- */
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const product = await getPublicProduct(id);
@@ -186,10 +181,10 @@ export default async function ProductPage({ params }: Props) {
   return (
     <div className="container space-y-8 p-8">
       {/* ✅ Tracking envuelto en Suspense */}
-      {/*   <Suspense fallback={null}>
+      <Suspense fallback={null}>
         <ProductViewTracker productId={id} />
       </Suspense>
- */}
+
       <ProductSchema
         name={product.name}
         description={product.description || ""}

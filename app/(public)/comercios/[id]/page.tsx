@@ -2,12 +2,14 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   getPublicBusiness,
   getPublicBusinesses,
 } from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
+import { ProductViewTracker } from "../../productos/[id]/components/product-view-tracker";
 import { BusinessHeader } from "./components/business-header";
 import { BusinessProducts } from "./components/business-products";
 import { ContactCard } from "./components/contact-card";
@@ -131,13 +133,6 @@ export async function generateStaticParams() {
   return businesses.map((business) => ({ id: business.id }));
 }
 
-/* // ✅ Componente separado para tracking (usa headers)
-async function BusinessViewTracker({ businessId }: { businessId: string }) {
-  const { trackBusinessView } = await import("@/app/actions/analytics-actions");
-  await trackBusinessView(businessId);
-  return null;
-} */
-
 export default async function BusinessPage({
   params,
 }: {
@@ -159,9 +154,9 @@ export default async function BusinessPage({
   return (
     <div className="container mx-auto space-y-8 py-8">
       {/* ✅ Tracking envuelto en Suspense */}
-      {/*  <Suspense fallback={null}>
-        <BusinessViewTracker businessId={id} />
-      </Suspense> */}
+      <Suspense fallback={null}>
+        <ProductViewTracker productId={id} />
+      </Suspense>
 
       <LocalBusinessSchema
         name={business.name}
