@@ -44,7 +44,7 @@ function AnalyticsSkeleton() {
   );
 }
 
-export default async function AnalyticsPage({
+async function AnalyticsWrapper({
   searchParams,
 }: {
   searchParams: SearchParams;
@@ -53,8 +53,7 @@ export default async function AnalyticsPage({
   const period = params.period || "30d";
 
   return (
-    <div className="space-y-6">
-      {/* ✅ TODO fuera del Suspense - se prerenderiza */}
+    <>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Estadísticas</h1>
@@ -62,13 +61,34 @@ export default async function AnalyticsPage({
             Analiza el rendimiento de tu negocio
           </p>
         </div>
-        {/* ✅ PeriodSelector también fuera - es Client Component puro */}
         <PeriodSelector currentPeriod={period} />
       </div>
-
-      {/* ✅ Solo el contenido que necesita auth va en Suspense */}
       <Suspense key={period} fallback={<AnalyticsSkeleton />}>
         <AnalyticsData period={period} />
+      </Suspense>
+    </>
+  );
+}
+
+export default function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  return (
+    <div className="space-y-6">
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-between">
+            <div>
+              <Skeleton className="mb-2 h-10 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+            <Skeleton className="h-10 w-[180px]" />
+          </div>
+        }
+      >
+        <AnalyticsWrapper searchParams={searchParams} />
       </Suspense>
     </div>
   );

@@ -4,8 +4,6 @@ import { getMyBusiness } from "@/app/data/business/business.dal";
 import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
-export const dynamic = "force-dynamic";
-
 type AnalyticsData = {
   totalViews: number;
   productViews: number;

@@ -1,13 +1,15 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import { getProductsByBusinessId } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
-export default async function ProductsPage() {
+async function ProductsContent() {
   const business = await getMyBusiness();
   const products = await getProductsByBusinessId();
   if (!business) {
@@ -20,7 +22,7 @@ export default async function ProductsPage() {
     (business?.products?.length || 0) < limits.maxProducts;
 
   return (
-    <div className="space-y-6">
+    <>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Productos</h1>
@@ -74,6 +76,36 @@ export default async function ProductsPage() {
           ))}
         </div>
       )}
+    </>
+  );
+}
+
+function ProductsSkeleton() {
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <div>
+          <Skeleton className="mb-2 h-10 w-48" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <Skeleton className="h-10 w-32" />
+      </div>
+      <Skeleton className="h-24 w-full" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i.toString()} className="h-64 w-full" />
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <div className="space-y-6">
+      <Suspense fallback={<ProductsSkeleton />}>
+        <ProductsContent />
+      </Suspense>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
@@ -11,10 +12,69 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
-export default async function SubscriptionPage() {
+const plans: {
+  name: SubscriptionPlan;
+  title: string;
+  price: number;
+  icon: IconComponentName;
+  description: string;
+  features: string[];
+  limitations?: string[];
+  popular?: boolean;
+}[] = [
+  {
+    name: "FREE",
+    title: "Gratuito",
+    price: SUBSCRIPTION_LIMITS.FREE.price,
+    icon: "Sparkles",
+    description: "Perfecto para comenzar",
+    features: [
+      `Hasta ${SUBSCRIPTION_LIMITS.FREE.maxProducts} productos`,
+      "Perfil de negocio básico",
+      "Contacto directo con clientes",
+      "Búsqueda en catálogo",
+    ],
+    limitations: [
+      "Sin estadísticas",
+      "Sin productos destacados",
+      "Prioridad baja en búsquedas",
+    ],
+  },
+  {
+    name: "BASIC",
+    title: "Básico",
+    price: SUBSCRIPTION_LIMITS.BASIC.price,
+    icon: "Zap",
+    description: "Para negocios en crecimiento",
+    features: [
+      `Hasta ${SUBSCRIPTION_LIMITS.BASIC.maxProducts} productos`,
+      "Estadísticas simples",
+      "Prioridad media en búsquedas",
+      "Soporte por email",
+    ],
+    popular: true,
+  },
+  {
+    name: "PREMIUM",
+    title: "Premium",
+    price: SUBSCRIPTION_LIMITS.PREMIUM.price,
+    icon: "Crown",
+    description: "Para negocios establecidos",
+    features: [
+      "Productos ilimitados",
+      "Destacar productos",
+      "Estadísticas avanzadas",
+      "Máxima prioridad en búsquedas",
+      "Soporte prioritario",
+    ],
+  },
+];
+
+async function SubscriptionContent() {
   const business = await getMyBusiness();
 
   if (!business) {
@@ -23,72 +83,8 @@ export default async function SubscriptionPage() {
 
   const payments = await getSubscriptionHistory();
 
-  const plans: {
-    name: SubscriptionPlan;
-    title: string;
-    price: number;
-    icon: IconComponentName;
-    description: string;
-    features: string[];
-    limitations?: string[];
-    popular?: boolean;
-  }[] = [
-    {
-      name: "FREE",
-      title: "Gratuito",
-      price: SUBSCRIPTION_LIMITS.FREE.price,
-      icon: "Sparkles",
-      description: "Perfecto para comenzar",
-      features: [
-        `Hasta ${SUBSCRIPTION_LIMITS.FREE.maxProducts} productos`,
-        "Perfil de negocio básico",
-        "Contacto directo con clientes",
-        "Búsqueda en catálogo",
-      ],
-      limitations: [
-        "Sin estadísticas",
-        "Sin productos destacados",
-        "Prioridad baja en búsquedas",
-      ],
-    },
-    {
-      name: "BASIC",
-      title: "Básico",
-      price: SUBSCRIPTION_LIMITS.BASIC.price,
-      icon: "Zap",
-      description: "Para negocios en crecimiento",
-      features: [
-        `Hasta ${SUBSCRIPTION_LIMITS.BASIC.maxProducts} productos`,
-        "Estadísticas simples",
-        "Prioridad media en búsquedas",
-        "Soporte por email",
-      ],
-      popular: true,
-    },
-    {
-      name: "PREMIUM",
-      title: "Premium",
-      price: SUBSCRIPTION_LIMITS.PREMIUM.price,
-      icon: "Crown",
-      description: "Para negocios establecidos",
-      features: [
-        "Productos ilimitados",
-        "Destacar productos",
-        "Estadísticas avanzadas",
-        "Máxima prioridad en búsquedas",
-        "Soporte prioritario",
-      ],
-    },
-  ];
-
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="font-bold text-3xl tracking-tight">Suscripción</h1>
-        <p className="text-muted-foreground">Gestiona tu plan y facturación</p>
-      </div>
-
-      {/* Current Plan */}
+    <>
       <Card>
         <CardHeader>
           <CardTitle>Plan Actual</CardTitle>
@@ -130,7 +126,6 @@ export default async function SubscriptionPage() {
         </CardContent>
       </Card>
 
-      {/* Plans */}
       <div>
         <h2 className="mb-6 font-bold text-2xl">Planes Disponibles</h2>
         <div className="grid gap-6 md:grid-cols-3">
@@ -145,7 +140,6 @@ export default async function SubscriptionPage() {
         </div>
       </div>
 
-      {/* Payment History */}
       {payments.length > 0 && (
         <Card>
           <CardHeader>
@@ -183,6 +177,42 @@ export default async function SubscriptionPage() {
           </CardContent>
         </Card>
       )}
+    </>
+  );
+}
+
+function SubscriptionSkeleton() {
+  return (
+    <>
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-4 w-48" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-32 w-full" />
+        </CardContent>
+      </Card>
+      <div className="grid gap-6 md:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i.toString()} className="h-96 w-full" />
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default function SubscriptionPage() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="font-bold text-3xl tracking-tight">Suscripción</h1>
+        <p className="text-muted-foreground">Gestiona tu plan y facturación</p>
+      </div>
+
+      <Suspense fallback={<SubscriptionSkeleton />}>
+        <SubscriptionContent />
+      </Suspense>
     </div>
   );
 }

@@ -1,4 +1,7 @@
 import type React from "react";
+import { Suspense } from "react";
+import { DashboardHeaderWrapper } from "@/components/dashboard/dashboard-header-wrapper";
+import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function DashboardLayout({
@@ -8,16 +11,15 @@ export default async function DashboardLayout({
 }) {
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* <div className="hidden lg:flex">
+      <div className="hidden lg:flex">
         <Suspense fallback={<DashboardSidebarSkeleton />}>
           <DashboardSidebar />
         </Suspense>
-      </div> */}
+      </div>
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* ✅ Header también envuelto en Suspense */}
-        {/* <Suspense fallback={<DashboardHeaderSkeleton />}>
+        <Suspense fallback={<DashboardHeaderSkeleton />}>
           <DashboardHeaderWrapper />
-        </Suspense> */}
+        </Suspense>
         <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6">
           {children}
         </main>

@@ -1,6 +1,7 @@
 import { ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { CheckoutButton } from "@/components/dashboard/checkout-button";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 
-export default async function CheckoutPage({
+async function CheckoutContent({
   searchParams,
 }: {
   searchParams: Promise<{ plan?: string }>;
@@ -47,7 +49,7 @@ export default async function CheckoutPage({
         ];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <>
       <Button asChild variant="ghost">
         <Link href="/dashboard/subscription">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -111,6 +113,37 @@ export default async function CheckoutPage({
           </p>
         </CardContent>
       </Card>
+    </>
+  );
+}
+
+function CheckoutSkeleton() {
+  return (
+    <>
+      <Skeleton className="h-10 w-32" />
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-96" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-96 w-full" />
+        </CardContent>
+      </Card>
+    </>
+  );
+}
+
+export default function CheckoutPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>;
+}) {
+  return (
+    <div className="mx-auto max-w-2xl space-y-6">
+      <Suspense fallback={<CheckoutSkeleton />}>
+        <CheckoutContent searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }
