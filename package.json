@@ -9,7 +9,7 @@
     "lint": "biome check",
     "format": "biome check --write",
     "type-check": "tsc --noEmit",
-    "postinstall": "prisma generate "
+    "postinstall": "prisma generate --no-engine"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.899.0",
