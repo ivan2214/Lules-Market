@@ -1,27 +1,26 @@
 import { z } from "zod";
 import type {
   Business as BusinessPrisma,
-  Image,
-  Prisma,
   SubscriptionPlan,
 } from "@/app/generated/prisma";
+import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";
 
 export const BusinessCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
-  description: z.string().optional(),
-  phone: z.string().optional(),
-  whatsapp: z.string().optional(),
-  email: z.string().email("Email inválido").optional(),
-  website: z.string().url("URL inválida").optional(),
-  facebook: z.string().optional(),
-  instagram: z.string().optional(),
-  twitter: z.string().optional(),
-  address: z.string().optional(),
-  logo: z.any().optional(),
-  coverImage: z.any().optional(),
-}) satisfies z.ZodType<Partial<Prisma.BusinessCreateInput>>;
-
+  category: z.string().min(1, "La categoría es requerida"),
+  description: z.string().nullable(),
+  address: z.string().nullable(),
+  phone: z.string().nullable(),
+  email: z.string().email("Email inválido").nullable(),
+  website: z.string().url("URL inválida").nullable(),
+  hours: z.string().nullable(),
+  whatsapp: z.string().nullable(),
+  facebook: z.string().nullable(),
+  instagram: z.string().nullable(),
+  logo: ImageCreateInputSchema,
+  coverImage: ImageCreateInputSchema,
+});
 export type BusinessCreateInput = z.infer<typeof BusinessCreateInputSchema>;
 
 export const BusinessUpdateInputSchema = BusinessCreateInputSchema.extend({
@@ -32,8 +31,8 @@ export const BusinessUpdateInputSchema = BusinessCreateInputSchema.extend({
 export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
 
 export interface BusinessDTO extends BusinessPrisma {
-  logo?: Image | null;
-  coverImage?: Image | null;
+  logo?: CleanImage | null;
+  coverImage?: CleanImage | null;
   plan: SubscriptionPlan;
   products?: ProductDTO[] | null;
 }

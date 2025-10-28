@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, File, Loader2, StarIcon, Upload, X } from "lucide-react";
+import type { ImageCreateInput } from "@/app/data/image/image.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import {
   AlertDialog,
@@ -18,7 +19,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { formatFileSize, isImage } from "../uploader.helpers";
-import type { UploadedFile } from "../uploader.types";
 import type { VariantCommonProps } from "./types";
 
 export function CompactVariant(props: VariantCommonProps) {
@@ -270,17 +270,19 @@ export function CompactVariant(props: VariantCommonProps) {
           <Card className="w-fit">
             <CardContent>
               <div
-                key={(value as UploadedFile).key}
+                key={(value as ImageCreateInput).key}
                 className="group relative h-48 w-48"
               >
-                {isImage(value as UploadedFile) ? (
+                {isImage(value as ImageCreateInput) ? (
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
                     <ImageWithSkeleton
-                      src={(value as UploadedFile).url || "/placeholder.svg"}
-                      alt={(value as UploadedFile).name || "Imagen"}
+                      src={
+                        (value as ImageCreateInput).url || "/placeholder.svg"
+                      }
+                      alt={(value as ImageCreateInput).name || "Imagen"}
                       className="object-cover"
                     />
-                    {(value as UploadedFile).isMainImage && (
+                    {(value as ImageCreateInput).isMainImage && (
                       <Button
                         type="button"
                         size="icon"
@@ -322,14 +324,16 @@ export function CompactVariant(props: VariantCommonProps) {
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
                         className="bg-destructive text-white hover:bg-destructive/90"
-                        onClick={() => removeFile((value as UploadedFile).key)}
+                        onClick={() =>
+                          removeFile((value as ImageCreateInput).key)
+                        }
                       >
                         Eliminar
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-                {!(value as UploadedFile).isMainImage && (
+                {!(value as ImageCreateInput).isMainImage && (
                   <Button
                     type="button"
                     size="icon"
@@ -337,7 +341,7 @@ export function CompactVariant(props: VariantCommonProps) {
                     disabled={disabled}
                     className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                     onClick={() =>
-                      handleMainImage?.((value as UploadedFile).key)
+                      handleMainImage?.((value as ImageCreateInput).key)
                     }
                   >
                     <StarIcon className="h-4 w-4 text-yellow-500" />

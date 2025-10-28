@@ -1,6 +1,6 @@
 // Helpers extraídos del componente original para mejorar modularidad
 
-import type { UploadedFile } from "./uploader.types";
+import type { ImageCreateInput } from "@/app/data/image/image.dto";
 
 /**
  * Formatea bytes a una representación legible.
@@ -16,7 +16,7 @@ export const formatFileSize = (bytes: number): string => {
 /**
  * Determina si un archivo subido es una imagen basándose en el nombre o la url.
  */
-export const isImage = (file: UploadedFile): boolean => {
+export const isImage = (file: ImageCreateInput): boolean => {
   const isImg =
     file.url?.includes("https://picsum.photos") ||
     file.name?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
@@ -28,17 +28,17 @@ export const isImage = (file: UploadedFile): boolean => {
 /**
  * Guards de tipo utilizados por el componente principal.
  */
-export const isUploadedFile = (
-  val: UploadedFile | UploadedFile[] | null | undefined,
-): val is UploadedFile => !!val && !Array.isArray(val);
+export const isImageCreateInput = (
+  val: ImageCreateInput | ImageCreateInput[] | null | undefined
+): val is ImageCreateInput => !!val && !Array.isArray(val);
 
 export const isValueArray = (
-  val: UploadedFile | UploadedFile[] | null | undefined,
-): val is UploadedFile[] => Array.isArray(val);
+  val: ImageCreateInput | ImageCreateInput[] | null | undefined
+): val is ImageCreateInput[] => Array.isArray(val);
 
 export const canUploadMoreFiles = (
-  value: UploadedFile | UploadedFile[] | null | undefined,
-  max = 5,
+  value: ImageCreateInput | ImageCreateInput[] | null | undefined,
+  max = 5
 ): boolean => {
   if (!value) return true;
   if (Array.isArray(value)) return value.length < max;

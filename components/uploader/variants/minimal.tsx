@@ -1,9 +1,9 @@
 "use client";
 
 import { Upload, X } from "lucide-react";
+import type { ImageCreateInput } from "@/app/data/image/image.dto";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { UploadedFile } from "../uploader.types";
 import type { VariantCommonProps } from "./types";
 
 export function MinimalVariant(props: VariantCommonProps) {
@@ -72,17 +72,17 @@ export function MinimalVariant(props: VariantCommonProps) {
         !Array.isArray(value) && (
           <div className="space-y-1">
             <div
-              key={(value as UploadedFile).key}
+              key={(value as ImageCreateInput).key}
               className="flex items-center justify-between rounded bg-gray-50 p-2"
             >
               <span className="truncate text-sm">
-                {(value as UploadedFile).name || "Archivo"}
+                {(value as ImageCreateInput).name || "Archivo"}
               </span>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => removeFile((value as UploadedFile).key)}
+                onClick={() => removeFile((value as ImageCreateInput).key)}
                 disabled={disabled}
               >
                 <X className="h-3 w-3" />

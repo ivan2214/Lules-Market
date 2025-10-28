@@ -1,11 +1,11 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import type { Image } from "@/app/generated/prisma";
+import type { CleanImage } from "@/app/data/image/image.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 
 type Props = {
   name: string;
   description?: string | null;
-  logo?: Image | null;
+  logo?: CleanImage | null;
   address?: string | null;
   phone?: string | null;
   email?: string | null;

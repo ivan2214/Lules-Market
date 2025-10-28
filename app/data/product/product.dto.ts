@@ -2,29 +2,11 @@ import { z } from "zod";
 
 import type {
   Image,
-  Prisma,
   Product as ProductPrisma,
   productView,
 } from "@/app/generated/prisma";
 import type { BusinessDTO } from "../business/business.dto";
-
-export const ImageCreateInputSchema = z.object({
-  url: z.url("La URL de la imagen es inválida"),
-  key: z.string().min(1, "La llave de la imagen es requerida"),
-  name: z.string().min(1, "El nombre de la imagen es requerido").optional(),
-  isMainImage: z.boolean(),
-  size: z
-    .number()
-    .min(0, "El tamaño de la imagen debe ser mayor o igual a 0")
-    .optional(),
-}) satisfies z.Schema<Prisma.ImageCreateInput>;
-
-export type ImageCreateInput = z.infer<typeof ImageCreateInputSchema>;
-
-export const ImageUpdateInputSchema = ImageCreateInputSchema.extend({
-  key: z.string().min(1, "La llave de la imagen es requerida"),
-}) satisfies z.Schema<Prisma.ImageUpdateInput>;
-export type ImageUpdateInput = z.infer<typeof ImageUpdateInputSchema>;
+import { ImageCreateInputSchema } from "../image/image.dto";
 
 export const ProductCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -36,25 +18,21 @@ export const ProductCreateInputSchema = z.object({
   active: z.boolean().optional(),
   images: ImageCreateInputSchema.array().min(
     1,
-    "Se requiere al menos una imagen",
+    "Se requiere al menos una imagen"
   ),
-}) satisfies z.ZodType<
-  Omit<Prisma.ProductCreateWithoutImagesInput, "business">
->;
+});
 
 export type ProductCreateInput = z.infer<typeof ProductCreateInputSchema>;
 
 export const ProductUpdateInputSchema = ProductCreateInputSchema.extend({
   productId: z.string().min(1, "El ID del producto es requerido").optional(),
-}) satisfies z.ZodType<
-  Omit<Prisma.ProductUpdateWithoutImagesInput, "business">
->;
+});
 
 export type ProductUpdateInput = z.infer<typeof ProductUpdateInputSchema>;
 
 export const ProductDeleteInputSchema = z.object({
   productId: z.string().min(1, "El ID del producto es requerido"),
-}) satisfies z.ZodType<{ productId: string }>;
+});
 
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 

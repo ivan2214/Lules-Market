@@ -1,7 +1,6 @@
 import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import {
   getPayment,
   processPaymentFailure,
@@ -14,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { MercadoPagoCallbackParams } from "@/types";
 
 export default async function PaymentFailurePage({

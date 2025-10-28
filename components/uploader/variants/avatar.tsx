@@ -1,6 +1,7 @@
 "use client";
 
 import { Upload, X } from "lucide-react";
+import type { ImageCreateInput } from "@/app/data/image/image.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import {
   AlertDialog,
@@ -16,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { UploadedFile } from "../uploader.types";
 import type { VariantCommonProps } from "./types";
 
 export function AvatarVariant(props: VariantCommonProps) {
@@ -60,8 +60,8 @@ export function AvatarVariant(props: VariantCommonProps) {
           <CardContent className="flex items-center gap-4">
             <div className="group relative h-32 w-32">
               <ImageWithSkeleton
-                src={(value as UploadedFile).url || "/placeholder.svg"}
-                alt={(value as UploadedFile).name || "Avatar"}
+                src={(value as ImageCreateInput).url || "/placeholder.svg"}
+                alt={(value as ImageCreateInput).name || "Avatar"}
                 className="h-full min-h-32 w-full min-w-32 rounded-full border-4 border-gray-200"
               />
               <AlertDialog>
@@ -90,7 +90,9 @@ export function AvatarVariant(props: VariantCommonProps) {
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction
                       className="bg-destructive text-white hover:bg-destructive/90"
-                      onClick={() => removeFile((value as UploadedFile).key)}
+                      onClick={() =>
+                        removeFile((value as ImageCreateInput).key)
+                      }
                     >
                       Eliminar
                     </AlertDialogAction>

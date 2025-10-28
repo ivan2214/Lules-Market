@@ -1,12 +1,4 @@
-// Archivo generado: extrae los tipos originales del componente Uploader
-// Mantiene exactamente las interfaces originales para compatibilidad.
-export interface UploadedFile {
-  url: string;
-  key: string;
-  name?: string | null;
-  size?: number | null;
-  isMainImage?: boolean;
-}
+import type { ImageCreateInput } from "@/app/data/image/image.dto";
 
 export interface UploaderProps {
   variant?: "default" | "compact" | "minimal" | "avatar";
@@ -14,8 +6,8 @@ export interface UploaderProps {
   maxSize?: number; // in MB
   accept?: string[];
   preview?: "grid" | "list";
-  onChange: (files: (UploadedFile | UploadedFile[]) | null) => void;
-  value?: UploadedFile | UploadedFile[] | null;
+  onChange: (files: (ImageCreateInput | ImageCreateInput[]) | null) => void;
+  value?: ImageCreateInput | ImageCreateInput[] | null;
   disabled?: boolean;
   className?: string;
   placeholder?: string;
