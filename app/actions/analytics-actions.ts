@@ -109,8 +109,7 @@ export async function getAnalytics(period: "7d" | "30d" | "90d" = "30d") {
 
   const topProducts = Object.entries(productViewCounts)
     .map(([id, data]) => ({ id, ...data }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+    .sort((a, b) => b.count - a.count);
 
   // Referrer stats
   const referrerCounts: Record<string, number> = {};
@@ -136,7 +135,7 @@ export async function getAnalytics(period: "7d" | "30d" | "90d" = "30d") {
 
 export async function getProductAnalytics(
   productId: string,
-  period: "7d" | "30d" | "90d" = "30d",
+  period: "7d" | "30d" | "90d" = "30d"
 ) {
   const { business } = await requireBusiness();
 
