@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
+
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
@@ -74,7 +74,7 @@ const plans: {
   },
 ];
 
-async function SubscriptionContent() {
+export default async function SubscriptionPage() {
   const business = await getMyBusiness();
 
   if (!business) {
@@ -84,7 +84,11 @@ async function SubscriptionContent() {
   const payments = await getSubscriptionHistory();
 
   return (
-    <>
+    <div className="space-y-8">
+      <div>
+        <h1 className="font-bold text-3xl tracking-tight">Suscripción</h1>
+        <p className="text-muted-foreground">Gestiona tu plan y facturación</p>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Plan Actual</CardTitle>
@@ -177,42 +181,6 @@ async function SubscriptionContent() {
           </CardContent>
         </Card>
       )}
-    </>
-  );
-}
-
-function SubscriptionSkeleton() {
-  return (
-    <>
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-4 w-48" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-32 w-full" />
-        </CardContent>
-      </Card>
-      <div className="grid gap-6 md:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i.toString()} className="h-96 w-full" />
-        ))}
-      </div>
-    </>
-  );
-}
-
-export default function SubscriptionPage() {
-  return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="font-bold text-3xl tracking-tight">Suscripción</h1>
-        <p className="text-muted-foreground">Gestiona tu plan y facturación</p>
-      </div>
-
-      <Suspense fallback={<SubscriptionSkeleton />}>
-        <SubscriptionContent />
-      </Suspense>
     </div>
   );
 }

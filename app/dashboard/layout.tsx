@@ -2,7 +2,8 @@ import type React from "react";
 import { Suspense } from "react";
 import { DashboardHeaderWrapper } from "@/components/dashboard/dashboard-header-wrapper";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardHeaderSkeleton } from "@/components/skeletons/dashboard-header-skeleton";
+import { DashboardSidebarSkeleton } from "@/components/skeletons/dashboard-sidebar-skeleton";
 
 export default async function DashboardLayout({
   children,
@@ -23,31 +24,6 @@ export default async function DashboardLayout({
         <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-6">
           {children}
         </main>
-      </div>
-    </div>
-  );
-}
-
-function DashboardHeaderSkeleton() {
-  return (
-    <div className="flex h-16 items-center justify-between border-b px-4 md:px-6">
-      <div className="flex items-center space-x-2">
-        <Skeleton className="h-8 w-8 rounded-full" />
-        <div className="space-y-0.5">
-          <Skeleton className="h-4 w-20 rounded" />
-          <Skeleton className="h-3 w-16 rounded" />
-        </div>
-      </div>
-      <Skeleton className="h-8 w-8 rounded-full" />
-    </div>
-  );
-}
-
-function DashboardSidebarSkeleton() {
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="hidden lg:flex">
-        <Skeleton className="h-full w-64" />
       </div>
     </div>
   );
