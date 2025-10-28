@@ -3,7 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-
+import { Analytics } from "@vercel/analytics/next";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -44,6 +44,7 @@ export default function RootLayout({
       <body className="mx-auto font-sans antialiased">
         {children}
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
