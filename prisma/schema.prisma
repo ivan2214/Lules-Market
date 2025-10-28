@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file
+// Learn more in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -12,7 +12,11 @@ datasource db {
   relationMode = "prisma"
 }
 
-// Better Auth tables
+/**
+ * ===============================================================
+ * USERS, AUTH & ADMINISTRATION
+ * ===============================================================
+ */
 
 model User {
   id            String   @id @default(cuid())
@@ -23,14 +27,14 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relations
-  sessions Session[]
-  accounts Account[]
-  business Business?
-  admin    Admin?
+  // Relaciones
+  sessions Session[] // sesiones activas del usuario
+  accounts Account[] // conexiones externas (Google, etc.)
+  business Business? // un usuario puede tener un comercio
+  admin    Admin? // o ser administrador
 
-  userRole   UserRole    @default(USER)
-  bannedUser BannedUser?
+  userRole   UserRole    @default(USER) // rol del usuario
+  bannedUser BannedUser? // si el usuario fue baneado
 
   @@map("user")
 }
@@ -39,9 +43,10 @@ model Admin {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // un usuario puede ser admin
 
-  bannedBusinesses BannedBusiness[] // comercios baneados por el admin
-  bannedUsers      BannedUser[] // usuarios baneados por el admin
-  bannedProducts   BannedProduct[] // productos baneados por el admin
+  // Relaciones con objetos baneados
+  bannedBusinesses BannedBusiness[]
+  bannedUsers      BannedUser[]
+  bannedProducts   BannedProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,11 +56,10 @@ model Admin {
 
 model BannedBusiness {
   bannedById String @unique
-  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // el admin que banea
+  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
 
-  // comercio baneado
   businessId String   @unique
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade) // comercio baneado
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,11 +67,10 @@ model BannedBusiness {
 
 model BannedUser {
   bannedById String @unique
-  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
 
-  // usuario baneado
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // usuario baneado
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -75,15 +78,20 @@ model BannedUser {
 
 model BannedProduct {
   bannedById String @unique
-  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
 
-  // producto baneado
   productId String  @unique
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) // producto baneado
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+/**
+ * ===============================================================
+ * AUTHENTICATION
+ * ===============================================================
+ */
 
 model Session {
   id        String   @id @default(cuid())
@@ -91,7 +99,7 @@ model Session {
   ipAddress String?
   userAgent String?
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // sesión pertenece a un usuario
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,13 +116,12 @@ model Account {
   accountId    String
   providerId   String
   userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade) // cuenta vinculada al usuario
   accessToken  String?
   refreshToken String?
   idToken      String?
   expiresAt    DateTime?
   password     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -130,8 +137,8 @@ model Account {
 
 model Verification {
   id         String   @id @default(cuid())
-  identifier String
-  value      String
+  identifier String // email o identificador
+  value      String // token o código
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -140,7 +147,11 @@ model Verification {
   @@map("verification")
 }
 
-// Business and subscription models
+/**
+ * ===============================================================
+ * BUSINESS & SUBSCRIPTIONS
+ * ===============================================================
+ */
 
 model Business {
   id          String  @id @default(cuid())
@@ -159,31 +170,35 @@ model Business {
   category    String?
   hours       String?
 
-  // Subscription
+  // Subscripción del comercio
   plan          SubscriptionPlan   @default(FREE)
   planStatus    SubscriptionStatus @default(ACTIVE)
-  planExpiresAt DateTime?
+  planExpiresAt DateTime? // fecha de expiración del plan actual
 
-  // Owner
+  // Propietario
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Relations
-  products Product[]
-  payments Payment[]
+  // Relaciones
+  products         Product[] // productos del comercio
+  payments         Payment[] // historial de pagos
+  bannedBusinesses BannedBusiness[] // si fue baneado
+  businessView     businessView[] // visitas al comercio
+  trial            Trial? // prueba gratuita activa
+  couponRedemption CouponRedemption[] // canjes de cupones realizados
 
-  // Banned
-  bannedBusinesses BannedBusiness[]
-
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  businessView     businessView[]
-  trial            Trial?
-  couponRedemption CouponRedemption[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([plan])
   @@index([planStatus])
 }
+
+/**
+ * ===============================================================
+ * PRODUCTOS, PAGOS E IMÁGENES
+ * ===============================================================
+ */
 
 model Product {
   id          String  @id @default(cuid())
@@ -191,20 +206,18 @@ model Product {
   description String?
   price       Float?
   category    String?
-  featured    Boolean @default(false) // Only for PREMIUM plan
+  featured    Boolean @default(false) // solo visible si el plan es PREMIUM
   active      Boolean @default(true)
 
-  // Business relation
   businessId String
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
-  // Banned
-  bannedProducts BannedProduct[]
+  bannedProducts BannedProduct[] // si fue baneado por el admin
 
+  images      Image[] // imágenes asociadas
+  productView productView[] // vistas del producto
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  images      Image[]
-  productView productView[]
 
   @@index([businessId])
   @@index([featured])
@@ -219,14 +232,13 @@ model Payment {
   status        String // pending, approved, rejected
   paymentMethod String?
 
-  // Mercado Pago data
+  // Datos de Mercado Pago
   mpPaymentId String? @unique
   mpStatus    String?
 
-  // Plan purchased
+  // Plan adquirido
   plan SubscriptionPlan
 
-  // Business relation
   businessId String
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
@@ -238,14 +250,16 @@ model Payment {
 }
 
 model Image {
-  key            String    @unique
-  url            String    @unique
-  isMainImage    Boolean   @default(false)
-  name           String?
-  size           Float?
-  // relations
-  product        Product?  @relation(fields: [productId], references: [id])
-  productId      String?
+  key         String  @unique
+  url         String  @unique
+  isMainImage Boolean @default(false)
+  name        String?
+  size        Float?
+
+  // Relaciones con producto y comercio
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+
   logoBusinessId String?   @unique
   logoBusiness   Business? @relation("Logo", fields: [logoBusinessId], references: [id])
 
@@ -256,6 +270,12 @@ model Image {
   @@index([coverBusinessId])
   @@index([logoBusinessId])
 }
+
+/**
+ * ===============================================================
+ * VISTAS Y EVENTOS
+ * ===============================================================
+ */
 
 model productView {
   id        String  @id @default(cuid())
@@ -272,9 +292,8 @@ model businessView {
   id         String   @id @default(cuid())
   businessId String
   business   Business @relation(fields: [businessId], references: [id])
-
-  createdAt DateTime @default(now())
-  referrer  String?
+  createdAt  DateTime @default(now())
+  referrer   String?
 
   @@index([businessId])
 }
@@ -283,19 +302,25 @@ model WebhookEvent {
   id          String    @id @default(cuid())
   requestId   String    @unique
   eventType   String
-  mpId        String? // id objeto MP (payment id, etc)
+  mpId        String? // id del objeto en Mercado Pago
   payload     Json
   createdAt   DateTime  @default(now())
   processed   Boolean   @default(false)
   processedAt DateTime?
 }
 
+/**
+ * ===============================================================
+ * PLANES GRATUITOS Y CUPONES
+ * ===============================================================
+ */
+
 model Trial {
   id          String           @id @default(cuid())
   businessId  String           @unique
-  business    Business         @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  plan        SubscriptionPlan @default(PREMIUM)
-  expiresAt   DateTime
+  business    Business         @relation(fields: [businessId], references: [id], onDelete: Cascade) // comercio que usa el trial
+  plan        SubscriptionPlan @default(PREMIUM) // plan otorgado temporalmente
+  expiresAt   DateTime // fecha en que finaliza la prueba
   activatedAt DateTime         @default(now())
   isActive    Boolean          @default(true)
   createdAt   DateTime         @default(now())
@@ -304,15 +329,15 @@ model Trial {
 
 model Coupon {
   id           String           @id @default(cuid())
-  code         String           @unique
+  code         String           @unique // código canjeable
   plan         SubscriptionPlan @default(PREMIUM)
-  durationDays Int              @default(30)
-  maxUses      Int? // opcional, para limitar cantidad total de usos
+  durationDays Int              @default(30) // duración del beneficio
+  maxUses      Int? // límite de usos (opcional)
   usedCount    Int              @default(0)
-  expiresAt    DateTime? // opcional, para que el cupón caduque
+  expiresAt    DateTime? // fecha de expiración del cupón
   active       Boolean          @default(true)
 
-  // Cupones canjeados
+  // Canjes realizados con este cupón
   redemptions CouponRedemption[]
 
   createdAt DateTime @default(now())
@@ -322,9 +347,9 @@ model Coupon {
 model CouponRedemption {
   id         String   @id @default(cuid())
   couponId   String
-  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade) // cupón usado
   businessId String
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade) // comercio que lo canjeó
   redeemedAt DateTime @default(now())
 
   @@index([businessId])
@@ -332,7 +357,9 @@ model CouponRedemption {
 }
 
 /**
- * ENUM
+ * ===============================================================
+ * ENUMERACIONES
+ * ===============================================================
  */
 
 enum SubscriptionPlan {
