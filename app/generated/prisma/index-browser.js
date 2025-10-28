@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.18.0
- * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+ * Prisma Client JS version: 6.16.3
+ * Query Engine version: bb420e667c1820a8c05a38023385f6cc7ef8e83a
  */
 Prisma.prismaVersion = {
-  client: "6.18.0",
-  engine: "34b5a692b7bd79939a9a2c3ef97d816e749cda2f"
+  client: "6.16.3",
+  engine: "bb420e667c1820a8c05a38023385f6cc7ef8e83a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -126,6 +126,34 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userRole: 'userRole'
+};
+
+exports.Prisma.AdminScalarFieldEnum = {
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BannedBusinessScalarFieldEnum = {
+  bannedById: 'bannedById',
+  businessId: 'businessId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BannedUserScalarFieldEnum = {
+  bannedById: 'bannedById',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BannedProductScalarFieldEnum = {
+  bannedById: 'bannedById',
+  productId: 'productId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -276,6 +304,12 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.UserRole = exports.$Enums.UserRole = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  BUSINESS: 'BUSINESS'
+};
+
 exports.SubscriptionPlan = exports.$Enums.SubscriptionPlan = {
   FREE: 'FREE',
   BASIC: 'BASIC',
@@ -291,6 +325,10 @@ exports.SubscriptionStatus = exports.$Enums.SubscriptionStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Admin: 'Admin',
+  BannedBusiness: 'BannedBusiness',
+  BannedUser: 'BannedUser',
+  BannedProduct: 'BannedProduct',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',

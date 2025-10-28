@@ -27,8 +27,62 @@ model User {
   sessions Session[]
   accounts Account[]
   business Business?
+  admin    Admin?
+
+  userRole   UserRole    @default(USER)
+  bannedUser BannedUser?
 
   @@map("user")
+}
+
+model Admin {
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // un usuario puede ser admin
+
+  bannedBusinesses BannedBusiness[] // comercios baneados por el admin
+  bannedUsers      BannedUser[] // usuarios baneados por el admin
+  bannedProducts   BannedProduct[] // productos baneados por el admin
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin")
+}
+
+model BannedBusiness {
+  bannedById String @unique
+  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // el admin que banea
+
+  // comercio baneado
+  businessId String   @unique
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BannedUser {
+  bannedById String @unique
+  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+
+  // usuario baneado
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BannedProduct {
+  bannedById String @unique
+  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+
+  // producto baneado
+  productId String  @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
@@ -118,6 +172,9 @@ model Business {
   products Product[]
   payments Payment[]
 
+  // Banned
+  bannedBusinesses BannedBusiness[]
+
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   businessView businessView[]
@@ -138,6 +195,9 @@ model Product {
   // Business relation
   businessId String
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  // Banned
+  bannedProducts BannedProduct[]
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -239,4 +299,10 @@ enum SubscriptionStatus {
   INACTIVE
   CANCELLED
   EXPIRED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  BUSINESS
 }

@@ -19,6 +19,26 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model Admin
+ * 
+ */
+export type Admin = $Result.DefaultSelection<Prisma.$AdminPayload>
+/**
+ * Model BannedBusiness
+ * 
+ */
+export type BannedBusiness = $Result.DefaultSelection<Prisma.$BannedBusinessPayload>
+/**
+ * Model BannedUser
+ * 
+ */
+export type BannedUser = $Result.DefaultSelection<Prisma.$BannedUserPayload>
+/**
+ * Model BannedProduct
+ * 
+ */
+export type BannedProduct = $Result.DefaultSelection<Prisma.$BannedProductPayload>
+/**
  * Model Session
  * 
  */
@@ -91,6 +111,15 @@ export const SubscriptionStatus: {
 
 export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
 
+
+export const UserRole: {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  BUSINESS: 'BUSINESS'
+};
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
 }
 
 export type SubscriptionPlan = $Enums.SubscriptionPlan
@@ -100,6 +129,10 @@ export const SubscriptionPlan: typeof $Enums.SubscriptionPlan
 export type SubscriptionStatus = $Enums.SubscriptionStatus
 
 export const SubscriptionStatus: typeof $Enums.SubscriptionStatus
+
+export type UserRole = $Enums.UserRole
+
+export const UserRole: typeof $Enums.UserRole
 
 /**
  * ##  Prisma Client ʲˢ
@@ -228,6 +261,46 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.admin`: Exposes CRUD operations for the **Admin** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Admins
+    * const admins = await prisma.admin.findMany()
+    * ```
+    */
+  get admin(): Prisma.AdminDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.bannedBusiness`: Exposes CRUD operations for the **BannedBusiness** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BannedBusinesses
+    * const bannedBusinesses = await prisma.bannedBusiness.findMany()
+    * ```
+    */
+  get bannedBusiness(): Prisma.BannedBusinessDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.bannedUser`: Exposes CRUD operations for the **BannedUser** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BannedUsers
+    * const bannedUsers = await prisma.bannedUser.findMany()
+    * ```
+    */
+  get bannedUser(): Prisma.BannedUserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.bannedProduct`: Exposes CRUD operations for the **BannedProduct** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BannedProducts
+    * const bannedProducts = await prisma.bannedProduct.findMany()
+    * ```
+    */
+  get bannedProduct(): Prisma.BannedProductDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.session`: Exposes CRUD operations for the **Session** model.
@@ -386,8 +459,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.18.0
-   * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+   * Prisma Client JS version: 6.16.3
+   * Query Engine version: bb420e667c1820a8c05a38023385f6cc7ef8e83a
    */
   export type PrismaVersion = {
     client: string
@@ -400,7 +473,6 @@ export namespace Prisma {
    */
 
 
-  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -770,6 +842,10 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    Admin: 'Admin',
+    BannedBusiness: 'BannedBusiness',
+    BannedUser: 'BannedUser',
+    BannedProduct: 'BannedProduct',
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification',
@@ -798,7 +874,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "business" | "product" | "payment" | "image" | "productView" | "businessView" | "webhookEvent"
+      modelProps: "user" | "admin" | "bannedBusiness" | "bannedUser" | "bannedProduct" | "session" | "account" | "verification" | "business" | "product" | "payment" | "image" | "productView" | "businessView" | "webhookEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -873,6 +949,302 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      Admin: {
+        payload: Prisma.$AdminPayload<ExtArgs>
+        fields: Prisma.AdminFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          findMany: {
+            args: Prisma.AdminFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          create: {
+            args: Prisma.AdminCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          createMany: {
+            args: Prisma.AdminCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          update: {
+            args: Prisma.AdminUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdmin>
+          }
+          groupBy: {
+            args: Prisma.AdminGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminCountAggregateOutputType> | number
+          }
+        }
+      }
+      BannedBusiness: {
+        payload: Prisma.$BannedBusinessPayload<ExtArgs>
+        fields: Prisma.BannedBusinessFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BannedBusinessFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BannedBusinessFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>
+          }
+          findFirst: {
+            args: Prisma.BannedBusinessFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BannedBusinessFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>
+          }
+          findMany: {
+            args: Prisma.BannedBusinessFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>[]
+          }
+          create: {
+            args: Prisma.BannedBusinessCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>
+          }
+          createMany: {
+            args: Prisma.BannedBusinessCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BannedBusinessCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>[]
+          }
+          delete: {
+            args: Prisma.BannedBusinessDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>
+          }
+          update: {
+            args: Prisma.BannedBusinessUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>
+          }
+          deleteMany: {
+            args: Prisma.BannedBusinessDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BannedBusinessUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BannedBusinessUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>[]
+          }
+          upsert: {
+            args: Prisma.BannedBusinessUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedBusinessPayload>
+          }
+          aggregate: {
+            args: Prisma.BannedBusinessAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBannedBusiness>
+          }
+          groupBy: {
+            args: Prisma.BannedBusinessGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BannedBusinessGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BannedBusinessCountArgs<ExtArgs>
+            result: $Utils.Optional<BannedBusinessCountAggregateOutputType> | number
+          }
+        }
+      }
+      BannedUser: {
+        payload: Prisma.$BannedUserPayload<ExtArgs>
+        fields: Prisma.BannedUserFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BannedUserFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BannedUserFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>
+          }
+          findFirst: {
+            args: Prisma.BannedUserFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BannedUserFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>
+          }
+          findMany: {
+            args: Prisma.BannedUserFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>[]
+          }
+          create: {
+            args: Prisma.BannedUserCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>
+          }
+          createMany: {
+            args: Prisma.BannedUserCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BannedUserCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>[]
+          }
+          delete: {
+            args: Prisma.BannedUserDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>
+          }
+          update: {
+            args: Prisma.BannedUserUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>
+          }
+          deleteMany: {
+            args: Prisma.BannedUserDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BannedUserUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BannedUserUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>[]
+          }
+          upsert: {
+            args: Prisma.BannedUserUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedUserPayload>
+          }
+          aggregate: {
+            args: Prisma.BannedUserAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBannedUser>
+          }
+          groupBy: {
+            args: Prisma.BannedUserGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BannedUserGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BannedUserCountArgs<ExtArgs>
+            result: $Utils.Optional<BannedUserCountAggregateOutputType> | number
+          }
+        }
+      }
+      BannedProduct: {
+        payload: Prisma.$BannedProductPayload<ExtArgs>
+        fields: Prisma.BannedProductFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BannedProductFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BannedProductFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>
+          }
+          findFirst: {
+            args: Prisma.BannedProductFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BannedProductFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>
+          }
+          findMany: {
+            args: Prisma.BannedProductFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>[]
+          }
+          create: {
+            args: Prisma.BannedProductCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>
+          }
+          createMany: {
+            args: Prisma.BannedProductCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BannedProductCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>[]
+          }
+          delete: {
+            args: Prisma.BannedProductDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>
+          }
+          update: {
+            args: Prisma.BannedProductUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>
+          }
+          deleteMany: {
+            args: Prisma.BannedProductDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BannedProductUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BannedProductUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>[]
+          }
+          upsert: {
+            args: Prisma.BannedProductUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BannedProductPayload>
+          }
+          aggregate: {
+            args: Prisma.BannedProductAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBannedProduct>
+          }
+          groupBy: {
+            args: Prisma.BannedProductGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BannedProductGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BannedProductCountArgs<ExtArgs>
+            result: $Utils.Optional<BannedProductCountAggregateOutputType> | number
           }
         }
       }
@@ -1713,6 +2085,10 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    admin?: AdminOmit
+    bannedBusiness?: BannedBusinessOmit
+    bannedUser?: BannedUserOmit
+    bannedProduct?: BannedProductOmit
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
@@ -1839,18 +2215,69 @@ export namespace Prisma {
 
 
   /**
+   * Count Type AdminCountOutputType
+   */
+
+  export type AdminCountOutputType = {
+    bannedBusinesses: number
+    bannedUsers: number
+    bannedProducts: number
+  }
+
+  export type AdminCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBusinesses?: boolean | AdminCountOutputTypeCountBannedBusinessesArgs
+    bannedUsers?: boolean | AdminCountOutputTypeCountBannedUsersArgs
+    bannedProducts?: boolean | AdminCountOutputTypeCountBannedProductsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCountOutputType
+     */
+    select?: AdminCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeCountBannedBusinessesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedBusinessWhereInput
+  }
+
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeCountBannedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedUserWhereInput
+  }
+
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeCountBannedProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedProductWhereInput
+  }
+
+
+  /**
    * Count Type BusinessCountOutputType
    */
 
   export type BusinessCountOutputType = {
     products: number
     payments: number
+    bannedBusinesses: number
     businessView: number
   }
 
   export type BusinessCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | BusinessCountOutputTypeCountProductsArgs
     payments?: boolean | BusinessCountOutputTypeCountPaymentsArgs
+    bannedBusinesses?: boolean | BusinessCountOutputTypeCountBannedBusinessesArgs
     businessView?: boolean | BusinessCountOutputTypeCountBusinessViewArgs
   }
 
@@ -1882,6 +2309,13 @@ export namespace Prisma {
   /**
    * BusinessCountOutputType without action
    */
+  export type BusinessCountOutputTypeCountBannedBusinessesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedBusinessWhereInput
+  }
+
+  /**
+   * BusinessCountOutputType without action
+   */
   export type BusinessCountOutputTypeCountBusinessViewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: businessViewWhereInput
   }
@@ -1892,11 +2326,13 @@ export namespace Prisma {
    */
 
   export type ProductCountOutputType = {
+    bannedProducts: number
     images: number
     productView: number
   }
 
   export type ProductCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedProducts?: boolean | ProductCountOutputTypeCountBannedProductsArgs
     images?: boolean | ProductCountOutputTypeCountImagesArgs
     productView?: boolean | ProductCountOutputTypeCountProductViewArgs
   }
@@ -1910,6 +2346,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the ProductCountOutputType
      */
     select?: ProductCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProductCountOutputType without action
+   */
+  export type ProductCountOutputTypeCountBannedProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedProductWhereInput
   }
 
   /**
@@ -1949,6 +2392,7 @@ export namespace Prisma {
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userRole: $Enums.UserRole | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1959,6 +2403,7 @@ export namespace Prisma {
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userRole: $Enums.UserRole | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1969,6 +2414,7 @@ export namespace Prisma {
     image: number
     createdAt: number
     updatedAt: number
+    userRole: number
     _all: number
   }
 
@@ -1981,6 +2427,7 @@ export namespace Prisma {
     image?: true
     createdAt?: true
     updatedAt?: true
+    userRole?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1991,6 +2438,7 @@ export namespace Prisma {
     image?: true
     createdAt?: true
     updatedAt?: true
+    userRole?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2001,6 +2449,7 @@ export namespace Prisma {
     image?: true
     createdAt?: true
     updatedAt?: true
+    userRole?: true
     _all?: true
   }
 
@@ -2084,6 +2533,7 @@ export namespace Prisma {
     image: string | null
     createdAt: Date
     updatedAt: Date
+    userRole: $Enums.UserRole
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -2111,9 +2561,12 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userRole?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     business?: boolean | User$businessArgs<ExtArgs>
+    admin?: boolean | User$adminArgs<ExtArgs>
+    bannedUser?: boolean | User$bannedUserArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2125,6 +2578,7 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userRole?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2135,6 +2589,7 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userRole?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2145,13 +2600,16 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userRole?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "userRole", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     business?: boolean | User$businessArgs<ExtArgs>
+    admin?: boolean | User$adminArgs<ExtArgs>
+    bannedUser?: boolean | User$bannedUserArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2163,6 +2621,8 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       business: Prisma.$BusinessPayload<ExtArgs> | null
+      admin: Prisma.$AdminPayload<ExtArgs> | null
+      bannedUser: Prisma.$BannedUserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2172,6 +2632,7 @@ export namespace Prisma {
       image: string | null
       createdAt: Date
       updatedAt: Date
+      userRole: $Enums.UserRole
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2569,6 +3030,8 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     business<T extends User$businessArgs<ExtArgs> = {}>(args?: Subset<T, User$businessArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    admin<T extends User$adminArgs<ExtArgs> = {}>(args?: Subset<T, User$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    bannedUser<T extends User$bannedUserArgs<ExtArgs> = {}>(args?: Subset<T, User$bannedUserArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2605,6 +3068,7 @@ export namespace Prisma {
     readonly image: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly userRole: FieldRef<"User", 'UserRole'>
   }
     
 
@@ -3060,6 +3524,44 @@ export namespace Prisma {
   }
 
   /**
+   * User.admin
+   */
+  export type User$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    where?: AdminWhereInput
+  }
+
+  /**
+   * User.bannedUser
+   */
+  export type User$bannedUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    where?: BannedUserWhereInput
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3075,6 +3577,4283 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Admin
+   */
+
+  export type AggregateAdmin = {
+    _count: AdminCountAggregateOutputType | null
+    _min: AdminMinAggregateOutputType | null
+    _max: AdminMaxAggregateOutputType | null
+  }
+
+  export type AdminMinAggregateOutputType = {
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AdminMaxAggregateOutputType = {
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AdminCountAggregateOutputType = {
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AdminMinAggregateInputType = {
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AdminMaxAggregateInputType = {
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AdminCountAggregateInputType = {
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admin to aggregate.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Admins
+    **/
+    _count?: true | AdminCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminMaxAggregateInputType
+  }
+
+  export type GetAdminAggregateType<T extends AdminAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdmin]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdmin[P]>
+      : GetScalarType<T[P], AggregateAdmin[P]>
+  }
+
+
+
+
+  export type AdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminWhereInput
+    orderBy?: AdminOrderByWithAggregationInput | AdminOrderByWithAggregationInput[]
+    by: AdminScalarFieldEnum[] | AdminScalarFieldEnum
+    having?: AdminScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminCountAggregateInputType | true
+    _min?: AdminMinAggregateInputType
+    _max?: AdminMaxAggregateInputType
+  }
+
+  export type AdminGroupByOutputType = {
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: AdminCountAggregateOutputType | null
+    _min: AdminMinAggregateOutputType | null
+    _max: AdminMaxAggregateOutputType | null
+  }
+
+  type GetAdminGroupByPayload<T extends AdminGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    bannedBusinesses?: boolean | Admin$bannedBusinessesArgs<ExtArgs>
+    bannedUsers?: boolean | Admin$bannedUsersArgs<ExtArgs>
+    bannedProducts?: boolean | Admin$bannedProductsArgs<ExtArgs>
+    _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectScalar = {
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "createdAt" | "updatedAt", ExtArgs["result"]["admin"]>
+  export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    bannedBusinesses?: boolean | Admin$bannedBusinessesArgs<ExtArgs>
+    bannedUsers?: boolean | Admin$bannedUsersArgs<ExtArgs>
+    bannedProducts?: boolean | Admin$bannedProductsArgs<ExtArgs>
+    _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Admin"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      bannedBusinesses: Prisma.$BannedBusinessPayload<ExtArgs>[]
+      bannedUsers: Prisma.$BannedUserPayload<ExtArgs>[]
+      bannedProducts: Prisma.$BannedProductPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["admin"]>
+    composites: {}
+  }
+
+  type AdminGetPayload<S extends boolean | null | undefined | AdminDefaultArgs> = $Result.GetResult<Prisma.$AdminPayload, S>
+
+  type AdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminCountAggregateInputType | true
+    }
+
+  export interface AdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Admin'], meta: { name: 'Admin' } }
+    /**
+     * Find zero or one Admin that matches the filter.
+     * @param {AdminFindUniqueArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminFindUniqueArgs>(args: SelectSubset<T, AdminFindUniqueArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Admin that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminFindUniqueOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admin that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminFindFirstArgs>(args?: SelectSubset<T, AdminFindFirstArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Admins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Admins
+     * const admins = await prisma.admin.findMany()
+     * 
+     * // Get first 10 Admins
+     * const admins = await prisma.admin.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const adminWithUserIdOnly = await prisma.admin.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends AdminFindManyArgs>(args?: SelectSubset<T, AdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Admin.
+     * @param {AdminCreateArgs} args - Arguments to create a Admin.
+     * @example
+     * // Create one Admin
+     * const Admin = await prisma.admin.create({
+     *   data: {
+     *     // ... data to create a Admin
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminCreateArgs>(args: SelectSubset<T, AdminCreateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Admins.
+     * @param {AdminCreateManyArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminCreateManyArgs>(args?: SelectSubset<T, AdminCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Admins and returns the data saved in the database.
+     * @param {AdminCreateManyAndReturnArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Admins and only return the `userId`
+     * const adminWithUserIdOnly = await prisma.admin.createManyAndReturn({
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Admin.
+     * @param {AdminDeleteArgs} args - Arguments to delete one Admin.
+     * @example
+     * // Delete one Admin
+     * const Admin = await prisma.admin.delete({
+     *   where: {
+     *     // ... filter to delete one Admin
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminDeleteArgs>(args: SelectSubset<T, AdminDeleteArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Admin.
+     * @param {AdminUpdateArgs} args - Arguments to update one Admin.
+     * @example
+     * // Update one Admin
+     * const admin = await prisma.admin.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminUpdateArgs>(args: SelectSubset<T, AdminUpdateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Admins.
+     * @param {AdminDeleteManyArgs} args - Arguments to filter Admins to delete.
+     * @example
+     * // Delete a few Admins
+     * const { count } = await prisma.admin.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminDeleteManyArgs>(args?: SelectSubset<T, AdminDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Admins
+     * const admin = await prisma.admin.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminUpdateManyArgs>(args: SelectSubset<T, AdminUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins and returns the data updated in the database.
+     * @param {AdminUpdateManyAndReturnArgs} args - Arguments to update many Admins.
+     * @example
+     * // Update many Admins
+     * const admin = await prisma.admin.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Admins and only return the `userId`
+     * const adminWithUserIdOnly = await prisma.admin.updateManyAndReturn({
+     *   select: { userId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Admin.
+     * @param {AdminUpsertArgs} args - Arguments to update or create a Admin.
+     * @example
+     * // Update or create a Admin
+     * const admin = await prisma.admin.upsert({
+     *   create: {
+     *     // ... data to create a Admin
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Admin we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminUpsertArgs>(args: SelectSubset<T, AdminUpsertArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCountArgs} args - Arguments to filter Admins to count.
+     * @example
+     * // Count the number of Admins
+     * const count = await prisma.admin.count({
+     *   where: {
+     *     // ... the filter for the Admins we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminCountArgs>(
+      args?: Subset<T, AdminCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Admin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminAggregateArgs>(args: Subset<T, AdminAggregateArgs>): Prisma.PrismaPromise<GetAdminAggregateType<T>>
+
+    /**
+     * Group by Admin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminGroupByArgs['orderBy'] }
+        : { orderBy?: AdminGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Admin model
+   */
+  readonly fields: AdminFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Admin.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bannedBusinesses<T extends Admin$bannedBusinessesArgs<ExtArgs> = {}>(args?: Subset<T, Admin$bannedBusinessesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bannedUsers<T extends Admin$bannedUsersArgs<ExtArgs> = {}>(args?: Subset<T, Admin$bannedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bannedProducts<T extends Admin$bannedProductsArgs<ExtArgs> = {}>(args?: Subset<T, Admin$bannedProductsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Admin model
+   */
+  interface AdminFieldRefs {
+    readonly userId: FieldRef<"Admin", 'String'>
+    readonly createdAt: FieldRef<"Admin", 'DateTime'>
+    readonly updatedAt: FieldRef<"Admin", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Admin findUnique
+   */
+  export type AdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findUniqueOrThrow
+   */
+  export type AdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findFirst
+   */
+  export type AdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin findFirstOrThrow
+   */
+  export type AdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin findMany
+   */
+  export type AdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin create
+   */
+  export type AdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Admin.
+     */
+    data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+  }
+
+  /**
+   * Admin createMany
+   */
+  export type AdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Admin createManyAndReturn
+   */
+  export type AdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Admin update
+   */
+  export type AdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Admin.
+     */
+    data: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
+    /**
+     * Choose, which Admin to update.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin updateMany
+   */
+  export type AdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin updateManyAndReturn
+   */
+  export type AdminUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Admin upsert
+   */
+  export type AdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Admin to update in case it exists.
+     */
+    where: AdminWhereUniqueInput
+    /**
+     * In case the Admin found by the `where` argument doesn't exist, create a new Admin with this data.
+     */
+    create: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+    /**
+     * In case the Admin was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
+  }
+
+  /**
+   * Admin delete
+   */
+  export type AdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter which Admin to delete.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin deleteMany
+   */
+  export type AdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admins to delete
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin.bannedBusinesses
+   */
+  export type Admin$bannedBusinessesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    where?: BannedBusinessWhereInput
+    orderBy?: BannedBusinessOrderByWithRelationInput | BannedBusinessOrderByWithRelationInput[]
+    cursor?: BannedBusinessWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BannedBusinessScalarFieldEnum | BannedBusinessScalarFieldEnum[]
+  }
+
+  /**
+   * Admin.bannedUsers
+   */
+  export type Admin$bannedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    where?: BannedUserWhereInput
+    orderBy?: BannedUserOrderByWithRelationInput | BannedUserOrderByWithRelationInput[]
+    cursor?: BannedUserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BannedUserScalarFieldEnum | BannedUserScalarFieldEnum[]
+  }
+
+  /**
+   * Admin.bannedProducts
+   */
+  export type Admin$bannedProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    where?: BannedProductWhereInput
+    orderBy?: BannedProductOrderByWithRelationInput | BannedProductOrderByWithRelationInput[]
+    cursor?: BannedProductWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BannedProductScalarFieldEnum | BannedProductScalarFieldEnum[]
+  }
+
+  /**
+   * Admin without action
+   */
+  export type AdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BannedBusiness
+   */
+
+  export type AggregateBannedBusiness = {
+    _count: BannedBusinessCountAggregateOutputType | null
+    _min: BannedBusinessMinAggregateOutputType | null
+    _max: BannedBusinessMaxAggregateOutputType | null
+  }
+
+  export type BannedBusinessMinAggregateOutputType = {
+    bannedById: string | null
+    businessId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BannedBusinessMaxAggregateOutputType = {
+    bannedById: string | null
+    businessId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BannedBusinessCountAggregateOutputType = {
+    bannedById: number
+    businessId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BannedBusinessMinAggregateInputType = {
+    bannedById?: true
+    businessId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BannedBusinessMaxAggregateInputType = {
+    bannedById?: true
+    businessId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BannedBusinessCountAggregateInputType = {
+    bannedById?: true
+    businessId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BannedBusinessAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BannedBusiness to aggregate.
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedBusinesses to fetch.
+     */
+    orderBy?: BannedBusinessOrderByWithRelationInput | BannedBusinessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BannedBusinessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedBusinesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedBusinesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BannedBusinesses
+    **/
+    _count?: true | BannedBusinessCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BannedBusinessMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BannedBusinessMaxAggregateInputType
+  }
+
+  export type GetBannedBusinessAggregateType<T extends BannedBusinessAggregateArgs> = {
+        [P in keyof T & keyof AggregateBannedBusiness]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBannedBusiness[P]>
+      : GetScalarType<T[P], AggregateBannedBusiness[P]>
+  }
+
+
+
+
+  export type BannedBusinessGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedBusinessWhereInput
+    orderBy?: BannedBusinessOrderByWithAggregationInput | BannedBusinessOrderByWithAggregationInput[]
+    by: BannedBusinessScalarFieldEnum[] | BannedBusinessScalarFieldEnum
+    having?: BannedBusinessScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BannedBusinessCountAggregateInputType | true
+    _min?: BannedBusinessMinAggregateInputType
+    _max?: BannedBusinessMaxAggregateInputType
+  }
+
+  export type BannedBusinessGroupByOutputType = {
+    bannedById: string
+    businessId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: BannedBusinessCountAggregateOutputType | null
+    _min: BannedBusinessMinAggregateOutputType | null
+    _max: BannedBusinessMaxAggregateOutputType | null
+  }
+
+  type GetBannedBusinessGroupByPayload<T extends BannedBusinessGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BannedBusinessGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BannedBusinessGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BannedBusinessGroupByOutputType[P]>
+            : GetScalarType<T[P], BannedBusinessGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BannedBusinessSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    businessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedBusiness"]>
+
+  export type BannedBusinessSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    businessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedBusiness"]>
+
+  export type BannedBusinessSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    businessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedBusiness"]>
+
+  export type BannedBusinessSelectScalar = {
+    bannedById?: boolean
+    businessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BannedBusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bannedById" | "businessId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedBusiness"]>
+  export type BannedBusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }
+  export type BannedBusinessIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }
+  export type BannedBusinessIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    business?: boolean | BusinessDefaultArgs<ExtArgs>
+  }
+
+  export type $BannedBusinessPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BannedBusiness"
+    objects: {
+      bannedBy: Prisma.$AdminPayload<ExtArgs>
+      business: Prisma.$BusinessPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      bannedById: string
+      businessId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["bannedBusiness"]>
+    composites: {}
+  }
+
+  type BannedBusinessGetPayload<S extends boolean | null | undefined | BannedBusinessDefaultArgs> = $Result.GetResult<Prisma.$BannedBusinessPayload, S>
+
+  type BannedBusinessCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BannedBusinessFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BannedBusinessCountAggregateInputType | true
+    }
+
+  export interface BannedBusinessDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BannedBusiness'], meta: { name: 'BannedBusiness' } }
+    /**
+     * Find zero or one BannedBusiness that matches the filter.
+     * @param {BannedBusinessFindUniqueArgs} args - Arguments to find a BannedBusiness
+     * @example
+     * // Get one BannedBusiness
+     * const bannedBusiness = await prisma.bannedBusiness.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BannedBusinessFindUniqueArgs>(args: SelectSubset<T, BannedBusinessFindUniqueArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BannedBusiness that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BannedBusinessFindUniqueOrThrowArgs} args - Arguments to find a BannedBusiness
+     * @example
+     * // Get one BannedBusiness
+     * const bannedBusiness = await prisma.bannedBusiness.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BannedBusinessFindUniqueOrThrowArgs>(args: SelectSubset<T, BannedBusinessFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BannedBusiness that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessFindFirstArgs} args - Arguments to find a BannedBusiness
+     * @example
+     * // Get one BannedBusiness
+     * const bannedBusiness = await prisma.bannedBusiness.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BannedBusinessFindFirstArgs>(args?: SelectSubset<T, BannedBusinessFindFirstArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BannedBusiness that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessFindFirstOrThrowArgs} args - Arguments to find a BannedBusiness
+     * @example
+     * // Get one BannedBusiness
+     * const bannedBusiness = await prisma.bannedBusiness.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BannedBusinessFindFirstOrThrowArgs>(args?: SelectSubset<T, BannedBusinessFindFirstOrThrowArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BannedBusinesses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BannedBusinesses
+     * const bannedBusinesses = await prisma.bannedBusiness.findMany()
+     * 
+     * // Get first 10 BannedBusinesses
+     * const bannedBusinesses = await prisma.bannedBusiness.findMany({ take: 10 })
+     * 
+     * // Only select the `bannedById`
+     * const bannedBusinessWithBannedByIdOnly = await prisma.bannedBusiness.findMany({ select: { bannedById: true } })
+     * 
+     */
+    findMany<T extends BannedBusinessFindManyArgs>(args?: SelectSubset<T, BannedBusinessFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BannedBusiness.
+     * @param {BannedBusinessCreateArgs} args - Arguments to create a BannedBusiness.
+     * @example
+     * // Create one BannedBusiness
+     * const BannedBusiness = await prisma.bannedBusiness.create({
+     *   data: {
+     *     // ... data to create a BannedBusiness
+     *   }
+     * })
+     * 
+     */
+    create<T extends BannedBusinessCreateArgs>(args: SelectSubset<T, BannedBusinessCreateArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BannedBusinesses.
+     * @param {BannedBusinessCreateManyArgs} args - Arguments to create many BannedBusinesses.
+     * @example
+     * // Create many BannedBusinesses
+     * const bannedBusiness = await prisma.bannedBusiness.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BannedBusinessCreateManyArgs>(args?: SelectSubset<T, BannedBusinessCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BannedBusinesses and returns the data saved in the database.
+     * @param {BannedBusinessCreateManyAndReturnArgs} args - Arguments to create many BannedBusinesses.
+     * @example
+     * // Create many BannedBusinesses
+     * const bannedBusiness = await prisma.bannedBusiness.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BannedBusinesses and only return the `bannedById`
+     * const bannedBusinessWithBannedByIdOnly = await prisma.bannedBusiness.createManyAndReturn({
+     *   select: { bannedById: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BannedBusinessCreateManyAndReturnArgs>(args?: SelectSubset<T, BannedBusinessCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BannedBusiness.
+     * @param {BannedBusinessDeleteArgs} args - Arguments to delete one BannedBusiness.
+     * @example
+     * // Delete one BannedBusiness
+     * const BannedBusiness = await prisma.bannedBusiness.delete({
+     *   where: {
+     *     // ... filter to delete one BannedBusiness
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BannedBusinessDeleteArgs>(args: SelectSubset<T, BannedBusinessDeleteArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BannedBusiness.
+     * @param {BannedBusinessUpdateArgs} args - Arguments to update one BannedBusiness.
+     * @example
+     * // Update one BannedBusiness
+     * const bannedBusiness = await prisma.bannedBusiness.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BannedBusinessUpdateArgs>(args: SelectSubset<T, BannedBusinessUpdateArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BannedBusinesses.
+     * @param {BannedBusinessDeleteManyArgs} args - Arguments to filter BannedBusinesses to delete.
+     * @example
+     * // Delete a few BannedBusinesses
+     * const { count } = await prisma.bannedBusiness.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BannedBusinessDeleteManyArgs>(args?: SelectSubset<T, BannedBusinessDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BannedBusinesses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BannedBusinesses
+     * const bannedBusiness = await prisma.bannedBusiness.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BannedBusinessUpdateManyArgs>(args: SelectSubset<T, BannedBusinessUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BannedBusinesses and returns the data updated in the database.
+     * @param {BannedBusinessUpdateManyAndReturnArgs} args - Arguments to update many BannedBusinesses.
+     * @example
+     * // Update many BannedBusinesses
+     * const bannedBusiness = await prisma.bannedBusiness.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BannedBusinesses and only return the `bannedById`
+     * const bannedBusinessWithBannedByIdOnly = await prisma.bannedBusiness.updateManyAndReturn({
+     *   select: { bannedById: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BannedBusinessUpdateManyAndReturnArgs>(args: SelectSubset<T, BannedBusinessUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BannedBusiness.
+     * @param {BannedBusinessUpsertArgs} args - Arguments to update or create a BannedBusiness.
+     * @example
+     * // Update or create a BannedBusiness
+     * const bannedBusiness = await prisma.bannedBusiness.upsert({
+     *   create: {
+     *     // ... data to create a BannedBusiness
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BannedBusiness we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BannedBusinessUpsertArgs>(args: SelectSubset<T, BannedBusinessUpsertArgs<ExtArgs>>): Prisma__BannedBusinessClient<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BannedBusinesses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessCountArgs} args - Arguments to filter BannedBusinesses to count.
+     * @example
+     * // Count the number of BannedBusinesses
+     * const count = await prisma.bannedBusiness.count({
+     *   where: {
+     *     // ... the filter for the BannedBusinesses we want to count
+     *   }
+     * })
+    **/
+    count<T extends BannedBusinessCountArgs>(
+      args?: Subset<T, BannedBusinessCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BannedBusinessCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BannedBusiness.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BannedBusinessAggregateArgs>(args: Subset<T, BannedBusinessAggregateArgs>): Prisma.PrismaPromise<GetBannedBusinessAggregateType<T>>
+
+    /**
+     * Group by BannedBusiness.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedBusinessGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BannedBusinessGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BannedBusinessGroupByArgs['orderBy'] }
+        : { orderBy?: BannedBusinessGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BannedBusinessGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBannedBusinessGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BannedBusiness model
+   */
+  readonly fields: BannedBusinessFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BannedBusiness.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BannedBusinessClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    bannedBy<T extends AdminDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AdminDefaultArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    business<T extends BusinessDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessDefaultArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BannedBusiness model
+   */
+  interface BannedBusinessFieldRefs {
+    readonly bannedById: FieldRef<"BannedBusiness", 'String'>
+    readonly businessId: FieldRef<"BannedBusiness", 'String'>
+    readonly createdAt: FieldRef<"BannedBusiness", 'DateTime'>
+    readonly updatedAt: FieldRef<"BannedBusiness", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BannedBusiness findUnique
+   */
+  export type BannedBusinessFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedBusiness to fetch.
+     */
+    where: BannedBusinessWhereUniqueInput
+  }
+
+  /**
+   * BannedBusiness findUniqueOrThrow
+   */
+  export type BannedBusinessFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedBusiness to fetch.
+     */
+    where: BannedBusinessWhereUniqueInput
+  }
+
+  /**
+   * BannedBusiness findFirst
+   */
+  export type BannedBusinessFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedBusiness to fetch.
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedBusinesses to fetch.
+     */
+    orderBy?: BannedBusinessOrderByWithRelationInput | BannedBusinessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BannedBusinesses.
+     */
+    cursor?: BannedBusinessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedBusinesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedBusinesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BannedBusinesses.
+     */
+    distinct?: BannedBusinessScalarFieldEnum | BannedBusinessScalarFieldEnum[]
+  }
+
+  /**
+   * BannedBusiness findFirstOrThrow
+   */
+  export type BannedBusinessFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedBusiness to fetch.
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedBusinesses to fetch.
+     */
+    orderBy?: BannedBusinessOrderByWithRelationInput | BannedBusinessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BannedBusinesses.
+     */
+    cursor?: BannedBusinessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedBusinesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedBusinesses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BannedBusinesses.
+     */
+    distinct?: BannedBusinessScalarFieldEnum | BannedBusinessScalarFieldEnum[]
+  }
+
+  /**
+   * BannedBusiness findMany
+   */
+  export type BannedBusinessFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedBusinesses to fetch.
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedBusinesses to fetch.
+     */
+    orderBy?: BannedBusinessOrderByWithRelationInput | BannedBusinessOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BannedBusinesses.
+     */
+    cursor?: BannedBusinessWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedBusinesses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedBusinesses.
+     */
+    skip?: number
+    distinct?: BannedBusinessScalarFieldEnum | BannedBusinessScalarFieldEnum[]
+  }
+
+  /**
+   * BannedBusiness create
+   */
+  export type BannedBusinessCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BannedBusiness.
+     */
+    data: XOR<BannedBusinessCreateInput, BannedBusinessUncheckedCreateInput>
+  }
+
+  /**
+   * BannedBusiness createMany
+   */
+  export type BannedBusinessCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BannedBusinesses.
+     */
+    data: BannedBusinessCreateManyInput | BannedBusinessCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BannedBusiness createManyAndReturn
+   */
+  export type BannedBusinessCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * The data used to create many BannedBusinesses.
+     */
+    data: BannedBusinessCreateManyInput | BannedBusinessCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BannedBusiness update
+   */
+  export type BannedBusinessUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BannedBusiness.
+     */
+    data: XOR<BannedBusinessUpdateInput, BannedBusinessUncheckedUpdateInput>
+    /**
+     * Choose, which BannedBusiness to update.
+     */
+    where: BannedBusinessWhereUniqueInput
+  }
+
+  /**
+   * BannedBusiness updateMany
+   */
+  export type BannedBusinessUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BannedBusinesses.
+     */
+    data: XOR<BannedBusinessUpdateManyMutationInput, BannedBusinessUncheckedUpdateManyInput>
+    /**
+     * Filter which BannedBusinesses to update
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * Limit how many BannedBusinesses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BannedBusiness updateManyAndReturn
+   */
+  export type BannedBusinessUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * The data used to update BannedBusinesses.
+     */
+    data: XOR<BannedBusinessUpdateManyMutationInput, BannedBusinessUncheckedUpdateManyInput>
+    /**
+     * Filter which BannedBusinesses to update
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * Limit how many BannedBusinesses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BannedBusiness upsert
+   */
+  export type BannedBusinessUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BannedBusiness to update in case it exists.
+     */
+    where: BannedBusinessWhereUniqueInput
+    /**
+     * In case the BannedBusiness found by the `where` argument doesn't exist, create a new BannedBusiness with this data.
+     */
+    create: XOR<BannedBusinessCreateInput, BannedBusinessUncheckedCreateInput>
+    /**
+     * In case the BannedBusiness was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BannedBusinessUpdateInput, BannedBusinessUncheckedUpdateInput>
+  }
+
+  /**
+   * BannedBusiness delete
+   */
+  export type BannedBusinessDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    /**
+     * Filter which BannedBusiness to delete.
+     */
+    where: BannedBusinessWhereUniqueInput
+  }
+
+  /**
+   * BannedBusiness deleteMany
+   */
+  export type BannedBusinessDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BannedBusinesses to delete
+     */
+    where?: BannedBusinessWhereInput
+    /**
+     * Limit how many BannedBusinesses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BannedBusiness without action
+   */
+  export type BannedBusinessDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BannedUser
+   */
+
+  export type AggregateBannedUser = {
+    _count: BannedUserCountAggregateOutputType | null
+    _min: BannedUserMinAggregateOutputType | null
+    _max: BannedUserMaxAggregateOutputType | null
+  }
+
+  export type BannedUserMinAggregateOutputType = {
+    bannedById: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BannedUserMaxAggregateOutputType = {
+    bannedById: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BannedUserCountAggregateOutputType = {
+    bannedById: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BannedUserMinAggregateInputType = {
+    bannedById?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BannedUserMaxAggregateInputType = {
+    bannedById?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BannedUserCountAggregateInputType = {
+    bannedById?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BannedUserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BannedUser to aggregate.
+     */
+    where?: BannedUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedUsers to fetch.
+     */
+    orderBy?: BannedUserOrderByWithRelationInput | BannedUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BannedUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BannedUsers
+    **/
+    _count?: true | BannedUserCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BannedUserMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BannedUserMaxAggregateInputType
+  }
+
+  export type GetBannedUserAggregateType<T extends BannedUserAggregateArgs> = {
+        [P in keyof T & keyof AggregateBannedUser]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBannedUser[P]>
+      : GetScalarType<T[P], AggregateBannedUser[P]>
+  }
+
+
+
+
+  export type BannedUserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedUserWhereInput
+    orderBy?: BannedUserOrderByWithAggregationInput | BannedUserOrderByWithAggregationInput[]
+    by: BannedUserScalarFieldEnum[] | BannedUserScalarFieldEnum
+    having?: BannedUserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BannedUserCountAggregateInputType | true
+    _min?: BannedUserMinAggregateInputType
+    _max?: BannedUserMaxAggregateInputType
+  }
+
+  export type BannedUserGroupByOutputType = {
+    bannedById: string
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: BannedUserCountAggregateOutputType | null
+    _min: BannedUserMinAggregateOutputType | null
+    _max: BannedUserMaxAggregateOutputType | null
+  }
+
+  type GetBannedUserGroupByPayload<T extends BannedUserGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BannedUserGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BannedUserGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BannedUserGroupByOutputType[P]>
+            : GetScalarType<T[P], BannedUserGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BannedUserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedUser"]>
+
+  export type BannedUserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedUser"]>
+
+  export type BannedUserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedUser"]>
+
+  export type BannedUserSelectScalar = {
+    bannedById?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BannedUserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bannedById" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedUser"]>
+  export type BannedUserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type BannedUserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type BannedUserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $BannedUserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BannedUser"
+    objects: {
+      bannedBy: Prisma.$AdminPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      bannedById: string
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["bannedUser"]>
+    composites: {}
+  }
+
+  type BannedUserGetPayload<S extends boolean | null | undefined | BannedUserDefaultArgs> = $Result.GetResult<Prisma.$BannedUserPayload, S>
+
+  type BannedUserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BannedUserFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BannedUserCountAggregateInputType | true
+    }
+
+  export interface BannedUserDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BannedUser'], meta: { name: 'BannedUser' } }
+    /**
+     * Find zero or one BannedUser that matches the filter.
+     * @param {BannedUserFindUniqueArgs} args - Arguments to find a BannedUser
+     * @example
+     * // Get one BannedUser
+     * const bannedUser = await prisma.bannedUser.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BannedUserFindUniqueArgs>(args: SelectSubset<T, BannedUserFindUniqueArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BannedUser that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BannedUserFindUniqueOrThrowArgs} args - Arguments to find a BannedUser
+     * @example
+     * // Get one BannedUser
+     * const bannedUser = await prisma.bannedUser.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BannedUserFindUniqueOrThrowArgs>(args: SelectSubset<T, BannedUserFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BannedUser that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserFindFirstArgs} args - Arguments to find a BannedUser
+     * @example
+     * // Get one BannedUser
+     * const bannedUser = await prisma.bannedUser.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BannedUserFindFirstArgs>(args?: SelectSubset<T, BannedUserFindFirstArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BannedUser that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserFindFirstOrThrowArgs} args - Arguments to find a BannedUser
+     * @example
+     * // Get one BannedUser
+     * const bannedUser = await prisma.bannedUser.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BannedUserFindFirstOrThrowArgs>(args?: SelectSubset<T, BannedUserFindFirstOrThrowArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BannedUsers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BannedUsers
+     * const bannedUsers = await prisma.bannedUser.findMany()
+     * 
+     * // Get first 10 BannedUsers
+     * const bannedUsers = await prisma.bannedUser.findMany({ take: 10 })
+     * 
+     * // Only select the `bannedById`
+     * const bannedUserWithBannedByIdOnly = await prisma.bannedUser.findMany({ select: { bannedById: true } })
+     * 
+     */
+    findMany<T extends BannedUserFindManyArgs>(args?: SelectSubset<T, BannedUserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BannedUser.
+     * @param {BannedUserCreateArgs} args - Arguments to create a BannedUser.
+     * @example
+     * // Create one BannedUser
+     * const BannedUser = await prisma.bannedUser.create({
+     *   data: {
+     *     // ... data to create a BannedUser
+     *   }
+     * })
+     * 
+     */
+    create<T extends BannedUserCreateArgs>(args: SelectSubset<T, BannedUserCreateArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BannedUsers.
+     * @param {BannedUserCreateManyArgs} args - Arguments to create many BannedUsers.
+     * @example
+     * // Create many BannedUsers
+     * const bannedUser = await prisma.bannedUser.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BannedUserCreateManyArgs>(args?: SelectSubset<T, BannedUserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BannedUsers and returns the data saved in the database.
+     * @param {BannedUserCreateManyAndReturnArgs} args - Arguments to create many BannedUsers.
+     * @example
+     * // Create many BannedUsers
+     * const bannedUser = await prisma.bannedUser.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BannedUsers and only return the `bannedById`
+     * const bannedUserWithBannedByIdOnly = await prisma.bannedUser.createManyAndReturn({
+     *   select: { bannedById: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BannedUserCreateManyAndReturnArgs>(args?: SelectSubset<T, BannedUserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BannedUser.
+     * @param {BannedUserDeleteArgs} args - Arguments to delete one BannedUser.
+     * @example
+     * // Delete one BannedUser
+     * const BannedUser = await prisma.bannedUser.delete({
+     *   where: {
+     *     // ... filter to delete one BannedUser
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BannedUserDeleteArgs>(args: SelectSubset<T, BannedUserDeleteArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BannedUser.
+     * @param {BannedUserUpdateArgs} args - Arguments to update one BannedUser.
+     * @example
+     * // Update one BannedUser
+     * const bannedUser = await prisma.bannedUser.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BannedUserUpdateArgs>(args: SelectSubset<T, BannedUserUpdateArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BannedUsers.
+     * @param {BannedUserDeleteManyArgs} args - Arguments to filter BannedUsers to delete.
+     * @example
+     * // Delete a few BannedUsers
+     * const { count } = await prisma.bannedUser.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BannedUserDeleteManyArgs>(args?: SelectSubset<T, BannedUserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BannedUsers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BannedUsers
+     * const bannedUser = await prisma.bannedUser.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BannedUserUpdateManyArgs>(args: SelectSubset<T, BannedUserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BannedUsers and returns the data updated in the database.
+     * @param {BannedUserUpdateManyAndReturnArgs} args - Arguments to update many BannedUsers.
+     * @example
+     * // Update many BannedUsers
+     * const bannedUser = await prisma.bannedUser.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BannedUsers and only return the `bannedById`
+     * const bannedUserWithBannedByIdOnly = await prisma.bannedUser.updateManyAndReturn({
+     *   select: { bannedById: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BannedUserUpdateManyAndReturnArgs>(args: SelectSubset<T, BannedUserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BannedUser.
+     * @param {BannedUserUpsertArgs} args - Arguments to update or create a BannedUser.
+     * @example
+     * // Update or create a BannedUser
+     * const bannedUser = await prisma.bannedUser.upsert({
+     *   create: {
+     *     // ... data to create a BannedUser
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BannedUser we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BannedUserUpsertArgs>(args: SelectSubset<T, BannedUserUpsertArgs<ExtArgs>>): Prisma__BannedUserClient<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BannedUsers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserCountArgs} args - Arguments to filter BannedUsers to count.
+     * @example
+     * // Count the number of BannedUsers
+     * const count = await prisma.bannedUser.count({
+     *   where: {
+     *     // ... the filter for the BannedUsers we want to count
+     *   }
+     * })
+    **/
+    count<T extends BannedUserCountArgs>(
+      args?: Subset<T, BannedUserCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BannedUserCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BannedUser.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BannedUserAggregateArgs>(args: Subset<T, BannedUserAggregateArgs>): Prisma.PrismaPromise<GetBannedUserAggregateType<T>>
+
+    /**
+     * Group by BannedUser.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedUserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BannedUserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BannedUserGroupByArgs['orderBy'] }
+        : { orderBy?: BannedUserGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BannedUserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBannedUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BannedUser model
+   */
+  readonly fields: BannedUserFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BannedUser.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BannedUserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    bannedBy<T extends AdminDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AdminDefaultArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BannedUser model
+   */
+  interface BannedUserFieldRefs {
+    readonly bannedById: FieldRef<"BannedUser", 'String'>
+    readonly userId: FieldRef<"BannedUser", 'String'>
+    readonly createdAt: FieldRef<"BannedUser", 'DateTime'>
+    readonly updatedAt: FieldRef<"BannedUser", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BannedUser findUnique
+   */
+  export type BannedUserFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedUser to fetch.
+     */
+    where: BannedUserWhereUniqueInput
+  }
+
+  /**
+   * BannedUser findUniqueOrThrow
+   */
+  export type BannedUserFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedUser to fetch.
+     */
+    where: BannedUserWhereUniqueInput
+  }
+
+  /**
+   * BannedUser findFirst
+   */
+  export type BannedUserFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedUser to fetch.
+     */
+    where?: BannedUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedUsers to fetch.
+     */
+    orderBy?: BannedUserOrderByWithRelationInput | BannedUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BannedUsers.
+     */
+    cursor?: BannedUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BannedUsers.
+     */
+    distinct?: BannedUserScalarFieldEnum | BannedUserScalarFieldEnum[]
+  }
+
+  /**
+   * BannedUser findFirstOrThrow
+   */
+  export type BannedUserFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedUser to fetch.
+     */
+    where?: BannedUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedUsers to fetch.
+     */
+    orderBy?: BannedUserOrderByWithRelationInput | BannedUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BannedUsers.
+     */
+    cursor?: BannedUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedUsers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BannedUsers.
+     */
+    distinct?: BannedUserScalarFieldEnum | BannedUserScalarFieldEnum[]
+  }
+
+  /**
+   * BannedUser findMany
+   */
+  export type BannedUserFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedUsers to fetch.
+     */
+    where?: BannedUserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedUsers to fetch.
+     */
+    orderBy?: BannedUserOrderByWithRelationInput | BannedUserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BannedUsers.
+     */
+    cursor?: BannedUserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedUsers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedUsers.
+     */
+    skip?: number
+    distinct?: BannedUserScalarFieldEnum | BannedUserScalarFieldEnum[]
+  }
+
+  /**
+   * BannedUser create
+   */
+  export type BannedUserCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BannedUser.
+     */
+    data: XOR<BannedUserCreateInput, BannedUserUncheckedCreateInput>
+  }
+
+  /**
+   * BannedUser createMany
+   */
+  export type BannedUserCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BannedUsers.
+     */
+    data: BannedUserCreateManyInput | BannedUserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BannedUser createManyAndReturn
+   */
+  export type BannedUserCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * The data used to create many BannedUsers.
+     */
+    data: BannedUserCreateManyInput | BannedUserCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BannedUser update
+   */
+  export type BannedUserUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BannedUser.
+     */
+    data: XOR<BannedUserUpdateInput, BannedUserUncheckedUpdateInput>
+    /**
+     * Choose, which BannedUser to update.
+     */
+    where: BannedUserWhereUniqueInput
+  }
+
+  /**
+   * BannedUser updateMany
+   */
+  export type BannedUserUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BannedUsers.
+     */
+    data: XOR<BannedUserUpdateManyMutationInput, BannedUserUncheckedUpdateManyInput>
+    /**
+     * Filter which BannedUsers to update
+     */
+    where?: BannedUserWhereInput
+    /**
+     * Limit how many BannedUsers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BannedUser updateManyAndReturn
+   */
+  export type BannedUserUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * The data used to update BannedUsers.
+     */
+    data: XOR<BannedUserUpdateManyMutationInput, BannedUserUncheckedUpdateManyInput>
+    /**
+     * Filter which BannedUsers to update
+     */
+    where?: BannedUserWhereInput
+    /**
+     * Limit how many BannedUsers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BannedUser upsert
+   */
+  export type BannedUserUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BannedUser to update in case it exists.
+     */
+    where: BannedUserWhereUniqueInput
+    /**
+     * In case the BannedUser found by the `where` argument doesn't exist, create a new BannedUser with this data.
+     */
+    create: XOR<BannedUserCreateInput, BannedUserUncheckedCreateInput>
+    /**
+     * In case the BannedUser was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BannedUserUpdateInput, BannedUserUncheckedUpdateInput>
+  }
+
+  /**
+   * BannedUser delete
+   */
+  export type BannedUserDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+    /**
+     * Filter which BannedUser to delete.
+     */
+    where: BannedUserWhereUniqueInput
+  }
+
+  /**
+   * BannedUser deleteMany
+   */
+  export type BannedUserDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BannedUsers to delete
+     */
+    where?: BannedUserWhereInput
+    /**
+     * Limit how many BannedUsers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BannedUser without action
+   */
+  export type BannedUserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedUser
+     */
+    select?: BannedUserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedUser
+     */
+    omit?: BannedUserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedUserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BannedProduct
+   */
+
+  export type AggregateBannedProduct = {
+    _count: BannedProductCountAggregateOutputType | null
+    _min: BannedProductMinAggregateOutputType | null
+    _max: BannedProductMaxAggregateOutputType | null
+  }
+
+  export type BannedProductMinAggregateOutputType = {
+    bannedById: string | null
+    productId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BannedProductMaxAggregateOutputType = {
+    bannedById: string | null
+    productId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BannedProductCountAggregateOutputType = {
+    bannedById: number
+    productId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BannedProductMinAggregateInputType = {
+    bannedById?: true
+    productId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BannedProductMaxAggregateInputType = {
+    bannedById?: true
+    productId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BannedProductCountAggregateInputType = {
+    bannedById?: true
+    productId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BannedProductAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BannedProduct to aggregate.
+     */
+    where?: BannedProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedProducts to fetch.
+     */
+    orderBy?: BannedProductOrderByWithRelationInput | BannedProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BannedProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedProducts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BannedProducts
+    **/
+    _count?: true | BannedProductCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BannedProductMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BannedProductMaxAggregateInputType
+  }
+
+  export type GetBannedProductAggregateType<T extends BannedProductAggregateArgs> = {
+        [P in keyof T & keyof AggregateBannedProduct]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBannedProduct[P]>
+      : GetScalarType<T[P], AggregateBannedProduct[P]>
+  }
+
+
+
+
+  export type BannedProductGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BannedProductWhereInput
+    orderBy?: BannedProductOrderByWithAggregationInput | BannedProductOrderByWithAggregationInput[]
+    by: BannedProductScalarFieldEnum[] | BannedProductScalarFieldEnum
+    having?: BannedProductScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BannedProductCountAggregateInputType | true
+    _min?: BannedProductMinAggregateInputType
+    _max?: BannedProductMaxAggregateInputType
+  }
+
+  export type BannedProductGroupByOutputType = {
+    bannedById: string
+    productId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: BannedProductCountAggregateOutputType | null
+    _min: BannedProductMinAggregateOutputType | null
+    _max: BannedProductMaxAggregateOutputType | null
+  }
+
+  type GetBannedProductGroupByPayload<T extends BannedProductGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BannedProductGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BannedProductGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BannedProductGroupByOutputType[P]>
+            : GetScalarType<T[P], BannedProductGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BannedProductSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    productId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedProduct"]>
+
+  export type BannedProductSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    productId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedProduct"]>
+
+  export type BannedProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    bannedById?: boolean
+    productId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["bannedProduct"]>
+
+  export type BannedProductSelectScalar = {
+    bannedById?: boolean
+    productId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BannedProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bannedById" | "productId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedProduct"]>
+  export type BannedProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+  export type BannedProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+  export type BannedProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+
+  export type $BannedProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BannedProduct"
+    objects: {
+      bannedBy: Prisma.$AdminPayload<ExtArgs>
+      product: Prisma.$ProductPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      bannedById: string
+      productId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["bannedProduct"]>
+    composites: {}
+  }
+
+  type BannedProductGetPayload<S extends boolean | null | undefined | BannedProductDefaultArgs> = $Result.GetResult<Prisma.$BannedProductPayload, S>
+
+  type BannedProductCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BannedProductFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BannedProductCountAggregateInputType | true
+    }
+
+  export interface BannedProductDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BannedProduct'], meta: { name: 'BannedProduct' } }
+    /**
+     * Find zero or one BannedProduct that matches the filter.
+     * @param {BannedProductFindUniqueArgs} args - Arguments to find a BannedProduct
+     * @example
+     * // Get one BannedProduct
+     * const bannedProduct = await prisma.bannedProduct.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BannedProductFindUniqueArgs>(args: SelectSubset<T, BannedProductFindUniqueArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BannedProduct that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BannedProductFindUniqueOrThrowArgs} args - Arguments to find a BannedProduct
+     * @example
+     * // Get one BannedProduct
+     * const bannedProduct = await prisma.bannedProduct.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BannedProductFindUniqueOrThrowArgs>(args: SelectSubset<T, BannedProductFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BannedProduct that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductFindFirstArgs} args - Arguments to find a BannedProduct
+     * @example
+     * // Get one BannedProduct
+     * const bannedProduct = await prisma.bannedProduct.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BannedProductFindFirstArgs>(args?: SelectSubset<T, BannedProductFindFirstArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BannedProduct that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductFindFirstOrThrowArgs} args - Arguments to find a BannedProduct
+     * @example
+     * // Get one BannedProduct
+     * const bannedProduct = await prisma.bannedProduct.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BannedProductFindFirstOrThrowArgs>(args?: SelectSubset<T, BannedProductFindFirstOrThrowArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BannedProducts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BannedProducts
+     * const bannedProducts = await prisma.bannedProduct.findMany()
+     * 
+     * // Get first 10 BannedProducts
+     * const bannedProducts = await prisma.bannedProduct.findMany({ take: 10 })
+     * 
+     * // Only select the `bannedById`
+     * const bannedProductWithBannedByIdOnly = await prisma.bannedProduct.findMany({ select: { bannedById: true } })
+     * 
+     */
+    findMany<T extends BannedProductFindManyArgs>(args?: SelectSubset<T, BannedProductFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BannedProduct.
+     * @param {BannedProductCreateArgs} args - Arguments to create a BannedProduct.
+     * @example
+     * // Create one BannedProduct
+     * const BannedProduct = await prisma.bannedProduct.create({
+     *   data: {
+     *     // ... data to create a BannedProduct
+     *   }
+     * })
+     * 
+     */
+    create<T extends BannedProductCreateArgs>(args: SelectSubset<T, BannedProductCreateArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BannedProducts.
+     * @param {BannedProductCreateManyArgs} args - Arguments to create many BannedProducts.
+     * @example
+     * // Create many BannedProducts
+     * const bannedProduct = await prisma.bannedProduct.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BannedProductCreateManyArgs>(args?: SelectSubset<T, BannedProductCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BannedProducts and returns the data saved in the database.
+     * @param {BannedProductCreateManyAndReturnArgs} args - Arguments to create many BannedProducts.
+     * @example
+     * // Create many BannedProducts
+     * const bannedProduct = await prisma.bannedProduct.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BannedProducts and only return the `bannedById`
+     * const bannedProductWithBannedByIdOnly = await prisma.bannedProduct.createManyAndReturn({
+     *   select: { bannedById: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BannedProductCreateManyAndReturnArgs>(args?: SelectSubset<T, BannedProductCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BannedProduct.
+     * @param {BannedProductDeleteArgs} args - Arguments to delete one BannedProduct.
+     * @example
+     * // Delete one BannedProduct
+     * const BannedProduct = await prisma.bannedProduct.delete({
+     *   where: {
+     *     // ... filter to delete one BannedProduct
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BannedProductDeleteArgs>(args: SelectSubset<T, BannedProductDeleteArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BannedProduct.
+     * @param {BannedProductUpdateArgs} args - Arguments to update one BannedProduct.
+     * @example
+     * // Update one BannedProduct
+     * const bannedProduct = await prisma.bannedProduct.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BannedProductUpdateArgs>(args: SelectSubset<T, BannedProductUpdateArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BannedProducts.
+     * @param {BannedProductDeleteManyArgs} args - Arguments to filter BannedProducts to delete.
+     * @example
+     * // Delete a few BannedProducts
+     * const { count } = await prisma.bannedProduct.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BannedProductDeleteManyArgs>(args?: SelectSubset<T, BannedProductDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BannedProducts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BannedProducts
+     * const bannedProduct = await prisma.bannedProduct.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BannedProductUpdateManyArgs>(args: SelectSubset<T, BannedProductUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BannedProducts and returns the data updated in the database.
+     * @param {BannedProductUpdateManyAndReturnArgs} args - Arguments to update many BannedProducts.
+     * @example
+     * // Update many BannedProducts
+     * const bannedProduct = await prisma.bannedProduct.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BannedProducts and only return the `bannedById`
+     * const bannedProductWithBannedByIdOnly = await prisma.bannedProduct.updateManyAndReturn({
+     *   select: { bannedById: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BannedProductUpdateManyAndReturnArgs>(args: SelectSubset<T, BannedProductUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BannedProduct.
+     * @param {BannedProductUpsertArgs} args - Arguments to update or create a BannedProduct.
+     * @example
+     * // Update or create a BannedProduct
+     * const bannedProduct = await prisma.bannedProduct.upsert({
+     *   create: {
+     *     // ... data to create a BannedProduct
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BannedProduct we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BannedProductUpsertArgs>(args: SelectSubset<T, BannedProductUpsertArgs<ExtArgs>>): Prisma__BannedProductClient<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BannedProducts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductCountArgs} args - Arguments to filter BannedProducts to count.
+     * @example
+     * // Count the number of BannedProducts
+     * const count = await prisma.bannedProduct.count({
+     *   where: {
+     *     // ... the filter for the BannedProducts we want to count
+     *   }
+     * })
+    **/
+    count<T extends BannedProductCountArgs>(
+      args?: Subset<T, BannedProductCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BannedProductCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BannedProduct.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BannedProductAggregateArgs>(args: Subset<T, BannedProductAggregateArgs>): Prisma.PrismaPromise<GetBannedProductAggregateType<T>>
+
+    /**
+     * Group by BannedProduct.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BannedProductGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BannedProductGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BannedProductGroupByArgs['orderBy'] }
+        : { orderBy?: BannedProductGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BannedProductGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBannedProductGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BannedProduct model
+   */
+  readonly fields: BannedProductFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BannedProduct.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BannedProductClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    bannedBy<T extends AdminDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AdminDefaultArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BannedProduct model
+   */
+  interface BannedProductFieldRefs {
+    readonly bannedById: FieldRef<"BannedProduct", 'String'>
+    readonly productId: FieldRef<"BannedProduct", 'String'>
+    readonly createdAt: FieldRef<"BannedProduct", 'DateTime'>
+    readonly updatedAt: FieldRef<"BannedProduct", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BannedProduct findUnique
+   */
+  export type BannedProductFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedProduct to fetch.
+     */
+    where: BannedProductWhereUniqueInput
+  }
+
+  /**
+   * BannedProduct findUniqueOrThrow
+   */
+  export type BannedProductFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedProduct to fetch.
+     */
+    where: BannedProductWhereUniqueInput
+  }
+
+  /**
+   * BannedProduct findFirst
+   */
+  export type BannedProductFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedProduct to fetch.
+     */
+    where?: BannedProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedProducts to fetch.
+     */
+    orderBy?: BannedProductOrderByWithRelationInput | BannedProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BannedProducts.
+     */
+    cursor?: BannedProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedProducts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BannedProducts.
+     */
+    distinct?: BannedProductScalarFieldEnum | BannedProductScalarFieldEnum[]
+  }
+
+  /**
+   * BannedProduct findFirstOrThrow
+   */
+  export type BannedProductFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedProduct to fetch.
+     */
+    where?: BannedProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedProducts to fetch.
+     */
+    orderBy?: BannedProductOrderByWithRelationInput | BannedProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BannedProducts.
+     */
+    cursor?: BannedProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedProducts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BannedProducts.
+     */
+    distinct?: BannedProductScalarFieldEnum | BannedProductScalarFieldEnum[]
+  }
+
+  /**
+   * BannedProduct findMany
+   */
+  export type BannedProductFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * Filter, which BannedProducts to fetch.
+     */
+    where?: BannedProductWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BannedProducts to fetch.
+     */
+    orderBy?: BannedProductOrderByWithRelationInput | BannedProductOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BannedProducts.
+     */
+    cursor?: BannedProductWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BannedProducts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BannedProducts.
+     */
+    skip?: number
+    distinct?: BannedProductScalarFieldEnum | BannedProductScalarFieldEnum[]
+  }
+
+  /**
+   * BannedProduct create
+   */
+  export type BannedProductCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BannedProduct.
+     */
+    data: XOR<BannedProductCreateInput, BannedProductUncheckedCreateInput>
+  }
+
+  /**
+   * BannedProduct createMany
+   */
+  export type BannedProductCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BannedProducts.
+     */
+    data: BannedProductCreateManyInput | BannedProductCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BannedProduct createManyAndReturn
+   */
+  export type BannedProductCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * The data used to create many BannedProducts.
+     */
+    data: BannedProductCreateManyInput | BannedProductCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BannedProduct update
+   */
+  export type BannedProductUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BannedProduct.
+     */
+    data: XOR<BannedProductUpdateInput, BannedProductUncheckedUpdateInput>
+    /**
+     * Choose, which BannedProduct to update.
+     */
+    where: BannedProductWhereUniqueInput
+  }
+
+  /**
+   * BannedProduct updateMany
+   */
+  export type BannedProductUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BannedProducts.
+     */
+    data: XOR<BannedProductUpdateManyMutationInput, BannedProductUncheckedUpdateManyInput>
+    /**
+     * Filter which BannedProducts to update
+     */
+    where?: BannedProductWhereInput
+    /**
+     * Limit how many BannedProducts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BannedProduct updateManyAndReturn
+   */
+  export type BannedProductUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * The data used to update BannedProducts.
+     */
+    data: XOR<BannedProductUpdateManyMutationInput, BannedProductUncheckedUpdateManyInput>
+    /**
+     * Filter which BannedProducts to update
+     */
+    where?: BannedProductWhereInput
+    /**
+     * Limit how many BannedProducts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BannedProduct upsert
+   */
+  export type BannedProductUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BannedProduct to update in case it exists.
+     */
+    where: BannedProductWhereUniqueInput
+    /**
+     * In case the BannedProduct found by the `where` argument doesn't exist, create a new BannedProduct with this data.
+     */
+    create: XOR<BannedProductCreateInput, BannedProductUncheckedCreateInput>
+    /**
+     * In case the BannedProduct was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BannedProductUpdateInput, BannedProductUncheckedUpdateInput>
+  }
+
+  /**
+   * BannedProduct delete
+   */
+  export type BannedProductDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    /**
+     * Filter which BannedProduct to delete.
+     */
+    where: BannedProductWhereUniqueInput
+  }
+
+  /**
+   * BannedProduct deleteMany
+   */
+  export type BannedProductDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BannedProducts to delete
+     */
+    where?: BannedProductWhereInput
+    /**
+     * Limit how many BannedProducts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BannedProduct without action
+   */
+  export type BannedProductDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
   }
 
 
@@ -6639,6 +11418,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     products?: boolean | Business$productsArgs<ExtArgs>
     payments?: boolean | Business$paymentsArgs<ExtArgs>
+    bannedBusinesses?: boolean | Business$bannedBusinessesArgs<ExtArgs>
     businessView?: boolean | Business$businessViewArgs<ExtArgs>
     _count?: boolean | BusinessCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["business"]>
@@ -6718,6 +11498,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     products?: boolean | Business$productsArgs<ExtArgs>
     payments?: boolean | Business$paymentsArgs<ExtArgs>
+    bannedBusinesses?: boolean | Business$bannedBusinessesArgs<ExtArgs>
     businessView?: boolean | Business$businessViewArgs<ExtArgs>
     _count?: boolean | BusinessCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -6736,6 +11517,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       products: Prisma.$ProductPayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
+      bannedBusinesses: Prisma.$BannedBusinessPayload<ExtArgs>[]
       businessView: Prisma.$businessViewPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -7157,6 +11939,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     products<T extends Business$productsArgs<ExtArgs> = {}>(args?: Subset<T, Business$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends Business$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Business$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bannedBusinesses<T extends Business$bannedBusinessesArgs<ExtArgs> = {}>(args?: Subset<T, Business$bannedBusinessesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     businessView<T extends Business$businessViewArgs<ExtArgs> = {}>(args?: Subset<T, Business$businessViewArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$businessViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7688,6 +12471,30 @@ export namespace Prisma {
   }
 
   /**
+   * Business.bannedBusinesses
+   */
+  export type Business$bannedBusinessesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedBusiness
+     */
+    select?: BannedBusinessSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedBusiness
+     */
+    omit?: BannedBusinessOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedBusinessInclude<ExtArgs> | null
+    where?: BannedBusinessWhereInput
+    orderBy?: BannedBusinessOrderByWithRelationInput | BannedBusinessOrderByWithRelationInput[]
+    cursor?: BannedBusinessWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BannedBusinessScalarFieldEnum | BannedBusinessScalarFieldEnum[]
+  }
+
+  /**
    * Business.businessView
    */
   export type Business$businessViewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7969,6 +12776,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     business?: boolean | BusinessDefaultArgs<ExtArgs>
+    bannedProducts?: boolean | Product$bannedProductsArgs<ExtArgs>
     images?: boolean | Product$imagesArgs<ExtArgs>
     productView?: boolean | Product$productViewArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -8018,6 +12826,7 @@ export namespace Prisma {
   export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "category" | "featured" | "active" | "businessId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     business?: boolean | BusinessDefaultArgs<ExtArgs>
+    bannedProducts?: boolean | Product$bannedProductsArgs<ExtArgs>
     images?: boolean | Product$imagesArgs<ExtArgs>
     productView?: boolean | Product$productViewArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -8033,6 +12842,7 @@ export namespace Prisma {
     name: "Product"
     objects: {
       business: Prisma.$BusinessPayload<ExtArgs>
+      bannedProducts: Prisma.$BannedProductPayload<ExtArgs>[]
       images: Prisma.$ImagePayload<ExtArgs>[]
       productView: Prisma.$productViewPayload<ExtArgs>[]
     }
@@ -8442,6 +13252,7 @@ export namespace Prisma {
   export interface Prisma__ProductClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     business<T extends BusinessDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BusinessDefaultArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bannedProducts<T extends Product$bannedProductsArgs<ExtArgs> = {}>(args?: Subset<T, Product$bannedProductsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     images<T extends Product$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Product$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     productView<T extends Product$productViewArgs<ExtArgs> = {}>(args?: Subset<T, Product$productViewArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$productViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -8876,6 +13687,30 @@ export namespace Prisma {
      * Limit how many Products to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Product.bannedProducts
+   */
+  export type Product$bannedProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BannedProduct
+     */
+    select?: BannedProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BannedProduct
+     */
+    omit?: BannedProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BannedProductInclude<ExtArgs> | null
+    where?: BannedProductWhereInput
+    orderBy?: BannedProductOrderByWithRelationInput | BannedProductOrderByWithRelationInput[]
+    cursor?: BannedProductWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BannedProductScalarFieldEnum | BannedProductScalarFieldEnum[]
   }
 
   /**
@@ -14460,10 +19295,50 @@ export namespace Prisma {
     emailVerified: 'emailVerified',
     image: 'image',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    userRole: 'userRole'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const AdminScalarFieldEnum: {
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+  export const BannedBusinessScalarFieldEnum: {
+    bannedById: 'bannedById',
+    businessId: 'businessId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BannedBusinessScalarFieldEnum = (typeof BannedBusinessScalarFieldEnum)[keyof typeof BannedBusinessScalarFieldEnum]
+
+
+  export const BannedUserScalarFieldEnum: {
+    bannedById: 'bannedById',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BannedUserScalarFieldEnum = (typeof BannedUserScalarFieldEnum)[keyof typeof BannedUserScalarFieldEnum]
+
+
+  export const BannedProductScalarFieldEnum: {
+    bannedById: 'bannedById',
+    productId: 'productId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BannedProductScalarFieldEnum = (typeof BannedProductScalarFieldEnum)[keyof typeof BannedProductScalarFieldEnum]
 
 
   export const SessionScalarFieldEnum: {
@@ -14699,6 +19574,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'UserRole'
+   */
+  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'UserRole[]'
+   */
+  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+  /**
    * Reference to a field of type 'SubscriptionPlan'
    */
   export type EnumSubscriptionPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionPlan'>
@@ -14782,9 +19671,12 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    userRole?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     business?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+    bannedUser?: XOR<BannedUserNullableScalarRelationFilter, BannedUserWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -14795,9 +19687,12 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userRole?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     business?: BusinessOrderByWithRelationInput
+    admin?: AdminOrderByWithRelationInput
+    bannedUser?: BannedUserOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -14811,9 +19706,12 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    userRole?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     business?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+    bannedUser?: XOR<BannedUserNullableScalarRelationFilter, BannedUserWhereInput> | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -14824,6 +19722,7 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userRole?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -14840,6 +19739,220 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    userRole?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+  }
+
+  export type AdminWhereInput = {
+    AND?: AdminWhereInput | AdminWhereInput[]
+    OR?: AdminWhereInput[]
+    NOT?: AdminWhereInput | AdminWhereInput[]
+    userId?: StringFilter<"Admin"> | string
+    createdAt?: DateTimeFilter<"Admin"> | Date | string
+    updatedAt?: DateTimeFilter<"Admin"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    bannedBusinesses?: BannedBusinessListRelationFilter
+    bannedUsers?: BannedUserListRelationFilter
+    bannedProducts?: BannedProductListRelationFilter
+  }
+
+  export type AdminOrderByWithRelationInput = {
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    bannedBusinesses?: BannedBusinessOrderByRelationAggregateInput
+    bannedUsers?: BannedUserOrderByRelationAggregateInput
+    bannedProducts?: BannedProductOrderByRelationAggregateInput
+  }
+
+  export type AdminWhereUniqueInput = Prisma.AtLeast<{
+    userId?: string
+    AND?: AdminWhereInput | AdminWhereInput[]
+    OR?: AdminWhereInput[]
+    NOT?: AdminWhereInput | AdminWhereInput[]
+    createdAt?: DateTimeFilter<"Admin"> | Date | string
+    updatedAt?: DateTimeFilter<"Admin"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    bannedBusinesses?: BannedBusinessListRelationFilter
+    bannedUsers?: BannedUserListRelationFilter
+    bannedProducts?: BannedProductListRelationFilter
+  }, "userId">
+
+  export type AdminOrderByWithAggregationInput = {
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AdminCountOrderByAggregateInput
+    _max?: AdminMaxOrderByAggregateInput
+    _min?: AdminMinOrderByAggregateInput
+  }
+
+  export type AdminScalarWhereWithAggregatesInput = {
+    AND?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
+    OR?: AdminScalarWhereWithAggregatesInput[]
+    NOT?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
+    userId?: StringWithAggregatesFilter<"Admin"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Admin"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Admin"> | Date | string
+  }
+
+  export type BannedBusinessWhereInput = {
+    AND?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
+    OR?: BannedBusinessWhereInput[]
+    NOT?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
+    bannedById?: StringFilter<"BannedBusiness"> | string
+    businessId?: StringFilter<"BannedBusiness"> | string
+    createdAt?: DateTimeFilter<"BannedBusiness"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedBusiness"> | Date | string
+    bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
+    business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+  }
+
+  export type BannedBusinessOrderByWithRelationInput = {
+    bannedById?: SortOrder
+    businessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    bannedBy?: AdminOrderByWithRelationInput
+    business?: BusinessOrderByWithRelationInput
+  }
+
+  export type BannedBusinessWhereUniqueInput = Prisma.AtLeast<{
+    bannedById?: string
+    businessId?: string
+    AND?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
+    OR?: BannedBusinessWhereInput[]
+    NOT?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
+    createdAt?: DateTimeFilter<"BannedBusiness"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedBusiness"> | Date | string
+    bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
+    business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+  }, "bannedById" | "businessId">
+
+  export type BannedBusinessOrderByWithAggregationInput = {
+    bannedById?: SortOrder
+    businessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BannedBusinessCountOrderByAggregateInput
+    _max?: BannedBusinessMaxOrderByAggregateInput
+    _min?: BannedBusinessMinOrderByAggregateInput
+  }
+
+  export type BannedBusinessScalarWhereWithAggregatesInput = {
+    AND?: BannedBusinessScalarWhereWithAggregatesInput | BannedBusinessScalarWhereWithAggregatesInput[]
+    OR?: BannedBusinessScalarWhereWithAggregatesInput[]
+    NOT?: BannedBusinessScalarWhereWithAggregatesInput | BannedBusinessScalarWhereWithAggregatesInput[]
+    bannedById?: StringWithAggregatesFilter<"BannedBusiness"> | string
+    businessId?: StringWithAggregatesFilter<"BannedBusiness"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"BannedBusiness"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BannedBusiness"> | Date | string
+  }
+
+  export type BannedUserWhereInput = {
+    AND?: BannedUserWhereInput | BannedUserWhereInput[]
+    OR?: BannedUserWhereInput[]
+    NOT?: BannedUserWhereInput | BannedUserWhereInput[]
+    bannedById?: StringFilter<"BannedUser"> | string
+    userId?: StringFilter<"BannedUser"> | string
+    createdAt?: DateTimeFilter<"BannedUser"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedUser"> | Date | string
+    bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type BannedUserOrderByWithRelationInput = {
+    bannedById?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    bannedBy?: AdminOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type BannedUserWhereUniqueInput = Prisma.AtLeast<{
+    bannedById?: string
+    userId?: string
+    AND?: BannedUserWhereInput | BannedUserWhereInput[]
+    OR?: BannedUserWhereInput[]
+    NOT?: BannedUserWhereInput | BannedUserWhereInput[]
+    createdAt?: DateTimeFilter<"BannedUser"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedUser"> | Date | string
+    bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "bannedById" | "userId">
+
+  export type BannedUserOrderByWithAggregationInput = {
+    bannedById?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BannedUserCountOrderByAggregateInput
+    _max?: BannedUserMaxOrderByAggregateInput
+    _min?: BannedUserMinOrderByAggregateInput
+  }
+
+  export type BannedUserScalarWhereWithAggregatesInput = {
+    AND?: BannedUserScalarWhereWithAggregatesInput | BannedUserScalarWhereWithAggregatesInput[]
+    OR?: BannedUserScalarWhereWithAggregatesInput[]
+    NOT?: BannedUserScalarWhereWithAggregatesInput | BannedUserScalarWhereWithAggregatesInput[]
+    bannedById?: StringWithAggregatesFilter<"BannedUser"> | string
+    userId?: StringWithAggregatesFilter<"BannedUser"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"BannedUser"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BannedUser"> | Date | string
+  }
+
+  export type BannedProductWhereInput = {
+    AND?: BannedProductWhereInput | BannedProductWhereInput[]
+    OR?: BannedProductWhereInput[]
+    NOT?: BannedProductWhereInput | BannedProductWhereInput[]
+    bannedById?: StringFilter<"BannedProduct"> | string
+    productId?: StringFilter<"BannedProduct"> | string
+    createdAt?: DateTimeFilter<"BannedProduct"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedProduct"> | Date | string
+    bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+  }
+
+  export type BannedProductOrderByWithRelationInput = {
+    bannedById?: SortOrder
+    productId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    bannedBy?: AdminOrderByWithRelationInput
+    product?: ProductOrderByWithRelationInput
+  }
+
+  export type BannedProductWhereUniqueInput = Prisma.AtLeast<{
+    bannedById?: string
+    productId?: string
+    AND?: BannedProductWhereInput | BannedProductWhereInput[]
+    OR?: BannedProductWhereInput[]
+    NOT?: BannedProductWhereInput | BannedProductWhereInput[]
+    createdAt?: DateTimeFilter<"BannedProduct"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedProduct"> | Date | string
+    bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+  }, "bannedById" | "productId">
+
+  export type BannedProductOrderByWithAggregationInput = {
+    bannedById?: SortOrder
+    productId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BannedProductCountOrderByAggregateInput
+    _max?: BannedProductMaxOrderByAggregateInput
+    _min?: BannedProductMinOrderByAggregateInput
+  }
+
+  export type BannedProductScalarWhereWithAggregatesInput = {
+    AND?: BannedProductScalarWhereWithAggregatesInput | BannedProductScalarWhereWithAggregatesInput[]
+    OR?: BannedProductScalarWhereWithAggregatesInput[]
+    NOT?: BannedProductScalarWhereWithAggregatesInput | BannedProductScalarWhereWithAggregatesInput[]
+    bannedById?: StringWithAggregatesFilter<"BannedProduct"> | string
+    productId?: StringWithAggregatesFilter<"BannedProduct"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"BannedProduct"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BannedProduct"> | Date | string
   }
 
   export type SessionWhereInput = {
@@ -15099,6 +20212,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     products?: ProductListRelationFilter
     payments?: PaymentListRelationFilter
+    bannedBusinesses?: BannedBusinessListRelationFilter
     businessView?: BusinessViewListRelationFilter
   }
 
@@ -15127,6 +20241,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     products?: ProductOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
+    bannedBusinesses?: BannedBusinessOrderByRelationAggregateInput
     businessView?: businessViewOrderByRelationAggregateInput
   }
 
@@ -15158,6 +20273,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     products?: ProductListRelationFilter
     payments?: PaymentListRelationFilter
+    bannedBusinesses?: BannedBusinessListRelationFilter
     businessView?: BusinessViewListRelationFilter
   }, "id" | "userId">
 
@@ -15226,6 +20342,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+    bannedProducts?: BannedProductListRelationFilter
     images?: ImageListRelationFilter
     productView?: ProductViewListRelationFilter
   }
@@ -15242,6 +20359,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     business?: BusinessOrderByWithRelationInput
+    bannedProducts?: BannedProductOrderByRelationAggregateInput
     images?: ImageOrderByRelationAggregateInput
     productView?: productViewOrderByRelationAggregateInput
   }
@@ -15261,6 +20379,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
+    bannedProducts?: BannedProductListRelationFilter
     images?: ImageListRelationFilter
     productView?: ProductViewListRelationFilter
   }, "id">
@@ -15639,9 +20758,12 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -15652,9 +20774,12 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -15665,9 +20790,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -15678,9 +20806,12 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -15691,6 +20822,7 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
   }
 
   export type UserUpdateManyMutationInput = {
@@ -15701,6 +20833,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -15709,6 +20842,201 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  }
+
+  export type AdminCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutAdminInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBannedByInput
+    bannedUsers?: BannedUserCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminUncheckedCreateInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBannedByInput
+    bannedUsers?: BannedUserUncheckedCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAdminNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBannedByNestedInput
+    bannedUsers?: BannedUserUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type AdminUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedUsers?: BannedUserUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type AdminCreateManyInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AdminUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedBusinessCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBy: AdminCreateNestedOneWithoutBannedBusinessesInput
+    business: BusinessCreateNestedOneWithoutBannedBusinessesInput
+  }
+
+  export type BannedBusinessUncheckedCreateInput = {
+    bannedById: string
+    businessId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedBusinessUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBy?: AdminUpdateOneRequiredWithoutBannedBusinessesNestedInput
+    business?: BusinessUpdateOneRequiredWithoutBannedBusinessesNestedInput
+  }
+
+  export type BannedBusinessUncheckedUpdateInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedBusinessCreateManyInput = {
+    bannedById: string
+    businessId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedBusinessUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedBusinessUncheckedUpdateManyInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    businessId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedUserCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBy: AdminCreateNestedOneWithoutBannedUsersInput
+    user: UserCreateNestedOneWithoutBannedUserInput
+  }
+
+  export type BannedUserUncheckedCreateInput = {
+    bannedById: string
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedUserUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBy?: AdminUpdateOneRequiredWithoutBannedUsersNestedInput
+    user?: UserUpdateOneRequiredWithoutBannedUserNestedInput
+  }
+
+  export type BannedUserUncheckedUpdateInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedUserCreateManyInput = {
+    bannedById: string
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedUserUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedUserUncheckedUpdateManyInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedProductCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBy: AdminCreateNestedOneWithoutBannedProductsInput
+    product: ProductCreateNestedOneWithoutBannedProductsInput
+  }
+
+  export type BannedProductUncheckedCreateInput = {
+    bannedById: string
+    productId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedProductUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBy?: AdminUpdateOneRequiredWithoutBannedProductsNestedInput
+    product?: ProductUpdateOneRequiredWithoutBannedProductsNestedInput
+  }
+
+  export type BannedProductUncheckedUpdateInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedProductCreateManyInput = {
+    bannedById: string
+    productId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedProductUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedProductUncheckedUpdateManyInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15994,6 +21322,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBusinessInput
     products?: ProductCreateNestedManyWithoutBusinessInput
     payments?: PaymentCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
     businessView?: businessViewCreateNestedManyWithoutBusinessInput
   }
 
@@ -16021,6 +21350,7 @@ export namespace Prisma {
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
     products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
     payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
     businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
   }
 
@@ -16048,6 +21378,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBusinessNestedInput
     products?: ProductUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUpdateManyWithoutBusinessNestedInput
   }
 
@@ -16075,6 +21406,7 @@ export namespace Prisma {
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
     products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
@@ -16154,6 +21486,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutProductInput
     images?: ImageCreateNestedManyWithoutProductInput
     productView?: productViewCreateNestedManyWithoutProductInput
   }
@@ -16169,6 +21502,7 @@ export namespace Prisma {
     businessId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutProductInput
     images?: ImageUncheckedCreateNestedManyWithoutProductInput
     productView?: productViewUncheckedCreateNestedManyWithoutProductInput
   }
@@ -16184,6 +21518,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutProductNestedInput
     images?: ImageUpdateManyWithoutProductNestedInput
     productView?: productViewUpdateManyWithoutProductNestedInput
   }
@@ -16199,6 +21534,7 @@ export namespace Prisma {
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutProductNestedInput
     images?: ImageUncheckedUpdateManyWithoutProductNestedInput
     productView?: productViewUncheckedUpdateManyWithoutProductNestedInput
   }
@@ -16631,6 +21967,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type EnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -16646,6 +21989,16 @@ export namespace Prisma {
   export type BusinessNullableScalarRelationFilter = {
     is?: BusinessWhereInput | null
     isNot?: BusinessWhereInput | null
+  }
+
+  export type AdminNullableScalarRelationFilter = {
+    is?: AdminWhereInput | null
+    isNot?: AdminWhereInput | null
+  }
+
+  export type BannedUserNullableScalarRelationFilter = {
+    is?: BannedUserWhereInput | null
+    isNot?: BannedUserWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -16669,6 +22022,7 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userRole?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -16679,6 +22033,7 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userRole?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -16689,6 +22044,7 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userRole?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16749,9 +22105,145 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type BannedBusinessListRelationFilter = {
+    every?: BannedBusinessWhereInput
+    some?: BannedBusinessWhereInput
+    none?: BannedBusinessWhereInput
+  }
+
+  export type BannedUserListRelationFilter = {
+    every?: BannedUserWhereInput
+    some?: BannedUserWhereInput
+    none?: BannedUserWhereInput
+  }
+
+  export type BannedProductListRelationFilter = {
+    every?: BannedProductWhereInput
+    some?: BannedProductWhereInput
+    none?: BannedProductWhereInput
+  }
+
+  export type BannedBusinessOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BannedUserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BannedProductOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdminCountOrderByAggregateInput = {
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AdminMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AdminMinOrderByAggregateInput = {
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AdminScalarRelationFilter = {
+    is?: AdminWhereInput
+    isNot?: AdminWhereInput
+  }
+
+  export type BusinessScalarRelationFilter = {
+    is?: BusinessWhereInput
+    isNot?: BusinessWhereInput
+  }
+
+  export type BannedBusinessCountOrderByAggregateInput = {
+    bannedById?: SortOrder
+    businessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedBusinessMaxOrderByAggregateInput = {
+    bannedById?: SortOrder
+    businessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedBusinessMinOrderByAggregateInput = {
+    bannedById?: SortOrder
+    businessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedUserCountOrderByAggregateInput = {
+    bannedById?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedUserMaxOrderByAggregateInput = {
+    bannedById?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedUserMinOrderByAggregateInput = {
+    bannedById?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductScalarRelationFilter = {
+    is?: ProductWhereInput
+    isNot?: ProductWhereInput
+  }
+
+  export type BannedProductCountOrderByAggregateInput = {
+    bannedById?: SortOrder
+    productId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedProductMaxOrderByAggregateInput = {
+    bannedById?: SortOrder
+    productId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BannedProductMinOrderByAggregateInput = {
+    bannedById?: SortOrder
+    productId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -17046,11 +22538,6 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type BusinessScalarRelationFilter = {
-    is?: BusinessWhereInput
-    isNot?: BusinessWhereInput
-  }
-
   export type ImageListRelationFilter = {
     every?: ImageWhereInput
     some?: ImageWhereInput
@@ -17257,11 +22744,6 @@ export namespace Prisma {
     size?: SortOrder
   }
 
-  export type ProductScalarRelationFilter = {
-    is?: ProductWhereInput
-    isNot?: ProductWhereInput
-  }
-
   export type productViewCountOrderByAggregateInput = {
     id?: SortOrder
     productId?: SortOrder
@@ -17404,6 +22886,18 @@ export namespace Prisma {
     connect?: BusinessWhereUniqueInput
   }
 
+  export type AdminCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type BannedUserCreateNestedOneWithoutUserInput = {
+    create?: XOR<BannedUserCreateWithoutUserInput, BannedUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BannedUserCreateOrConnectWithoutUserInput
+    connect?: BannedUserWhereUniqueInput
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -17424,6 +22918,18 @@ export namespace Prisma {
     connect?: BusinessWhereUniqueInput
   }
 
+  export type AdminUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type BannedUserUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<BannedUserCreateWithoutUserInput, BannedUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BannedUserCreateOrConnectWithoutUserInput
+    connect?: BannedUserWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -17438,6 +22944,10 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type EnumUserRoleFieldUpdateOperationsInput = {
+    set?: $Enums.UserRole
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -17478,6 +22988,26 @@ export namespace Prisma {
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutUserInput, BusinessUpdateWithoutUserInput>, BusinessUncheckedUpdateWithoutUserInput>
   }
 
+  export type AdminUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    upsert?: AdminUpsertWithoutUserInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BannedUserUpdateOneWithoutUserNestedInput = {
+    create?: XOR<BannedUserCreateWithoutUserInput, BannedUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BannedUserCreateOrConnectWithoutUserInput
+    upsert?: BannedUserUpsertWithoutUserInput
+    disconnect?: BannedUserWhereInput | boolean
+    delete?: BannedUserWhereInput | boolean
+    connect?: BannedUserWhereUniqueInput
+    update?: XOR<XOR<BannedUserUpdateToOneWithWhereWithoutUserInput, BannedUserUpdateWithoutUserInput>, BannedUserUncheckedUpdateWithoutUserInput>
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -17514,6 +23044,250 @@ export namespace Prisma {
     delete?: BusinessWhereInput | boolean
     connect?: BusinessWhereUniqueInput
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutUserInput, BusinessUpdateWithoutUserInput>, BusinessUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutUserInput
+    upsert?: AdminUpsertWithoutUserInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutUserInput, AdminUpdateWithoutUserInput>, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BannedUserUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<BannedUserCreateWithoutUserInput, BannedUserUncheckedCreateWithoutUserInput>
+    connectOrCreate?: BannedUserCreateOrConnectWithoutUserInput
+    upsert?: BannedUserUpsertWithoutUserInput
+    disconnect?: BannedUserWhereInput | boolean
+    delete?: BannedUserWhereInput | boolean
+    connect?: BannedUserWhereUniqueInput
+    update?: XOR<XOR<BannedUserUpdateToOneWithWhereWithoutUserInput, BannedUserUpdateWithoutUserInput>, BannedUserUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCreateNestedOneWithoutAdminInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BannedBusinessCreateNestedManyWithoutBannedByInput = {
+    create?: XOR<BannedBusinessCreateWithoutBannedByInput, BannedBusinessUncheckedCreateWithoutBannedByInput> | BannedBusinessCreateWithoutBannedByInput[] | BannedBusinessUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBannedByInput | BannedBusinessCreateOrConnectWithoutBannedByInput[]
+    createMany?: BannedBusinessCreateManyBannedByInputEnvelope
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+  }
+
+  export type BannedUserCreateNestedManyWithoutBannedByInput = {
+    create?: XOR<BannedUserCreateWithoutBannedByInput, BannedUserUncheckedCreateWithoutBannedByInput> | BannedUserCreateWithoutBannedByInput[] | BannedUserUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedUserCreateOrConnectWithoutBannedByInput | BannedUserCreateOrConnectWithoutBannedByInput[]
+    createMany?: BannedUserCreateManyBannedByInputEnvelope
+    connect?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+  }
+
+  export type BannedProductCreateNestedManyWithoutBannedByInput = {
+    create?: XOR<BannedProductCreateWithoutBannedByInput, BannedProductUncheckedCreateWithoutBannedByInput> | BannedProductCreateWithoutBannedByInput[] | BannedProductUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutBannedByInput | BannedProductCreateOrConnectWithoutBannedByInput[]
+    createMany?: BannedProductCreateManyBannedByInputEnvelope
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+  }
+
+  export type BannedBusinessUncheckedCreateNestedManyWithoutBannedByInput = {
+    create?: XOR<BannedBusinessCreateWithoutBannedByInput, BannedBusinessUncheckedCreateWithoutBannedByInput> | BannedBusinessCreateWithoutBannedByInput[] | BannedBusinessUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBannedByInput | BannedBusinessCreateOrConnectWithoutBannedByInput[]
+    createMany?: BannedBusinessCreateManyBannedByInputEnvelope
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+  }
+
+  export type BannedUserUncheckedCreateNestedManyWithoutBannedByInput = {
+    create?: XOR<BannedUserCreateWithoutBannedByInput, BannedUserUncheckedCreateWithoutBannedByInput> | BannedUserCreateWithoutBannedByInput[] | BannedUserUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedUserCreateOrConnectWithoutBannedByInput | BannedUserCreateOrConnectWithoutBannedByInput[]
+    createMany?: BannedUserCreateManyBannedByInputEnvelope
+    connect?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+  }
+
+  export type BannedProductUncheckedCreateNestedManyWithoutBannedByInput = {
+    create?: XOR<BannedProductCreateWithoutBannedByInput, BannedProductUncheckedCreateWithoutBannedByInput> | BannedProductCreateWithoutBannedByInput[] | BannedProductUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutBannedByInput | BannedProductCreateOrConnectWithoutBannedByInput[]
+    createMany?: BannedProductCreateManyBannedByInputEnvelope
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutAdminNestedInput = {
+    create?: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAdminInput
+    upsert?: UserUpsertWithoutAdminInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAdminInput, UserUpdateWithoutAdminInput>, UserUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type BannedBusinessUpdateManyWithoutBannedByNestedInput = {
+    create?: XOR<BannedBusinessCreateWithoutBannedByInput, BannedBusinessUncheckedCreateWithoutBannedByInput> | BannedBusinessCreateWithoutBannedByInput[] | BannedBusinessUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBannedByInput | BannedBusinessCreateOrConnectWithoutBannedByInput[]
+    upsert?: BannedBusinessUpsertWithWhereUniqueWithoutBannedByInput | BannedBusinessUpsertWithWhereUniqueWithoutBannedByInput[]
+    createMany?: BannedBusinessCreateManyBannedByInputEnvelope
+    set?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    disconnect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    delete?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    update?: BannedBusinessUpdateWithWhereUniqueWithoutBannedByInput | BannedBusinessUpdateWithWhereUniqueWithoutBannedByInput[]
+    updateMany?: BannedBusinessUpdateManyWithWhereWithoutBannedByInput | BannedBusinessUpdateManyWithWhereWithoutBannedByInput[]
+    deleteMany?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+  }
+
+  export type BannedUserUpdateManyWithoutBannedByNestedInput = {
+    create?: XOR<BannedUserCreateWithoutBannedByInput, BannedUserUncheckedCreateWithoutBannedByInput> | BannedUserCreateWithoutBannedByInput[] | BannedUserUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedUserCreateOrConnectWithoutBannedByInput | BannedUserCreateOrConnectWithoutBannedByInput[]
+    upsert?: BannedUserUpsertWithWhereUniqueWithoutBannedByInput | BannedUserUpsertWithWhereUniqueWithoutBannedByInput[]
+    createMany?: BannedUserCreateManyBannedByInputEnvelope
+    set?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    disconnect?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    delete?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    connect?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    update?: BannedUserUpdateWithWhereUniqueWithoutBannedByInput | BannedUserUpdateWithWhereUniqueWithoutBannedByInput[]
+    updateMany?: BannedUserUpdateManyWithWhereWithoutBannedByInput | BannedUserUpdateManyWithWhereWithoutBannedByInput[]
+    deleteMany?: BannedUserScalarWhereInput | BannedUserScalarWhereInput[]
+  }
+
+  export type BannedProductUpdateManyWithoutBannedByNestedInput = {
+    create?: XOR<BannedProductCreateWithoutBannedByInput, BannedProductUncheckedCreateWithoutBannedByInput> | BannedProductCreateWithoutBannedByInput[] | BannedProductUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutBannedByInput | BannedProductCreateOrConnectWithoutBannedByInput[]
+    upsert?: BannedProductUpsertWithWhereUniqueWithoutBannedByInput | BannedProductUpsertWithWhereUniqueWithoutBannedByInput[]
+    createMany?: BannedProductCreateManyBannedByInputEnvelope
+    set?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    disconnect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    delete?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    update?: BannedProductUpdateWithWhereUniqueWithoutBannedByInput | BannedProductUpdateWithWhereUniqueWithoutBannedByInput[]
+    updateMany?: BannedProductUpdateManyWithWhereWithoutBannedByInput | BannedProductUpdateManyWithWhereWithoutBannedByInput[]
+    deleteMany?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
+  }
+
+  export type BannedBusinessUncheckedUpdateManyWithoutBannedByNestedInput = {
+    create?: XOR<BannedBusinessCreateWithoutBannedByInput, BannedBusinessUncheckedCreateWithoutBannedByInput> | BannedBusinessCreateWithoutBannedByInput[] | BannedBusinessUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBannedByInput | BannedBusinessCreateOrConnectWithoutBannedByInput[]
+    upsert?: BannedBusinessUpsertWithWhereUniqueWithoutBannedByInput | BannedBusinessUpsertWithWhereUniqueWithoutBannedByInput[]
+    createMany?: BannedBusinessCreateManyBannedByInputEnvelope
+    set?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    disconnect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    delete?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    update?: BannedBusinessUpdateWithWhereUniqueWithoutBannedByInput | BannedBusinessUpdateWithWhereUniqueWithoutBannedByInput[]
+    updateMany?: BannedBusinessUpdateManyWithWhereWithoutBannedByInput | BannedBusinessUpdateManyWithWhereWithoutBannedByInput[]
+    deleteMany?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+  }
+
+  export type BannedUserUncheckedUpdateManyWithoutBannedByNestedInput = {
+    create?: XOR<BannedUserCreateWithoutBannedByInput, BannedUserUncheckedCreateWithoutBannedByInput> | BannedUserCreateWithoutBannedByInput[] | BannedUserUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedUserCreateOrConnectWithoutBannedByInput | BannedUserCreateOrConnectWithoutBannedByInput[]
+    upsert?: BannedUserUpsertWithWhereUniqueWithoutBannedByInput | BannedUserUpsertWithWhereUniqueWithoutBannedByInput[]
+    createMany?: BannedUserCreateManyBannedByInputEnvelope
+    set?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    disconnect?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    delete?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    connect?: BannedUserWhereUniqueInput | BannedUserWhereUniqueInput[]
+    update?: BannedUserUpdateWithWhereUniqueWithoutBannedByInput | BannedUserUpdateWithWhereUniqueWithoutBannedByInput[]
+    updateMany?: BannedUserUpdateManyWithWhereWithoutBannedByInput | BannedUserUpdateManyWithWhereWithoutBannedByInput[]
+    deleteMany?: BannedUserScalarWhereInput | BannedUserScalarWhereInput[]
+  }
+
+  export type BannedProductUncheckedUpdateManyWithoutBannedByNestedInput = {
+    create?: XOR<BannedProductCreateWithoutBannedByInput, BannedProductUncheckedCreateWithoutBannedByInput> | BannedProductCreateWithoutBannedByInput[] | BannedProductUncheckedCreateWithoutBannedByInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutBannedByInput | BannedProductCreateOrConnectWithoutBannedByInput[]
+    upsert?: BannedProductUpsertWithWhereUniqueWithoutBannedByInput | BannedProductUpsertWithWhereUniqueWithoutBannedByInput[]
+    createMany?: BannedProductCreateManyBannedByInputEnvelope
+    set?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    disconnect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    delete?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    update?: BannedProductUpdateWithWhereUniqueWithoutBannedByInput | BannedProductUpdateWithWhereUniqueWithoutBannedByInput[]
+    updateMany?: BannedProductUpdateManyWithWhereWithoutBannedByInput | BannedProductUpdateManyWithWhereWithoutBannedByInput[]
+    deleteMany?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
+  }
+
+  export type AdminCreateNestedOneWithoutBannedBusinessesInput = {
+    create?: XOR<AdminCreateWithoutBannedBusinessesInput, AdminUncheckedCreateWithoutBannedBusinessesInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutBannedBusinessesInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type BusinessCreateNestedOneWithoutBannedBusinessesInput = {
+    create?: XOR<BusinessCreateWithoutBannedBusinessesInput, BusinessUncheckedCreateWithoutBannedBusinessesInput>
+    connectOrCreate?: BusinessCreateOrConnectWithoutBannedBusinessesInput
+    connect?: BusinessWhereUniqueInput
+  }
+
+  export type AdminUpdateOneRequiredWithoutBannedBusinessesNestedInput = {
+    create?: XOR<AdminCreateWithoutBannedBusinessesInput, AdminUncheckedCreateWithoutBannedBusinessesInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutBannedBusinessesInput
+    upsert?: AdminUpsertWithoutBannedBusinessesInput
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutBannedBusinessesInput, AdminUpdateWithoutBannedBusinessesInput>, AdminUncheckedUpdateWithoutBannedBusinessesInput>
+  }
+
+  export type BusinessUpdateOneRequiredWithoutBannedBusinessesNestedInput = {
+    create?: XOR<BusinessCreateWithoutBannedBusinessesInput, BusinessUncheckedCreateWithoutBannedBusinessesInput>
+    connectOrCreate?: BusinessCreateOrConnectWithoutBannedBusinessesInput
+    upsert?: BusinessUpsertWithoutBannedBusinessesInput
+    connect?: BusinessWhereUniqueInput
+    update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutBannedBusinessesInput, BusinessUpdateWithoutBannedBusinessesInput>, BusinessUncheckedUpdateWithoutBannedBusinessesInput>
+  }
+
+  export type AdminCreateNestedOneWithoutBannedUsersInput = {
+    create?: XOR<AdminCreateWithoutBannedUsersInput, AdminUncheckedCreateWithoutBannedUsersInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutBannedUsersInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutBannedUserInput = {
+    create?: XOR<UserCreateWithoutBannedUserInput, UserUncheckedCreateWithoutBannedUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBannedUserInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AdminUpdateOneRequiredWithoutBannedUsersNestedInput = {
+    create?: XOR<AdminCreateWithoutBannedUsersInput, AdminUncheckedCreateWithoutBannedUsersInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutBannedUsersInput
+    upsert?: AdminUpsertWithoutBannedUsersInput
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutBannedUsersInput, AdminUpdateWithoutBannedUsersInput>, AdminUncheckedUpdateWithoutBannedUsersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutBannedUserNestedInput = {
+    create?: XOR<UserCreateWithoutBannedUserInput, UserUncheckedCreateWithoutBannedUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutBannedUserInput
+    upsert?: UserUpsertWithoutBannedUserInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBannedUserInput, UserUpdateWithoutBannedUserInput>, UserUncheckedUpdateWithoutBannedUserInput>
+  }
+
+  export type AdminCreateNestedOneWithoutBannedProductsInput = {
+    create?: XOR<AdminCreateWithoutBannedProductsInput, AdminUncheckedCreateWithoutBannedProductsInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutBannedProductsInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type ProductCreateNestedOneWithoutBannedProductsInput = {
+    create?: XOR<ProductCreateWithoutBannedProductsInput, ProductUncheckedCreateWithoutBannedProductsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutBannedProductsInput
+    connect?: ProductWhereUniqueInput
+  }
+
+  export type AdminUpdateOneRequiredWithoutBannedProductsNestedInput = {
+    create?: XOR<AdminCreateWithoutBannedProductsInput, AdminUncheckedCreateWithoutBannedProductsInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutBannedProductsInput
+    upsert?: AdminUpsertWithoutBannedProductsInput
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutBannedProductsInput, AdminUpdateWithoutBannedProductsInput>, AdminUncheckedUpdateWithoutBannedProductsInput>
+  }
+
+  export type ProductUpdateOneRequiredWithoutBannedProductsNestedInput = {
+    create?: XOR<ProductCreateWithoutBannedProductsInput, ProductUncheckedCreateWithoutBannedProductsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutBannedProductsInput
+    upsert?: ProductUpsertWithoutBannedProductsInput
+    connect?: ProductWhereUniqueInput
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutBannedProductsInput, ProductUpdateWithoutBannedProductsInput>, ProductUncheckedUpdateWithoutBannedProductsInput>
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -17580,6 +23354,13 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
   }
 
+  export type BannedBusinessCreateNestedManyWithoutBusinessInput = {
+    create?: XOR<BannedBusinessCreateWithoutBusinessInput, BannedBusinessUncheckedCreateWithoutBusinessInput> | BannedBusinessCreateWithoutBusinessInput[] | BannedBusinessUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBusinessInput | BannedBusinessCreateOrConnectWithoutBusinessInput[]
+    createMany?: BannedBusinessCreateManyBusinessInputEnvelope
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+  }
+
   export type businessViewCreateNestedManyWithoutBusinessInput = {
     create?: XOR<businessViewCreateWithoutBusinessInput, businessViewUncheckedCreateWithoutBusinessInput> | businessViewCreateWithoutBusinessInput[] | businessViewUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: businessViewCreateOrConnectWithoutBusinessInput | businessViewCreateOrConnectWithoutBusinessInput[]
@@ -17611,6 +23392,13 @@ export namespace Prisma {
     connectOrCreate?: PaymentCreateOrConnectWithoutBusinessInput | PaymentCreateOrConnectWithoutBusinessInput[]
     createMany?: PaymentCreateManyBusinessInputEnvelope
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput = {
+    create?: XOR<BannedBusinessCreateWithoutBusinessInput, BannedBusinessUncheckedCreateWithoutBusinessInput> | BannedBusinessCreateWithoutBusinessInput[] | BannedBusinessUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBusinessInput | BannedBusinessCreateOrConnectWithoutBusinessInput[]
+    createMany?: BannedBusinessCreateManyBusinessInputEnvelope
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
   }
 
   export type businessViewUncheckedCreateNestedManyWithoutBusinessInput = {
@@ -17684,6 +23472,20 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
+  export type BannedBusinessUpdateManyWithoutBusinessNestedInput = {
+    create?: XOR<BannedBusinessCreateWithoutBusinessInput, BannedBusinessUncheckedCreateWithoutBusinessInput> | BannedBusinessCreateWithoutBusinessInput[] | BannedBusinessUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBusinessInput | BannedBusinessCreateOrConnectWithoutBusinessInput[]
+    upsert?: BannedBusinessUpsertWithWhereUniqueWithoutBusinessInput | BannedBusinessUpsertWithWhereUniqueWithoutBusinessInput[]
+    createMany?: BannedBusinessCreateManyBusinessInputEnvelope
+    set?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    disconnect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    delete?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    update?: BannedBusinessUpdateWithWhereUniqueWithoutBusinessInput | BannedBusinessUpdateWithWhereUniqueWithoutBusinessInput[]
+    updateMany?: BannedBusinessUpdateManyWithWhereWithoutBusinessInput | BannedBusinessUpdateManyWithWhereWithoutBusinessInput[]
+    deleteMany?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+  }
+
   export type businessViewUpdateManyWithoutBusinessNestedInput = {
     create?: XOR<businessViewCreateWithoutBusinessInput, businessViewUncheckedCreateWithoutBusinessInput> | businessViewCreateWithoutBusinessInput[] | businessViewUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: businessViewCreateOrConnectWithoutBusinessInput | businessViewCreateOrConnectWithoutBusinessInput[]
@@ -17746,6 +23548,20 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
+  export type BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput = {
+    create?: XOR<BannedBusinessCreateWithoutBusinessInput, BannedBusinessUncheckedCreateWithoutBusinessInput> | BannedBusinessCreateWithoutBusinessInput[] | BannedBusinessUncheckedCreateWithoutBusinessInput[]
+    connectOrCreate?: BannedBusinessCreateOrConnectWithoutBusinessInput | BannedBusinessCreateOrConnectWithoutBusinessInput[]
+    upsert?: BannedBusinessUpsertWithWhereUniqueWithoutBusinessInput | BannedBusinessUpsertWithWhereUniqueWithoutBusinessInput[]
+    createMany?: BannedBusinessCreateManyBusinessInputEnvelope
+    set?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    disconnect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    delete?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    connect?: BannedBusinessWhereUniqueInput | BannedBusinessWhereUniqueInput[]
+    update?: BannedBusinessUpdateWithWhereUniqueWithoutBusinessInput | BannedBusinessUpdateWithWhereUniqueWithoutBusinessInput[]
+    updateMany?: BannedBusinessUpdateManyWithWhereWithoutBusinessInput | BannedBusinessUpdateManyWithWhereWithoutBusinessInput[]
+    deleteMany?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+  }
+
   export type businessViewUncheckedUpdateManyWithoutBusinessNestedInput = {
     create?: XOR<businessViewCreateWithoutBusinessInput, businessViewUncheckedCreateWithoutBusinessInput> | businessViewCreateWithoutBusinessInput[] | businessViewUncheckedCreateWithoutBusinessInput[]
     connectOrCreate?: businessViewCreateOrConnectWithoutBusinessInput | businessViewCreateOrConnectWithoutBusinessInput[]
@@ -17766,6 +23582,13 @@ export namespace Prisma {
     connect?: BusinessWhereUniqueInput
   }
 
+  export type BannedProductCreateNestedManyWithoutProductInput = {
+    create?: XOR<BannedProductCreateWithoutProductInput, BannedProductUncheckedCreateWithoutProductInput> | BannedProductCreateWithoutProductInput[] | BannedProductUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutProductInput | BannedProductCreateOrConnectWithoutProductInput[]
+    createMany?: BannedProductCreateManyProductInputEnvelope
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+  }
+
   export type ImageCreateNestedManyWithoutProductInput = {
     create?: XOR<ImageCreateWithoutProductInput, ImageUncheckedCreateWithoutProductInput> | ImageCreateWithoutProductInput[] | ImageUncheckedCreateWithoutProductInput[]
     connectOrCreate?: ImageCreateOrConnectWithoutProductInput | ImageCreateOrConnectWithoutProductInput[]
@@ -17778,6 +23601,13 @@ export namespace Prisma {
     connectOrCreate?: productViewCreateOrConnectWithoutProductInput | productViewCreateOrConnectWithoutProductInput[]
     createMany?: productViewCreateManyProductInputEnvelope
     connect?: productViewWhereUniqueInput | productViewWhereUniqueInput[]
+  }
+
+  export type BannedProductUncheckedCreateNestedManyWithoutProductInput = {
+    create?: XOR<BannedProductCreateWithoutProductInput, BannedProductUncheckedCreateWithoutProductInput> | BannedProductCreateWithoutProductInput[] | BannedProductUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutProductInput | BannedProductCreateOrConnectWithoutProductInput[]
+    createMany?: BannedProductCreateManyProductInputEnvelope
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
   }
 
   export type ImageUncheckedCreateNestedManyWithoutProductInput = {
@@ -17810,6 +23640,20 @@ export namespace Prisma {
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutProductsInput, BusinessUpdateWithoutProductsInput>, BusinessUncheckedUpdateWithoutProductsInput>
   }
 
+  export type BannedProductUpdateManyWithoutProductNestedInput = {
+    create?: XOR<BannedProductCreateWithoutProductInput, BannedProductUncheckedCreateWithoutProductInput> | BannedProductCreateWithoutProductInput[] | BannedProductUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutProductInput | BannedProductCreateOrConnectWithoutProductInput[]
+    upsert?: BannedProductUpsertWithWhereUniqueWithoutProductInput | BannedProductUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: BannedProductCreateManyProductInputEnvelope
+    set?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    disconnect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    delete?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    update?: BannedProductUpdateWithWhereUniqueWithoutProductInput | BannedProductUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: BannedProductUpdateManyWithWhereWithoutProductInput | BannedProductUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
+  }
+
   export type ImageUpdateManyWithoutProductNestedInput = {
     create?: XOR<ImageCreateWithoutProductInput, ImageUncheckedCreateWithoutProductInput> | ImageCreateWithoutProductInput[] | ImageUncheckedCreateWithoutProductInput[]
     connectOrCreate?: ImageCreateOrConnectWithoutProductInput | ImageCreateOrConnectWithoutProductInput[]
@@ -17836,6 +23680,20 @@ export namespace Prisma {
     update?: productViewUpdateWithWhereUniqueWithoutProductInput | productViewUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: productViewUpdateManyWithWhereWithoutProductInput | productViewUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: productViewScalarWhereInput | productViewScalarWhereInput[]
+  }
+
+  export type BannedProductUncheckedUpdateManyWithoutProductNestedInput = {
+    create?: XOR<BannedProductCreateWithoutProductInput, BannedProductUncheckedCreateWithoutProductInput> | BannedProductCreateWithoutProductInput[] | BannedProductUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: BannedProductCreateOrConnectWithoutProductInput | BannedProductCreateOrConnectWithoutProductInput[]
+    upsert?: BannedProductUpsertWithWhereUniqueWithoutProductInput | BannedProductUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: BannedProductCreateManyProductInputEnvelope
+    set?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    disconnect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    delete?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    connect?: BannedProductWhereUniqueInput | BannedProductWhereUniqueInput[]
+    update?: BannedProductUpdateWithWhereUniqueWithoutProductInput | BannedProductUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: BannedProductUpdateManyWithWhereWithoutProductInput | BannedProductUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
   }
 
   export type ImageUncheckedUpdateManyWithoutProductNestedInput = {
@@ -18008,6 +23866,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -18084,6 +23949,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -18317,6 +24192,7 @@ export namespace Prisma {
     coverImage?: ImageCreateNestedOneWithoutCoverBusinessInput
     products?: ProductCreateNestedManyWithoutBusinessInput
     payments?: PaymentCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
     businessView?: businessViewCreateNestedManyWithoutBusinessInput
   }
 
@@ -18343,12 +24219,51 @@ export namespace Prisma {
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
     products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
     payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
     businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessCreateOrConnectWithoutUserInput = {
     where: BusinessWhereUniqueInput
     create: XOR<BusinessCreateWithoutUserInput, BusinessUncheckedCreateWithoutUserInput>
+  }
+
+  export type AdminCreateWithoutUserInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBannedByInput
+    bannedUsers?: BannedUserCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminUncheckedCreateWithoutUserInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBannedByInput
+    bannedUsers?: BannedUserUncheckedCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminCreateOrConnectWithoutUserInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+  }
+
+  export type BannedUserCreateWithoutUserInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBy: AdminCreateNestedOneWithoutBannedUsersInput
+  }
+
+  export type BannedUserUncheckedCreateWithoutUserInput = {
+    bannedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedUserCreateOrConnectWithoutUserInput = {
+    where: BannedUserWhereUniqueInput
+    create: XOR<BannedUserCreateWithoutUserInput, BannedUserUncheckedCreateWithoutUserInput>
   }
 
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
@@ -18451,6 +24366,7 @@ export namespace Prisma {
     coverImage?: ImageUpdateOneWithoutCoverBusinessNestedInput
     products?: ProductUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUpdateManyWithoutBusinessNestedInput
   }
 
@@ -18477,7 +24393,698 @@ export namespace Prisma {
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
     products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type AdminUpsertWithoutUserInput = {
+    update: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
+    create: XOR<AdminCreateWithoutUserInput, AdminUncheckedCreateWithoutUserInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutUserInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutUserInput, AdminUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AdminUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBannedByNestedInput
+    bannedUsers?: BannedUserUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedUsers?: BannedUserUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type BannedUserUpsertWithoutUserInput = {
+    update: XOR<BannedUserUpdateWithoutUserInput, BannedUserUncheckedUpdateWithoutUserInput>
+    create: XOR<BannedUserCreateWithoutUserInput, BannedUserUncheckedCreateWithoutUserInput>
+    where?: BannedUserWhereInput
+  }
+
+  export type BannedUserUpdateToOneWithWhereWithoutUserInput = {
+    where?: BannedUserWhereInput
+    data: XOR<BannedUserUpdateWithoutUserInput, BannedUserUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BannedUserUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBy?: AdminUpdateOneRequiredWithoutBannedUsersNestedInput
+  }
+
+  export type BannedUserUncheckedUpdateWithoutUserInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutAdminInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userRole?: $Enums.UserRole
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    business?: BusinessCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutAdminInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userRole?: $Enums.UserRole
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    business?: BusinessUncheckedCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAdminInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+  }
+
+  export type BannedBusinessCreateWithoutBannedByInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    business: BusinessCreateNestedOneWithoutBannedBusinessesInput
+  }
+
+  export type BannedBusinessUncheckedCreateWithoutBannedByInput = {
+    businessId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedBusinessCreateOrConnectWithoutBannedByInput = {
+    where: BannedBusinessWhereUniqueInput
+    create: XOR<BannedBusinessCreateWithoutBannedByInput, BannedBusinessUncheckedCreateWithoutBannedByInput>
+  }
+
+  export type BannedBusinessCreateManyBannedByInputEnvelope = {
+    data: BannedBusinessCreateManyBannedByInput | BannedBusinessCreateManyBannedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BannedUserCreateWithoutBannedByInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutBannedUserInput
+  }
+
+  export type BannedUserUncheckedCreateWithoutBannedByInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedUserCreateOrConnectWithoutBannedByInput = {
+    where: BannedUserWhereUniqueInput
+    create: XOR<BannedUserCreateWithoutBannedByInput, BannedUserUncheckedCreateWithoutBannedByInput>
+  }
+
+  export type BannedUserCreateManyBannedByInputEnvelope = {
+    data: BannedUserCreateManyBannedByInput | BannedUserCreateManyBannedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BannedProductCreateWithoutBannedByInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    product: ProductCreateNestedOneWithoutBannedProductsInput
+  }
+
+  export type BannedProductUncheckedCreateWithoutBannedByInput = {
+    productId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedProductCreateOrConnectWithoutBannedByInput = {
+    where: BannedProductWhereUniqueInput
+    create: XOR<BannedProductCreateWithoutBannedByInput, BannedProductUncheckedCreateWithoutBannedByInput>
+  }
+
+  export type BannedProductCreateManyBannedByInputEnvelope = {
+    data: BannedProductCreateManyBannedByInput | BannedProductCreateManyBannedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutAdminInput = {
+    update: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
+    create: XOR<UserCreateWithoutAdminInput, UserUncheckedCreateWithoutAdminInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAdminInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAdminInput, UserUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type UserUpdateWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    business?: BusinessUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAdminInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type BannedBusinessUpsertWithWhereUniqueWithoutBannedByInput = {
+    where: BannedBusinessWhereUniqueInput
+    update: XOR<BannedBusinessUpdateWithoutBannedByInput, BannedBusinessUncheckedUpdateWithoutBannedByInput>
+    create: XOR<BannedBusinessCreateWithoutBannedByInput, BannedBusinessUncheckedCreateWithoutBannedByInput>
+  }
+
+  export type BannedBusinessUpdateWithWhereUniqueWithoutBannedByInput = {
+    where: BannedBusinessWhereUniqueInput
+    data: XOR<BannedBusinessUpdateWithoutBannedByInput, BannedBusinessUncheckedUpdateWithoutBannedByInput>
+  }
+
+  export type BannedBusinessUpdateManyWithWhereWithoutBannedByInput = {
+    where: BannedBusinessScalarWhereInput
+    data: XOR<BannedBusinessUpdateManyMutationInput, BannedBusinessUncheckedUpdateManyWithoutBannedByInput>
+  }
+
+  export type BannedBusinessScalarWhereInput = {
+    AND?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+    OR?: BannedBusinessScalarWhereInput[]
+    NOT?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+    bannedById?: StringFilter<"BannedBusiness"> | string
+    businessId?: StringFilter<"BannedBusiness"> | string
+    createdAt?: DateTimeFilter<"BannedBusiness"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedBusiness"> | Date | string
+  }
+
+  export type BannedUserUpsertWithWhereUniqueWithoutBannedByInput = {
+    where: BannedUserWhereUniqueInput
+    update: XOR<BannedUserUpdateWithoutBannedByInput, BannedUserUncheckedUpdateWithoutBannedByInput>
+    create: XOR<BannedUserCreateWithoutBannedByInput, BannedUserUncheckedCreateWithoutBannedByInput>
+  }
+
+  export type BannedUserUpdateWithWhereUniqueWithoutBannedByInput = {
+    where: BannedUserWhereUniqueInput
+    data: XOR<BannedUserUpdateWithoutBannedByInput, BannedUserUncheckedUpdateWithoutBannedByInput>
+  }
+
+  export type BannedUserUpdateManyWithWhereWithoutBannedByInput = {
+    where: BannedUserScalarWhereInput
+    data: XOR<BannedUserUpdateManyMutationInput, BannedUserUncheckedUpdateManyWithoutBannedByInput>
+  }
+
+  export type BannedUserScalarWhereInput = {
+    AND?: BannedUserScalarWhereInput | BannedUserScalarWhereInput[]
+    OR?: BannedUserScalarWhereInput[]
+    NOT?: BannedUserScalarWhereInput | BannedUserScalarWhereInput[]
+    bannedById?: StringFilter<"BannedUser"> | string
+    userId?: StringFilter<"BannedUser"> | string
+    createdAt?: DateTimeFilter<"BannedUser"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedUser"> | Date | string
+  }
+
+  export type BannedProductUpsertWithWhereUniqueWithoutBannedByInput = {
+    where: BannedProductWhereUniqueInput
+    update: XOR<BannedProductUpdateWithoutBannedByInput, BannedProductUncheckedUpdateWithoutBannedByInput>
+    create: XOR<BannedProductCreateWithoutBannedByInput, BannedProductUncheckedCreateWithoutBannedByInput>
+  }
+
+  export type BannedProductUpdateWithWhereUniqueWithoutBannedByInput = {
+    where: BannedProductWhereUniqueInput
+    data: XOR<BannedProductUpdateWithoutBannedByInput, BannedProductUncheckedUpdateWithoutBannedByInput>
+  }
+
+  export type BannedProductUpdateManyWithWhereWithoutBannedByInput = {
+    where: BannedProductScalarWhereInput
+    data: XOR<BannedProductUpdateManyMutationInput, BannedProductUncheckedUpdateManyWithoutBannedByInput>
+  }
+
+  export type BannedProductScalarWhereInput = {
+    AND?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
+    OR?: BannedProductScalarWhereInput[]
+    NOT?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
+    bannedById?: StringFilter<"BannedProduct"> | string
+    productId?: StringFilter<"BannedProduct"> | string
+    createdAt?: DateTimeFilter<"BannedProduct"> | Date | string
+    updatedAt?: DateTimeFilter<"BannedProduct"> | Date | string
+  }
+
+  export type AdminCreateWithoutBannedBusinessesInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutAdminInput
+    bannedUsers?: BannedUserCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminUncheckedCreateWithoutBannedBusinessesInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedUsers?: BannedUserUncheckedCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminCreateOrConnectWithoutBannedBusinessesInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutBannedBusinessesInput, AdminUncheckedCreateWithoutBannedBusinessesInput>
+  }
+
+  export type BusinessCreateWithoutBannedBusinessesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    phone?: string | null
+    whatsapp?: string | null
+    email?: string | null
+    website?: string | null
+    facebook?: string | null
+    instagram?: string | null
+    twitter?: string | null
+    address?: string | null
+    category?: string | null
+    hours?: string | null
+    plan?: $Enums.SubscriptionPlan
+    planStatus?: $Enums.SubscriptionStatus
+    planExpiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    logo?: ImageCreateNestedOneWithoutLogoBusinessInput
+    coverImage?: ImageCreateNestedOneWithoutCoverBusinessInput
+    user: UserCreateNestedOneWithoutBusinessInput
+    products?: ProductCreateNestedManyWithoutBusinessInput
+    payments?: PaymentCreateNestedManyWithoutBusinessInput
+    businessView?: businessViewCreateNestedManyWithoutBusinessInput
+  }
+
+  export type BusinessUncheckedCreateWithoutBannedBusinessesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    phone?: string | null
+    whatsapp?: string | null
+    email?: string | null
+    website?: string | null
+    facebook?: string | null
+    instagram?: string | null
+    twitter?: string | null
+    address?: string | null
+    category?: string | null
+    hours?: string | null
+    plan?: $Enums.SubscriptionPlan
+    planStatus?: $Enums.SubscriptionStatus
+    planExpiresAt?: Date | string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
+    coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
+    products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
+  }
+
+  export type BusinessCreateOrConnectWithoutBannedBusinessesInput = {
+    where: BusinessWhereUniqueInput
+    create: XOR<BusinessCreateWithoutBannedBusinessesInput, BusinessUncheckedCreateWithoutBannedBusinessesInput>
+  }
+
+  export type AdminUpsertWithoutBannedBusinessesInput = {
+    update: XOR<AdminUpdateWithoutBannedBusinessesInput, AdminUncheckedUpdateWithoutBannedBusinessesInput>
+    create: XOR<AdminCreateWithoutBannedBusinessesInput, AdminUncheckedCreateWithoutBannedBusinessesInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutBannedBusinessesInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutBannedBusinessesInput, AdminUncheckedUpdateWithoutBannedBusinessesInput>
+  }
+
+  export type AdminUpdateWithoutBannedBusinessesInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAdminNestedInput
+    bannedUsers?: BannedUserUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutBannedBusinessesInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedUsers?: BannedUserUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type BusinessUpsertWithoutBannedBusinessesInput = {
+    update: XOR<BusinessUpdateWithoutBannedBusinessesInput, BusinessUncheckedUpdateWithoutBannedBusinessesInput>
+    create: XOR<BusinessCreateWithoutBannedBusinessesInput, BusinessUncheckedCreateWithoutBannedBusinessesInput>
+    where?: BusinessWhereInput
+  }
+
+  export type BusinessUpdateToOneWithWhereWithoutBannedBusinessesInput = {
+    where?: BusinessWhereInput
+    data: XOR<BusinessUpdateWithoutBannedBusinessesInput, BusinessUncheckedUpdateWithoutBannedBusinessesInput>
+  }
+
+  export type BusinessUpdateWithoutBannedBusinessesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram?: NullableStringFieldUpdateOperationsInput | string | null
+    twitter?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    hours?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+    planStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
+    coverImage?: ImageUpdateOneWithoutCoverBusinessNestedInput
+    user?: UserUpdateOneRequiredWithoutBusinessNestedInput
+    products?: ProductUpdateManyWithoutBusinessNestedInput
+    payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    businessView?: businessViewUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type BusinessUncheckedUpdateWithoutBannedBusinessesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram?: NullableStringFieldUpdateOperationsInput | string | null
+    twitter?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    hours?: NullableStringFieldUpdateOperationsInput | string | null
+    plan?: EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+    planStatus?: EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+    planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
+    coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type AdminCreateWithoutBannedUsersInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutAdminInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminUncheckedCreateWithoutBannedUsersInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBannedByInput
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminCreateOrConnectWithoutBannedUsersInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutBannedUsersInput, AdminUncheckedCreateWithoutBannedUsersInput>
+  }
+
+  export type UserCreateWithoutBannedUserInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userRole?: $Enums.UserRole
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    business?: BusinessCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutBannedUserInput = {
+    id?: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userRole?: $Enums.UserRole
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    business?: BusinessUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutBannedUserInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutBannedUserInput, UserUncheckedCreateWithoutBannedUserInput>
+  }
+
+  export type AdminUpsertWithoutBannedUsersInput = {
+    update: XOR<AdminUpdateWithoutBannedUsersInput, AdminUncheckedUpdateWithoutBannedUsersInput>
+    create: XOR<AdminCreateWithoutBannedUsersInput, AdminUncheckedCreateWithoutBannedUsersInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutBannedUsersInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutBannedUsersInput, AdminUncheckedUpdateWithoutBannedUsersInput>
+  }
+
+  export type AdminUpdateWithoutBannedUsersInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAdminNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutBannedUsersInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type UserUpsertWithoutBannedUserInput = {
+    update: XOR<UserUpdateWithoutBannedUserInput, UserUncheckedUpdateWithoutBannedUserInput>
+    create: XOR<UserCreateWithoutBannedUserInput, UserUncheckedCreateWithoutBannedUserInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutBannedUserInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutBannedUserInput, UserUncheckedUpdateWithoutBannedUserInput>
+  }
+
+  export type UserUpdateWithoutBannedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    business?: BusinessUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutBannedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type AdminCreateWithoutBannedProductsInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutAdminInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBannedByInput
+    bannedUsers?: BannedUserCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminUncheckedCreateWithoutBannedProductsInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBannedByInput
+    bannedUsers?: BannedUserUncheckedCreateNestedManyWithoutBannedByInput
+  }
+
+  export type AdminCreateOrConnectWithoutBannedProductsInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutBannedProductsInput, AdminUncheckedCreateWithoutBannedProductsInput>
+  }
+
+  export type ProductCreateWithoutBannedProductsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price?: number | null
+    category?: string | null
+    featured?: boolean
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    business: BusinessCreateNestedOneWithoutProductsInput
+    images?: ImageCreateNestedManyWithoutProductInput
+    productView?: productViewCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutBannedProductsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    price?: number | null
+    category?: string | null
+    featured?: boolean
+    active?: boolean
+    businessId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: ImageUncheckedCreateNestedManyWithoutProductInput
+    productView?: productViewUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutBannedProductsInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutBannedProductsInput, ProductUncheckedCreateWithoutBannedProductsInput>
+  }
+
+  export type AdminUpsertWithoutBannedProductsInput = {
+    update: XOR<AdminUpdateWithoutBannedProductsInput, AdminUncheckedUpdateWithoutBannedProductsInput>
+    create: XOR<AdminCreateWithoutBannedProductsInput, AdminUncheckedCreateWithoutBannedProductsInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutBannedProductsInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutBannedProductsInput, AdminUncheckedUpdateWithoutBannedProductsInput>
+  }
+
+  export type AdminUpdateWithoutBannedProductsInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAdminNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBannedByNestedInput
+    bannedUsers?: BannedUserUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type AdminUncheckedUpdateWithoutBannedProductsInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBannedByNestedInput
+    bannedUsers?: BannedUserUncheckedUpdateManyWithoutBannedByNestedInput
+  }
+
+  export type ProductUpsertWithoutBannedProductsInput = {
+    update: XOR<ProductUpdateWithoutBannedProductsInput, ProductUncheckedUpdateWithoutBannedProductsInput>
+    create: XOR<ProductCreateWithoutBannedProductsInput, ProductUncheckedCreateWithoutBannedProductsInput>
+    where?: ProductWhereInput
+  }
+
+  export type ProductUpdateToOneWithWhereWithoutBannedProductsInput = {
+    where?: ProductWhereInput
+    data: XOR<ProductUpdateWithoutBannedProductsInput, ProductUncheckedUpdateWithoutBannedProductsInput>
+  }
+
+  export type ProductUpdateWithoutBannedProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    featured?: BoolFieldUpdateOperationsInput | boolean
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
+    images?: ImageUpdateManyWithoutProductNestedInput
+    productView?: productViewUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutBannedProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    featured?: BoolFieldUpdateOperationsInput | boolean
+    active?: BoolFieldUpdateOperationsInput | boolean
+    businessId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: ImageUncheckedUpdateManyWithoutProductNestedInput
+    productView?: productViewUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -18488,8 +25095,11 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     accounts?: AccountCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -18500,8 +25110,11 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -18528,8 +25141,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     accounts?: AccountUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -18540,8 +25156,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -18552,8 +25171,11 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     sessions?: SessionCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -18564,8 +25186,11 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -18592,8 +25217,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     sessions?: SessionUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -18604,8 +25232,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ImageCreateWithoutLogoBusinessInput = {
@@ -18666,8 +25297,11 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    admin?: AdminCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutBusinessInput = {
@@ -18678,8 +25312,11 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userRole?: $Enums.UserRole
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    admin?: AdminUncheckedCreateNestedOneWithoutUserInput
+    bannedUser?: BannedUserUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutBusinessInput = {
@@ -18697,6 +25334,7 @@ export namespace Prisma {
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bannedProducts?: BannedProductCreateNestedManyWithoutProductInput
     images?: ImageCreateNestedManyWithoutProductInput
     productView?: productViewCreateNestedManyWithoutProductInput
   }
@@ -18711,6 +25349,7 @@ export namespace Prisma {
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutProductInput
     images?: ImageUncheckedCreateNestedManyWithoutProductInput
     productView?: productViewUncheckedCreateNestedManyWithoutProductInput
   }
@@ -18758,6 +25397,28 @@ export namespace Prisma {
 
   export type PaymentCreateManyBusinessInputEnvelope = {
     data: PaymentCreateManyBusinessInput | PaymentCreateManyBusinessInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BannedBusinessCreateWithoutBusinessInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBy: AdminCreateNestedOneWithoutBannedBusinessesInput
+  }
+
+  export type BannedBusinessUncheckedCreateWithoutBusinessInput = {
+    bannedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedBusinessCreateOrConnectWithoutBusinessInput = {
+    where: BannedBusinessWhereUniqueInput
+    create: XOR<BannedBusinessCreateWithoutBusinessInput, BannedBusinessUncheckedCreateWithoutBusinessInput>
+  }
+
+  export type BannedBusinessCreateManyBusinessInputEnvelope = {
+    data: BannedBusinessCreateManyBusinessInput | BannedBusinessCreateManyBusinessInput[]
     skipDuplicates?: boolean
   }
 
@@ -18864,8 +25525,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    admin?: AdminUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBusinessInput = {
@@ -18876,8 +25540,11 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
+    bannedUser?: BannedUserUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ProductUpsertWithWhereUniqueWithoutBusinessInput = {
@@ -18945,6 +25612,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Payment"> | Date | string
   }
 
+  export type BannedBusinessUpsertWithWhereUniqueWithoutBusinessInput = {
+    where: BannedBusinessWhereUniqueInput
+    update: XOR<BannedBusinessUpdateWithoutBusinessInput, BannedBusinessUncheckedUpdateWithoutBusinessInput>
+    create: XOR<BannedBusinessCreateWithoutBusinessInput, BannedBusinessUncheckedCreateWithoutBusinessInput>
+  }
+
+  export type BannedBusinessUpdateWithWhereUniqueWithoutBusinessInput = {
+    where: BannedBusinessWhereUniqueInput
+    data: XOR<BannedBusinessUpdateWithoutBusinessInput, BannedBusinessUncheckedUpdateWithoutBusinessInput>
+  }
+
+  export type BannedBusinessUpdateManyWithWhereWithoutBusinessInput = {
+    where: BannedBusinessScalarWhereInput
+    data: XOR<BannedBusinessUpdateManyMutationInput, BannedBusinessUncheckedUpdateManyWithoutBusinessInput>
+  }
+
   export type businessViewUpsertWithWhereUniqueWithoutBusinessInput = {
     where: businessViewWhereUniqueInput
     update: XOR<businessViewUpdateWithoutBusinessInput, businessViewUncheckedUpdateWithoutBusinessInput>
@@ -18994,6 +25677,7 @@ export namespace Prisma {
     coverImage?: ImageCreateNestedOneWithoutCoverBusinessInput
     user: UserCreateNestedOneWithoutBusinessInput
     payments?: PaymentCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
     businessView?: businessViewCreateNestedManyWithoutBusinessInput
   }
 
@@ -19020,12 +25704,35 @@ export namespace Prisma {
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
     payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
     businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessCreateOrConnectWithoutProductsInput = {
     where: BusinessWhereUniqueInput
     create: XOR<BusinessCreateWithoutProductsInput, BusinessUncheckedCreateWithoutProductsInput>
+  }
+
+  export type BannedProductCreateWithoutProductInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bannedBy: AdminCreateNestedOneWithoutBannedProductsInput
+  }
+
+  export type BannedProductUncheckedCreateWithoutProductInput = {
+    bannedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedProductCreateOrConnectWithoutProductInput = {
+    where: BannedProductWhereUniqueInput
+    create: XOR<BannedProductCreateWithoutProductInput, BannedProductUncheckedCreateWithoutProductInput>
+  }
+
+  export type BannedProductCreateManyProductInputEnvelope = {
+    data: BannedProductCreateManyProductInput | BannedProductCreateManyProductInput[]
+    skipDuplicates?: boolean
   }
 
   export type ImageCreateWithoutProductInput = {
@@ -19114,6 +25821,7 @@ export namespace Prisma {
     coverImage?: ImageUpdateOneWithoutCoverBusinessNestedInput
     user?: UserUpdateOneRequiredWithoutBusinessNestedInput
     payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19140,7 +25848,24 @@ export namespace Prisma {
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
+  }
+
+  export type BannedProductUpsertWithWhereUniqueWithoutProductInput = {
+    where: BannedProductWhereUniqueInput
+    update: XOR<BannedProductUpdateWithoutProductInput, BannedProductUncheckedUpdateWithoutProductInput>
+    create: XOR<BannedProductCreateWithoutProductInput, BannedProductUncheckedCreateWithoutProductInput>
+  }
+
+  export type BannedProductUpdateWithWhereUniqueWithoutProductInput = {
+    where: BannedProductWhereUniqueInput
+    data: XOR<BannedProductUpdateWithoutProductInput, BannedProductUncheckedUpdateWithoutProductInput>
+  }
+
+  export type BannedProductUpdateManyWithWhereWithoutProductInput = {
+    where: BannedProductScalarWhereInput
+    data: XOR<BannedProductUpdateManyMutationInput, BannedProductUncheckedUpdateManyWithoutProductInput>
   }
 
   export type ImageUpsertWithWhereUniqueWithoutProductInput = {
@@ -19222,6 +25947,7 @@ export namespace Prisma {
     coverImage?: ImageCreateNestedOneWithoutCoverBusinessInput
     user: UserCreateNestedOneWithoutBusinessInput
     products?: ProductCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
     businessView?: businessViewCreateNestedManyWithoutBusinessInput
   }
 
@@ -19248,6 +25974,7 @@ export namespace Prisma {
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
     products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
     businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
   }
 
@@ -19290,6 +26017,7 @@ export namespace Prisma {
     coverImage?: ImageUpdateOneWithoutCoverBusinessNestedInput
     user?: UserUpdateOneRequiredWithoutBusinessNestedInput
     products?: ProductUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19316,6 +26044,7 @@ export namespace Prisma {
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
     products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19330,6 +26059,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutProductInput
     productView?: productViewCreateNestedManyWithoutProductInput
   }
 
@@ -19344,6 +26074,7 @@ export namespace Prisma {
     businessId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutProductInput
     productView?: productViewUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -19375,6 +26106,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBusinessInput
     products?: ProductCreateNestedManyWithoutBusinessInput
     payments?: PaymentCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
     businessView?: businessViewCreateNestedManyWithoutBusinessInput
   }
 
@@ -19401,6 +26133,7 @@ export namespace Prisma {
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
     products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
     payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
     businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
   }
 
@@ -19432,6 +26165,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBusinessInput
     products?: ProductCreateNestedManyWithoutBusinessInput
     payments?: PaymentCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
     businessView?: businessViewCreateNestedManyWithoutBusinessInput
   }
 
@@ -19458,6 +26192,7 @@ export namespace Prisma {
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
     products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
     payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
     businessView?: businessViewUncheckedCreateNestedManyWithoutBusinessInput
   }
 
@@ -19488,6 +26223,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutProductNestedInput
     productView?: productViewUpdateManyWithoutProductNestedInput
   }
 
@@ -19502,6 +26238,7 @@ export namespace Prisma {
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutProductNestedInput
     productView?: productViewUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -19539,6 +26276,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBusinessNestedInput
     products?: ProductUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19565,6 +26303,7 @@ export namespace Prisma {
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
     products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19602,6 +26341,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBusinessNestedInput
     products?: ProductUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19628,6 +26368,7 @@ export namespace Prisma {
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
     products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
     businessView?: businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
@@ -19642,6 +26383,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
+    bannedProducts?: BannedProductCreateNestedManyWithoutProductInput
     images?: ImageCreateNestedManyWithoutProductInput
   }
 
@@ -19656,6 +26398,7 @@ export namespace Prisma {
     businessId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    bannedProducts?: BannedProductUncheckedCreateNestedManyWithoutProductInput
     images?: ImageUncheckedCreateNestedManyWithoutProductInput
   }
 
@@ -19686,6 +26429,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
+    bannedProducts?: BannedProductUpdateManyWithoutProductNestedInput
     images?: ImageUpdateManyWithoutProductNestedInput
   }
 
@@ -19700,6 +26444,7 @@ export namespace Prisma {
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutProductNestedInput
     images?: ImageUncheckedUpdateManyWithoutProductNestedInput
   }
 
@@ -19727,6 +26472,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBusinessInput
     products?: ProductCreateNestedManyWithoutBusinessInput
     payments?: PaymentCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessUncheckedCreateWithoutBusinessViewInput = {
@@ -19753,6 +26499,7 @@ export namespace Prisma {
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
     products?: ProductUncheckedCreateNestedManyWithoutBusinessInput
     payments?: PaymentUncheckedCreateNestedManyWithoutBusinessInput
+    bannedBusinesses?: BannedBusinessUncheckedCreateNestedManyWithoutBusinessInput
   }
 
   export type BusinessCreateOrConnectWithoutBusinessViewInput = {
@@ -19795,6 +26542,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBusinessNestedInput
     products?: ProductUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUpdateManyWithoutBusinessNestedInput
   }
 
   export type BusinessUncheckedUpdateWithoutBusinessViewInput = {
@@ -19821,6 +26569,7 @@ export namespace Prisma {
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
     products?: ProductUncheckedUpdateManyWithoutBusinessNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutBusinessNestedInput
+    bannedBusinesses?: BannedBusinessUncheckedUpdateManyWithoutBusinessNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -19927,6 +26676,78 @@ export namespace Prisma {
     scope?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type BannedBusinessCreateManyBannedByInput = {
+    businessId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedUserCreateManyBannedByInput = {
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedProductCreateManyBannedByInput = {
+    productId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BannedBusinessUpdateWithoutBannedByInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    business?: BusinessUpdateOneRequiredWithoutBannedBusinessesNestedInput
+  }
+
+  export type BannedBusinessUncheckedUpdateWithoutBannedByInput = {
+    businessId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedBusinessUncheckedUpdateManyWithoutBannedByInput = {
+    businessId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedUserUpdateWithoutBannedByInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutBannedUserNestedInput
+  }
+
+  export type BannedUserUncheckedUpdateWithoutBannedByInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedUserUncheckedUpdateManyWithoutBannedByInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedProductUpdateWithoutBannedByInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutBannedProductsNestedInput
+  }
+
+  export type BannedProductUncheckedUpdateWithoutBannedByInput = {
+    productId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedProductUncheckedUpdateManyWithoutBannedByInput = {
+    productId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProductCreateManyBusinessInput = {
     id?: string
     name: string
@@ -19952,6 +26773,12 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type BannedBusinessCreateManyBusinessInput = {
+    bannedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type businessViewCreateManyBusinessInput = {
     id?: string
     createdAt?: Date | string
@@ -19968,6 +26795,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedProducts?: BannedProductUpdateManyWithoutProductNestedInput
     images?: ImageUpdateManyWithoutProductNestedInput
     productView?: productViewUpdateManyWithoutProductNestedInput
   }
@@ -19982,6 +26810,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedProducts?: BannedProductUncheckedUpdateManyWithoutProductNestedInput
     images?: ImageUncheckedUpdateManyWithoutProductNestedInput
     productView?: productViewUncheckedUpdateManyWithoutProductNestedInput
   }
@@ -20037,6 +26866,24 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BannedBusinessUpdateWithoutBusinessInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBy?: AdminUpdateOneRequiredWithoutBannedBusinessesNestedInput
+  }
+
+  export type BannedBusinessUncheckedUpdateWithoutBusinessInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedBusinessUncheckedUpdateManyWithoutBusinessInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type businessViewUpdateWithoutBusinessInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20055,6 +26902,12 @@ export namespace Prisma {
     referrer?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type BannedProductCreateManyProductInput = {
+    bannedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ImageCreateManyProductInput = {
     key: string
     url: string
@@ -20069,6 +26922,24 @@ export namespace Prisma {
     id?: string
     createdAt?: Date | string
     referrer?: string | null
+  }
+
+  export type BannedProductUpdateWithoutProductInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bannedBy?: AdminUpdateOneRequiredWithoutBannedProductsNestedInput
+  }
+
+  export type BannedProductUncheckedUpdateWithoutProductInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BannedProductUncheckedUpdateManyWithoutProductInput = {
+    bannedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImageUpdateWithoutProductInput = {
