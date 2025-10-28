@@ -9,9 +9,9 @@ import {
 } from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
-import { ProductViewTracker } from "../../productos/[id]/components/product-view-tracker";
 import { BusinessHeader } from "./components/business-header";
 import { BusinessProducts } from "./components/business-products";
+import { BusinessViewTracker } from "./components/business-view-tracker";
 import { ContactCard } from "./components/contact-card";
 import { SimilarBusinesses } from "./components/similar-businesses";
 
@@ -155,7 +155,7 @@ export default async function BusinessPage({
     <div className="container mx-auto space-y-8 py-8">
       {/* ✅ Tracking envuelto en Suspense */}
       <Suspense fallback={null}>
-        <ProductViewTracker productId={id} />
+        <BusinessViewTracker productId={id} />
       </Suspense>
 
       <LocalBusinessSchema
