@@ -25,8 +25,12 @@ export function SignUpForm() {
     {},
     {
       showToasts: true,
-      onSuccess: () => {
-        router.push("/dashboard/setup");
+      onSuccess: ({ isAdmin, hasBusiness }) => {
+        isAdmin
+          ? router.push("/admin")
+          : hasBusiness
+            ? router.push("/dashboard")
+            : router.push("/auth/business-setup");
       },
     },
   );

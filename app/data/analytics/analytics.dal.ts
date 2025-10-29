@@ -11,7 +11,7 @@ import type { AnalyticsPeriod } from "./analytics.dto";
 
 export async function getAnalytics(
   period: AnalyticsPeriod = "30d",
-  businessId: string
+  businessId: string,
 ) {
   "use cache";
   cacheLife("minutes");
@@ -115,7 +115,7 @@ export async function getAnalytics(
 
 export async function getProductAnalytics(
   productId: string,
-  period: AnalyticsPeriod = "30d"
+  period: AnalyticsPeriod = "30d",
 ) {
   const { business } = await requireBusiness();
 
@@ -123,7 +123,7 @@ export async function getProductAnalytics(
   const product = await prisma.product.findFirst({
     where: {
       id: productId,
-      businessId: business.id,
+      businessId: business?.id,
     },
   });
 

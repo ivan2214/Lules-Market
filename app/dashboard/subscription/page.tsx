@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import type { PlanType } from "@/app/generated/prisma";
@@ -12,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
@@ -78,7 +76,7 @@ export default async function SubscriptionPage() {
   const business = await getMyBusiness();
 
   if (!business) {
-    redirect("/dashboard/setup");
+    redirect("/auth/business-setup");
   }
 
   const payments = await getSubscriptionHistory();

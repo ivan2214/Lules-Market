@@ -9,11 +9,17 @@ import {
 } from "@/app/schemas/auth";
 import type { ActionResult } from "@/hooks/use-action";
 import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export const businessSignInAction = async (
   _prevState: ActionResult,
   data: BusinessSignInInput,
-): Promise<ActionResult> => {
+): Promise<
+  ActionResult & {
+    isAdmin?: boolean;
+    hasBusiness?: boolean;
+  }
+> => {
   try {
     const validatedData = BusinessSignInInputSchema.safeParse(data);
     if (!validatedData.success) {
@@ -39,8 +45,22 @@ export const businessSignInAction = async (
       };
     }
 
+    const isAdmin = await prisma.admin.findUnique({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    const hasBusiness = await prisma.business.findUnique({
+      where: {
+        userId: user.id,
+      },
+    });
+
     return {
       successMessage: "Inicio de sesión exitoso",
+      isAdmin: !!isAdmin,
+      hasBusiness: !!hasBusiness,
     };
   } catch (error) {
     if (error instanceof APIError) {
@@ -70,7 +90,12 @@ export const businessSignInAction = async (
 export const businessSignUpAction = async (
   _prevState: ActionResult,
   data: BusinessSignUpInput,
-): Promise<ActionResult> => {
+): Promise<
+  ActionResult & {
+    isAdmin?: boolean;
+    hasBusiness?: boolean;
+  }
+> => {
   try {
     const validatedData = BusinessSignUpInputSchema.safeParse(data);
     if (!validatedData.success) {
@@ -97,8 +122,22 @@ export const businessSignUpAction = async (
       };
     }
 
+    const isAdmin = await prisma.admin.findUnique({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    const hasBusiness = await prisma.business.findUnique({
+      where: {
+        userId: user.id,
+      },
+    });
+
     return {
       successMessage: "Registro exitoso",
+      isAdmin: !!isAdmin,
+      hasBusiness: !!hasBusiness,
     };
   } catch (error) {
     if (error instanceof APIError) {

@@ -164,7 +164,7 @@ La aplicación estará disponible en `http://localhost:3000`
 ### Para Comercios
 
 1. **Registro**: Crea una cuenta en `/auth/signup`
-2. **Configurar negocio**: Completa tu perfil en `/dashboard/setup`
+2. **Configurar negocio**: Completa tu perfil en `/auth/business-setup`
 3. **Agregar productos**: Crea productos en `/dashboard/products`
 4. **Elegir plan**: Actualiza tu plan en `/dashboard/subscription`
 5. **Ver estadísticas**: Revisa el rendimiento en `/dashboard/analytics`

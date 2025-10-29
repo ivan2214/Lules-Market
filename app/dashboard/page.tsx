@@ -14,6 +14,7 @@ import {
 // ✅ Componente separado para contenido con auth
 async function DashboardContent() {
   const business = await getMyBusiness();
+
   const productsBusiness = await getBusinessProducts({
     limit: 5,
     offset: 0,

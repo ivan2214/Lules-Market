@@ -14,6 +14,7 @@ import {
   BusinessUpdateInputSchema,
 } from "./business.dto";
 import { canEditBusiness } from "./business.policy";
+import { requireBusiness } from "./require-busines";
 
 // ========================================
 // FUNCIONES PÚBLICAS (CACHEABLES)
@@ -80,14 +81,14 @@ export async function listAllBusinesses({
 }
 
 export async function getBusinessById(
-  businessId: string
+  businessId: string,
 ): Promise<BusinessDTO | null> {
   "use cache";
   cacheLife("hours");
   cacheTag(
     CACHE_TAGS.PUBLIC_BUSINESSES,
     CACHE_TAGS.BUSINESSES,
-    `business-${businessId}`
+    `business-${businessId}`,
   );
 
   const business = await prisma.business.findFirst({
@@ -96,24 +97,8 @@ export async function getBusinessById(
       planStatus: "ACTIVE",
     },
     include: {
-      logo: {
-        select: {
-          url: true,
-          name: true,
-          isMainImage: true,
-          size: true,
-          key: true,
-        },
-      },
-      coverImage: {
-        select: {
-          url: true,
-          name: true,
-          isMainImage: true,
-          size: true,
-          key: true,
-        },
-      },
+      logo: true,
+      coverImage: true,
       products: {
         include: {
           images: true,
@@ -131,54 +116,13 @@ export async function getBusinessById(
 // ========================================
 
 export async function getMyBusiness(): Promise<BusinessDTO> {
-  // NO usar "use cache" - requiere autenticación
-  const user = await requireUser();
+  const { business } = await requireBusiness();
 
-  const business = await prisma.business.findUnique({
-    where: { userId: user.id },
-    include: {
-      logo: {
-        select: {
-          url: true,
-          name: true,
-          isMainImage: true,
-          size: true,
-          key: true,
-        },
-      },
-      coverImage: {
-        select: {
-          url: true,
-          name: true,
-          isMainImage: true,
-          size: true,
-          key: true,
-        },
-      },
-      products: {
-        include: {
-          images: true,
-        },
-        where: { active: true },
-        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-      },
-    },
-  });
-
-  if (!business) {
-    throw new Error("No tienes un negocio registrado");
-  }
-
-  return {
-    ...business,
-    products: business?.products ?? [],
-    logo: business?.logo,
-    coverImage: business?.coverImage,
-  };
+  return business;
 }
 
 export async function createBusiness(
-  data: BusinessCreateInput
+  data: BusinessCreateInput,
 ): Promise<ActionResult> {
   const validated = BusinessCreateInputSchema.safeParse(data);
   if (!validated.success) {
@@ -248,7 +192,7 @@ export async function createBusiness(
 }
 
 export async function updateBusiness(
-  data: BusinessUpdateInput
+  data: BusinessUpdateInput,
 ): Promise<ActionResult> {
   const validated = BusinessUpdateInputSchema.safeParse(data);
   if (!validated.success) {
