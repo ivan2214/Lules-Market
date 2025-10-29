@@ -1,24 +1,16 @@
 import { Download } from "lucide-react";
-import { cacheLife } from "next/cache";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import prisma from "@/lib/prisma";
-import { PaymentsClient } from "./components/payments-client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 
-export default async function PaymentsPage() {
-  "use cache";
-  cacheLife("hours");
-  const payments = await prisma.payment.findMany({
-    include: {
-      business: true,
-    },
-  });
-  const webhookEvents = await prisma.webhookEvent.findMany();
-
-  const totalRevenue = payments
-    .filter((p) => p.status === "approved")
-    .reduce((sum, p) => sum + p.amount, 0);
-
+export default function Loading() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -44,7 +36,7 @@ export default async function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{payments.length}</div>
+            <Skeleton className="h-12 w-full" />
           </CardContent>
         </Card>
         <Card>
@@ -54,9 +46,7 @@ export default async function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl text-green-600">
-              {payments.filter((p) => p.status === "approved").length}
-            </div>
+            <Skeleton className="h-12 w-full" />
           </CardContent>
         </Card>
         <Card>
@@ -66,9 +56,7 @@ export default async function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl text-yellow-600">
-              {payments.filter((p) => p.status === "pending").length}
-            </div>
+            <Skeleton className="h-12 w-full" />
           </CardContent>
         </Card>
         <Card>
@@ -78,14 +66,45 @@ export default async function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">
-              ${(totalRevenue / 100).toFixed(2)}
-            </div>
+            <Skeleton className="h-12 w-full" />
           </CardContent>
         </Card>
       </div>
 
-      <PaymentsClient payments={payments} webhookEvents={webhookEvents} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Pagos</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <section className="flex flex-col items-start gap-y-5">
+            <div>
+              <Skeleton className="h-5 w-44" />
+            </div>
+            <section className="mx-auto">
+              <Spinner className="size-5" />
+            </section>
+          </section>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Eventos de Webhook</CardTitle>
+          <CardDescription>
+            Auditoría de eventos de Mercado Pago
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <section className="flex flex-col items-start gap-y-5">
+            <div>
+              <Skeleton className="h-5 w-44" />
+            </div>
+            <section className="mx-auto">
+              <Spinner className="size-5" />
+            </section>
+          </section>
+        </CardContent>
+      </Card>
     </div>
   );
 }

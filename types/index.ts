@@ -1,14 +1,6 @@
 // Type definitions for the platform
 
 import type { icons } from "lucide-react";
-import type {
-  Payment as PaymentPrisma,
-  SubscriptionPlan,
-} from "@/app/generated/prisma";
-
-export interface PaymentDTO extends PaymentPrisma {
-  plan: SubscriptionPlan;
-}
 
 export interface Analytics {
   id: string;

@@ -1,3 +1,4 @@
+import { format, startOfMonth, subMonths } from "date-fns";
 import {
   AlertCircle,
   CheckCircle,
@@ -8,15 +9,140 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
+import { cacheLife } from "next/cache";
 import { BusinessGrowthChart } from "@/components/admin/business-growth-chart";
 import { PlanDistributionChart } from "@/components/admin/plan-distribution-chart";
 import { RevenueChart } from "@/components/admin/revenue-chart";
 import { StatCard } from "@/components/admin/stat-card";
-import { mockAnalytics, mockDashboardStats } from "@/lib/data/mock-data";
+import prisma from "@/lib/prisma";
 
-export default function AdminDashboard() {
-  const stats = mockDashboardStats;
-  const analytics = mockAnalytics;
+async function getAdminDashboardStats() {
+  const [
+    totalUsers,
+    totalBusinesses,
+    bannedUsers,
+    bannedBusinesses,
+    bannedProducts,
+    totalProducts,
+    totalApprovedPayments,
+    totalPendingPayments,
+    totalRejectedPayments,
+    freePlanBusinesses,
+    basicPlanBusinesses,
+    premiumPlanBusinesses,
+  ] = await prisma.$transaction([
+    prisma.user.count(),
+    prisma.business.count(),
+    prisma.user.count({ where: { bannedUser: { isNot: null } } }),
+    prisma.business.count({ where: { bannedBusiness: { isNot: null } } }),
+    prisma.product.count({ where: { bannedProduct: { isNot: null } } }),
+    prisma.product.count(),
+    prisma.payment.count({ where: { status: "APPROVED" } }),
+    prisma.payment.count({ where: { status: "PENDING" } }),
+    prisma.payment.count({ where: { status: "REJECTED" } }),
+    prisma.business.count({ where: { plan: "FREE" } }),
+    prisma.business.count({ where: { plan: "BASIC" } }),
+    prisma.business.count({ where: { plan: "PREMIUM" } }),
+  ]);
+  const stats = {
+    users: {
+      total: totalUsers,
+      active: totalUsers - bannedUsers,
+      banned: bannedUsers,
+    },
+    businesses: {
+      total: totalBusinesses,
+      active: totalBusinesses - bannedBusinesses,
+      banned: bannedBusinesses,
+    },
+    products: {
+      total: totalProducts,
+      active: totalProducts - bannedProducts,
+      banned: bannedProducts,
+    },
+    payments: {
+      totalRevenue: totalApprovedPayments,
+      approved: totalApprovedPayments,
+      pending: totalPendingPayments,
+      rejected: totalRejectedPayments,
+    },
+    plans: {
+      free: freePlanBusinesses,
+      basic: basicPlanBusinesses,
+      premium: premiumPlanBusinesses,
+    },
+  };
+  return { stats };
+}
+
+async function getAnalyticsData() {
+  // 1️⃣ Distribución de planes actuales
+  const [free, basic, premium] = await Promise.all([
+    prisma.business.count({ where: { plan: "FREE" } }),
+    prisma.business.count({ where: { plan: "BASIC" } }),
+    prisma.business.count({ where: { plan: "PREMIUM" } }),
+  ]);
+
+  const planDistribution = { FREE: free, BASIC: basic, PREMIUM: premium };
+
+  // 2️⃣ Últimos 6 meses de ingresos
+  const sixMonthsAgo = startOfMonth(subMonths(new Date(), 5));
+
+  const monthlyPayments = await prisma.payment.groupBy({
+    by: ["createdAt"],
+    where: {
+      createdAt: { gte: sixMonthsAgo },
+      status: "APPROVED",
+    },
+    _sum: { amount: true },
+  });
+
+  // Agrupamos por mes (ej: "Oct 2025")
+  const monthlyRevenue = Array.from({ length: 6 }).map((_, i) => {
+    const date = startOfMonth(subMonths(new Date(), 5 - i));
+    const month = format(date, "MMM yyyy");
+    const revenue =
+      monthlyPayments
+        .filter(
+          (p) =>
+            format(startOfMonth(p.createdAt), "MMM yyyy") === month &&
+            p._sum.amount,
+        )
+        .reduce((acc, p) => acc + (p._sum.amount || 0), 0) || 0;
+
+    return { month, revenue };
+  });
+
+  // 3️⃣ Crecimiento de negocios (por mes)
+  const businessByMonth = await prisma.business.groupBy({
+    by: ["createdAt"],
+    where: { createdAt: { gte: sixMonthsAgo } },
+    _count: { _all: true },
+  });
+
+  const businessGrowth = Array.from({ length: 6 }).map((_, i) => {
+    const date = startOfMonth(subMonths(new Date(), 5 - i));
+    const month = format(date, "MMM yyyy");
+    const count =
+      businessByMonth
+        .filter(
+          (b) =>
+            format(startOfMonth(b.createdAt), "MMM yyyy") === month &&
+            b._count._all,
+        )
+        .reduce((acc, b) => acc + b._count._all, 0) || 0;
+
+    return { month, count };
+  });
+
+  return { planDistribution, monthlyRevenue, businessGrowth };
+}
+export default async function AdminDashboard() {
+  "use cache";
+  cacheLife("hours");
+  const { stats } = await getAdminDashboardStats();
+  const { planDistribution, monthlyRevenue, businessGrowth } =
+    await getAnalyticsData();
 
   return (
     <div className="space-y-6">
@@ -85,19 +211,19 @@ export default function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           title="Plan FREE"
-          value={stats.plans.FREE}
+          value={stats.plans.free}
           description="Negocios en plan gratuito"
           icon={TrendingUp}
         />
         <StatCard
           title="Plan BASIC"
-          value={stats.plans.BASIC}
+          value={stats.plans.basic}
           description="Negocios en plan básico"
           icon={TrendingUp}
         />
         <StatCard
           title="Plan PREMIUM"
-          value={stats.plans.PREMIUM}
+          value={stats.plans.premium}
           description="Negocios en plan premium"
           icon={TrendingUp}
         />
@@ -105,11 +231,11 @@ export default function AdminDashboard() {
 
       {/* Charts */}
       <div className="grid gap-4 md:grid-cols-2">
-        <RevenueChart data={analytics.monthlyRevenue} />
-        <BusinessGrowthChart data={analytics.businessGrowth} />
+        <RevenueChart data={monthlyRevenue} />
+        <BusinessGrowthChart data={businessGrowth} />
       </div>
 
-      <PlanDistributionChart data={analytics.planDistribution} />
+      <PlanDistributionChart data={planDistribution} />
     </div>
   );
 }

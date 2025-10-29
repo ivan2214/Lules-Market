@@ -7,14 +7,14 @@ import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import { requireBusiness } from "../business/require-busines";
-import type { PaymentDTO, PaymentPreferenceResult } from "./subscription.dto";
+import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 
 // ========================================
 // FUNCIONES PRIVADAS (Requieren autenticación)
 // ========================================
 
 export async function createPaymentPreference(
-  plan: SubscriptionPlan,
+  plan: SubscriptionPlan
 ): Promise<PaymentPreferenceResult> {
   const { business } = await requireBusiness();
 
@@ -334,7 +334,7 @@ export async function redeemCoupon(code: string) {
     throw new Error("El cupón ya alcanzó su límite de usos.");
 
   const expiresAt = new Date(
-    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000,
+    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000
   );
 
   await prisma.couponRedemption.create({

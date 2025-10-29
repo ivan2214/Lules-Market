@@ -10,7 +10,6 @@ import type {
 
 export type UserRole = "USER" | "BUSINESS" | "ADMIN";
 export type PlanType = "FREE" | "BASIC" | "PREMIUM";
-export type PaymentStatus = "approved" | "pending" | "rejected";
 
 export interface Business {
   id: string;

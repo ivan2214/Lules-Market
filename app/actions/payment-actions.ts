@@ -1,6 +1,6 @@
 "use server";
 
-import * as SubscriptionDAL from "../data/subscription/subscription.dal";
+import * as SubscriptionDAL from "../data/payment/payment.dal";
 
 export async function processPaymentSuccess({
   paymentIdMP,

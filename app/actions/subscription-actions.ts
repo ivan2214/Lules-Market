@@ -1,7 +1,7 @@
 "use server";
 
 import type { SubscriptionPlan } from "@/app/generated/prisma";
-import * as SubscriptionDAL from "../data/subscription/subscription.dal";
+import * as SubscriptionDAL from "../data/payment/payment.dal";
 
 export async function createPaymentPreference(plan: SubscriptionPlan) {
   return SubscriptionDAL.createPaymentPreference(plan);
