@@ -29,14 +29,12 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchPlaceholder?: string;
-  searchColumn?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder = "Buscar...",
-  searchColumn,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -65,11 +63,6 @@ export function DataTable<TData, TValue>({
       globalFilter,
     },
   });
-
-  // Get the first accessor column if searchColumn is not provided
-  const defaultSearchColumn =
-    searchColumn ||
-    columns.find((col) => "accessorKey" in col)?.accessorKey?.toString();
 
   return (
     <div className="w-full space-y-4">
