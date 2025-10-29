@@ -2,6 +2,7 @@
 
 import { Ban, CheckCircle, Eye, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import type { UserDTO } from "@/app/data/user/user.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,10 +22,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { User } from "@/types/admin";
 
 interface UserActionsProps {
-  user: User;
+  user: UserDTO;
   onBan: (userId: string) => void;
   onUnban: (userId: string) => void;
   onViewDetails: (userId: string) => void;

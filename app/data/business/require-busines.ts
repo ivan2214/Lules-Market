@@ -12,7 +12,13 @@ export const requireBusiness = cache(async () => {
     include: {
       logo: true,
       coverImage: true,
-      user: true,
+      user: {
+        include: {
+          admin: true,
+          bannedUser: true,
+          business: true,
+        },
+      },
     },
   });
 

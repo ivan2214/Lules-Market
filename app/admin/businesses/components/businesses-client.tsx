@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Business, PlanType } from "@/types/admin";
+import type { PlanType } from "@/types/admin";
 
 type BusinessesClientProps = {
   businesses: BusinessDTO[];
@@ -56,16 +56,13 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
     console.log("Ver detalles del negocio:", businessId);
   };
 
-  const columns: ColumnDef<Business>[] = [
+  const columns: ColumnDef<BusinessDTO>[] = [
     {
       accessorKey: "name",
       header: "Negocio",
       cell: ({ row }) => (
         <div>
           <div className="font-medium">{row.original.name}</div>
-          <div className="text-muted-foreground text-sm">
-            @{row.original.slug}
-          </div>
         </div>
       ),
     },
@@ -90,7 +87,7 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       accessorKey: "productsCount",
       header: "Productos",
       cell: ({ row }) => (
-        <span className="font-medium">{row.original.productsCount}</span>
+        <span className="font-medium">{row.original.products?.length}</span>
       ),
     },
     {
@@ -103,7 +100,7 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       id: "status",
       header: "Estado",
       cell: ({ row }) => {
-        if (row.original.isBanned)
+        if (row.original.bannedBusiness)
           return <Badge variant="destructive">Baneado</Badge>;
         if (!row.original.isActive)
           return <Badge variant="secondary">Inactivo</Badge>;

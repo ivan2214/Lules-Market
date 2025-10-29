@@ -2,6 +2,7 @@
 
 import { AlertTriangle, CheckCircle, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
+import type { Image } from "@/app/generated/prisma";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +25,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockImages } from "@/lib/data/mock-data";
-import type { Image } from "@/types/admin";
 
 export default function MediaPage() {
   const [images, setImages] = useState(mockImages);
@@ -210,7 +210,7 @@ export default function MediaPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => selectedImage && handleDelete(selectedImage.id)}
+              onClick={() => selectedImage && handleDelete(selectedImage.key)}
               className="bg-destructive text-destructive-foreground"
             >
               Eliminar

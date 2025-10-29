@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { useState } from "react";
+import type { BusinessDTO } from "@/app/data/business/business.dto";
 import type { SubscriptionPlan } from "@/app/generated/prisma";
 import {
   AlertDialog,
@@ -44,10 +45,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Business } from "@/types/admin";
 
 interface BusinessActionsProps {
-  business: Business;
+  business: BusinessDTO;
   onBan: (businessId: string) => void;
   onUnban: (businessId: string) => void;
   onChangePlan: (businessId: string, plan: SubscriptionPlan) => void;
@@ -92,7 +92,7 @@ export function BusinessActions({
             <CreditCard className="mr-2 h-4 w-4" />
             Cambiar plan
           </DropdownMenuItem>
-          {business.isBanned ? (
+          {business.bannedBusiness ? (
             <DropdownMenuItem
               onClick={() => setShowUnbanDialog(true)}
               className="text-green-600"
