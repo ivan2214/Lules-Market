@@ -267,6 +267,7 @@ model Image {
   isMainImage Boolean @default(false)
   name        String?
   size        Float?
+  isReported  Boolean @default(false)
 
   // Relaciones con producto y comercio
   product   Product? @relation(fields: [productId], references: [id])
@@ -277,6 +278,9 @@ model Image {
 
   coverBusinessId String?   @unique
   coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([productId])
   @@index([coverBusinessId])

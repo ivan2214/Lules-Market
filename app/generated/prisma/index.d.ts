@@ -535,8 +535,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.18.0
-   * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
+   * Prisma Client JS version: 6.16.3
+   * Query Engine version: bb420e667c1820a8c05a38023385f6cc7ef8e83a
    */
   export type PrismaVersion = {
     client: string
@@ -549,7 +549,6 @@ export namespace Prisma {
    */
 
 
-  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -15442,9 +15441,12 @@ export namespace Prisma {
     isMainImage: boolean | null
     name: string | null
     size: number | null
+    isReported: boolean | null
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ImageMaxAggregateOutputType = {
@@ -15453,9 +15455,12 @@ export namespace Prisma {
     isMainImage: boolean | null
     name: string | null
     size: number | null
+    isReported: boolean | null
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ImageCountAggregateOutputType = {
@@ -15464,9 +15469,12 @@ export namespace Prisma {
     isMainImage: number
     name: number
     size: number
+    isReported: number
     productId: number
     logoBusinessId: number
     coverBusinessId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -15485,9 +15493,12 @@ export namespace Prisma {
     isMainImage?: true
     name?: true
     size?: true
+    isReported?: true
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ImageMaxAggregateInputType = {
@@ -15496,9 +15507,12 @@ export namespace Prisma {
     isMainImage?: true
     name?: true
     size?: true
+    isReported?: true
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ImageCountAggregateInputType = {
@@ -15507,9 +15521,12 @@ export namespace Prisma {
     isMainImage?: true
     name?: true
     size?: true
+    isReported?: true
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -15605,9 +15622,12 @@ export namespace Prisma {
     isMainImage: boolean
     name: string | null
     size: number | null
+    isReported: boolean
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
+    createdAt: Date
+    updatedAt: Date
     _count: ImageCountAggregateOutputType | null
     _avg: ImageAvgAggregateOutputType | null
     _sum: ImageSumAggregateOutputType | null
@@ -15635,9 +15655,12 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: boolean
     size?: boolean
+    isReported?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
@@ -15649,9 +15672,12 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: boolean
     size?: boolean
+    isReported?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
@@ -15663,9 +15689,12 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: boolean
     size?: boolean
+    isReported?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
@@ -15677,12 +15706,15 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: boolean
     size?: boolean
+    isReported?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "productId" | "logoBusinessId" | "coverBusinessId", ExtArgs["result"]["image"]>
+  export type ImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "productId" | "logoBusinessId" | "coverBusinessId" | "createdAt" | "updatedAt", ExtArgs["result"]["image"]>
   export type ImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
@@ -15712,9 +15744,12 @@ export namespace Prisma {
       isMainImage: boolean
       name: string | null
       size: number | null
+      isReported: boolean
       productId: string | null
       logoBusinessId: string | null
       coverBusinessId: string | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["image"]>
     composites: {}
   }
@@ -16146,9 +16181,12 @@ export namespace Prisma {
     readonly isMainImage: FieldRef<"Image", 'Boolean'>
     readonly name: FieldRef<"Image", 'String'>
     readonly size: FieldRef<"Image", 'Float'>
+    readonly isReported: FieldRef<"Image", 'Boolean'>
     readonly productId: FieldRef<"Image", 'String'>
     readonly logoBusinessId: FieldRef<"Image", 'String'>
     readonly coverBusinessId: FieldRef<"Image", 'String'>
+    readonly createdAt: FieldRef<"Image", 'DateTime'>
+    readonly updatedAt: FieldRef<"Image", 'DateTime'>
   }
     
 
@@ -24334,9 +24372,12 @@ export namespace Prisma {
     isMainImage: 'isMainImage',
     name: 'name',
     size: 'size',
+    isReported: 'isReported',
     productId: 'productId',
     logoBusinessId: 'logoBusinessId',
-    coverBusinessId: 'coverBusinessId'
+    coverBusinessId: 'coverBusinessId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
@@ -25481,9 +25522,12 @@ export namespace Prisma {
     isMainImage?: BoolFilter<"Image"> | boolean
     name?: StringNullableFilter<"Image"> | string | null
     size?: FloatNullableFilter<"Image"> | number | null
+    isReported?: BoolFilter<"Image"> | boolean
     productId?: StringNullableFilter<"Image"> | string | null
     logoBusinessId?: StringNullableFilter<"Image"> | string | null
     coverBusinessId?: StringNullableFilter<"Image"> | string | null
+    createdAt?: DateTimeFilter<"Image"> | Date | string
+    updatedAt?: DateTimeFilter<"Image"> | Date | string
     product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     logoBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
     coverBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
@@ -25495,9 +25539,12 @@ export namespace Prisma {
     isMainImage?: SortOrder
     name?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
+    isReported?: SortOrder
     productId?: SortOrderInput | SortOrder
     logoBusinessId?: SortOrderInput | SortOrder
     coverBusinessId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     product?: ProductOrderByWithRelationInput
     logoBusiness?: BusinessOrderByWithRelationInput
     coverBusiness?: BusinessOrderByWithRelationInput
@@ -25514,7 +25561,10 @@ export namespace Prisma {
     isMainImage?: BoolFilter<"Image"> | boolean
     name?: StringNullableFilter<"Image"> | string | null
     size?: FloatNullableFilter<"Image"> | number | null
+    isReported?: BoolFilter<"Image"> | boolean
     productId?: StringNullableFilter<"Image"> | string | null
+    createdAt?: DateTimeFilter<"Image"> | Date | string
+    updatedAt?: DateTimeFilter<"Image"> | Date | string
     product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     logoBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
     coverBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
@@ -25526,9 +25576,12 @@ export namespace Prisma {
     isMainImage?: SortOrder
     name?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
+    isReported?: SortOrder
     productId?: SortOrderInput | SortOrder
     logoBusinessId?: SortOrderInput | SortOrder
     coverBusinessId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ImageCountOrderByAggregateInput
     _avg?: ImageAvgOrderByAggregateInput
     _max?: ImageMaxOrderByAggregateInput
@@ -25545,9 +25598,12 @@ export namespace Prisma {
     isMainImage?: BoolWithAggregatesFilter<"Image"> | boolean
     name?: StringNullableWithAggregatesFilter<"Image"> | string | null
     size?: FloatNullableWithAggregatesFilter<"Image"> | number | null
+    isReported?: BoolWithAggregatesFilter<"Image"> | boolean
     productId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     logoBusinessId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     coverBusinessId?: StringNullableWithAggregatesFilter<"Image"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Image"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Image"> | Date | string
   }
 
   export type productViewWhereInput = {
@@ -26943,6 +26999,9 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
     product?: ProductCreateNestedOneWithoutImagesInput
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
@@ -26954,9 +27013,12 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ImageUpdateInput = {
@@ -26965,6 +27027,9 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneWithoutImagesNestedInput
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
@@ -26976,9 +27041,12 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImageCreateManyInput = {
@@ -26987,9 +27055,12 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ImageUpdateManyMutationInput = {
@@ -26998,6 +27069,9 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImageUncheckedUpdateManyInput = {
@@ -27006,9 +27080,12 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type productViewCreateInput = {
@@ -28304,9 +28381,12 @@ export namespace Prisma {
     isMainImage?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    isReported?: SortOrder
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ImageAvgOrderByAggregateInput = {
@@ -28319,9 +28399,12 @@ export namespace Prisma {
     isMainImage?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    isReported?: SortOrder
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ImageMinOrderByAggregateInput = {
@@ -28330,9 +28413,12 @@ export namespace Prisma {
     isMainImage?: SortOrder
     name?: SortOrder
     size?: SortOrder
+    isReported?: SortOrder
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ImageSumOrderByAggregateInput = {
@@ -31290,6 +31376,9 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
     product?: ProductCreateNestedOneWithoutImagesInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
   }
@@ -31300,8 +31389,11 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
     productId?: string | null
     coverBusinessId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ImageCreateOrConnectWithoutLogoBusinessInput = {
@@ -31315,6 +31407,9 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
     product?: ProductCreateNestedOneWithoutImagesInput
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
   }
@@ -31325,8 +31420,11 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
     productId?: string | null
     logoBusinessId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ImageCreateOrConnectWithoutCoverBusinessInput = {
@@ -31548,6 +31646,9 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneWithoutImagesNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
   }
@@ -31558,8 +31659,11 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImageUpsertWithoutCoverBusinessInput = {
@@ -31579,6 +31683,9 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneWithoutImagesNestedInput
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
   }
@@ -31589,8 +31696,11 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUpsertWithoutBusinessInput = {
@@ -31893,6 +32003,9 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
   }
@@ -31903,8 +32016,11 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ImageCreateOrConnectWithoutProductInput = {
@@ -32058,9 +32174,12 @@ export namespace Prisma {
     isMainImage?: BoolFilter<"Image"> | boolean
     name?: StringNullableFilter<"Image"> | string | null
     size?: FloatNullableFilter<"Image"> | number | null
+    isReported?: BoolFilter<"Image"> | boolean
     productId?: StringNullableFilter<"Image"> | string | null
     logoBusinessId?: StringNullableFilter<"Image"> | string | null
     coverBusinessId?: StringNullableFilter<"Image"> | string | null
+    createdAt?: DateTimeFilter<"Image"> | Date | string
+    updatedAt?: DateTimeFilter<"Image"> | Date | string
   }
 
   export type productViewUpsertWithWhereUniqueWithoutProductInput = {
@@ -33499,8 +33618,11 @@ export namespace Prisma {
     isMainImage?: boolean
     name?: string | null
     size?: number | null
+    isReported?: boolean
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type productViewCreateManyProductInput = {
@@ -33515,6 +33637,9 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
   }
@@ -33525,8 +33650,11 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ImageUncheckedUpdateManyWithoutProductInput = {
@@ -33535,8 +33663,11 @@ export namespace Prisma {
     isMainImage?: BoolFieldUpdateOperationsInput | boolean
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type productViewUpdateWithoutProductInput = {
