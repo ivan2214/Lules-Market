@@ -54,7 +54,7 @@ export function UserActions({
             <Eye className="mr-2 h-4 w-4" />
             Ver detalles
           </DropdownMenuItem>
-          {user.isBanned ? (
+          {user.bannedUser ? (
             <DropdownMenuItem
               onClick={() => setShowUnbanDialog(true)}
               className="text-green-600"

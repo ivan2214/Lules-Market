@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Pencil, Plus, Power } from "lucide-react";
 import { useState } from "react";
+import type { SubscriptionPlan } from "@/app/generated/prisma";
 import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
@@ -43,7 +44,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { mockPlans } from "@/lib/data/mock-data";
-import type { Plan, PlanType } from "@/types/admin";
+import type { Plan } from "@/types/admin";
 
 export default function PlansPage() {
   const [plans, setPlans] = useState(mockPlans);
@@ -332,7 +333,7 @@ export default function PlansPage() {
                     onValueChange={(value) =>
                       setSelectedPlan({
                         ...selectedPlan,
-                        type: value as PlanType,
+                        type: value as SubscriptionPlan,
                       })
                     }
                   >

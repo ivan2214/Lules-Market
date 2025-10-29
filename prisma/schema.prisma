@@ -47,11 +47,21 @@ model Admin {
   bannedBusinesses BannedBusiness[]
   bannedUsers      BannedUser[]
   bannedProducts   BannedProduct[]
+  permissions      Permission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("admin")
+}
+
+enum Permission {
+  ALL
+  MODERATE_CONTENT
+  BAN_USERS
+  MANAGE_PAYMENTS
+  MANAGE_COUPONS
+  VIEW_ANALYTIICS
 }
 
 model BannedBusiness {
@@ -180,9 +190,10 @@ model Business {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Relaciones
-  products         Product[] // productos del comercio
-  payments         Payment[] // historial de pagos
-  bannedBusinesses BannedBusiness[] // si fue baneado
+  products       Product[] // productos del comercio
+  payments       Payment[] // historial de pagos
+  bannedBusiness BannedBusiness? // si el usuario fue baneado
+
   businessView     businessView[] // visitas al comercio
   trial            Trial? // prueba gratuita activa
   couponRedemption CouponRedemption[] // canjes de cupones realizados
@@ -212,7 +223,7 @@ model Product {
   businessId String
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
-  bannedProducts BannedProduct[] // si fue baneado por el admin
+  bannedProduct BannedProduct? // si el usuario fue baneado
 
   images      Image[] // imágenes asociadas
   productView productView[] // vistas del producto

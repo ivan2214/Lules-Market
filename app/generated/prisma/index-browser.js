@@ -133,6 +133,7 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.AdminScalarFieldEnum = {
   userId: 'userId',
+  permissions: 'permissions',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -350,6 +351,15 @@ exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   USER: 'USER',
   BUSINESS: 'BUSINESS'
+};
+
+exports.Permission = exports.$Enums.Permission = {
+  ALL: 'ALL',
+  MODERATE_CONTENT: 'MODERATE_CONTENT',
+  BAN_USERS: 'BAN_USERS',
+  MANAGE_PAYMENTS: 'MANAGE_PAYMENTS',
+  MANAGE_COUPONS: 'MANAGE_COUPONS',
+  VIEW_ANALYTIICS: 'VIEW_ANALYTIICS'
 };
 
 exports.SubscriptionPlan = exports.$Enums.SubscriptionPlan = {

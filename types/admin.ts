@@ -1,18 +1,16 @@
 // Core entity types with strong typing
 
+import type { UserDTO } from "@/app/data/user/user.dto";
+import type {
+  Admin as AdminPrisma,
+  SubscriptionPlan,
+  SubscriptionStatus,
+  Trial as TrialPrisma,
+} from "@/app/generated/prisma";
+
 export type UserRole = "USER" | "BUSINESS" | "ADMIN";
 export type PlanType = "FREE" | "BASIC" | "PREMIUM";
 export type PaymentStatus = "approved" | "pending" | "rejected";
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  createdAt: Date;
-  isBanned: boolean;
-  isBusinessOwner: boolean;
-}
 
 export interface Business {
   id: string;
@@ -20,7 +18,7 @@ export interface Business {
   slug: string;
   ownerId: string;
   ownerName: string;
-  plan: PlanType;
+  plan: SubscriptionPlan;
   isActive: boolean;
   isBanned: boolean;
   createdAt: Date;
@@ -47,10 +45,10 @@ export interface Product {
 export interface Payment {
   id: string;
   amount: number;
-  status: PaymentStatus;
+  status: SubscriptionStatus;
   businessId: string;
   businessName: string;
-  plan: PlanType;
+  plan: SubscriptionPlan;
   method: string;
   createdAt: Date;
   externalId?: string;
@@ -59,7 +57,7 @@ export interface Payment {
 export interface Coupon {
   id: string;
   code: string;
-  plan: PlanType;
+  plan: SubscriptionPlan;
   durationMonths: number;
   maxUses: number;
   currentUses: number;
@@ -77,66 +75,19 @@ export interface CouponRedemption {
   redeemedAt: Date;
 }
 
-export interface Trial {
-  id: string;
-  businessId: string;
+export interface Trial extends TrialPrisma {
   businessName: string;
-  plan: PlanType;
-  startDate: Date;
-  endDate: Date;
+  plan: SubscriptionPlan;
   isActive: boolean;
 }
 
-export interface BannedUser {
-  id: string;
-  userId: string;
-  userName: string;
-  userEmail: string;
-  reason: string;
-  bannedBy: string;
-  bannedAt: Date;
-}
-
-export interface BannedBusiness {
-  id: string;
-  businessId: string;
-  businessName: string;
-  reason: string;
-  bannedBy: string;
-  bannedAt: Date;
-}
-
-export interface BannedProduct {
-  id: string;
-  productId: string;
-  productName: string;
-  businessName: string;
-  reason: string;
-  bannedBy: string;
-  bannedAt: Date;
-}
-
-export interface Image {
-  id: string;
-  url: string;
-  productId?: string;
-  businessId?: string;
-  uploadedAt: Date;
-  isReported: boolean;
-}
-
-export interface Admin {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  permissions: string[];
-  createdAt: Date;
+export interface Admin extends AdminPrisma {
+  user: UserDTO;
 }
 
 export interface Plan {
   id: string;
-  type: PlanType;
+  type: SubscriptionPlan;
   name: string;
   description: string;
   price: number;

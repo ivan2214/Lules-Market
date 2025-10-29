@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { useState } from "react";
+import type { SubscriptionPlan } from "@/app/generated/prisma";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,13 +44,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Business, PlanType } from "@/types/admin";
+import type { Business } from "@/types/admin";
 
 interface BusinessActionsProps {
   business: Business;
   onBan: (businessId: string) => void;
   onUnban: (businessId: string) => void;
-  onChangePlan: (businessId: string, plan: PlanType) => void;
+  onChangePlan: (businessId: string, plan: SubscriptionPlan) => void;
   onViewDetails: (businessId: string) => void;
 }
 
@@ -63,7 +64,9 @@ export function BusinessActions({
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<PlanType>(business.plan);
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(
+    business.plan,
+  );
 
   const handleChangePlan = () => {
     onChangePlan(business.id, selectedPlan);
@@ -161,7 +164,9 @@ export function BusinessActions({
               <Label htmlFor="plan">Plan</Label>
               <Select
                 value={selectedPlan}
-                onValueChange={(value) => setSelectedPlan(value as PlanType)}
+                onValueChange={(value) =>
+                  setSelectedPlan(value as SubscriptionPlan)
+                }
               >
                 <SelectTrigger id="plan">
                   <SelectValue />
