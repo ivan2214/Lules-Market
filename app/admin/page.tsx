@@ -3,6 +3,7 @@ import {
   AlertCircle,
   CheckCircle,
   CreditCard,
+  DiscIcon,
   Package,
   Store,
   TrendingUp,
@@ -14,6 +15,13 @@ import { BusinessGrowthChart } from "@/components/admin/business-growth-chart";
 import { PlanDistributionChart } from "@/components/admin/plan-distribution-chart";
 import { RevenueChart } from "@/components/admin/revenue-chart";
 import { StatCard } from "@/components/admin/stat-card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import prisma from "@/lib/prisma";
 
 async function getAdminDashboardStats() {
@@ -30,6 +38,16 @@ async function getAdminDashboardStats() {
     freePlanBusinesses,
     basicPlanBusinesses,
     premiumPlanBusinesses,
+    trialsActives,
+    couponsActives,
+    usersCurrentMonth,
+    businessesCurrentMonth,
+    productsCurrentMonth,
+    paymentsApprovedCurrentMonth,
+    usersLastMonth,
+    businessesLastMonth,
+    productsLastMonth,
+    paymentsApprovedLastMonth,
   ] = await prisma.$transaction([
     prisma.user.count(),
     prisma.business.count(),
@@ -43,33 +61,117 @@ async function getAdminDashboardStats() {
     prisma.business.count({ where: { plan: "FREE" } }),
     prisma.business.count({ where: { plan: "BASIC" } }),
     prisma.business.count({ where: { plan: "PREMIUM" } }),
+    prisma.trial.count({ where: { isActive: true } }),
+    prisma.coupon.count({ where: { active: true } }),
+    /* current month */
+    prisma.user.count({
+      where: {
+        createdAt: {
+          gte: startOfMonth(new Date()),
+        },
+      },
+    }),
+    prisma.business.count({
+      where: {
+        createdAt: {
+          gte: startOfMonth(new Date()),
+        },
+      },
+    }),
+    prisma.product.count({
+      where: {
+        createdAt: {
+          gte: startOfMonth(new Date()),
+        },
+      },
+    }),
+    prisma.payment.count({
+      where: {
+        status: "APPROVED",
+        createdAt: {
+          gte: startOfMonth(new Date()),
+        },
+      },
+    }),
+    /* last month */
+    prisma.user.count({
+      where: {
+        createdAt: {
+          gte: startOfMonth(subMonths(new Date(), 1)),
+        },
+      },
+    }),
+    prisma.business.count({
+      where: {
+        createdAt: {
+          gte: startOfMonth(subMonths(new Date(), 1)),
+        },
+      },
+    }),
+    prisma.product.count({
+      where: {
+        createdAt: {
+          gte: startOfMonth(subMonths(new Date(), 1)),
+        },
+      },
+    }),
+    prisma.payment.count({
+      where: {
+        status: "APPROVED",
+        createdAt: {
+          gte: startOfMonth(subMonths(new Date(), 1)),
+        },
+      },
+    }),
   ]);
   const stats = {
     users: {
       total: totalUsers,
       active: totalUsers - bannedUsers,
       banned: bannedUsers,
+      trend: {
+        value: usersCurrentMonth - usersLastMonth,
+        isPositive: usersCurrentMonth >= usersLastMonth,
+      },
     },
     businesses: {
       total: totalBusinesses,
       active: totalBusinesses - bannedBusinesses,
       banned: bannedBusinesses,
+      trend: {
+        value: businessesCurrentMonth - businessesLastMonth,
+        isPositive: businessesCurrentMonth >= businessesLastMonth,
+      },
     },
     products: {
       total: totalProducts,
       active: totalProducts - bannedProducts,
       banned: bannedProducts,
+      trend: {
+        value: productsCurrentMonth - productsLastMonth,
+        isPositive: productsCurrentMonth >= productsLastMonth,
+      },
     },
     payments: {
       totalRevenue: totalApprovedPayments,
       approved: totalApprovedPayments,
       pending: totalPendingPayments,
       rejected: totalRejectedPayments,
+      trend: {
+        value: paymentsApprovedCurrentMonth - paymentsApprovedLastMonth,
+        isPositive: paymentsApprovedCurrentMonth >= paymentsApprovedLastMonth,
+      },
     },
     plans: {
       free: freePlanBusinesses,
       basic: basicPlanBusinesses,
       premium: premiumPlanBusinesses,
+    },
+    trials: {
+      actives: trialsActives,
+    },
+    coupons: {
+      actives: couponsActives,
     },
   };
   return { stats };
@@ -167,21 +269,21 @@ export default async function AdminDashboard() {
           value={stats.businesses.total}
           description={`${stats.businesses.active} activos, ${stats.businesses.banned} baneados`}
           icon={Store}
-          trend={{ value: 8, isPositive: true }}
+          trend={stats.businesses.trend}
         />
         <StatCard
           title="Total Productos"
           value={stats.products.total}
           description={`${stats.products.active} activos, ${stats.products.banned} baneados`}
           icon={Package}
-          trend={{ value: 15, isPositive: true }}
+          trend={stats.products.trend}
         />
         <StatCard
           title="Ingresos Totales"
           value={`$${(stats.payments.totalRevenue / 1000).toFixed(0)}k`}
           description={`${stats.payments.approved} pagos aprobados`}
           icon={CreditCard}
-          trend={{ value: 23, isPositive: true }}
+          trend={stats.payments.trend}
         />
       </div>
 
@@ -207,27 +309,67 @@ export default async function AdminDashboard() {
         />
       </div>
 
-      {/* Plan Distribution */}
-      <div className="grid gap-4 md:grid-cols-3">
+      {/* Trials and Coupons */}
+      <div className="grid gap-4 md:grid-cols-2">
         <StatCard
-          title="Plan FREE"
-          value={stats.plans.free}
-          description="Negocios en plan gratuito"
+          title="Trials Activos"
+          value={stats.trials.actives}
           icon={TrendingUp}
+          className="border-blue-200 dark:border-blue-900"
         />
         <StatCard
-          title="Plan BASIC"
-          value={stats.plans.basic}
-          description="Negocios en plan básico"
-          icon={TrendingUp}
-        />
-        <StatCard
-          title="Plan PREMIUM"
-          value={stats.plans.premium}
-          description="Negocios en plan premium"
-          icon={TrendingUp}
+          title="Cupones Activos"
+          value={stats.coupons.actives}
+          icon={DiscIcon}
+          className="border-purple-200 dark:border-purple-900"
         />
       </div>
+
+      {/* Plan Distribution */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Distribución de Planes</CardTitle>
+          <CardDescription>Negocios por tipo de plan</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <p className="font-medium text-muted-foreground text-sm">
+                Plan FREE
+              </p>
+              <p className="font-bold text-3xl">{stats.plans.free}</p>
+              <p className="text-muted-foreground text-xs">
+                {((stats.plans.free / stats.businesses.total) * 100).toFixed(1)}
+                % del total
+              </p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-medium text-muted-foreground text-sm">
+                Plan BASIC
+              </p>
+              <p className="font-bold text-3xl">{stats.plans.basic}</p>
+              <p className="text-muted-foreground text-xs">
+                {((stats.plans.basic / stats.businesses.total) * 100).toFixed(
+                  1,
+                )}
+                % del total
+              </p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-medium text-muted-foreground text-sm">
+                Plan PREMIUM
+              </p>
+              <p className="font-bold text-3xl">{stats.plans.premium}</p>
+              <p className="text-muted-foreground text-xs">
+                {((stats.plans.premium / stats.businesses.total) * 100).toFixed(
+                  1,
+                )}
+                % del total
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Charts */}
       <div className="grid gap-4 md:grid-cols-2">
