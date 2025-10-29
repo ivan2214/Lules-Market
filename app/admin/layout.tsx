@@ -9,6 +9,15 @@ async function AdminGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AdminHeaderSkeleton() {
+  return (
+    <header className="flex h-16 items-center justify-between border-b bg-card px-6">
+      <div className="h-4 w-40 rounded bg-muted" />
+      <div className="h-8 w-8 rounded bg-muted" />
+    </header>
+  );
+}
+
 export default async function AdminLayout({
   children,
 }: {
@@ -18,7 +27,7 @@ export default async function AdminLayout({
     <div className="flex h-screen">
       <AdminSidebar />
       <div className="flex flex-1 flex-col">
-        <Suspense fallback="loading">
+        <Suspense fallback={<AdminHeaderSkeleton />}>
           <AdminHeader />
         </Suspense>
         <main className="flex-1 bg-background p-6">

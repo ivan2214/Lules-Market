@@ -1,8 +1,6 @@
-import { Bell } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { getCurrentAdmin } from "@/app/data/admin/admin.dal";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { AdminMenu } from "./admin-menu";
 
@@ -18,17 +16,13 @@ async function AdminHeaderInner() {
   const admin = await getCurrentAdmin();
   if (!admin) redirect("/auth/signin");
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-6">
+    <header className="flex h-16 items-center justify-between border-b bg-card px-6 py-2">
       <div className="flex items-center gap-4">
         <h2 className="font-semibold text-foreground text-lg">
           Panel de Administración
         </h2>
       </div>
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
-        </Button>
         <Suspense fallback={<AdminMenuSkeleton />}>
           <AdminMenu admin={admin} />
         </Suspense>
