@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
-import { createBusinessAction } from "@/app/actions/business-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +30,7 @@ export function BusinessSetupForm() {
     };
 
     try {
-      await createBusinessAction(data);
+      /* await createBusinessAction(data); */
       router.push("/dashboard");
       router.refresh();
     } catch (err) {
