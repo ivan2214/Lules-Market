@@ -1,10 +1,12 @@
 import { z } from "zod";
 import type {
+  BannedBusiness,
   Business as BusinessPrisma,
   SubscriptionPlan,
 } from "@/app/generated/prisma";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";
+import type { UserDTO } from "../user/user.dto";
 
 export const BusinessCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -35,4 +37,6 @@ export interface BusinessDTO extends BusinessPrisma {
   coverImage?: CleanImage | null;
   plan: SubscriptionPlan;
   products?: ProductDTO[] | null;
+  user?: UserDTO | null;
+  bannedBusiness?: BannedBusiness | null;
 }

@@ -535,8 +535,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.16.3
-   * Query Engine version: bb420e667c1820a8c05a38023385f6cc7ef8e83a
+   * Prisma Client JS version: 6.18.0
+   * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
    */
   export type PrismaVersion = {
     client: string
@@ -549,6 +549,7 @@ export namespace Prisma {
    */
 
 
+  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -11561,6 +11562,7 @@ export namespace Prisma {
   export type BusinessMinAggregateOutputType = {
     id: string | null
     name: string | null
+    isActive: boolean | null
     description: string | null
     phone: string | null
     whatsapp: string | null
@@ -11583,6 +11585,7 @@ export namespace Prisma {
   export type BusinessMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    isActive: boolean | null
     description: string | null
     phone: string | null
     whatsapp: string | null
@@ -11605,6 +11608,7 @@ export namespace Prisma {
   export type BusinessCountAggregateOutputType = {
     id: number
     name: number
+    isActive: number
     description: number
     phone: number
     whatsapp: number
@@ -11629,6 +11633,7 @@ export namespace Prisma {
   export type BusinessMinAggregateInputType = {
     id?: true
     name?: true
+    isActive?: true
     description?: true
     phone?: true
     whatsapp?: true
@@ -11651,6 +11656,7 @@ export namespace Prisma {
   export type BusinessMaxAggregateInputType = {
     id?: true
     name?: true
+    isActive?: true
     description?: true
     phone?: true
     whatsapp?: true
@@ -11673,6 +11679,7 @@ export namespace Prisma {
   export type BusinessCountAggregateInputType = {
     id?: true
     name?: true
+    isActive?: true
     description?: true
     phone?: true
     whatsapp?: true
@@ -11768,6 +11775,7 @@ export namespace Prisma {
   export type BusinessGroupByOutputType = {
     id: string
     name: string
+    isActive: boolean
     description: string | null
     phone: string | null
     whatsapp: string | null
@@ -11807,6 +11815,7 @@ export namespace Prisma {
   export type BusinessSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    isActive?: boolean
     description?: boolean
     phone?: boolean
     whatsapp?: boolean
@@ -11839,6 +11848,7 @@ export namespace Prisma {
   export type BusinessSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    isActive?: boolean
     description?: boolean
     phone?: boolean
     whatsapp?: boolean
@@ -11862,6 +11872,7 @@ export namespace Prisma {
   export type BusinessSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    isActive?: boolean
     description?: boolean
     phone?: boolean
     whatsapp?: boolean
@@ -11885,6 +11896,7 @@ export namespace Prisma {
   export type BusinessSelectScalar = {
     id?: boolean
     name?: boolean
+    isActive?: boolean
     description?: boolean
     phone?: boolean
     whatsapp?: boolean
@@ -11904,7 +11916,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "twitter" | "address" | "category" | "hours" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
+  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "twitter" | "address" | "category" | "hours" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
   export type BusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     logo?: boolean | Business$logoArgs<ExtArgs>
     coverImage?: boolean | Business$coverImageArgs<ExtArgs>
@@ -11940,6 +11952,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      isActive: boolean
       description: string | null
       phone: string | null
       whatsapp: string | null
@@ -12391,6 +12404,7 @@ export namespace Prisma {
   interface BusinessFieldRefs {
     readonly id: FieldRef<"Business", 'String'>
     readonly name: FieldRef<"Business", 'String'>
+    readonly isActive: FieldRef<"Business", 'Boolean'>
     readonly description: FieldRef<"Business", 'String'>
     readonly phone: FieldRef<"Business", 'String'>
     readonly whatsapp: FieldRef<"Business", 'String'>
@@ -24258,6 +24272,7 @@ export namespace Prisma {
   export const BusinessScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    isActive: 'isActive',
     description: 'description',
     phone: 'phone',
     whatsapp: 'whatsapp',
@@ -25131,6 +25146,7 @@ export namespace Prisma {
     NOT?: BusinessWhereInput | BusinessWhereInput[]
     id?: StringFilter<"Business"> | string
     name?: StringFilter<"Business"> | string
+    isActive?: BoolFilter<"Business"> | boolean
     description?: StringNullableFilter<"Business"> | string | null
     phone?: StringNullableFilter<"Business"> | string | null
     whatsapp?: StringNullableFilter<"Business"> | string | null
@@ -25162,6 +25178,7 @@ export namespace Prisma {
   export type BusinessOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    isActive?: SortOrder
     description?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     whatsapp?: SortOrderInput | SortOrder
@@ -25197,6 +25214,7 @@ export namespace Prisma {
     OR?: BusinessWhereInput[]
     NOT?: BusinessWhereInput | BusinessWhereInput[]
     name?: StringFilter<"Business"> | string
+    isActive?: BoolFilter<"Business"> | boolean
     description?: StringNullableFilter<"Business"> | string | null
     phone?: StringNullableFilter<"Business"> | string | null
     whatsapp?: StringNullableFilter<"Business"> | string | null
@@ -25227,6 +25245,7 @@ export namespace Prisma {
   export type BusinessOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    isActive?: SortOrder
     description?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     whatsapp?: SortOrderInput | SortOrder
@@ -25255,6 +25274,7 @@ export namespace Prisma {
     NOT?: BusinessScalarWhereWithAggregatesInput | BusinessScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Business"> | string
     name?: StringWithAggregatesFilter<"Business"> | string
+    isActive?: BoolWithAggregatesFilter<"Business"> | boolean
     description?: StringNullableWithAggregatesFilter<"Business"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Business"> | string | null
     whatsapp?: StringNullableWithAggregatesFilter<"Business"> | string | null
@@ -26529,6 +26549,7 @@ export namespace Prisma {
   export type BusinessCreateInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -26559,6 +26580,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -26589,6 +26611,7 @@ export namespace Prisma {
   export type BusinessUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26619,6 +26642,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26649,6 +26673,7 @@ export namespace Prisma {
   export type BusinessCreateManyInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -26671,6 +26696,7 @@ export namespace Prisma {
   export type BusinessUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26692,6 +26718,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28004,6 +28031,7 @@ export namespace Prisma {
   export type BusinessCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    isActive?: SortOrder
     description?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
@@ -28026,6 +28054,7 @@ export namespace Prisma {
   export type BusinessMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    isActive?: SortOrder
     description?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
@@ -28048,6 +28077,7 @@ export namespace Prisma {
   export type BusinessMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    isActive?: SortOrder
     description?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
@@ -30147,6 +30177,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutUserInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -30176,6 +30207,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -30327,6 +30359,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30356,6 +30389,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30680,6 +30714,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutBannedBusinessInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -30709,6 +30744,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutBannedBusinessInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -30783,6 +30819,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutBannedBusinessInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30812,6 +30849,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutBannedBusinessInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31770,6 +31808,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutProductsInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -31799,6 +31838,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutProductsInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -31913,6 +31953,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutProductsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31942,6 +31983,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutProductsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32050,6 +32092,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutPaymentsInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32079,6 +32122,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutPaymentsInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32124,6 +32168,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32153,6 +32198,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32217,6 +32263,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutLogoInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32246,6 +32293,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutLogoInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32280,6 +32328,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutCoverImageInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32309,6 +32358,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutCoverImageInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32395,6 +32445,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutLogoInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32424,6 +32475,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutLogoInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32464,6 +32516,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutCoverImageInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32493,6 +32546,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutCoverImageInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32598,6 +32652,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutBusinessViewInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32627,6 +32682,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutBusinessViewInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32672,6 +32728,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutBusinessViewInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32701,6 +32758,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutBusinessViewInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32730,6 +32788,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutTrialInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32759,6 +32818,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutTrialInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32804,6 +32864,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutTrialInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32833,6 +32894,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutTrialInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32931,6 +32993,7 @@ export namespace Prisma {
   export type BusinessCreateWithoutCouponRedemptionInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -32960,6 +33023,7 @@ export namespace Prisma {
   export type BusinessUncheckedCreateWithoutCouponRedemptionInput = {
     id?: string
     name: string
+    isActive?: boolean
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
@@ -33042,6 +33106,7 @@ export namespace Prisma {
   export type BusinessUpdateWithoutCouponRedemptionInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33071,6 +33136,7 @@ export namespace Prisma {
   export type BusinessUncheckedUpdateWithoutCouponRedemptionInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null

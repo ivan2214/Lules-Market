@@ -166,6 +166,7 @@ model Verification {
 model Business {
   id          String  @id @default(cuid())
   name        String
+  isActive    Boolean @default(true)
   description String?
   logo        Image?  @relation("Logo")
   coverImage  Image?  @relation("CoverImage")
