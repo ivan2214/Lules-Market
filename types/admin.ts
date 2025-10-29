@@ -53,27 +53,6 @@ export interface Payment {
   externalId?: string;
 }
 
-export interface Coupon {
-  id: string;
-  code: string;
-  plan: SubscriptionPlan;
-  durationMonths: number;
-  maxUses: number;
-  currentUses: number;
-  isActive: boolean;
-  createdAt: Date;
-  expiresAt?: Date;
-}
-
-export interface CouponRedemption {
-  id: string;
-  couponId: string;
-  couponCode: string;
-  businessId: string;
-  businessName: string;
-  redeemedAt: Date;
-}
-
 export interface Trial extends TrialPrisma {
   businessName: string;
   plan: SubscriptionPlan;
