@@ -5,25 +5,30 @@
       "args": [
         "-y",
         "next-devtools-mcp@latest"
-      ]
+      ],
+      "disabled": false
     },
     "GitKraken": {
       "command": "c:\\Users\\juanb\\AppData\\Roaming\\Cursor\\User\\globalStorage\\eamodio.gitlens\\gk.exe",
-      "type": "stdio",
-      "name": "GitKraken",
       "args": [
         "mcp",
         "--host=cursor",
         "--source=gitlens",
         "--scheme=cursor"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false
     },
     "sequential-thinking": {
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "sequentialthinking",
+        "sequentialthinking"
       ]
     },
     "context7": {
@@ -33,29 +38,22 @@
         "@upstash/context7-mcp",
         "--api-key",
         "ctx7sk-82d5c831-3c7e-4ed5-a58e-57200d492cd1"
-      ]
+      ],
+      "disabled": false
     },
     "desktop-commander": {
       "command": "npx",
       "args": [
         "-y",
         "@wonderwhy-er/desktop-commander@latest"
-      ]
+      ],
+      "disabled": false
     },
     "Chrome DevTools": {
       "command": "npx chrome-devtools-mcp@latest",
+      "args": [],
       "env": {},
-      "args": []
-    },
-    "Mercado Pago": {
-      "url": "https://mcp.mercadopago.com/mcp",
-      "headers": {
-        "Authorization": "Bearer APP_USR-3218498259638618-093015-f9d268b8806cd44c7ed04d564afe4872-2414797344"
-      }
-    },
-    "Prisma": {
-      "url": "https://mcp.prisma.io/mcp",
-      "headers": {}
+      "disabled": false
     },
     "Magic MCP": {
       "command": "cmd",
@@ -66,7 +64,8 @@
         "@21st-dev/magic@latest",
         "API_KEY=\"9204c657483527215fa1aecf203312f66984ba85d2c6e08a199bd56c5957db22\""
       ],
-      "env": {}
+      "env": {},
+      "disabled": false
     }
   }
 }
