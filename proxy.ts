@@ -8,19 +8,13 @@ export default async function proxy(request: NextRequest) {
   });
 
   // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (
+    request.nextUrl.pathname.startsWith("/dashboard") ||
+    request.nextUrl.pathname.startsWith("/admin")
+  ) {
     if (!session) {
       return NextResponse.redirect(new URL("/auth/signin", request.url));
     }
-  }
-
-  // Redirect authenticated users away from auth pages
-  if (
-    session &&
-    (request.nextUrl.pathname.startsWith("/auth/signin") ||
-      request.nextUrl.pathname.startsWith("/auth/signup"))
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();

@@ -1,11 +1,12 @@
 import "server-only";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { cache } from "react";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export const getCurrentUser = cache(async () => {
+export const getCurrentUser = async () => {
+  "use cache: private";
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -17,9 +18,11 @@ export const getCurrentUser = cache(async () => {
     name: session.user.name ?? "",
     token: session.session.token,
   };
-});
+};
 
-export const requireUser = cache(async () => {
+export const requireUser = async () => {
+  "use cache: private";
+
   const user = await getCurrentUser();
 
   const userDB = await prisma.user.findUnique({
@@ -29,7 +32,7 @@ export const requireUser = cache(async () => {
   const isValidSession = userDB && user;
 
   if (!isValidSession) {
-    redirect("/auth/login");
+    redirect("/auth/signin");
   }
   return user;
-});
+};

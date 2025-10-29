@@ -1,8 +1,15 @@
 import type React from "react";
+import { Suspense } from "react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { requireAdmin } from "../data/admin/admin.require";
 
-export default function AdminLayout({
+async function AdminGuard({ children }: { children: React.ReactNode }) {
+  await requireAdmin();
+  return <>{children}</>;
+}
+
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -11,8 +18,14 @@ export default function AdminLayout({
     <div className="flex h-screen">
       <AdminSidebar />
       <div className="flex flex-1 flex-col">
-        <AdminHeader />
-        <main className="flex-1 bg-background p-6">{children}</main>
+        <Suspense fallback="loading">
+          <AdminHeader />
+        </Suspense>
+        <main className="flex-1 bg-background p-6">
+          <Suspense fallback="Cargando...">
+            <AdminGuard>{children}</AdminGuard>
+          </Suspense>
+        </main>
       </div>
     </div>
   );

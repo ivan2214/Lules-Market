@@ -1,7 +1,10 @@
+import { cacheLife } from "next/cache";
 import prisma from "@/lib/prisma";
 import { BusinessesClient } from "./components/businesses-client";
 
 export default async function BusinessesPage() {
+  "use cache";
+  cacheLife("hours");
   const businesses = await prisma.business.findMany({
     include: {
       bannedBusiness: true,

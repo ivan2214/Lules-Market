@@ -1,7 +1,10 @@
+import { cacheLife } from "next/cache";
 import prisma from "@/lib/prisma";
 import { ProductsClient } from "./components/products-client";
 
 export default async function ProductsPage() {
+  "use cache";
+  cacheLife("hours");
   const products = await prisma.product.findMany({
     include: {
       images: true,

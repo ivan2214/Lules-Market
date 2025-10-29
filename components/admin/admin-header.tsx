@@ -1,18 +1,22 @@
-"use client";
-
-import { Bell, LogOut, User } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Bell } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { getCurrentAdmin } from "@/app/data/admin/admin.dal";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "../ui/skeleton";
+import { AdminMenu } from "./admin-menu";
 
 export function AdminHeader() {
+  return (
+    <Suspense fallback={<AdminHeaderSkeleton />}>
+      <AdminHeaderInner />
+    </Suspense>
+  );
+}
+
+async function AdminHeaderInner() {
+  const admin = await getCurrentAdmin();
+  if (!admin) redirect("/auth/signin");
   return (
     <header className="flex h-16 items-center justify-between border-b bg-card px-6">
       <div className="flex items-center gap-4">
@@ -25,29 +29,23 @@ export function AdminHeader() {
           <Bell className="h-5 w-5" />
           <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback>AP</AvatarFallback>
-              </Avatar>
-              <span className="font-medium text-sm">Admin Principal</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              Perfil
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <LogOut className="mr-2 h-4 w-4" />
-              Cerrar Sesión
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Suspense fallback={<AdminMenuSkeleton />}>
+          <AdminMenu admin={admin} />
+        </Suspense>
       </div>
+    </header>
+  );
+}
+
+function AdminMenuSkeleton() {
+  return <Skeleton className="h-8 w-8" />;
+}
+
+function AdminHeaderSkeleton() {
+  return (
+    <header className="flex h-16 items-center justify-between border-b bg-card px-6">
+      <div className="h-4 w-40 rounded bg-muted" />
+      <div className="h-8 w-8 rounded bg-muted" />
     </header>
   );
 }

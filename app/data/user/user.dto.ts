@@ -6,7 +6,7 @@ import type {
 import type { BusinessDTO } from "../business/business.dto";
 
 export interface UserDTO extends UserPrisma {
-  business: BusinessDTO | null;
-  bannedUser: BannedUser | null;
-  admin: Admin | null;
+  business?: BusinessDTO | null;
+  bannedUser?: BannedUser | null;
+  admin?: Admin | null;
 }
