@@ -1,10 +1,10 @@
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import "server-only";
 
 type PolicyUser = {
   id: string;
   email?: string | null;
-  activePlan?: SubscriptionPlan | null;
+  activePlan?: PlanType | null;
 };
 
 export function canCreateBusiness(user: PolicyUser | null) {
@@ -15,7 +15,7 @@ export function canCreateBusiness(user: PolicyUser | null) {
 
 export function canEditBusiness(
   user: PolicyUser | null,
-  business: { id: string; userId?: string },
+  business: { id: string; userId?: string }
 ) {
   if (!user) return false;
   if (business.userId && business.userId === user.id) return true;
@@ -24,7 +24,7 @@ export function canEditBusiness(
 
 export function canDeleteBusiness(
   user: PolicyUser | null,
-  business: { id: string; userId?: string },
+  business: { id: string; userId?: string }
 ) {
   return canEditBusiness(user, business);
 }

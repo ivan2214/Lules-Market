@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Facebook, Instagram, MessageCircle, Store } from "lucide-react";
 import { useState } from "react";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
+import type { PlanType } from "@/app/generated/prisma";
 import { BusinessActions } from "@/components/admin/business-actions";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { PlanType } from "@/types/admin";
 
 type BusinessesClientProps = {
   businesses: BusinessDTO[];

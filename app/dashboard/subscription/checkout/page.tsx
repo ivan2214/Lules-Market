@@ -2,7 +2,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import { CheckoutButton } from "@/components/dashboard/checkout-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ async function CheckoutContent({
 }: {
   searchParams: Promise<{ plan?: string }>;
 }) {
-  const plan = (await searchParams).plan as SubscriptionPlan;
+  const plan = (await searchParams).plan as PlanType;
 
   if (!plan || plan === "FREE") {
     redirect("/dashboard/subscription");

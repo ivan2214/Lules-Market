@@ -2,7 +2,7 @@ import { z } from "zod";
 import type {
   BannedBusiness,
   Business as BusinessPrisma,
-  SubscriptionPlan,
+  PlanType,
 } from "@/app/generated/prisma";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";
@@ -35,7 +35,7 @@ export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
 export interface BusinessDTO extends BusinessPrisma {
   logo?: CleanImage | null;
   coverImage?: CleanImage | null;
-  plan: SubscriptionPlan;
+  plan: PlanType;
   products?: ProductDTO[] | null;
   user?: UserDTO | null;
   bannedBusiness?: BannedBusiness | null;

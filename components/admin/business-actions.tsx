@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,7 +50,7 @@ interface BusinessActionsProps {
   business: BusinessDTO;
   onBan: (businessId: string) => void;
   onUnban: (businessId: string) => void;
-  onChangePlan: (businessId: string, plan: SubscriptionPlan) => void;
+  onChangePlan: (businessId: string, plan: PlanType) => void;
   onViewDetails: (businessId: string) => void;
 }
 
@@ -64,9 +64,7 @@ export function BusinessActions({
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(
-    business.plan,
-  );
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>(business.plan);
 
   const handleChangePlan = () => {
     onChangePlan(business.id, selectedPlan);
@@ -164,9 +162,7 @@ export function BusinessActions({
               <Label htmlFor="plan">Plan</Label>
               <Select
                 value={selectedPlan}
-                onValueChange={(value) =>
-                  setSelectedPlan(value as SubscriptionPlan)
-                }
+                onValueChange={(value) => setSelectedPlan(value as PlanType)}
               >
                 <SelectTrigger id="plan">
                   <SelectValue />

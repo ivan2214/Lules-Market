@@ -1,5 +1,6 @@
 "use client";
 
+import type { TrialDTO } from "@/app/data/trial/trial.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,7 +11,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Trial } from "@/types/admin";
 
 export const TrialFinishAlertDialog = ({
   onOpenChange,
@@ -19,7 +19,7 @@ export const TrialFinishAlertDialog = ({
 }: {
   open: boolean;
   onOpenChange: (value: boolean) => void;
-  selectedTrial: Trial | null;
+  selectedTrial: TrialDTO | null;
 }) => {
   const handleEndTrial = (trialId: string) => {
     console.log("Finalizar trial:", trialId);

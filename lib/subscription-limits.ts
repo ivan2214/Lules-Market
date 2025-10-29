@@ -1,8 +1,8 @@
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import { PLAN_PRICES } from "./constants";
 
 export const SUBSCRIPTION_LIMITS: Record<
-  SubscriptionPlan,
+  PlanType,
   {
     maxProducts: number;
     canFeatureProducts: boolean;
@@ -34,7 +34,7 @@ export const SUBSCRIPTION_LIMITS: Record<
   },
 };
 
-export function getSubscriptionLimits(plan?: SubscriptionPlan | null) {
+export function getSubscriptionLimits(plan?: PlanType | null) {
   if (!plan) return SUBSCRIPTION_LIMITS.FREE;
   return SUBSCRIPTION_LIMITS[plan];
 }

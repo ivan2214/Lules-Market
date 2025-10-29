@@ -1,13 +1,13 @@
 "use server";
 
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import * as SubscriptionDAL from "../data/payment/payment.dal";
 
-export async function createPaymentPreference(plan: SubscriptionPlan) {
+export async function createPaymentPreference(plan: PlanType) {
   return SubscriptionDAL.createPaymentPreference(plan);
 }
 
-export async function upgradePlan(plan: SubscriptionPlan) {
+export async function upgradePlan(plan: PlanType) {
   return SubscriptionDAL.upgradePlan(plan);
 }
 
@@ -19,7 +19,7 @@ export async function getSubscriptionHistory() {
   return SubscriptionDAL.getSubscriptionHistory();
 }
 
-export async function startTrial(plan: SubscriptionPlan = "PREMIUM") {
+export async function startTrial(plan: PlanType = "PREMIUM") {
   return SubscriptionDAL.startTrial(plan);
 }
 

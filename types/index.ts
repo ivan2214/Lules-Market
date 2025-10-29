@@ -96,3 +96,55 @@ export interface MercadoPagoCallbackParams {
   processing_mode: ProcessingMode;
   merchant_account_id: string | null;
 }
+
+export interface Analytics {
+  totalUsers: number;
+  totalBusinesses: number;
+  totalProducts: number;
+  totalPayments: number;
+  totalRevenue: number;
+  activeTrials: number;
+  activeCoupons: number;
+  bannedUsers: number;
+  bannedBusinesses: number;
+  bannedProducts: number;
+  planDistribution: {
+    FREE: number;
+    BASIC: number;
+    PREMIUM: number;
+  };
+  monthlyRevenue: Array<{ month: string; revenue: number }>;
+  businessGrowth: Array<{ month: string; count: number }>;
+}
+
+export interface DashboardStats {
+  users: {
+    total: number;
+    active: number;
+    banned: number;
+    businessOwners: number;
+  };
+  businesses: {
+    total: number;
+    active: number;
+    inactive: number;
+    banned: number;
+  };
+  products: {
+    total: number;
+    active: number;
+    banned: number;
+  };
+  payments: {
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+    totalRevenue: number;
+  };
+  plans: {
+    FREE: number;
+    BASIC: number;
+    PREMIUM: number;
+  };
+}

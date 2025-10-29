@@ -3,7 +3,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil, Power, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { CouponDTO } from "@/app/data/coupon/coupon.dto";
+import type {
+  CouponDTO,
+  CouponRedemptionDTO,
+} from "@/app/data/coupon/coupon.dto";
+import type { PlanType } from "@/app/generated/prisma";
 import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
@@ -41,16 +45,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { mockCouponRedemptions } from "@/lib/data/mock-data";
-import type { PlanType } from "@/types/admin";
 
 type CouponClientProps = {
   coupons: CouponDTO[];
+  redemptions: CouponRedemptionDTO[];
 };
 
-export const CouponClient: React.FC<CouponClientProps> = ({ coupons }) => {
-  const [redemptions] = useState(mockCouponRedemptions);
-
+export const CouponClient: React.FC<CouponClientProps> = ({
+  coupons,
+  redemptions,
+}) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [toggleAlertOpen, setToggleAlertOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -168,17 +172,20 @@ export const CouponClient: React.FC<CouponClientProps> = ({ coupons }) => {
     },
   ];
 
-  const redemptionColumns: ColumnDef<(typeof redemptions)[0]>[] = [
+  const redemptionColumns: ColumnDef<CouponRedemptionDTO>[] = [
     {
-      accessorKey: "couponCode",
+      accessorKey: "coupon",
       header: "Código",
       cell: ({ row }) => (
-        <span className="font-mono">{row.original.couponCode}</span>
+        <span className="font-mono">{row.original.coupon.code}</span>
       ),
     },
     {
       accessorKey: "businessName",
       header: "Negocio",
+      cell: ({ row }) => (
+        <span className="font-medium">{row.original.business.name}</span>
+      ),
     },
     {
       accessorKey: "redeemedAt",

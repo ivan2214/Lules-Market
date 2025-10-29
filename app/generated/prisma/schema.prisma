@@ -55,15 +55,6 @@ model Admin {
   @@map("admin")
 }
 
-enum Permission {
-  ALL
-  MODERATE_CONTENT
-  BAN_USERS
-  MANAGE_PAYMENTS
-  MANAGE_COUPONS
-  VIEW_ANALYTIICS
-}
-
 model BannedBusiness {
   bannedById String @unique
   bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
@@ -159,7 +150,7 @@ model Verification {
 
 /**
  * ===============================================================
- * BUSINESS & SUBSCRIPTIONS
+ * BUSINESS & PLANES
  * ===============================================================
  */
 
@@ -182,8 +173,8 @@ model Business {
   hours       String?
 
   // Subscripción del comercio
-  plan          SubscriptionPlan   @default(FREE)
-  planStatus    SubscriptionStatus @default(ACTIVE)
+  plan          PlanType   @default(FREE)
+  planStatus    PlanStatus @default(ACTIVE)
   planExpiresAt DateTime? // fecha de expiración del plan actual
 
   // Propietario
@@ -204,6 +195,20 @@ model Business {
 
   @@index([plan])
   @@index([planStatus])
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  type        PlanType
+  name        String
+  description String
+  price       Float
+  features    String[]
+  maxProducts Int
+  maxImages   Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 /**
@@ -249,7 +254,7 @@ model Payment {
   mpStatus    String?
 
   // Plan adquirido
-  plan SubscriptionPlan
+  plan PlanType
 
   businessId String
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
@@ -343,26 +348,26 @@ model Analytics {
 }
 
 model Trial {
-  id          String           @id @default(cuid())
-  businessId  String           @unique
-  business    Business         @relation(fields: [businessId], references: [id], onDelete: Cascade) // comercio que usa el trial
-  plan        SubscriptionPlan @default(PREMIUM) // plan otorgado temporalmente
+  id          String   @id @default(cuid())
+  businessId  String   @unique
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade) // comercio que usa el trial
+  plan        PlanType @default(PREMIUM) // plan otorgado temporalmente
   expiresAt   DateTime // fecha en que finaliza la prueba
-  activatedAt DateTime         @default(now())
-  isActive    Boolean          @default(true)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  activatedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Coupon {
-  id           String           @id @default(cuid())
-  code         String           @unique // código canjeable
-  plan         SubscriptionPlan @default(PREMIUM)
-  durationDays Int              @default(30) // duración del beneficio
+  id           String    @id @default(cuid())
+  code         String    @unique // código canjeable
+  plan         PlanType  @default(PREMIUM)
+  durationDays Int       @default(30) // duración del beneficio
   maxUses      Int? // límite de usos (opcional)
-  usedCount    Int              @default(0)
+  usedCount    Int       @default(0)
   expiresAt    DateTime? // fecha de expiración del cupón
-  active       Boolean          @default(true)
+  active       Boolean   @default(true)
 
   // Canjes realizados con este cupón
   redemptions CouponRedemption[]
@@ -389,13 +394,13 @@ model CouponRedemption {
  * ===============================================================
  */
 
-enum SubscriptionPlan {
+enum PlanType {
   FREE
   BASIC
   PREMIUM
 }
 
-enum SubscriptionStatus {
+enum PlanStatus {
   ACTIVE
   INACTIVE
   CANCELLED
@@ -406,4 +411,13 @@ enum UserRole {
   ADMIN
   USER
   BUSINESS
+}
+
+enum Permission {
+  ALL
+  MODERATE_CONTENT
+  BAN_USERS
+  MANAGE_PAYMENTS
+  MANAGE_COUPONS
+  VIEW_ANALYTIICS
 }

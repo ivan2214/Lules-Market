@@ -1,4 +1,5 @@
 "use client";
+import type { AdminDTO } from "@/app/data/admin/admin.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,12 +10,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Admin } from "@/types/admin";
 
 type AdminDeleteAlertDialogProps = {
   open: boolean;
   onOpenChange: (value: boolean) => void;
-  selectedAdmin: Admin | null;
+  selectedAdmin: AdminDTO | null;
 };
 
 export const AdminDeleteAlertDialog: React.FC<AdminDeleteAlertDialogProps> = ({

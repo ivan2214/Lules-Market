@@ -3,7 +3,12 @@ import type { Image } from "@/app/generated/prisma";
 
 export type CleanImage = Omit<
   Image,
-  "productId" | "logoBusinessId" | "coverBusinessId"
+  | "productId"
+  | "logoBusinessId"
+  | "coverBusinessId"
+  | "createdAt"
+  | "updatedAt"
+  | "isReported"
 >;
 export const ImageCreateInputSchema = z.object({
   url: z.url("La URL de la imagen es inválida"),

@@ -3,21 +3,21 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Trash2 } from "lucide-react";
 import { Suspense, useState } from "react";
+import type { AdminDTO } from "@/app/data/admin/admin.dto";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Admin } from "@/types/admin";
 import { AdminDeleteAlertDialog } from "./admin-delete-alert-dialog";
 
-function AdminColumnsInner({ admins }: { admins: Admin[] }) {
+function AdminColumnsInner({ admins }: { admins: AdminDTO[] }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null);
+  const [selectedAdmin, setSelectedAdmin] = useState<AdminDTO | null>(null);
 
   const onOpenChangeAdminFinishAlertDialog = (value: boolean) => {
     setDeleteDialogOpen(value);
   };
 
-  const columns: ColumnDef<Admin>[] = [
+  const columns: ColumnDef<AdminDTO>[] = [
     {
       accessorKey: "name",
       header: "Nombre",
@@ -87,7 +87,7 @@ function AdminColumnsInner({ admins }: { admins: Admin[] }) {
   );
 }
 
-export function AdminColumns({ admins }: { admins: Admin[] }) {
+export function AdminColumns({ admins }: { admins: AdminDTO[] }) {
   return (
     <Suspense fallback={<div>Cargando...</div>}>
       <AdminColumnsInner admins={admins} />

@@ -13,7 +13,12 @@ export default async function CouponsPage() {
     },
   });
 
-  const redemptions = await prisma.couponRedemption.findMany();
+  const redemptions = await prisma.couponRedemption.findMany({
+    include: {
+      coupon: true,
+      business: true,
+    },
+  });
 
   return (
     <div className="space-y-6">
@@ -64,7 +69,7 @@ export default async function CouponsPage() {
         </Card>
       </div>
 
-      <CouponClient coupons={coupons} />
+      <CouponClient coupons={coupons} redemptions={redemptions} />
     </div>
   );
 }

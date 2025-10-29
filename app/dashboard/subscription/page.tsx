@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getMyBusiness } from "@/app/data/business/business.dal";
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,7 +17,7 @@ import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import type { IconComponentName } from "@/types";
 
 const plans: {
-  name: SubscriptionPlan;
+  name: PlanType;
   title: string;
   price: number;
   icon: IconComponentName;

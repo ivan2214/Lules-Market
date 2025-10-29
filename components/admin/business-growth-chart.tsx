@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Analytics } from "@/types/admin";
+import type { Analytics } from "@/types";
 
 interface BusinessGrowthChartProps {
   data: Analytics["businessGrowth"];

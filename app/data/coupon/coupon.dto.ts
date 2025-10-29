@@ -1,11 +1,17 @@
 import type {
   Coupon,
   CouponRedemption,
-  SubscriptionPlan,
+  PlanType,
 } from "@/app/generated/prisma";
+import type { BusinessDTO } from "../business/business.dto";
 
 export interface CouponDTO extends Coupon {
-  plan: SubscriptionPlan;
+  plan: PlanType;
 
   redemptions?: CouponRedemption[] | null;
+}
+
+export interface CouponRedemptionDTO extends CouponRedemption {
+  coupon: CouponDTO;
+  business: BusinessDTO;
 }

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { updateTag } from "next/cache";
-import type { SubscriptionPlan } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
@@ -14,7 +14,7 @@ import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 // ========================================
 
 export async function createPaymentPreference(
-  plan: SubscriptionPlan
+  plan: PlanType
 ): Promise<PaymentPreferenceResult> {
   const { business } = await requireBusiness();
 
@@ -83,7 +83,7 @@ export async function createPaymentPreference(
   };
 }
 
-export async function upgradePlan(plan: SubscriptionPlan) {
+export async function upgradePlan(plan: PlanType) {
   const { business } = await requireBusiness();
 
   if (business.plan === plan) {
@@ -269,7 +269,7 @@ export async function getPayment({
   }
 }
 
-export async function startTrial(plan: SubscriptionPlan = "PREMIUM") {
+export async function startTrial(plan: PlanType = "PREMIUM") {
   const { business } = await requireBusiness();
 
   // Verifica si ya tiene un trial activo

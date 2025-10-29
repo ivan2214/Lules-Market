@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { TrialDTO } from "@/app/data/trial/trial.dto";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Trial } from "@/types/admin";
 
 export const TrialExtendDialog = ({
   onOpenChange,
@@ -21,7 +21,7 @@ export const TrialExtendDialog = ({
   open: boolean;
   onOpenChange: (value: boolean) => void;
 }) => {
-  const [selectedTrial] = useState<Trial | null>(null);
+  const [selectedTrial] = useState<TrialDTO | null>(null);
   const [extendDate, setExtendDate] = useState("");
 
   const handleConfirmExtend = () => {

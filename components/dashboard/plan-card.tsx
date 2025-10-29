@@ -2,10 +2,7 @@
 
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type {
-  SubscriptionPlan,
-  SubscriptionStatus,
-} from "@/app/generated/prisma";
+import type { PlanStatus, PlanType } from "@/app/generated/prisma";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +27,8 @@ interface PlanCardProps {
     limitations?: string[];
     popular?: boolean;
   };
-  currentPlan?: SubscriptionPlan | null;
-  planStatus?: SubscriptionStatus | null;
+  currentPlan?: PlanType | null;
+  planStatus?: PlanStatus | null;
 }
 
 export function PlanCard({ plan, currentPlan }: PlanCardProps) {
@@ -39,7 +36,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
 
   const isCurrent = currentPlan === plan.name;
   const isDowngrade =
-    getPlanLevel(plan.name as SubscriptionPlan) < getPlanLevel(currentPlan);
+    getPlanLevel(plan.name as PlanType) < getPlanLevel(currentPlan);
 
   function handleUpgrade() {
     if (isCurrent) return;
@@ -111,7 +108,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
   );
 }
 
-function getPlanLevel(plan?: SubscriptionPlan | null): number {
+function getPlanLevel(plan?: PlanType | null): number {
   const levels = { FREE: 0, BASIC: 1, PREMIUM: 2 };
   return levels[plan || "FREE"];
 }

@@ -219,6 +219,20 @@ exports.Prisma.BusinessScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PlanScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  features: 'features',
+  maxProducts: 'maxProducts',
+  maxImages: 'maxImages',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -366,13 +380,13 @@ exports.Permission = exports.$Enums.Permission = {
   VIEW_ANALYTIICS: 'VIEW_ANALYTIICS'
 };
 
-exports.SubscriptionPlan = exports.$Enums.SubscriptionPlan = {
+exports.PlanType = exports.$Enums.PlanType = {
   FREE: 'FREE',
   BASIC: 'BASIC',
   PREMIUM: 'PREMIUM'
 };
 
-exports.SubscriptionStatus = exports.$Enums.SubscriptionStatus = {
+exports.PlanStatus = exports.$Enums.PlanStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
   CANCELLED: 'CANCELLED',
@@ -389,6 +403,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Business: 'Business',
+  Plan: 'Plan',
   Product: 'Product',
   Payment: 'Payment',
   Image: 'Image',
