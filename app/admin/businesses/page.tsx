@@ -1,9 +1,10 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import { Facebook, Instagram, MessageCircle, Store } from "lucide-react";
 import { useState } from "react";
 import { BusinessActions } from "@/components/admin/business-actions";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockBusinesses } from "@/lib/data/mock-data";
-import type { Business, PlanType } from "@/lib/types/admin";
+import type { Business, PlanType } from "@/types/admin";
 
 export default function BusinessesPage() {
   const [businesses, setBusinesses] = useState(mockBusinesses);
@@ -71,64 +72,66 @@ export default function BusinessesPage() {
     return business.plan === filter;
   });
 
-  const columns = [
+  const columns: ColumnDef<Business>[] = [
     {
-      key: "name",
-      label: "Negocio",
-      render: (business: Business) => (
+      accessorKey: "name",
+      header: "Negocio",
+      cell: ({ row }) => (
         <div>
-          <div className="font-medium">{business.name}</div>
-          <div className="text-muted-foreground text-sm">@{business.slug}</div>
+          <div className="font-medium">{row.original.name}</div>
+          <div className="text-muted-foreground text-sm">
+            @{row.original.slug}
+          </div>
         </div>
       ),
     },
     {
-      key: "ownerName",
-      label: "Propietario",
+      accessorKey: "ownerName",
+      header: "Propietario",
     },
     {
-      key: "plan",
-      label: "Plan",
-      render: (business: Business) => {
+      accessorKey: "plan",
+      header: "Plan",
+      cell: ({ row }) => {
         const variant =
-          business.plan === "PREMIUM"
+          row.original.plan === "PREMIUM"
             ? "default"
-            : business.plan === "BASIC"
+            : row.original.plan === "BASIC"
               ? "secondary"
               : "outline";
-        return <Badge variant={variant}>{business.plan}</Badge>;
+        return <Badge variant={variant}>{row.original.plan}</Badge>;
       },
     },
     {
-      key: "productsCount",
-      label: "Productos",
-      render: (business: Business) => (
-        <span className="font-medium">{business.productsCount}</span>
+      accessorKey: "productsCount",
+      header: "Productos",
+      cell: ({ row }) => (
+        <span className="font-medium">{row.original.productsCount}</span>
       ),
     },
     {
-      key: "createdAt",
-      label: "Fecha de Creación",
-      render: (business: Business) =>
-        new Date(business.createdAt).toLocaleDateString("es-AR"),
+      accessorKey: "createdAt",
+      header: "Fecha de Creación",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("es-AR"),
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (business: Business) => {
-        if (business.isBanned)
+      id: "status",
+      header: "Estado",
+      cell: ({ row }) => {
+        if (row.original.isBanned)
           return <Badge variant="destructive">Baneado</Badge>;
-        if (!business.isActive)
+        if (!row.original.isActive)
           return <Badge variant="secondary">Inactivo</Badge>;
         return <Badge variant="outline">Activo</Badge>;
       },
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (business: Business) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <BusinessActions
-          business={business}
+          business={row.original}
           onBan={handleBan}
           onUnban={handleUnban}
           onChangePlan={handleChangePlan}

@@ -1,8 +1,9 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,26 +64,28 @@ export default function AdminsPage() {
     setIsCreateDialogOpen(false);
   };
 
-  const columns = [
+  const columns: ColumnDef<Admin>[] = [
     {
-      key: "name",
-      label: "Nombre",
-      render: (admin: Admin) => (
+      accessorKey: "name",
+      header: "Nombre",
+      cell: ({ row }) => (
         <div>
-          <div className="font-medium">{admin.name}</div>
-          <div className="text-muted-foreground text-sm">{admin.email}</div>
+          <div className="font-medium">{row.original.name}</div>
+          <div className="text-muted-foreground text-sm">
+            {row.original.email}
+          </div>
         </div>
       ),
     },
     {
-      key: "permissions",
-      label: "Permisos",
-      render: (admin: Admin) => (
+      accessorKey: "permissions",
+      header: "Permisos",
+      cell: ({ row }) => (
         <div className="flex flex-wrap gap-1">
-          {admin.permissions.includes("all") ? (
+          {row.original.permissions.includes("all") ? (
             <Badge>Todos los permisos</Badge>
           ) : (
-            admin.permissions.map((perm) => (
+            row.original.permissions.map((perm) => (
               <Badge key={perm} variant="outline">
                 {perm.replace("_", " ")}
               </Badge>
@@ -92,20 +95,20 @@ export default function AdminsPage() {
       ),
     },
     {
-      key: "createdAt",
-      label: "Fecha de Creación",
-      render: (admin: Admin) =>
-        new Date(admin.createdAt).toLocaleDateString("es-AR"),
+      accessorKey: "createdAt",
+      header: "Fecha de Creación",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("es-AR"),
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (admin: Admin) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <Button
           variant="ghost"
           size="icon"
           onClick={() => {
-            setSelectedAdmin(admin);
+            setSelectedAdmin(row.original);
             setDeleteDialogOpen(true);
           }}
         >

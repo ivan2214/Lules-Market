@@ -1,8 +1,9 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Pencil, Plus, Power } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,7 +43,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { mockPlans } from "@/lib/data/mock-data";
-import type { Plan, PlanType } from "@/lib/types/admin";
+import type { Plan, PlanType } from "@/types/admin";
 
 export default function PlansPage() {
   const [plans, setPlans] = useState(mockPlans);
@@ -77,74 +78,85 @@ export default function PlansPage() {
     setIsCreateDialogOpen(false);
   };
 
-  const columns = [
+  const columns: ColumnDef<Plan>[] = [
     {
-      key: "name",
-      label: "Plan",
-      render: (plan: Plan) => (
+      accessorKey: "name",
+      header: "Plan",
+      cell: ({ row }) => (
         <div>
-          <div className="font-medium">{plan.name}</div>
+          <div className="font-medium">{row.original.name}</div>
           <Badge variant="outline" className="mt-1">
-            {plan.type}
+            {row.original.type}
           </Badge>
         </div>
       ),
     },
     {
-      key: "description",
-      label: "Descripción",
-      render: (plan: Plan) => (
+      accessorKey: "description",
+      header: "Descripción",
+      cell: ({ row }) => (
         <span className="text-muted-foreground text-sm">
-          {plan.description}
+          {row.original.description}
         </span>
       ),
     },
     {
-      key: "price",
-      label: "Precio",
-      render: (plan: Plan) => (
+      accessorKey: "price",
+      header: "Precio",
+      cell: ({ row }) => (
         <span className="font-medium">
-          {plan.price === 0 ? "Gratis" : `$${(plan.price / 100).toFixed(2)}`}
+          {row.original.price === 0
+            ? "Gratis"
+            : `$${(row.original.price / 100).toFixed(2)}`}
         </span>
       ),
     },
     {
-      key: "limits",
-      label: "Límites",
-      render: (plan: Plan) => (
+      id: "limits",
+      header: "Límites",
+      cell: ({ row }) => (
         <div className="text-sm">
           <div>
             Productos:{" "}
-            {plan.maxProducts === -1 ? "Ilimitados" : plan.maxProducts}
+            {row.original.maxProducts === -1
+              ? "Ilimitados"
+              : row.original.maxProducts}
           </div>
           <div className="text-muted-foreground">
-            Imágenes: {plan.maxImages === -1 ? "Ilimitadas" : plan.maxImages}
+            Imágenes:{" "}
+            {row.original.maxImages === -1
+              ? "Ilimitadas"
+              : row.original.maxImages}
           </div>
         </div>
       ),
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (plan: Plan) => (
-        <Badge variant={plan.isActive ? "outline" : "secondary"}>
-          {plan.isActive ? "Activo" : "Inactivo"}
+      id: "status",
+      header: "Estado",
+      cell: ({ row }) => (
+        <Badge variant={row.original.isActive ? "outline" : "secondary"}>
+          {row.original.isActive ? "Activo" : "Inactivo"}
         </Badge>
       ),
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (plan: Plan) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => handleEdit(plan)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleEdit(row.original)}
+          >
             <Pencil className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => {
-              setSelectedPlan(plan);
+              setSelectedPlan(row.original);
               setToggleAlertOpen(true);
             }}
           >
@@ -262,9 +274,9 @@ export default function PlansPage() {
                   <div className="text-muted-foreground text-sm">por mes</div>
                 </div>
                 <div className="space-y-2">
-                  {plan.features.map((feature, index) => (
+                  {plan.features.map((feature) => (
                     <div
-                      key={index}
+                      key={feature}
                       className="flex items-center gap-2 text-sm"
                     >
                       <Check className="h-4 w-4 text-green-600" />

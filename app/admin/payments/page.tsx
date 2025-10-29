@@ -1,8 +1,9 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import { Download, Eye } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockPayments, mockWebhookEvents } from "@/lib/data/mock-data";
-import type { Payment, PaymentStatus, WebhookEvent } from "@/lib/types/admin";
+import type { Payment, PaymentStatus, WebhookEvent } from "@/types/admin";
 
 export default function PaymentsPage() {
   const [payments] = useState(mockPayments);
@@ -46,59 +47,59 @@ export default function PaymentsPage() {
     }
   };
 
-  const paymentColumns = [
+  const paymentColumns: ColumnDef<Payment>[] = [
     {
-      key: "externalId",
-      label: "ID Externo",
-      render: (payment: Payment) => (
-        <span className="font-mono text-sm">{payment.externalId || "N/A"}</span>
-      ),
-    },
-    {
-      key: "businessName",
-      label: "Negocio",
-    },
-    {
-      key: "plan",
-      label: "Plan",
-      render: (payment: Payment) => (
-        <Badge variant="outline">{payment.plan}</Badge>
-      ),
-    },
-    {
-      key: "amount",
-      label: "Monto",
-      render: (payment: Payment) => (
-        <span className="font-medium">
-          ${(payment.amount / 100).toFixed(2)}
+      accessorKey: "externalId",
+      header: "ID Externo",
+      cell: ({ row }) => (
+        <span className="font-mono text-sm">
+          {row.original.externalId || "N/A"}
         </span>
       ),
     },
     {
-      key: "method",
-      label: "Método",
+      accessorKey: "businessName",
+      header: "Negocio",
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (payment: Payment) => getStatusBadge(payment.status),
+      accessorKey: "plan",
+      header: "Plan",
+      cell: ({ row }) => <Badge variant="outline">{row.original.plan}</Badge>,
     },
     {
-      key: "createdAt",
-      label: "Fecha",
-      render: (payment: Payment) =>
-        new Date(payment.createdAt).toLocaleDateString("es-AR"),
+      accessorKey: "amount",
+      header: "Monto",
+      cell: ({ row }) => (
+        <span className="font-medium">
+          ${(row.original.amount / 100).toFixed(2)}
+        </span>
+      ),
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (payment: Payment) => (
+      accessorKey: "method",
+      header: "Método",
+    },
+    {
+      accessorKey: "status",
+      header: "Estado",
+      cell: ({ row }) => getStatusBadge(row.original.status),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Fecha",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("es-AR"),
+    },
+    {
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <Dialog>
           <DialogTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setSelectedPayment(payment)}
+              onClick={() => setSelectedPayment(row.original)}
             >
               <Eye className="h-4 w-4" />
             </Button>
@@ -116,45 +117,47 @@ export default function PaymentsPage() {
                   <p className="font-medium text-muted-foreground text-sm">
                     ID Externo
                   </p>
-                  <p className="font-mono text-sm">{payment.externalId}</p>
+                  <p className="font-mono text-sm">{row.original.externalId}</p>
                 </div>
                 <div>
                   <p className="font-medium text-muted-foreground text-sm">
                     Estado
                   </p>
-                  {getStatusBadge(payment.status)}
+                  {getStatusBadge(row.original.status)}
                 </div>
                 <div>
                   <p className="font-medium text-muted-foreground text-sm">
                     Negocio
                   </p>
-                  <p>{payment.businessName}</p>
+                  <p>{row.original.businessName}</p>
                 </div>
                 <div>
                   <p className="font-medium text-muted-foreground text-sm">
                     Plan
                   </p>
-                  <p>{payment.plan}</p>
+                  <p>{row.original.plan}</p>
                 </div>
                 <div>
                   <p className="font-medium text-muted-foreground text-sm">
                     Monto
                   </p>
                   <p className="font-bold text-lg">
-                    ${(payment.amount / 100).toFixed(2)}
+                    ${(row.original.amount / 100).toFixed(2)}
                   </p>
                 </div>
                 <div>
                   <p className="font-medium text-muted-foreground text-sm">
                     Método
                   </p>
-                  <p>{payment.method}</p>
+                  <p>{row.original.method}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="font-medium text-muted-foreground text-sm">
                     Fecha
                   </p>
-                  <p>{new Date(payment.createdAt).toLocaleString("es-AR")}</p>
+                  <p>
+                    {new Date(row.original.createdAt).toLocaleString("es-AR")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -164,33 +167,31 @@ export default function PaymentsPage() {
     },
   ];
 
-  const webhookColumns = [
+  const webhookColumns: ColumnDef<WebhookEvent>[] = [
     {
-      key: "type",
-      label: "Tipo",
-      render: (event: WebhookEvent) => (
-        <Badge variant="outline">{event.type}</Badge>
+      accessorKey: "type",
+      header: "Tipo",
+      cell: ({ row }) => <Badge variant="outline">{row.original.type}</Badge>,
+    },
+    {
+      accessorKey: "status",
+      header: "Estado",
+      cell: ({ row }) => (
+        <Badge className="bg-green-600 text-white">{row.original.status}</Badge>
       ),
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (event: WebhookEvent) => (
-        <Badge className="bg-green-600 text-white">{event.status}</Badge>
-      ),
+      accessorKey: "createdAt",
+      header: "Fecha",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleString("es-AR"),
     },
     {
-      key: "createdAt",
-      label: "Fecha",
-      render: (event: WebhookEvent) =>
-        new Date(event.createdAt).toLocaleString("es-AR"),
-    },
-    {
-      key: "payload",
-      label: "Payload",
-      render: (event: WebhookEvent) => (
+      accessorKey: "payload",
+      header: "Payload",
+      cell: ({ row }) => (
         <code className="rounded bg-muted px-2 py-1 text-xs">
-          {JSON.stringify(event.payload).substring(0, 50)}...
+          {JSON.stringify(row.original.payload).substring(0, 50)}...
         </code>
       ),
     },

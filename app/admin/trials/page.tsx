@@ -1,8 +1,9 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import { Calendar, Plus, XCircle } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,7 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { mockTrials } from "@/lib/data/mock-data";
-import type { Trial } from "@/lib/types/admin";
+import type { Trial } from "@/types/admin";
 
 export default function TrialsPage() {
   const [trials, setTrials] = useState(mockTrials);
@@ -96,31 +97,33 @@ export default function TrialsPage() {
     return diff;
   };
 
-  const columns = [
+  const columns: ColumnDef<Trial>[] = [
     {
-      key: "businessName",
-      label: "Negocio",
+      accessorKey: "businessName",
+      header: "Negocio",
     },
     {
-      key: "plan",
-      label: "Plan",
-      render: (trial: Trial) => <Badge variant="outline">{trial.plan}</Badge>,
+      accessorKey: "plan",
+      header: "Plan",
+      cell: ({ row }) => <Badge variant="outline">{row.original.plan}</Badge>,
     },
     {
-      key: "startDate",
-      label: "Fecha de Inicio",
-      render: (trial: Trial) =>
-        new Date(trial.startDate).toLocaleDateString("es-AR"),
+      accessorKey: "startDate",
+      header: "Fecha de Inicio",
+      cell: ({ row }) =>
+        new Date(row.original.startDate).toLocaleDateString("es-AR"),
     },
     {
-      key: "endDate",
-      label: "Fecha de Fin",
-      render: (trial: Trial) => {
-        const daysRemaining = getDaysRemaining(trial.endDate);
+      accessorKey: "endDate",
+      header: "Fecha de Fin",
+      cell: ({ row }) => {
+        const daysRemaining = getDaysRemaining(row.original.endDate);
         return (
           <div>
-            <div>{new Date(trial.endDate).toLocaleDateString("es-AR")}</div>
-            {trial.isActive && (
+            <div>
+              {new Date(row.original.endDate).toLocaleDateString("es-AR")}
+            </div>
+            {row.original.isActive && (
               <div
                 className={`text-xs ${daysRemaining < 3 ? "text-destructive" : "text-muted-foreground"}`}
               >
@@ -134,25 +137,25 @@ export default function TrialsPage() {
       },
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (trial: Trial) => (
-        <Badge variant={trial.isActive ? "outline" : "secondary"}>
-          {trial.isActive ? "Activo" : "Finalizado"}
+      id: "status",
+      header: "Estado",
+      cell: ({ row }) => (
+        <Badge variant={row.original.isActive ? "outline" : "secondary"}>
+          {row.original.isActive ? "Activo" : "Finalizado"}
         </Badge>
       ),
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (trial: Trial) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          {trial.isActive && (
+          {row.original.isActive && (
             <>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleExtend(trial)}
+                onClick={() => handleExtend(row.original)}
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Extender
@@ -161,7 +164,7 @@ export default function TrialsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  setSelectedTrial(trial);
+                  setSelectedTrial(row.original);
                   setEndDialogOpen(true);
                 }}
               >

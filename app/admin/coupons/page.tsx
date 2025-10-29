@@ -1,8 +1,9 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil, Plus, Power, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,7 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { mockCouponRedemptions, mockCoupons } from "@/lib/data/mock-data";
-import type { Coupon, PlanType } from "@/lib/types/admin";
+import type { Coupon, PlanType } from "@/types/admin";
 
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState(mockCoupons);
@@ -88,68 +89,69 @@ export default function CouponsPage() {
     setIsCreateDialogOpen(false);
   };
 
-  const couponColumns = [
+  const couponColumns: ColumnDef<Coupon>[] = [
     {
-      key: "code",
-      label: "Código",
-      render: (coupon: Coupon) => (
-        <span className="font-medium font-mono">{coupon.code}</span>
+      accessorKey: "code",
+      header: "Código",
+      cell: ({ row }) => (
+        <span className="font-medium font-mono">{row.original.code}</span>
       ),
     },
     {
-      key: "plan",
-      label: "Plan",
-      render: (coupon: Coupon) => (
-        <Badge variant="outline">{coupon.plan}</Badge>
-      ),
+      accessorKey: "plan",
+      header: "Plan",
+      cell: ({ row }) => <Badge variant="outline">{row.original.plan}</Badge>,
     },
     {
-      key: "durationMonths",
-      label: "Duración",
-      render: (coupon: Coupon) =>
-        `${coupon.durationMonths} ${coupon.durationMonths === 1 ? "mes" : "meses"}`,
+      accessorKey: "durationMonths",
+      header: "Duración",
+      cell: ({ row }) =>
+        `${row.original.durationMonths} ${row.original.durationMonths === 1 ? "mes" : "meses"}`,
     },
     {
-      key: "usage",
-      label: "Uso",
-      render: (coupon: Coupon) => (
+      id: "usage",
+      header: "Uso",
+      cell: ({ row }) => (
         <div>
           <div className="font-medium">
-            {coupon.currentUses} / {coupon.maxUses}
+            {row.original.currentUses} / {row.original.maxUses}
           </div>
           <div className="text-muted-foreground text-xs">
-            {((coupon.currentUses / coupon.maxUses) * 100).toFixed(0)}% usado
+            {((row.original.currentUses / row.original.maxUses) * 100).toFixed(
+              0,
+            )}
+            % usado
           </div>
         </div>
       ),
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (coupon: Coupon) => (
-        <Badge variant={coupon.isActive ? "outline" : "secondary"}>
-          {coupon.isActive ? "Activo" : "Inactivo"}
+      id: "status",
+      header: "Estado",
+      cell: ({ row }) => (
+        <Badge variant={row.original.isActive ? "outline" : "secondary"}>
+          {row.original.isActive ? "Activo" : "Inactivo"}
         </Badge>
       ),
     },
     {
-      key: "expiresAt",
-      label: "Expira",
-      render: (coupon: Coupon) =>
-        coupon.expiresAt
-          ? new Date(coupon.expiresAt).toLocaleDateString("es-AR")
+      accessorKey: "expiresAt",
+      header: "Expira",
+      cell: ({ row }) =>
+        row.original.expiresAt
+          ? new Date(row.original.expiresAt).toLocaleDateString("es-AR")
           : "Sin expiración",
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (coupon: Coupon) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => {
-              setSelectedCoupon(coupon);
+              setSelectedCoupon(row.original);
               setToggleAlertOpen(true);
             }}
           >
@@ -158,7 +160,7 @@ export default function CouponsPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => handleEdit(coupon)}
+            onClick={() => handleEdit(row.original)}
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -166,7 +168,7 @@ export default function CouponsPage() {
             variant="ghost"
             size="icon"
             onClick={() => {
-              setSelectedCoupon(coupon);
+              setSelectedCoupon(row.original);
               setDeleteDialogOpen(true);
             }}
           >
@@ -177,23 +179,23 @@ export default function CouponsPage() {
     },
   ];
 
-  const redemptionColumns = [
+  const redemptionColumns: ColumnDef<(typeof redemptions)[0]>[] = [
     {
-      key: "couponCode",
-      label: "Código",
-      render: (redemption: (typeof redemptions)[0]) => (
-        <span className="font-mono">{redemption.couponCode}</span>
+      accessorKey: "couponCode",
+      header: "Código",
+      cell: ({ row }) => (
+        <span className="font-mono">{row.original.couponCode}</span>
       ),
     },
     {
-      key: "businessName",
-      label: "Negocio",
+      accessorKey: "businessName",
+      header: "Negocio",
     },
     {
-      key: "redeemedAt",
-      label: "Fecha de Canje",
-      render: (redemption: (typeof redemptions)[0]) =>
-        new Date(redemption.redeemedAt).toLocaleDateString("es-AR"),
+      accessorKey: "redeemedAt",
+      header: "Fecha de Canje",
+      cell: ({ row }) =>
+        new Date(row.original.redeemedAt).toLocaleDateString("es-AR"),
     },
   ];
 

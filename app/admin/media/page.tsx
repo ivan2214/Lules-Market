@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockImages } from "@/lib/data/mock-data";
-import type { Image } from "@/lib/types/admin";
+import type { Image } from "@/types/admin";
 
 export default function MediaPage() {
   const [images, setImages] = useState(mockImages);

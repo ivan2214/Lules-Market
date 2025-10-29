@@ -3,8 +3,8 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { Calendar, Mail, Shield, Store } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
 import { UserActions } from "@/components/admin/user-actions";
+import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -63,53 +63,57 @@ export default function UsersPage() {
     {
       accessorKey: "name",
       header: "Nombre",
-      cell: (user: User) => (
+      cell: ({ row }) => (
         <div>
-          <div className="font-medium">{user.name}</div>
-          <div className="text-muted-foreground text-sm">{user.email}</div>
+          <div className="font-medium">{row.original.name}</div>
+          <div className="text-muted-foreground text-sm">
+            {row.original.email}
+          </div>
         </div>
       ),
     },
     {
       accessorKey: "role",
       header: "Rol",
-      cell: (user: User) => (
-        <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
-          {user.role}
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.role === "ADMIN" ? "default" : "secondary"}
+        >
+          {row.original.role}
         </Badge>
       ),
     },
     {
-      key: "isBusinessOwner",
-      label: "Comerciante",
-      render: (user: User) =>
-        user.isBusinessOwner ? (
+      accessorKey: "isBusinessOwner",
+      header: "Comerciante",
+      cell: ({ row }) =>
+        row.original.isBusinessOwner ? (
           <Badge>Sí</Badge>
         ) : (
           <span className="text-muted-foreground">No</span>
         ),
     },
     {
-      key: "createdAt",
-      label: "Fecha de Registro",
-      render: (user: User) =>
-        new Date(user.createdAt).toLocaleDateString("es-AR"),
+      accessorKey: "createdAt",
+      header: "Fecha de Registro",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("es-AR"),
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (user: User) => (
-        <Badge variant={user.isBanned ? "destructive" : "outline"}>
-          {user.isBanned ? "Baneado" : "Activo"}
+      accessorKey: "isBanned",
+      header: "Estado",
+      cell: ({ row }) => (
+        <Badge variant={row.original.isBanned ? "destructive" : "outline"}>
+          {row.original.isBanned ? "Baneado" : "Activo"}
         </Badge>
       ),
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (user: User) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <UserActions
-          user={user}
+          user={row.original}
           onBan={handleBan}
           onUnban={handleUnban}
           onViewDetails={handleViewDetails}

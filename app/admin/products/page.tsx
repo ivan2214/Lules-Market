@@ -1,9 +1,10 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { useState } from "react";
-import { DataTable } from "@/components/admin/data-table";
 import { ProductActions } from "@/components/admin/product-actions";
+import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -75,53 +76,55 @@ export default function ProductsPage() {
     return true;
   });
 
-  const columns = [
+  const columns: ColumnDef<Product>[] = [
     {
-      key: "name",
-      label: "Producto",
-      render: (product: Product) => (
+      accessorKey: "name",
+      header: "Producto",
+      cell: ({ row }) => (
         <div>
-          <div className="font-medium">{product.name}</div>
+          <div className="font-medium">{row.original.name}</div>
           <div className="text-muted-foreground text-sm">
-            {product.category}
+            {row.original.category}
           </div>
         </div>
       ),
     },
     {
-      key: "businessName",
-      label: "Negocio",
+      accessorKey: "businessName",
+      header: "Negocio",
     },
     {
-      key: "price",
-      label: "Precio",
-      render: (product: Product) => (
-        <span className="font-medium">${(product.price / 100).toFixed(2)}</span>
+      accessorKey: "price",
+      header: "Precio",
+      cell: ({ row }) => (
+        <span className="font-medium">
+          ${(row.original.price / 100).toFixed(2)}
+        </span>
       ),
     },
     {
-      key: "createdAt",
-      label: "Fecha de Creación",
-      render: (product: Product) =>
-        new Date(product.createdAt).toLocaleDateString("es-AR"),
+      accessorKey: "createdAt",
+      header: "Fecha de Creación",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("es-AR"),
     },
     {
-      key: "status",
-      label: "Estado",
-      render: (product: Product) => {
-        if (product.isBanned)
+      id: "status",
+      header: "Estado",
+      cell: ({ row }) => {
+        if (row.original.isBanned)
           return <Badge variant="destructive">Baneado</Badge>;
-        if (!product.isActive)
+        if (!row.original.isActive)
           return <Badge variant="secondary">Inactivo</Badge>;
         return <Badge variant="outline">Activo</Badge>;
       },
     },
     {
-      key: "actions",
-      label: "Acciones",
-      render: (product: Product) => (
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
         <ProductActions
-          product={product}
+          product={row.original}
           onBan={handleBan}
           onUnban={handleUnban}
           onToggleActive={handleToggleActive}
