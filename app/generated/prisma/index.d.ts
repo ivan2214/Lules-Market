@@ -140,7 +140,8 @@ export type PlanStatus = (typeof PlanStatus)[keyof typeof PlanStatus]
 export const UserRole: {
   ADMIN: 'ADMIN',
   USER: 'USER',
-  BUSINESS: 'BUSINESS'
+  BUSINESS: 'BUSINESS',
+  SUPER_ADMIN: 'SUPER_ADMIN'
 };
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
@@ -2886,6 +2887,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     userRole: $Enums.UserRole | null
+    isBanned: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2897,6 +2899,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     userRole: $Enums.UserRole | null
+    isBanned: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2908,6 +2911,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     userRole: number
+    isBanned: number
     _all: number
   }
 
@@ -2921,6 +2925,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     userRole?: true
+    isBanned?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2932,6 +2937,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     userRole?: true
+    isBanned?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2943,6 +2949,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     userRole?: true
+    isBanned?: true
     _all?: true
   }
 
@@ -3027,6 +3034,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     userRole: $Enums.UserRole
+    isBanned: boolean | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3055,6 +3063,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     userRole?: boolean
+    isBanned?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     business?: boolean | User$businessArgs<ExtArgs>
@@ -3072,6 +3081,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     userRole?: boolean
+    isBanned?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3083,6 +3093,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     userRole?: boolean
+    isBanned?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -3094,9 +3105,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     userRole?: boolean
+    isBanned?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "userRole", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "userRole" | "isBanned", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
@@ -3126,6 +3138,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       userRole: $Enums.UserRole
+      isBanned: boolean | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3562,6 +3575,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly userRole: FieldRef<"User", 'UserRole'>
+    readonly isBanned: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -5211,6 +5225,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessMinAggregateOutputType = {
+    id: string | null
     bannedById: string | null
     businessId: string | null
     createdAt: Date | null
@@ -5218,6 +5233,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessMaxAggregateOutputType = {
+    id: string | null
     bannedById: string | null
     businessId: string | null
     createdAt: Date | null
@@ -5225,6 +5241,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCountAggregateOutputType = {
+    id: number
     bannedById: number
     businessId: number
     createdAt: number
@@ -5234,6 +5251,7 @@ export namespace Prisma {
 
 
   export type BannedBusinessMinAggregateInputType = {
+    id?: true
     bannedById?: true
     businessId?: true
     createdAt?: true
@@ -5241,6 +5259,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessMaxAggregateInputType = {
+    id?: true
     bannedById?: true
     businessId?: true
     createdAt?: true
@@ -5248,6 +5267,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCountAggregateInputType = {
+    id?: true
     bannedById?: true
     businessId?: true
     createdAt?: true
@@ -5328,6 +5348,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessGroupByOutputType = {
+    id: string
     bannedById: string
     businessId: string
     createdAt: Date
@@ -5352,6 +5373,7 @@ export namespace Prisma {
 
 
   export type BannedBusinessSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     businessId?: boolean
     createdAt?: boolean
@@ -5361,6 +5383,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedBusiness"]>
 
   export type BannedBusinessSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     businessId?: boolean
     createdAt?: boolean
@@ -5370,6 +5393,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedBusiness"]>
 
   export type BannedBusinessSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     businessId?: boolean
     createdAt?: boolean
@@ -5379,13 +5403,14 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedBusiness"]>
 
   export type BannedBusinessSelectScalar = {
+    id?: boolean
     bannedById?: boolean
     businessId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BannedBusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bannedById" | "businessId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedBusiness"]>
+  export type BannedBusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bannedById" | "businessId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedBusiness"]>
   export type BannedBusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
     business?: boolean | BusinessDefaultArgs<ExtArgs>
@@ -5406,6 +5431,7 @@ export namespace Prisma {
       business: Prisma.$BusinessPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       bannedById: string
       businessId: string
       createdAt: Date
@@ -5493,8 +5519,8 @@ export namespace Prisma {
      * // Get first 10 BannedBusinesses
      * const bannedBusinesses = await prisma.bannedBusiness.findMany({ take: 10 })
      * 
-     * // Only select the `bannedById`
-     * const bannedBusinessWithBannedByIdOnly = await prisma.bannedBusiness.findMany({ select: { bannedById: true } })
+     * // Only select the `id`
+     * const bannedBusinessWithIdOnly = await prisma.bannedBusiness.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends BannedBusinessFindManyArgs>(args?: SelectSubset<T, BannedBusinessFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -5538,9 +5564,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many BannedBusinesses and only return the `bannedById`
-     * const bannedBusinessWithBannedByIdOnly = await prisma.bannedBusiness.createManyAndReturn({
-     *   select: { bannedById: true },
+     * // Create many BannedBusinesses and only return the `id`
+     * const bannedBusinessWithIdOnly = await prisma.bannedBusiness.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -5629,9 +5655,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more BannedBusinesses and only return the `bannedById`
-     * const bannedBusinessWithBannedByIdOnly = await prisma.bannedBusiness.updateManyAndReturn({
-     *   select: { bannedById: true },
+     * // Update zero or more BannedBusinesses and only return the `id`
+     * const bannedBusinessWithIdOnly = await prisma.bannedBusiness.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -5835,6 +5861,7 @@ export namespace Prisma {
    * Fields of the BannedBusiness model
    */
   interface BannedBusinessFieldRefs {
+    readonly id: FieldRef<"BannedBusiness", 'String'>
     readonly bannedById: FieldRef<"BannedBusiness", 'String'>
     readonly businessId: FieldRef<"BannedBusiness", 'String'>
     readonly createdAt: FieldRef<"BannedBusiness", 'DateTime'>
@@ -6264,6 +6291,7 @@ export namespace Prisma {
   }
 
   export type BannedUserMinAggregateOutputType = {
+    id: string | null
     bannedById: string | null
     userId: string | null
     createdAt: Date | null
@@ -6271,6 +6299,7 @@ export namespace Prisma {
   }
 
   export type BannedUserMaxAggregateOutputType = {
+    id: string | null
     bannedById: string | null
     userId: string | null
     createdAt: Date | null
@@ -6278,6 +6307,7 @@ export namespace Prisma {
   }
 
   export type BannedUserCountAggregateOutputType = {
+    id: number
     bannedById: number
     userId: number
     createdAt: number
@@ -6287,6 +6317,7 @@ export namespace Prisma {
 
 
   export type BannedUserMinAggregateInputType = {
+    id?: true
     bannedById?: true
     userId?: true
     createdAt?: true
@@ -6294,6 +6325,7 @@ export namespace Prisma {
   }
 
   export type BannedUserMaxAggregateInputType = {
+    id?: true
     bannedById?: true
     userId?: true
     createdAt?: true
@@ -6301,6 +6333,7 @@ export namespace Prisma {
   }
 
   export type BannedUserCountAggregateInputType = {
+    id?: true
     bannedById?: true
     userId?: true
     createdAt?: true
@@ -6381,6 +6414,7 @@ export namespace Prisma {
   }
 
   export type BannedUserGroupByOutputType = {
+    id: string
     bannedById: string
     userId: string
     createdAt: Date
@@ -6405,6 +6439,7 @@ export namespace Prisma {
 
 
   export type BannedUserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -6414,6 +6449,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedUser"]>
 
   export type BannedUserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -6423,6 +6459,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedUser"]>
 
   export type BannedUserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -6432,13 +6469,14 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedUser"]>
 
   export type BannedUserSelectScalar = {
+    id?: boolean
     bannedById?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BannedUserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bannedById" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedUser"]>
+  export type BannedUserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bannedById" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedUser"]>
   export type BannedUserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6459,6 +6497,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       bannedById: string
       userId: string
       createdAt: Date
@@ -6546,8 +6585,8 @@ export namespace Prisma {
      * // Get first 10 BannedUsers
      * const bannedUsers = await prisma.bannedUser.findMany({ take: 10 })
      * 
-     * // Only select the `bannedById`
-     * const bannedUserWithBannedByIdOnly = await prisma.bannedUser.findMany({ select: { bannedById: true } })
+     * // Only select the `id`
+     * const bannedUserWithIdOnly = await prisma.bannedUser.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends BannedUserFindManyArgs>(args?: SelectSubset<T, BannedUserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -6591,9 +6630,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many BannedUsers and only return the `bannedById`
-     * const bannedUserWithBannedByIdOnly = await prisma.bannedUser.createManyAndReturn({
-     *   select: { bannedById: true },
+     * // Create many BannedUsers and only return the `id`
+     * const bannedUserWithIdOnly = await prisma.bannedUser.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -6682,9 +6721,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more BannedUsers and only return the `bannedById`
-     * const bannedUserWithBannedByIdOnly = await prisma.bannedUser.updateManyAndReturn({
-     *   select: { bannedById: true },
+     * // Update zero or more BannedUsers and only return the `id`
+     * const bannedUserWithIdOnly = await prisma.bannedUser.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -6888,6 +6927,7 @@ export namespace Prisma {
    * Fields of the BannedUser model
    */
   interface BannedUserFieldRefs {
+    readonly id: FieldRef<"BannedUser", 'String'>
     readonly bannedById: FieldRef<"BannedUser", 'String'>
     readonly userId: FieldRef<"BannedUser", 'String'>
     readonly createdAt: FieldRef<"BannedUser", 'DateTime'>
@@ -7317,6 +7357,7 @@ export namespace Prisma {
   }
 
   export type BannedProductMinAggregateOutputType = {
+    id: string | null
     bannedById: string | null
     productId: string | null
     createdAt: Date | null
@@ -7324,6 +7365,7 @@ export namespace Prisma {
   }
 
   export type BannedProductMaxAggregateOutputType = {
+    id: string | null
     bannedById: string | null
     productId: string | null
     createdAt: Date | null
@@ -7331,6 +7373,7 @@ export namespace Prisma {
   }
 
   export type BannedProductCountAggregateOutputType = {
+    id: number
     bannedById: number
     productId: number
     createdAt: number
@@ -7340,6 +7383,7 @@ export namespace Prisma {
 
 
   export type BannedProductMinAggregateInputType = {
+    id?: true
     bannedById?: true
     productId?: true
     createdAt?: true
@@ -7347,6 +7391,7 @@ export namespace Prisma {
   }
 
   export type BannedProductMaxAggregateInputType = {
+    id?: true
     bannedById?: true
     productId?: true
     createdAt?: true
@@ -7354,6 +7399,7 @@ export namespace Prisma {
   }
 
   export type BannedProductCountAggregateInputType = {
+    id?: true
     bannedById?: true
     productId?: true
     createdAt?: true
@@ -7434,6 +7480,7 @@ export namespace Prisma {
   }
 
   export type BannedProductGroupByOutputType = {
+    id: string
     bannedById: string
     productId: string
     createdAt: Date
@@ -7458,6 +7505,7 @@ export namespace Prisma {
 
 
   export type BannedProductSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     productId?: boolean
     createdAt?: boolean
@@ -7467,6 +7515,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedProduct"]>
 
   export type BannedProductSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     productId?: boolean
     createdAt?: boolean
@@ -7476,6 +7525,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedProduct"]>
 
   export type BannedProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     bannedById?: boolean
     productId?: boolean
     createdAt?: boolean
@@ -7485,13 +7535,14 @@ export namespace Prisma {
   }, ExtArgs["result"]["bannedProduct"]>
 
   export type BannedProductSelectScalar = {
+    id?: boolean
     bannedById?: boolean
     productId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BannedProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bannedById" | "productId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedProduct"]>
+  export type BannedProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bannedById" | "productId" | "createdAt" | "updatedAt", ExtArgs["result"]["bannedProduct"]>
   export type BannedProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bannedBy?: boolean | AdminDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
@@ -7512,6 +7563,7 @@ export namespace Prisma {
       product: Prisma.$ProductPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       bannedById: string
       productId: string
       createdAt: Date
@@ -7599,8 +7651,8 @@ export namespace Prisma {
      * // Get first 10 BannedProducts
      * const bannedProducts = await prisma.bannedProduct.findMany({ take: 10 })
      * 
-     * // Only select the `bannedById`
-     * const bannedProductWithBannedByIdOnly = await prisma.bannedProduct.findMany({ select: { bannedById: true } })
+     * // Only select the `id`
+     * const bannedProductWithIdOnly = await prisma.bannedProduct.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends BannedProductFindManyArgs>(args?: SelectSubset<T, BannedProductFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BannedProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -7644,9 +7696,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many BannedProducts and only return the `bannedById`
-     * const bannedProductWithBannedByIdOnly = await prisma.bannedProduct.createManyAndReturn({
-     *   select: { bannedById: true },
+     * // Create many BannedProducts and only return the `id`
+     * const bannedProductWithIdOnly = await prisma.bannedProduct.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -7735,9 +7787,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more BannedProducts and only return the `bannedById`
-     * const bannedProductWithBannedByIdOnly = await prisma.bannedProduct.updateManyAndReturn({
-     *   select: { bannedById: true },
+     * // Update zero or more BannedProducts and only return the `id`
+     * const bannedProductWithIdOnly = await prisma.bannedProduct.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7941,6 +7993,7 @@ export namespace Prisma {
    * Fields of the BannedProduct model
    */
   interface BannedProductFieldRefs {
+    readonly id: FieldRef<"BannedProduct", 'String'>
     readonly bannedById: FieldRef<"BannedProduct", 'String'>
     readonly productId: FieldRef<"BannedProduct", 'String'>
     readonly createdAt: FieldRef<"BannedProduct", 'DateTime'>
@@ -11668,6 +11721,7 @@ export namespace Prisma {
     planStatus: $Enums.PlanStatus | null
     planExpiresAt: Date | null
     userId: string | null
+    isBanned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11691,6 +11745,7 @@ export namespace Prisma {
     planStatus: $Enums.PlanStatus | null
     planExpiresAt: Date | null
     userId: string | null
+    isBanned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11714,6 +11769,7 @@ export namespace Prisma {
     planStatus: number
     planExpiresAt: number
     userId: number
+    isBanned: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11739,6 +11795,7 @@ export namespace Prisma {
     planStatus?: true
     planExpiresAt?: true
     userId?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11762,6 +11819,7 @@ export namespace Prisma {
     planStatus?: true
     planExpiresAt?: true
     userId?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11785,6 +11843,7 @@ export namespace Prisma {
     planStatus?: true
     planExpiresAt?: true
     userId?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -11881,6 +11940,7 @@ export namespace Prisma {
     planStatus: $Enums.PlanStatus
     planExpiresAt: Date | null
     userId: string
+    isBanned: boolean | null
     createdAt: Date
     updatedAt: Date
     _count: BusinessCountAggregateOutputType | null
@@ -11921,6 +11981,7 @@ export namespace Prisma {
     planStatus?: boolean
     planExpiresAt?: boolean
     userId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     logo?: boolean | Business$logoArgs<ExtArgs>
@@ -11954,6 +12015,7 @@ export namespace Prisma {
     planStatus?: boolean
     planExpiresAt?: boolean
     userId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11978,6 +12040,7 @@ export namespace Prisma {
     planStatus?: boolean
     planExpiresAt?: boolean
     userId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -12002,11 +12065,12 @@ export namespace Prisma {
     planStatus?: boolean
     planExpiresAt?: boolean
     userId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "twitter" | "address" | "category" | "hours" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
+  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "twitter" | "address" | "category" | "hours" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
   export type BusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     logo?: boolean | Business$logoArgs<ExtArgs>
     coverImage?: boolean | Business$coverImageArgs<ExtArgs>
@@ -12058,6 +12122,7 @@ export namespace Prisma {
       planStatus: $Enums.PlanStatus
       planExpiresAt: Date | null
       userId: string
+      isBanned: boolean | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["business"]>
@@ -12510,6 +12575,7 @@ export namespace Prisma {
     readonly planStatus: FieldRef<"Business", 'PlanStatus'>
     readonly planExpiresAt: FieldRef<"Business", 'DateTime'>
     readonly userId: FieldRef<"Business", 'String'>
+    readonly isBanned: FieldRef<"Business", 'Boolean'>
     readonly createdAt: FieldRef<"Business", 'DateTime'>
     readonly updatedAt: FieldRef<"Business", 'DateTime'>
   }
@@ -14238,6 +14304,7 @@ export namespace Prisma {
     featured: boolean | null
     active: boolean | null
     businessId: string | null
+    isBanned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14251,6 +14318,7 @@ export namespace Prisma {
     featured: boolean | null
     active: boolean | null
     businessId: string | null
+    isBanned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14264,6 +14332,7 @@ export namespace Prisma {
     featured: number
     active: number
     businessId: number
+    isBanned: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -14287,6 +14356,7 @@ export namespace Prisma {
     featured?: true
     active?: true
     businessId?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14300,6 +14370,7 @@ export namespace Prisma {
     featured?: true
     active?: true
     businessId?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14313,6 +14384,7 @@ export namespace Prisma {
     featured?: true
     active?: true
     businessId?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -14413,6 +14485,7 @@ export namespace Prisma {
     featured: boolean
     active: boolean
     businessId: string
+    isBanned: boolean | null
     createdAt: Date
     updatedAt: Date
     _count: ProductCountAggregateOutputType | null
@@ -14445,6 +14518,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     business?: boolean | BusinessDefaultArgs<ExtArgs>
@@ -14463,6 +14537,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     business?: boolean | BusinessDefaultArgs<ExtArgs>
@@ -14477,6 +14552,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     business?: boolean | BusinessDefaultArgs<ExtArgs>
@@ -14491,11 +14567,12 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "category" | "featured" | "active" | "businessId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "category" | "featured" | "active" | "businessId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     business?: boolean | BusinessDefaultArgs<ExtArgs>
     bannedProduct?: boolean | Product$bannedProductArgs<ExtArgs>
@@ -14527,6 +14604,7 @@ export namespace Prisma {
       featured: boolean
       active: boolean
       businessId: string
+      isBanned: boolean | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["product"]>
@@ -14964,6 +15042,7 @@ export namespace Prisma {
     readonly featured: FieldRef<"Product", 'Boolean'>
     readonly active: FieldRef<"Product", 'Boolean'>
     readonly businessId: FieldRef<"Product", 'String'>
+    readonly isBanned: FieldRef<"Product", 'Boolean'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
   }
@@ -16644,6 +16723,7 @@ export namespace Prisma {
     name: string | null
     size: number | null
     isReported: boolean | null
+    isBanned: boolean | null
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
@@ -16658,6 +16738,7 @@ export namespace Prisma {
     name: string | null
     size: number | null
     isReported: boolean | null
+    isBanned: boolean | null
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
@@ -16672,6 +16753,7 @@ export namespace Prisma {
     name: number
     size: number
     isReported: number
+    isBanned: number
     productId: number
     logoBusinessId: number
     coverBusinessId: number
@@ -16696,6 +16778,7 @@ export namespace Prisma {
     name?: true
     size?: true
     isReported?: true
+    isBanned?: true
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
@@ -16710,6 +16793,7 @@ export namespace Prisma {
     name?: true
     size?: true
     isReported?: true
+    isBanned?: true
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
@@ -16724,6 +16808,7 @@ export namespace Prisma {
     name?: true
     size?: true
     isReported?: true
+    isBanned?: true
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
@@ -16825,6 +16910,7 @@ export namespace Prisma {
     name: string | null
     size: number | null
     isReported: boolean
+    isBanned: boolean | null
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
@@ -16858,6 +16944,7 @@ export namespace Prisma {
     name?: boolean
     size?: boolean
     isReported?: boolean
+    isBanned?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
@@ -16875,6 +16962,7 @@ export namespace Prisma {
     name?: boolean
     size?: boolean
     isReported?: boolean
+    isBanned?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
@@ -16892,6 +16980,7 @@ export namespace Prisma {
     name?: boolean
     size?: boolean
     isReported?: boolean
+    isBanned?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
@@ -16909,6 +16998,7 @@ export namespace Prisma {
     name?: boolean
     size?: boolean
     isReported?: boolean
+    isBanned?: boolean
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
@@ -16916,7 +17006,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "productId" | "logoBusinessId" | "coverBusinessId" | "createdAt" | "updatedAt", ExtArgs["result"]["image"]>
+  export type ImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "isBanned" | "productId" | "logoBusinessId" | "coverBusinessId" | "createdAt" | "updatedAt", ExtArgs["result"]["image"]>
   export type ImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
@@ -16947,6 +17037,7 @@ export namespace Prisma {
       name: string | null
       size: number | null
       isReported: boolean
+      isBanned: boolean | null
       productId: string | null
       logoBusinessId: string | null
       coverBusinessId: string | null
@@ -17384,6 +17475,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Image", 'String'>
     readonly size: FieldRef<"Image", 'Float'>
     readonly isReported: FieldRef<"Image", 'Boolean'>
+    readonly isBanned: FieldRef<"Image", 'Boolean'>
     readonly productId: FieldRef<"Image", 'String'>
     readonly logoBusinessId: FieldRef<"Image", 'String'>
     readonly coverBusinessId: FieldRef<"Image", 'String'>
@@ -25417,7 +25509,8 @@ export namespace Prisma {
     image: 'image',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    userRole: 'userRole'
+    userRole: 'userRole',
+    isBanned: 'isBanned'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -25434,6 +25527,7 @@ export namespace Prisma {
 
 
   export const BannedBusinessScalarFieldEnum: {
+    id: 'id',
     bannedById: 'bannedById',
     businessId: 'businessId',
     createdAt: 'createdAt',
@@ -25444,6 +25538,7 @@ export namespace Prisma {
 
 
   export const BannedUserScalarFieldEnum: {
+    id: 'id',
     bannedById: 'bannedById',
     userId: 'userId',
     createdAt: 'createdAt',
@@ -25454,6 +25549,7 @@ export namespace Prisma {
 
 
   export const BannedProductScalarFieldEnum: {
+    id: 'id',
     bannedById: 'bannedById',
     productId: 'productId',
     createdAt: 'createdAt',
@@ -25528,6 +25624,7 @@ export namespace Prisma {
     planStatus: 'planStatus',
     planExpiresAt: 'planExpiresAt',
     userId: 'userId',
+    isBanned: 'isBanned',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -25561,6 +25658,7 @@ export namespace Prisma {
     featured: 'featured',
     active: 'active',
     businessId: 'businessId',
+    isBanned: 'isBanned',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -25592,6 +25690,7 @@ export namespace Prisma {
     name: 'name',
     size: 'size',
     isReported: 'isReported',
+    isBanned: 'isBanned',
     productId: 'productId',
     logoBusinessId: 'logoBusinessId',
     coverBusinessId: 'coverBusinessId',
@@ -25883,6 +25982,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     userRole?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    isBanned?: BoolNullableFilter<"User"> | boolean | null
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     business?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
@@ -25899,6 +25999,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userRole?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     business?: BusinessOrderByWithRelationInput
@@ -25918,6 +26019,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     userRole?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    isBanned?: BoolNullableFilter<"User"> | boolean | null
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     business?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
@@ -25934,6 +26036,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userRole?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -25951,6 +26054,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     userRole?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+    isBanned?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
   }
 
   export type AdminWhereInput = {
@@ -26016,6 +26120,7 @@ export namespace Prisma {
     AND?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
     OR?: BannedBusinessWhereInput[]
     NOT?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
+    id?: StringFilter<"BannedBusiness"> | string
     bannedById?: StringFilter<"BannedBusiness"> | string
     businessId?: StringFilter<"BannedBusiness"> | string
     createdAt?: DateTimeFilter<"BannedBusiness"> | Date | string
@@ -26025,6 +26130,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessOrderByWithRelationInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     businessId?: SortOrder
     createdAt?: SortOrder
@@ -26034,18 +26140,20 @@ export namespace Prisma {
   }
 
   export type BannedBusinessWhereUniqueInput = Prisma.AtLeast<{
-    bannedById?: string
+    id?: string
     businessId?: string
     AND?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
     OR?: BannedBusinessWhereInput[]
     NOT?: BannedBusinessWhereInput | BannedBusinessWhereInput[]
+    bannedById?: StringFilter<"BannedBusiness"> | string
     createdAt?: DateTimeFilter<"BannedBusiness"> | Date | string
     updatedAt?: DateTimeFilter<"BannedBusiness"> | Date | string
     bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
-  }, "bannedById" | "businessId">
+  }, "id" | "businessId">
 
   export type BannedBusinessOrderByWithAggregationInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     businessId?: SortOrder
     createdAt?: SortOrder
@@ -26059,6 +26167,7 @@ export namespace Prisma {
     AND?: BannedBusinessScalarWhereWithAggregatesInput | BannedBusinessScalarWhereWithAggregatesInput[]
     OR?: BannedBusinessScalarWhereWithAggregatesInput[]
     NOT?: BannedBusinessScalarWhereWithAggregatesInput | BannedBusinessScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BannedBusiness"> | string
     bannedById?: StringWithAggregatesFilter<"BannedBusiness"> | string
     businessId?: StringWithAggregatesFilter<"BannedBusiness"> | string
     createdAt?: DateTimeWithAggregatesFilter<"BannedBusiness"> | Date | string
@@ -26069,6 +26178,7 @@ export namespace Prisma {
     AND?: BannedUserWhereInput | BannedUserWhereInput[]
     OR?: BannedUserWhereInput[]
     NOT?: BannedUserWhereInput | BannedUserWhereInput[]
+    id?: StringFilter<"BannedUser"> | string
     bannedById?: StringFilter<"BannedUser"> | string
     userId?: StringFilter<"BannedUser"> | string
     createdAt?: DateTimeFilter<"BannedUser"> | Date | string
@@ -26078,6 +26188,7 @@ export namespace Prisma {
   }
 
   export type BannedUserOrderByWithRelationInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -26087,18 +26198,20 @@ export namespace Prisma {
   }
 
   export type BannedUserWhereUniqueInput = Prisma.AtLeast<{
-    bannedById?: string
+    id?: string
     userId?: string
     AND?: BannedUserWhereInput | BannedUserWhereInput[]
     OR?: BannedUserWhereInput[]
     NOT?: BannedUserWhereInput | BannedUserWhereInput[]
+    bannedById?: StringFilter<"BannedUser"> | string
     createdAt?: DateTimeFilter<"BannedUser"> | Date | string
     updatedAt?: DateTimeFilter<"BannedUser"> | Date | string
     bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "bannedById" | "userId">
+  }, "id" | "userId">
 
   export type BannedUserOrderByWithAggregationInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -26112,6 +26225,7 @@ export namespace Prisma {
     AND?: BannedUserScalarWhereWithAggregatesInput | BannedUserScalarWhereWithAggregatesInput[]
     OR?: BannedUserScalarWhereWithAggregatesInput[]
     NOT?: BannedUserScalarWhereWithAggregatesInput | BannedUserScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BannedUser"> | string
     bannedById?: StringWithAggregatesFilter<"BannedUser"> | string
     userId?: StringWithAggregatesFilter<"BannedUser"> | string
     createdAt?: DateTimeWithAggregatesFilter<"BannedUser"> | Date | string
@@ -26122,6 +26236,7 @@ export namespace Prisma {
     AND?: BannedProductWhereInput | BannedProductWhereInput[]
     OR?: BannedProductWhereInput[]
     NOT?: BannedProductWhereInput | BannedProductWhereInput[]
+    id?: StringFilter<"BannedProduct"> | string
     bannedById?: StringFilter<"BannedProduct"> | string
     productId?: StringFilter<"BannedProduct"> | string
     createdAt?: DateTimeFilter<"BannedProduct"> | Date | string
@@ -26131,6 +26246,7 @@ export namespace Prisma {
   }
 
   export type BannedProductOrderByWithRelationInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     productId?: SortOrder
     createdAt?: SortOrder
@@ -26140,18 +26256,20 @@ export namespace Prisma {
   }
 
   export type BannedProductWhereUniqueInput = Prisma.AtLeast<{
-    bannedById?: string
+    id?: string
     productId?: string
     AND?: BannedProductWhereInput | BannedProductWhereInput[]
     OR?: BannedProductWhereInput[]
     NOT?: BannedProductWhereInput | BannedProductWhereInput[]
+    bannedById?: StringFilter<"BannedProduct"> | string
     createdAt?: DateTimeFilter<"BannedProduct"> | Date | string
     updatedAt?: DateTimeFilter<"BannedProduct"> | Date | string
     bannedBy?: XOR<AdminScalarRelationFilter, AdminWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-  }, "bannedById" | "productId">
+  }, "id" | "productId">
 
   export type BannedProductOrderByWithAggregationInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     productId?: SortOrder
     createdAt?: SortOrder
@@ -26165,6 +26283,7 @@ export namespace Prisma {
     AND?: BannedProductScalarWhereWithAggregatesInput | BannedProductScalarWhereWithAggregatesInput[]
     OR?: BannedProductScalarWhereWithAggregatesInput[]
     NOT?: BannedProductScalarWhereWithAggregatesInput | BannedProductScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BannedProduct"> | string
     bannedById?: StringWithAggregatesFilter<"BannedProduct"> | string
     productId?: StringWithAggregatesFilter<"BannedProduct"> | string
     createdAt?: DateTimeWithAggregatesFilter<"BannedProduct"> | Date | string
@@ -26422,6 +26541,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
     userId?: StringFilter<"Business"> | string
+    isBanned?: BoolNullableFilter<"Business"> | boolean | null
     createdAt?: DateTimeFilter<"Business"> | Date | string
     updatedAt?: DateTimeFilter<"Business"> | Date | string
     logo?: XOR<ImageNullableScalarRelationFilter, ImageWhereInput> | null
@@ -26454,6 +26574,7 @@ export namespace Prisma {
     planStatus?: SortOrder
     planExpiresAt?: SortOrderInput | SortOrder
     userId?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     logo?: ImageOrderByWithRelationInput
@@ -26489,6 +26610,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
+    isBanned?: BoolNullableFilter<"Business"> | boolean | null
     createdAt?: DateTimeFilter<"Business"> | Date | string
     updatedAt?: DateTimeFilter<"Business"> | Date | string
     logo?: XOR<ImageNullableScalarRelationFilter, ImageWhereInput> | null
@@ -26521,6 +26643,7 @@ export namespace Prisma {
     planStatus?: SortOrder
     planExpiresAt?: SortOrderInput | SortOrder
     userId?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BusinessCountOrderByAggregateInput
@@ -26550,6 +26673,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusWithAggregatesFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableWithAggregatesFilter<"Business"> | Date | string | null
     userId?: StringWithAggregatesFilter<"Business"> | string
+    isBanned?: BoolNullableWithAggregatesFilter<"Business"> | boolean | null
     createdAt?: DateTimeWithAggregatesFilter<"Business"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Business"> | Date | string
   }
@@ -26650,6 +26774,7 @@ export namespace Prisma {
     featured?: BoolFilter<"Product"> | boolean
     active?: BoolFilter<"Product"> | boolean
     businessId?: StringFilter<"Product"> | string
+    isBanned?: BoolNullableFilter<"Product"> | boolean | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
@@ -26667,6 +26792,7 @@ export namespace Prisma {
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     business?: BusinessOrderByWithRelationInput
@@ -26687,6 +26813,7 @@ export namespace Prisma {
     featured?: BoolFilter<"Product"> | boolean
     active?: BoolFilter<"Product"> | boolean
     businessId?: StringFilter<"Product"> | string
+    isBanned?: BoolNullableFilter<"Product"> | boolean | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     business?: XOR<BusinessScalarRelationFilter, BusinessWhereInput>
@@ -26704,6 +26831,7 @@ export namespace Prisma {
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProductCountOrderByAggregateInput
@@ -26725,6 +26853,7 @@ export namespace Prisma {
     featured?: BoolWithAggregatesFilter<"Product"> | boolean
     active?: BoolWithAggregatesFilter<"Product"> | boolean
     businessId?: StringWithAggregatesFilter<"Product"> | string
+    isBanned?: BoolNullableWithAggregatesFilter<"Product"> | boolean | null
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
   }
@@ -26826,6 +26955,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"Image"> | string | null
     size?: FloatNullableFilter<"Image"> | number | null
     isReported?: BoolFilter<"Image"> | boolean
+    isBanned?: BoolNullableFilter<"Image"> | boolean | null
     productId?: StringNullableFilter<"Image"> | string | null
     logoBusinessId?: StringNullableFilter<"Image"> | string | null
     coverBusinessId?: StringNullableFilter<"Image"> | string | null
@@ -26843,6 +26973,7 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
     isReported?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     productId?: SortOrderInput | SortOrder
     logoBusinessId?: SortOrderInput | SortOrder
     coverBusinessId?: SortOrderInput | SortOrder
@@ -26865,6 +26996,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"Image"> | string | null
     size?: FloatNullableFilter<"Image"> | number | null
     isReported?: BoolFilter<"Image"> | boolean
+    isBanned?: BoolNullableFilter<"Image"> | boolean | null
     productId?: StringNullableFilter<"Image"> | string | null
     createdAt?: DateTimeFilter<"Image"> | Date | string
     updatedAt?: DateTimeFilter<"Image"> | Date | string
@@ -26880,6 +27012,7 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     size?: SortOrderInput | SortOrder
     isReported?: SortOrder
+    isBanned?: SortOrderInput | SortOrder
     productId?: SortOrderInput | SortOrder
     logoBusinessId?: SortOrderInput | SortOrder
     coverBusinessId?: SortOrderInput | SortOrder
@@ -26902,6 +27035,7 @@ export namespace Prisma {
     name?: StringNullableWithAggregatesFilter<"Image"> | string | null
     size?: FloatNullableWithAggregatesFilter<"Image"> | number | null
     isReported?: BoolWithAggregatesFilter<"Image"> | boolean
+    isBanned?: BoolNullableWithAggregatesFilter<"Image"> | boolean | null
     productId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     logoBusinessId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     coverBusinessId?: StringNullableWithAggregatesFilter<"Image"> | string | null
@@ -27359,6 +27493,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
@@ -27375,6 +27510,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
@@ -27391,6 +27527,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
@@ -27407,6 +27544,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
@@ -27423,6 +27561,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -27434,6 +27573,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -27445,6 +27585,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type AdminCreateInput = {
@@ -27508,6 +27649,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCreateInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedBy: AdminCreateNestedOneWithoutBannedBusinessesInput
@@ -27515,6 +27657,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessUncheckedCreateInput = {
+    id?: string
     bannedById: string
     businessId: string
     createdAt?: Date | string
@@ -27522,6 +27665,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedBy?: AdminUpdateOneRequiredWithoutBannedBusinessesNestedInput
@@ -27529,6 +27673,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27536,6 +27681,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCreateManyInput = {
+    id?: string
     bannedById: string
     businessId: string
     createdAt?: Date | string
@@ -27543,11 +27689,13 @@ export namespace Prisma {
   }
 
   export type BannedBusinessUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedBusinessUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27555,6 +27703,7 @@ export namespace Prisma {
   }
 
   export type BannedUserCreateInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedBy: AdminCreateNestedOneWithoutBannedUsersInput
@@ -27562,6 +27711,7 @@ export namespace Prisma {
   }
 
   export type BannedUserUncheckedCreateInput = {
+    id?: string
     bannedById: string
     userId: string
     createdAt?: Date | string
@@ -27569,6 +27719,7 @@ export namespace Prisma {
   }
 
   export type BannedUserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedBy?: AdminUpdateOneRequiredWithoutBannedUsersNestedInput
@@ -27576,6 +27727,7 @@ export namespace Prisma {
   }
 
   export type BannedUserUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27583,6 +27735,7 @@ export namespace Prisma {
   }
 
   export type BannedUserCreateManyInput = {
+    id?: string
     bannedById: string
     userId: string
     createdAt?: Date | string
@@ -27590,11 +27743,13 @@ export namespace Prisma {
   }
 
   export type BannedUserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedUserUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27602,6 +27757,7 @@ export namespace Prisma {
   }
 
   export type BannedProductCreateInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedBy: AdminCreateNestedOneWithoutBannedProductsInput
@@ -27609,6 +27765,7 @@ export namespace Prisma {
   }
 
   export type BannedProductUncheckedCreateInput = {
+    id?: string
     bannedById: string
     productId: string
     createdAt?: Date | string
@@ -27616,6 +27773,7 @@ export namespace Prisma {
   }
 
   export type BannedProductUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedBy?: AdminUpdateOneRequiredWithoutBannedProductsNestedInput
@@ -27623,6 +27781,7 @@ export namespace Prisma {
   }
 
   export type BannedProductUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27630,6 +27789,7 @@ export namespace Prisma {
   }
 
   export type BannedProductCreateManyInput = {
+    id?: string
     bannedById: string
     productId: string
     createdAt?: Date | string
@@ -27637,11 +27797,13 @@ export namespace Prisma {
   }
 
   export type BannedProductUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedProductUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27923,6 +28085,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -27955,6 +28118,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -27985,6 +28149,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -28017,6 +28182,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -28048,6 +28214,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28070,6 +28237,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28093,6 +28261,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28203,6 +28372,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
@@ -28220,6 +28390,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedProduct?: BannedProductUncheckedCreateNestedOneWithoutProductInput
@@ -28235,6 +28406,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
@@ -28252,6 +28424,7 @@ export namespace Prisma {
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedProduct?: BannedProductUncheckedUpdateOneWithoutProductNestedInput
@@ -28268,6 +28441,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28280,6 +28454,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28293,6 +28468,7 @@ export namespace Prisma {
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28401,6 +28577,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     product?: ProductCreateNestedOneWithoutImagesInput
@@ -28415,6 +28592,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
@@ -28429,6 +28607,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneWithoutImagesNestedInput
@@ -28443,6 +28622,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28457,6 +28637,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
@@ -28471,6 +28652,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28482,6 +28664,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29010,6 +29193,11 @@ export namespace Prisma {
     not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
   }
 
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -29059,6 +29247,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userRole?: SortOrder
+    isBanned?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -29070,6 +29259,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userRole?: SortOrder
+    isBanned?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -29081,6 +29271,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userRole?: SortOrder
+    isBanned?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -29149,6 +29340,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumUserRoleFilter<$PrismaModel>
     _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type EnumPermissionNullableListFilter<$PrismaModel = never> = {
@@ -29224,6 +29423,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCountOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     businessId?: SortOrder
     createdAt?: SortOrder
@@ -29231,6 +29431,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessMaxOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     businessId?: SortOrder
     createdAt?: SortOrder
@@ -29238,6 +29439,7 @@ export namespace Prisma {
   }
 
   export type BannedBusinessMinOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     businessId?: SortOrder
     createdAt?: SortOrder
@@ -29245,6 +29447,7 @@ export namespace Prisma {
   }
 
   export type BannedUserCountOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -29252,6 +29455,7 @@ export namespace Prisma {
   }
 
   export type BannedUserMaxOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -29259,6 +29463,7 @@ export namespace Prisma {
   }
 
   export type BannedUserMinOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -29271,6 +29476,7 @@ export namespace Prisma {
   }
 
   export type BannedProductCountOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     productId?: SortOrder
     createdAt?: SortOrder
@@ -29278,6 +29484,7 @@ export namespace Prisma {
   }
 
   export type BannedProductMaxOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     productId?: SortOrder
     createdAt?: SortOrder
@@ -29285,6 +29492,7 @@ export namespace Prisma {
   }
 
   export type BannedProductMinOrderByAggregateInput = {
+    id?: SortOrder
     bannedById?: SortOrder
     productId?: SortOrder
     createdAt?: SortOrder
@@ -29525,6 +29733,7 @@ export namespace Prisma {
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
     userId?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29548,6 +29757,7 @@ export namespace Prisma {
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
     userId?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29571,6 +29781,7 @@ export namespace Prisma {
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
     userId?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29754,6 +29965,7 @@ export namespace Prisma {
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29771,6 +29983,7 @@ export namespace Prisma {
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29784,6 +29997,7 @@ export namespace Prisma {
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29870,6 +30084,7 @@ export namespace Prisma {
     name?: SortOrder
     size?: SortOrder
     isReported?: SortOrder
+    isBanned?: SortOrder
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
@@ -29888,6 +30103,7 @@ export namespace Prisma {
     name?: SortOrder
     size?: SortOrder
     isReported?: SortOrder
+    isBanned?: SortOrder
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
@@ -29902,6 +30118,7 @@ export namespace Prisma {
     name?: SortOrder
     size?: SortOrder
     isReported?: SortOrder
+    isBanned?: SortOrder
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
@@ -30305,6 +30522,10 @@ export namespace Prisma {
 
   export type EnumUserRoleFieldUpdateOperationsInput = {
     set?: $Enums.UserRole
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -31402,6 +31623,11 @@ export namespace Prisma {
     not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
   }
 
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -31488,6 +31714,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumUserRoleFilter<$PrismaModel>
     _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -31748,6 +31982,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -31778,6 +32013,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -31819,12 +32055,14 @@ export namespace Prisma {
   }
 
   export type BannedUserCreateWithoutUserInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedBy: AdminCreateNestedOneWithoutBannedUsersInput
   }
 
   export type BannedUserUncheckedCreateWithoutUserInput = {
+    id?: string
     bannedById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31930,6 +32168,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -31960,6 +32199,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -32013,12 +32253,14 @@ export namespace Prisma {
   }
 
   export type BannedUserUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedBy?: AdminUpdateOneRequiredWithoutBannedUsersNestedInput
   }
 
   export type BannedUserUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32033,6 +32275,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
@@ -32048,6 +32291,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
@@ -32060,12 +32304,14 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCreateWithoutBannedByInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutBannedBusinessInput
   }
 
   export type BannedBusinessUncheckedCreateWithoutBannedByInput = {
+    id?: string
     businessId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32082,12 +32328,14 @@ export namespace Prisma {
   }
 
   export type BannedUserCreateWithoutBannedByInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBannedUserInput
   }
 
   export type BannedUserUncheckedCreateWithoutBannedByInput = {
+    id?: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32104,12 +32352,14 @@ export namespace Prisma {
   }
 
   export type BannedProductCreateWithoutBannedByInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     product: ProductCreateNestedOneWithoutBannedProductInput
   }
 
   export type BannedProductUncheckedCreateWithoutBannedByInput = {
+    id?: string
     productId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -32145,6 +32395,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
@@ -32160,6 +32411,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
@@ -32186,6 +32438,7 @@ export namespace Prisma {
     AND?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
     OR?: BannedBusinessScalarWhereInput[]
     NOT?: BannedBusinessScalarWhereInput | BannedBusinessScalarWhereInput[]
+    id?: StringFilter<"BannedBusiness"> | string
     bannedById?: StringFilter<"BannedBusiness"> | string
     businessId?: StringFilter<"BannedBusiness"> | string
     createdAt?: DateTimeFilter<"BannedBusiness"> | Date | string
@@ -32212,6 +32465,7 @@ export namespace Prisma {
     AND?: BannedUserScalarWhereInput | BannedUserScalarWhereInput[]
     OR?: BannedUserScalarWhereInput[]
     NOT?: BannedUserScalarWhereInput | BannedUserScalarWhereInput[]
+    id?: StringFilter<"BannedUser"> | string
     bannedById?: StringFilter<"BannedUser"> | string
     userId?: StringFilter<"BannedUser"> | string
     createdAt?: DateTimeFilter<"BannedUser"> | Date | string
@@ -32238,6 +32492,7 @@ export namespace Prisma {
     AND?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
     OR?: BannedProductScalarWhereInput[]
     NOT?: BannedProductScalarWhereInput | BannedProductScalarWhereInput[]
+    id?: StringFilter<"BannedProduct"> | string
     bannedById?: StringFilter<"BannedProduct"> | string
     productId?: StringFilter<"BannedProduct"> | string
     createdAt?: DateTimeFilter<"BannedProduct"> | Date | string
@@ -32285,6 +32540,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -32316,6 +32572,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -32390,6 +32647,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -32421,6 +32679,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -32464,6 +32723,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
@@ -32479,6 +32739,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
@@ -32539,6 +32800,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
@@ -32554,6 +32816,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
@@ -32591,6 +32854,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
@@ -32607,6 +32871,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     images?: ImageUncheckedCreateNestedManyWithoutProductInput
@@ -32666,6 +32931,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
@@ -32682,6 +32948,7 @@ export namespace Prisma {
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: ImageUncheckedUpdateManyWithoutProductNestedInput
@@ -32697,6 +32964,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
     admin?: AdminCreateNestedOneWithoutUserInput
@@ -32712,6 +32980,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
     admin?: AdminUncheckedCreateNestedOneWithoutUserInput
@@ -32743,6 +33012,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
     admin?: AdminUpdateOneWithoutUserNestedInput
@@ -32758,6 +33028,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
     admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
@@ -32773,6 +33044,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     business?: BusinessCreateNestedOneWithoutUserInput
     admin?: AdminCreateNestedOneWithoutUserInput
@@ -32788,6 +33060,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     business?: BusinessUncheckedCreateNestedOneWithoutUserInput
     admin?: AdminUncheckedCreateNestedOneWithoutUserInput
@@ -32819,6 +33092,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     business?: BusinessUpdateOneWithoutUserNestedInput
     admin?: AdminUpdateOneWithoutUserNestedInput
@@ -32834,6 +33108,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     business?: BusinessUncheckedUpdateOneWithoutUserNestedInput
     admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
@@ -32847,6 +33122,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     product?: ProductCreateNestedOneWithoutImagesInput
@@ -32860,6 +33136,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     productId?: string | null
     coverBusinessId?: string | null
     createdAt?: Date | string
@@ -32878,6 +33155,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     product?: ProductCreateNestedOneWithoutImagesInput
@@ -32891,6 +33169,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     productId?: string | null
     logoBusinessId?: string | null
     createdAt?: Date | string
@@ -32911,6 +33190,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     admin?: AdminCreateNestedOneWithoutUserInput
@@ -32926,6 +33206,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userRole?: $Enums.UserRole
+    isBanned?: boolean | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     admin?: AdminUncheckedCreateNestedOneWithoutUserInput
@@ -32945,6 +33226,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedProduct?: BannedProductCreateNestedOneWithoutProductInput
@@ -32960,6 +33242,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedProduct?: BannedProductUncheckedCreateNestedOneWithoutProductInput
@@ -33014,12 +33297,14 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCreateWithoutBusinessInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedBy: AdminCreateNestedOneWithoutBannedBusinessesInput
   }
 
   export type BannedBusinessUncheckedCreateWithoutBusinessInput = {
+    id?: string
     bannedById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33117,6 +33402,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneWithoutImagesNestedInput
@@ -33130,6 +33416,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33154,6 +33441,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneWithoutImagesNestedInput
@@ -33167,6 +33455,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33193,6 +33482,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     admin?: AdminUpdateOneWithoutUserNestedInput
@@ -33208,6 +33498,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userRole?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     admin?: AdminUncheckedUpdateOneWithoutUserNestedInput
@@ -33242,6 +33533,7 @@ export namespace Prisma {
     featured?: BoolFilter<"Product"> | boolean
     active?: BoolFilter<"Product"> | boolean
     businessId?: StringFilter<"Product"> | string
+    isBanned?: BoolNullableFilter<"Product"> | boolean | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
@@ -33291,12 +33583,14 @@ export namespace Prisma {
   }
 
   export type BannedBusinessUpdateWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedBy?: AdminUpdateOneRequiredWithoutBannedBusinessesNestedInput
   }
 
   export type BannedBusinessUncheckedUpdateWithoutBusinessInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33403,6 +33697,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -33434,6 +33729,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -33451,12 +33747,14 @@ export namespace Prisma {
   }
 
   export type BannedProductCreateWithoutProductInput = {
+    id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedBy: AdminCreateNestedOneWithoutBannedProductsInput
   }
 
   export type BannedProductUncheckedCreateWithoutProductInput = {
+    id?: string
     bannedById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -33474,6 +33772,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
@@ -33487,6 +33786,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
     createdAt?: Date | string
@@ -33554,6 +33854,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -33585,6 +33886,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -33608,12 +33910,14 @@ export namespace Prisma {
   }
 
   export type BannedProductUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedBy?: AdminUpdateOneRequiredWithoutBannedProductsNestedInput
   }
 
   export type BannedProductUncheckedUpdateWithoutProductInput = {
+    id?: StringFieldUpdateOperationsInput | string
     bannedById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33645,6 +33949,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"Image"> | string | null
     size?: FloatNullableFilter<"Image"> | number | null
     isReported?: BoolFilter<"Image"> | boolean
+    isBanned?: BoolNullableFilter<"Image"> | boolean | null
     productId?: StringNullableFilter<"Image"> | string | null
     logoBusinessId?: StringNullableFilter<"Image"> | string | null
     coverBusinessId?: StringNullableFilter<"Image"> | string | null
@@ -33696,6 +34001,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -33727,6 +34033,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -33772,6 +34079,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -33803,6 +34111,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -33822,6 +34131,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
@@ -33838,6 +34148,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedProduct?: BannedProductUncheckedCreateNestedOneWithoutProductInput
@@ -33867,6 +34178,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     coverImage?: ImageCreateNestedOneWithoutCoverBusinessInput
@@ -33898,6 +34210,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     coverImage?: ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
@@ -33932,6 +34245,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -33963,6 +34277,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -33998,6 +34313,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
@@ -34014,6 +34330,7 @@ export namespace Prisma {
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedProduct?: BannedProductUncheckedUpdateOneWithoutProductNestedInput
@@ -34049,6 +34366,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     coverImage?: ImageUpdateOneWithoutCoverBusinessNestedInput
@@ -34080,6 +34398,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     coverImage?: ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
@@ -34120,6 +34439,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -34151,6 +34471,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -34170,6 +34491,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     business: BusinessCreateNestedOneWithoutProductsInput
@@ -34186,6 +34508,7 @@ export namespace Prisma {
     featured?: boolean
     active?: boolean
     businessId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bannedProduct?: BannedProductUncheckedCreateNestedOneWithoutProductInput
@@ -34216,6 +34539,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutProductsNestedInput
@@ -34232,6 +34556,7 @@ export namespace Prisma {
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedProduct?: BannedProductUncheckedUpdateOneWithoutProductNestedInput
@@ -34256,6 +34581,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -34287,6 +34613,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -34332,6 +34659,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -34363,6 +34691,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -34392,6 +34721,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -34423,6 +34753,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -34468,6 +34799,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -34499,6 +34831,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -34597,6 +34930,7 @@ export namespace Prisma {
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageCreateNestedOneWithoutLogoBusinessInput
@@ -34628,6 +34962,7 @@ export namespace Prisma {
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
     userId: string
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     logo?: ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -34710,6 +35045,7 @@ export namespace Prisma {
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -34741,6 +35077,7 @@ export namespace Prisma {
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logo?: ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -34857,72 +35194,84 @@ export namespace Prisma {
   }
 
   export type BannedBusinessCreateManyBannedByInput = {
+    id?: string
     businessId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type BannedUserCreateManyBannedByInput = {
+    id?: string
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type BannedProductCreateManyBannedByInput = {
+    id?: string
     productId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type BannedBusinessUpdateWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     business?: BusinessUpdateOneRequiredWithoutBannedBusinessNestedInput
   }
 
   export type BannedBusinessUncheckedUpdateWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedBusinessUncheckedUpdateManyWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     businessId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedUserUpdateWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBannedUserNestedInput
   }
 
   export type BannedUserUncheckedUpdateWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedUserUncheckedUpdateManyWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedProductUpdateWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutBannedProductNestedInput
   }
 
   export type BannedProductUncheckedUpdateWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BannedProductUncheckedUpdateManyWithoutBannedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34936,6 +35285,7 @@ export namespace Prisma {
     category?: string | null
     featured?: boolean
     active?: boolean
+    isBanned?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -34973,6 +35323,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedProduct?: BannedProductUpdateOneWithoutProductNestedInput
@@ -34988,6 +35339,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bannedProduct?: BannedProductUncheckedUpdateOneWithoutProductNestedInput
@@ -35003,6 +35355,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35089,6 +35442,7 @@ export namespace Prisma {
     name?: string | null
     size?: number | null
     isReported?: boolean
+    isBanned?: boolean | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
     createdAt?: Date | string
@@ -35108,6 +35462,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
@@ -35121,6 +35476,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35134,6 +35490,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     size?: NullableFloatFieldUpdateOperationsInput | number | null
     isReported?: BoolFieldUpdateOperationsInput | boolean
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

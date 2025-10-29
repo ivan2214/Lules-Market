@@ -35,6 +35,7 @@ model User {
 
   userRole   UserRole    @default(USER) // rol del usuario
   bannedUser BannedUser? // si el usuario fue baneado
+  isBanned   Boolean?    @default(false)
 
   @@map("user")
 }
@@ -56,36 +57,39 @@ model Admin {
 }
 
 model BannedBusiness {
-  bannedById String @unique
-  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
-
+  id         String   @id @default(cuid())
+  bannedById String
+  bannedBy   Admin    @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
   businessId String   @unique
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade) // comercio baneado
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([bannedById])
 }
 
 model BannedUser {
-  bannedById String @unique
-  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
+  id         String   @id @default(cuid())
+  bannedById String
+  bannedBy   Admin    @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // usuario baneado
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([bannedById])
 }
 
 model BannedProduct {
-  bannedById String @unique
-  bannedBy   Admin  @relation(fields: [bannedById], references: [userId], onDelete: Cascade) // admin que banea
+  id         String   @id @default(cuid())
+  bannedById String
+  bannedBy   Admin    @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+  productId  String   @unique
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  productId String  @unique
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) // producto baneado
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([bannedById])
 }
 
 /**
@@ -185,6 +189,7 @@ model Business {
   products       Product[] // productos del comercio
   payments       Payment[] // historial de pagos
   bannedBusiness BannedBusiness? // si el usuario fue baneado
+  isBanned       Boolean?        @default(false)
 
   businessView     businessView[] // visitas al comercio
   trial            Trial? // prueba gratuita activa
@@ -230,6 +235,7 @@ model Product {
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   bannedProduct BannedProduct? // si el usuario fue baneado
+  isBanned      Boolean?       @default(false)
 
   images      Image[] // imágenes asociadas
   productView productView[] // vistas del producto
@@ -267,12 +273,13 @@ model Payment {
 }
 
 model Image {
-  key         String  @unique
-  url         String  @unique
-  isMainImage Boolean @default(false)
+  key         String   @unique
+  url         String   @unique
+  isMainImage Boolean  @default(false)
   name        String?
   size        Float?
-  isReported  Boolean @default(false)
+  isReported  Boolean  @default(false)
+  isBanned    Boolean? @default(false)
 
   // Relaciones con producto y comercio
   product   Product? @relation(fields: [productId], references: [id])
@@ -411,6 +418,7 @@ enum UserRole {
   ADMIN
   USER
   BUSINESS
+  SUPER_ADMIN
 }
 
 enum Permission {
