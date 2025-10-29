@@ -2,6 +2,7 @@
 
 import { Ban, CheckCircle, Eye, MoreHorizontal, Power } from "lucide-react";
 import { useState } from "react";
+import type { ProductDTO } from "@/app/data/product/product.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,10 +22,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Product } from "@/types/admin";
 
 interface ProductActionsProps {
-  product: Product;
+  product: ProductDTO;
   onBan: (productId: string) => void;
   onUnban: (productId: string) => void;
   onToggleActive: (productId: string) => void;
@@ -59,9 +59,9 @@ export function ProductActions({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowToggleDialog(true)}>
             <Power className="mr-2 h-4 w-4" />
-            {product.isActive ? "Desactivar" : "Activar"}
+            {product.active ? "Desactivar" : "Activar"}
           </DropdownMenuItem>
-          {product.isBanned ? (
+          {product.bannedProduct ? (
             <DropdownMenuItem
               onClick={() => setShowUnbanDialog(true)}
               className="text-green-600"
@@ -85,12 +85,10 @@ export function ProductActions({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {product.isActive
-                ? "¿Desactivar producto?"
-                : "¿Activar producto?"}
+              {product.active ? "¿Desactivar producto?" : "¿Activar producto?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {product.isActive
+              {product.active
                 ? `El producto "${product.name}" dejará de ser visible en la plataforma.`
                 : `El producto "${product.name}" será visible nuevamente en la plataforma.`}
             </AlertDialogDescription>

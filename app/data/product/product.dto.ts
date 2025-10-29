@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type {
+  BannedProduct,
   Image,
   Product as ProductPrisma,
   productView,
@@ -18,7 +19,7 @@ export const ProductCreateInputSchema = z.object({
   active: z.boolean().optional(),
   images: ImageCreateInputSchema.array().min(
     1,
-    "Se requiere al menos una imagen"
+    "Se requiere al menos una imagen",
   ),
 });
 
@@ -40,4 +41,5 @@ export interface ProductDTO extends ProductPrisma {
   images: Image[];
   views?: productView[] | null;
   business?: BusinessDTO | null;
+  bannedProduct?: BannedProduct | null;
 }
