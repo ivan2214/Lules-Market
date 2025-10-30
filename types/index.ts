@@ -133,35 +133,3 @@ export interface Analytics {
     percentage: number;
   };
 }
-
-export interface DashboardStats {
-  users: {
-    total: number;
-    active: number;
-    banned: number;
-    businessOwners: number;
-  };
-  businesses: {
-    total: number;
-    active: number;
-    inactive: number;
-    banned: number;
-  };
-  products: {
-    total: number;
-    active: number;
-    banned: number;
-  };
-  payments: {
-    total: number;
-    approved: number;
-    pending: number;
-    rejected: number;
-    totalRevenue: number;
-  };
-  plans: {
-    FREE: number;
-    BASIC: number;
-    PREMIUM: number;
-  };
-}

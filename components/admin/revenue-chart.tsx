@@ -90,7 +90,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
           {data.trend === "up" && "Tendencia al alza "}
           {data.trend === "down" && "Tendencia a la baja "}
           {data.trend === "stable" && "Tendencia estable "}
-          del {data.percentage.toFixed(2)}%
+          del {data.percentage.toFixed(0)}%
         </div>
         <div className="text-muted-foreground leading-none">
           Mostrando los ingresos totales de los últimos 6 meses

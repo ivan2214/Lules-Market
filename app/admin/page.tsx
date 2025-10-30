@@ -25,13 +25,68 @@ import {
 import prisma from "@/lib/prisma";
 import type { Analytics } from "@/types";
 
-export async function getAdminDashboardStats() {
+// ====================== 📘 Tipos auxiliares ======================
+
+interface Trend {
+  percentage: number;
+  isPositive: boolean;
+}
+
+interface RevenueTrend extends Trend {}
+
+interface StatGroup {
+  total: number;
+  active: number;
+  banned: number;
+  trend: Trend;
+}
+
+interface PaymentStats {
+  approved: number;
+  pending: number;
+  rejected: number;
+  totalRevenue: {
+    total: number;
+    trend: RevenueTrend;
+  };
+}
+
+interface DashboardStats {
+  users: StatGroup;
+  businesses: StatGroup;
+  products: StatGroup;
+  payments: PaymentStats;
+  trials: { actives: number };
+  coupons: { actives: number };
+}
+
+// ====================== ⚙️ Helpers ======================
+
+const calcTrend = (current: number, prev: number): number => {
+  if (prev === 0) return current > 0 ? 100 : 0;
+  return ((current - prev) / prev) * 100;
+};
+
+const buildTrend = (current: number, prev: number): Trend => ({
+  percentage: round(calcTrend(current, prev)),
+  isPositive: current >= prev,
+});
+
+const round = (n: number, decimals = 2): number => {
+  console.log("round", n);
+
+  return Number.isFinite(n) ? +n.toFixed(decimals) : 0;
+};
+
+// ====================== 📊 Stats principales ======================
+
+export async function getAdminDashboardStats(): Promise<{
+  stats: DashboardStats;
+}> {
   const now = new Date();
 
-  // Rangos de fechas
   const startCurrentMonth = startOfMonth(now);
   const endCurrentMonth = addMonths(startCurrentMonth, 1);
-
   const startLastMonth = startOfMonth(subMonths(now, 1));
   const endLastMonth = startCurrentMonth;
 
@@ -62,12 +117,10 @@ export async function getAdminDashboardStats() {
     prisma.business.count({ where: { bannedBusiness: { isNot: null } } }),
     prisma.product.count({ where: { bannedProduct: { isNot: null } } }),
     prisma.product.count(),
-
     prisma.payment.count({ where: { status: "approved" } }),
     prisma.payment.count({ where: { status: "pending" } }),
     prisma.payment.count({ where: { status: "rejected" } }),
     prisma.trial.count({ where: { isActive: true } }),
-
     prisma.coupon.count({ where: { active: true } }),
 
     // Mes actual
@@ -104,39 +157,24 @@ export async function getAdminDashboardStats() {
   const currentRevenue = paymentsCurrentMonthAgg._sum.amount ?? 0;
   const lastRevenue = paymentsLastMonthAgg._sum.amount ?? 0;
 
-  // Función auxiliar para calcular porcentaje de variación
-  const calcTrend = (current: number, prev: number) => {
-    if (prev === 0) return current > 0 ? 100 : 0;
-    return ((current - prev) / prev) * 100;
-  };
-
-  const stats = {
+  const stats: DashboardStats = {
     users: {
       total: totalUsers,
       active: totalUsers - bannedUsers,
       banned: bannedUsers,
-      trend: {
-        percentage: calcTrend(usersCurrentMonth, usersLastMonth),
-        isPositive: usersCurrentMonth >= usersLastMonth,
-      },
+      trend: buildTrend(usersCurrentMonth, usersLastMonth),
     },
     businesses: {
       total: totalBusinesses,
       active: totalBusinesses - bannedBusinesses,
       banned: bannedBusinesses,
-      trend: {
-        percentage: calcTrend(businessesCurrentMonth, businessesLastMonth),
-        isPositive: businessesCurrentMonth >= businessesLastMonth,
-      },
+      trend: buildTrend(businessesCurrentMonth, businessesLastMonth),
     },
     products: {
       total: totalProducts,
       active: totalProducts - bannedProducts,
       banned: bannedProducts,
-      trend: {
-        percentage: calcTrend(productsCurrentMonth, productsLastMonth),
-        isPositive: productsCurrentMonth >= productsLastMonth,
-      },
+      trend: buildTrend(productsCurrentMonth, productsLastMonth),
     },
     payments: {
       approved: totalApprovedPayments,
@@ -144,10 +182,7 @@ export async function getAdminDashboardStats() {
       rejected: totalRejectedPayments,
       totalRevenue: {
         total: currentRevenue,
-        trend: {
-          percentage: calcTrend(currentRevenue, lastRevenue),
-          isPositive: currentRevenue >= lastRevenue,
-        },
+        trend: buildTrend(currentRevenue, lastRevenue),
       },
     },
     trials: { actives: trialsActives },
@@ -157,46 +192,52 @@ export async function getAdminDashboardStats() {
   return { stats };
 }
 
+// ====================== 📈 Analytics ======================
+
 async function getAnalyticsData(): Promise<{
   planDistribution: Analytics["planDistribution"];
   monthlyData: Analytics["monthlyRevenue"];
   businessGrowthData: Analytics["businessGrowth"];
 }> {
-  // 1️⃣ Distribución de planes actuales
   const [free, basic, premium] = await prisma.$transaction([
     prisma.business.count({ where: { plan: "FREE" } }),
     prisma.business.count({ where: { plan: "BASIC" } }),
     prisma.business.count({ where: { plan: "PREMIUM" } }),
   ]);
 
+  const totalPlans = free + basic + premium || 1;
   const planDistribution: Analytics["planDistribution"] = {
-    FREE: {
-      value: free,
-      percentage: (free / (free + basic + premium)) * 100,
-    },
-    BASIC: {
-      value: basic,
-      percentage: (basic / (free + basic + premium)) * 100,
-    },
+    FREE: { value: free, percentage: round((free / totalPlans) * 100) },
+    BASIC: { value: basic, percentage: round((basic / totalPlans) * 100) },
     PREMIUM: {
       value: premium,
-      percentage: (premium / (free + basic + premium)) * 100,
+      percentage: round((premium / totalPlans) * 100),
     },
   };
 
-  // 2️⃣ Últimos 6 meses de ingresos
   const sixMonthsAgo = startOfMonth(subMonths(new Date(), 5));
 
-  const monthlyPayments = await prisma.payment.groupBy({
-    by: ["createdAt"],
-    where: {
-      createdAt: { gte: sixMonthsAgo },
-      status: "approved",
-    },
-    _sum: { amount: true },
-  });
+  const [monthlyPayments, businessByMonth] = await prisma.$transaction([
+    prisma.payment.groupBy({
+      by: ["createdAt"],
+      where: { createdAt: { gte: sixMonthsAgo }, status: "approved" },
+      _sum: { amount: true }, // ¡CORRECCIÓN AQUÍ!
+      orderBy: {
+        createdAt: "asc", // o 'desc', según necesites ordenar los grupos por fecha
+      },
+    }),
+    prisma.business.groupBy({
+      by: ["createdAt"],
+      where: { createdAt: { gte: sixMonthsAgo } },
+      _count: { _all: true },
+      // ¡CORRECCIÓN AQUÍ!
+      orderBy: {
+        createdAt: "asc", // o 'desc', según necesites ordenar los grupos por fecha
+      },
+    }),
+  ]);
 
-  // Agrupamos por mes (ej: "Oct 2025")
+  // 🔹 Revenue mensual
   const monthlyRevenue = Array.from({ length: 6 }).map((_, i) => {
     const date = startOfMonth(subMonths(new Date(), 5 - i));
     const month = format(date, "MMM");
@@ -204,100 +245,75 @@ async function getAnalyticsData(): Promise<{
       monthlyPayments
         .filter(
           (p) =>
-            format(startOfMonth(p.createdAt), "MMM") === month && p._sum.amount,
+            format(startOfMonth(p.createdAt), "MMM") === month &&
+            p._sum?.amount,
         )
-        .reduce((acc, p) => acc + (p._sum.amount || 0), 0) || 0;
+        .reduce((acc, p) => acc + (p._sum?.amount || 0), 0) || 0;
 
     return { month, revenue };
   });
 
-  const currentMonthRevenue = monthlyRevenue[monthlyRevenue.length - 1].revenue;
-  const previousMonthRevenue =
-    monthlyRevenue[monthlyRevenue.length - 2].revenue;
-  const trend =
-    currentMonthRevenue > previousMonthRevenue
-      ? "up"
-      : currentMonthRevenue < previousMonthRevenue
-        ? "down"
-        : "stable";
-
-  const percentage =
-    previousMonthRevenue === 0
-      ? currentMonthRevenue > 0
-        ? 100 // si el mes anterior era 0 y hay ingresos, crecimiento 100%
-        : 0 // si ambos meses 0, crecimiento 0%
-      : ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) *
-        100;
+  const last = monthlyRevenue.at(-1);
+  const current = last ? last.revenue : 0;
+  const previous = monthlyRevenue.at(-2)?.revenue ?? 0;
 
   const monthlyData: Analytics["monthlyRevenue"] = {
     data: monthlyRevenue,
-    trend,
-    percentage,
+    trend: current > previous ? "up" : current < previous ? "down" : "stable",
+    percentage: round(calcTrend(current, previous)),
   };
 
-  // 3️⃣ Crecimiento de negocios (por mes)
-  const businessByMonth = await prisma.business.groupBy({
-    by: ["createdAt"],
-    where: { createdAt: { gte: sixMonthsAgo } },
-    _count: { _all: true },
-  });
-
+  // 🔹 Crecimiento de negocios
   const businessGrowth = Array.from({ length: 6 }).map((_, i) => {
     const date = startOfMonth(subMonths(new Date(), 5 - i));
     const month = format(date, "MMM");
     const count =
       businessByMonth
         .filter(
-          (b) =>
-            format(startOfMonth(b.createdAt), "MMM") === month && b._count._all,
+          (b) => format(startOfMonth(b.createdAt), "MMM") === month && b._count,
         )
-        .reduce((acc, b) => acc + b._count._all, 0) || 0;
+        .reduce(
+          (acc, b) =>
+            acc +
+            (typeof b._count === "object" && b._count?._all
+              ? b._count._all
+              : 0),
+          0,
+        ) || 0;
 
     return { month, count };
   });
 
-  const currentMonthBusiness = businessGrowth[businessGrowth.length - 1].count;
-  const previousMonthBusiness = businessGrowth[businessGrowth.length - 2].count;
-  const businessGrowthTrend =
-    currentMonthBusiness > previousMonthBusiness
-      ? "up"
-      : currentMonthBusiness < previousMonthBusiness
-        ? "down"
-        : "stable";
-  const businessGrowthPercentage =
-    previousMonthBusiness > 0
-      ? (currentMonthBusiness / previousMonthBusiness) * 100
-      : currentMonthBusiness > 0
-        ? 100
-        : 0;
+  const lastBusiness = businessGrowth.at(-1);
+  const currentBusiness = lastBusiness ? lastBusiness.count : 0;
+  const prevBusiness = businessGrowth.at(-2)?.count ?? 0;
 
   const businessGrowthData: Analytics["businessGrowth"] = {
     data: businessGrowth,
-    trend: businessGrowthTrend,
-    percentage: businessGrowthPercentage,
+    trend:
+      currentBusiness > prevBusiness
+        ? "up"
+        : currentBusiness < prevBusiness
+          ? "down"
+          : "stable",
+    percentage: round(calcTrend(currentBusiness, prevBusiness)),
   };
 
   return { planDistribution, monthlyData, businessGrowthData };
 }
+
+// ====================== 🧩 Componente principal ======================
+
 export default async function AdminDashboard() {
   "use cache";
   cacheLife("seconds");
-  const { stats } = await getAdminDashboardStats();
-  const { planDistribution, monthlyData, businessGrowthData } =
-    await getAnalyticsData();
-  console.log("DATOS DE LA PAGINA");
 
-  console.dir(
-    {
-      stats,
-      planDistribution,
-      monthlyData,
-      businessGrowthData,
-    },
-    {
-      depth: null,
-    },
-  );
+  const [{ stats }, analytics] = await Promise.all([
+    getAdminDashboardStats(),
+    getAnalyticsData(),
+  ]);
+
+  const { planDistribution, monthlyData, businessGrowthData } = analytics;
 
   return (
     <div className="space-y-6">
@@ -308,7 +324,7 @@ export default async function AdminDashboard() {
         </p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats principales */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Usuarios"
@@ -340,7 +356,7 @@ export default async function AdminDashboard() {
         />
       </div>
 
-      {/* Payment Stats */}
+      {/* Pagos */}
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           title="Pagos Aprobados"
@@ -362,7 +378,7 @@ export default async function AdminDashboard() {
         />
       </div>
 
-      {/* Trials and Coupons */}
+      {/* Trials y Cupones */}
       <div className="grid gap-4 md:grid-cols-2">
         <StatCard
           title="Trials Activos"
@@ -378,7 +394,7 @@ export default async function AdminDashboard() {
         />
       </div>
 
-      {/* Plan Distribution */}
+      {/* Distribución de planes */}
       <Card>
         <CardHeader>
           <CardTitle>Distribución de Planes</CardTitle>
@@ -386,48 +402,29 @@ export default async function AdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="space-y-2">
-              <p className="font-medium text-muted-foreground text-sm">
-                Plan FREE
-              </p>
-              <p className="font-bold text-3xl">
-                {planDistribution.FREE.value}
-              </p>
-              <p className="text-muted-foreground text-xs">
-                {planDistribution.FREE.percentage.toFixed(1)}% del total
-              </p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium text-muted-foreground text-sm">
-                Plan BASIC
-              </p>
-              <p className="font-bold text-3xl">
-                {planDistribution.BASIC.value}
-              </p>
-              <p className="text-muted-foreground text-xs">
-                {planDistribution.BASIC.percentage.toFixed(1)}% del total
-              </p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-medium text-muted-foreground text-sm">
-                Plan PREMIUM
-              </p>
-              <p className="font-bold text-3xl">
-                {planDistribution.PREMIUM.value}
-              </p>
-              <p className="text-muted-foreground text-xs">
-                {planDistribution.PREMIUM.percentage.toFixed(1)}% del total
-              </p>
-            </div>
+            {(["FREE", "BASIC", "PREMIUM"] as const).map((plan) => (
+              <div key={plan} className="space-y-2">
+                <p className="font-medium text-muted-foreground text-sm">
+                  Plan {plan}
+                </p>
+                <p className="font-bold text-3xl">
+                  {planDistribution[plan].value}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {planDistribution[plan].percentage.toFixed(1)}% del total
+                </p>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Charts */}
+      {/* Gráficos */}
       <div className="grid gap-4 md:grid-cols-2">
         <BusinessGrowthChart data={businessGrowthData} />
         <PlanDistributionChart data={planDistribution} />
       </div>
+
       <RevenueChart data={monthlyData} />
     </div>
   );
