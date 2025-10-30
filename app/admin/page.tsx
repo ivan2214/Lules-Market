@@ -73,8 +73,6 @@ const buildTrend = (current: number, prev: number): Trend => ({
 });
 
 const round = (n: number, decimals = 2): number => {
-  console.log("round", n);
-
   return Number.isFinite(n) ? +n.toFixed(decimals) : 0;
 };
 
