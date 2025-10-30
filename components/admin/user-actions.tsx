@@ -1,7 +1,12 @@
 "use client";
 
 import { Ban, CheckCircle, Eye, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import {
+  bannedUser,
+  unbannedUser,
+} from "@/app/admin/users/actions/banned-user";
 import type { UserDTO } from "@/app/data/user/user.dto";
 import {
   AlertDialog,
@@ -22,29 +27,60 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Spinner } from "../ui/spinner";
 
 interface UserActionsProps {
   user: UserDTO;
-  onBan: (userId: string) => void;
-  onUnban: (userId: string) => void;
   onViewDetails: (userId: string) => void;
 }
 
-export function UserActions({
-  user,
-  onBan,
-  onUnban,
-  onViewDetails,
-}: UserActionsProps) {
+export function UserActions({ user, onViewDetails }: UserActionsProps) {
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  const handleBan = (userId: string) => {
+    startTransition(async () => {
+      bannedUser(userId)
+        .then((res) => {
+          res.ok
+            ? toast.success(`El usuario ${user?.name} fue baneado`)
+            : toast.error(res.error);
+        })
+        .catch((error) =>
+          toast.error("Ocurrio un error", {
+            description() {
+              return JSON.stringify(error);
+            },
+          }),
+        );
+    });
+  };
+
+  const handleUnban = (userId: string) => {
+    startTransition(async () => {
+      unbannedUser(userId)
+        .then((res) => {
+          res.ok
+            ? toast.info(`El usuario ${user?.name} fue desbaneado`)
+            : toast.error(res.error);
+        })
+        .catch((error) =>
+          toast.error("Ocurrio un error", {
+            description() {
+              return JSON.stringify(error);
+            },
+          }),
+        );
+    });
+  };
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
+          <Button disabled={pending} variant="ghost" size="icon">
+            {pending ? <Spinner /> : <MoreHorizontal className="h-4 w-4" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -58,17 +94,31 @@ export function UserActions({
             <DropdownMenuItem
               onClick={() => setShowUnbanDialog(true)}
               className="text-green-600"
+              disabled={pending}
             >
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Desbanear
+              {pending ? (
+                <Spinner />
+              ) : (
+                <>
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Desbanear
+                </>
+              )}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               onClick={() => setShowBanDialog(true)}
               className="text-destructive"
+              disabled={pending}
             >
-              <Ban className="mr-2 h-4 w-4" />
-              Banear usuario
+              {pending ? (
+                <Spinner />
+              ) : (
+                <>
+                  <Ban className="mr-2 h-4 w-4" />
+                  Banear usuario
+                </>
+              )}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -86,7 +136,7 @@ export function UserActions({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => onBan(user.id)}
+              onClick={() => handleBan(user.id)}
               className="bg-destructive text-destructive-foreground"
             >
               Banear
@@ -106,7 +156,7 @@ export function UserActions({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onUnban(user.id)}>
+            <AlertDialogAction onClick={() => handleUnban(user.id)}>
               Desbanear
             </AlertDialogAction>
           </AlertDialogFooter>

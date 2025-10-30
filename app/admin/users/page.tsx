@@ -1,10 +1,11 @@
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import prisma from "@/lib/prisma";
 import { UsersClient } from "./components/users-client";
 
 export default async function UsersPage() {
   "use cache";
   cacheLife("hours");
+  cacheTag("users-page");
   const users = await prisma.user.findMany({
     include: {
       business: true,

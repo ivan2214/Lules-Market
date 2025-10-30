@@ -30,14 +30,6 @@ export const UsersClient: React.FC<UsersClientProps> = ({ users }) => {
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDTO | null>(null);
 
-  const handleBan = (userId: string) => {
-    console.log("Banear usuario:", userId);
-  };
-
-  const handleUnban = (userId: string) => {
-    console.log("Desbanear usuario:", userId);
-  };
-
   const handleViewDetails = (userId: string) => {
     const user = users.find((u) => u.id === userId);
     if (user) {
@@ -100,12 +92,7 @@ export const UsersClient: React.FC<UsersClientProps> = ({ users }) => {
       id: "actions",
       header: "Acciones",
       cell: ({ row }) => (
-        <UserActions
-          user={row.original}
-          onBan={handleBan}
-          onUnban={handleUnban}
-          onViewDetails={handleViewDetails}
-        />
+        <UserActions user={row.original} onViewDetails={handleViewDetails} />
       ),
     },
   ];
