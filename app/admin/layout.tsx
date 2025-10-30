@@ -1,7 +1,8 @@
 import type React from "react";
 import { Suspense } from "react";
-import { AdminHeader } from "@/components/admin/admin-header";
+import { AdminHeaderWrapper } from "@/components/admin/admin-header-wrapper";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { AdminPageSkeleton } from "@/components/admin/skeletons/admin-page-skeleton";
 import { requireAdmin } from "../data/admin/admin.require";
 
 async function AdminGuard({ children }: { children: React.ReactNode }) {
@@ -25,13 +26,15 @@ export default async function AdminLayout({
 }) {
   return (
     <div className="flex h-screen">
-      <AdminSidebar />
+      <div className="hidden lg:flex">
+        <AdminSidebar />
+      </div>
       <div className="flex flex-1 flex-col">
         <Suspense fallback={<AdminHeaderSkeleton />}>
-          <AdminHeader />
+          <AdminHeaderWrapper />
         </Suspense>
         <main className="flex-1 bg-background p-6">
-          <Suspense fallback="Cargando...">
+          <Suspense fallback={<AdminPageSkeleton />}>
             <AdminGuard>{children}</AdminGuard>
           </Suspense>
         </main>

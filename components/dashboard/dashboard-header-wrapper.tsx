@@ -1,7 +1,7 @@
 // ✅ Componente separado para el header con auth
 
 import { requireBusiness } from "@/app/data/business/require-busines";
-import { DashboardHeader } from "./header";
+import { DashboardHeader } from "./dashboard-header";
 
 // ✅ Componente separado para el header con auth
 export async function DashboardHeaderWrapper() {

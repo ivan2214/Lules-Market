@@ -29,7 +29,7 @@ const navigation = [
   { name: "Configuración", href: "/admin/settings", icon: Settings },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -50,6 +50,7 @@ export function AdminSidebar() {
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
               )}
+              onClick={onClose}
             >
               <item.icon className="h-5 w-5" />
               {item.name}

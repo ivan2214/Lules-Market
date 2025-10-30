@@ -298,7 +298,9 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-bold text-3xl tracking-tight">Dashboard</h1>
+        <h1 className="font-bold text-3xl tracking-tight">
+          Dashboard de Admin
+        </h1>
         <p className="text-muted-foreground">
           Vista general de estadísticas y métricas del sistema
         </p>
@@ -351,6 +353,12 @@ export default async function AdminDashboard() {
         />
       </div>
 
+      {/* Gráficos */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <BusinessGrowthChart data={businessGrowthData} />
+        <PlanDistributionChart data={planDistribution} />
+      </div>
+
       {/* Trials y Cupones */}
       <div className="grid gap-4 md:grid-cols-2">
         <StatCard
@@ -391,12 +399,6 @@ export default async function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Gráficos */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <BusinessGrowthChart data={businessGrowthData} />
-        <PlanDistributionChart data={planDistribution} />
-      </div>
 
       <RevenueChart data={monthlyData} />
     </div>

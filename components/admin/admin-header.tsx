@@ -1,45 +1,54 @@
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { getCurrentAdmin } from "@/app/data/admin/admin.dal";
-import { Skeleton } from "../ui/skeleton";
+"use client";
+
+import { Menu, Store } from "lucide-react";
+import Link from "next/link";
+import { Suspense, useState } from "react";
+import type { AdminDTO } from "@/app/data/admin/admin.dto";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { AdminMenu } from "./admin-menu";
+import { AdminSidebar } from "./admin-sidebar";
+import { AdminMenuSkeleton } from "./skeletons/admin-menu-skeleton";
 
-export function AdminHeader() {
+export function AdminHeader({ admin }: { admin: AdminDTO }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
   return (
-    <Suspense fallback={<AdminHeaderSkeleton />}>
-      <AdminHeaderInner />
-    </Suspense>
-  );
-}
+    <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 py-2 md:px-6">
+      <Sheet open={isOpen} onOpenChange={handleOpenChange}>
+        <SheetTrigger asChild className="lg:hidden">
+          <Button variant="ghost" size="icon">
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-64 p-0">
+          <SheetTitle className="px-6 py-4 font-bold text-2xl">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 font-semibold"
+            >
+              <Store className="h-6 w-6" />
+              <span>Mi Comercio</span>
+            </Link>
+          </SheetTitle>
+          <AdminSidebar onClose={() => handleOpenChange(false)} />
+        </SheetContent>
+      </Sheet>
 
-async function AdminHeaderInner() {
-  const admin = await getCurrentAdmin();
-  if (!admin) redirect("/auth/signin");
-  return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-6 py-2">
-      <div className="flex items-center gap-4">
-        <h2 className="font-semibold text-foreground text-lg">
-          Panel de Administración
-        </h2>
-      </div>
-      <div className="flex items-center gap-4">
-        <Suspense fallback={<AdminMenuSkeleton />}>
-          <AdminMenu admin={admin} />
-        </Suspense>
-      </div>
-    </header>
-  );
-}
+      <h2 className="font-bold text-lg lg:text-2xl">Panel de Admin</h2>
 
-function AdminMenuSkeleton() {
-  return <Skeleton className="h-8 w-8" />;
-}
-
-function AdminHeaderSkeleton() {
-  return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-6">
-      <div className="h-4 w-40 rounded bg-muted" />
-      <div className="h-8 w-8 rounded bg-muted" />
+      <div className="flex-1" />
+      <Suspense fallback={<AdminMenuSkeleton />}>
+        <AdminMenu admin={admin} />
+      </Suspense>
     </header>
   );
 }
