@@ -1,4 +1,4 @@
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import {
   Card,
   CardContent,
@@ -11,6 +11,9 @@ import { TrialColumns } from "./components/trial-columns";
 import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
 
 async function getTrialsAndActiveCount() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("trials-page");
   const [trials, activeTrials] = await prisma.$transaction([
     prisma.trial.findMany({
       include: {
@@ -26,8 +29,6 @@ async function getTrialsAndActiveCount() {
 }
 
 export default async function TrialsPage() {
-  "use cache";
-  cacheLife("hours");
   const { activeTrials, trials } = await getTrialsAndActiveCount();
 
   const getDaysRemaining = (endDate: Date) => {

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function LoadingBusinesses() {
+export default function Loading() {
   return (
     <div className="space-y-6">
       <div>

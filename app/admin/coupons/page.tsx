@@ -1,4 +1,4 @@
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
 import { CouponClient } from "./components/coupon-client";
@@ -7,6 +7,7 @@ import { CouponCreateFormDialog } from "./components/coupon-create-form-dialog";
 export default async function CouponsPage() {
   "use cache";
   cacheLife("hours");
+  cacheTag("coupons-page");
   const coupons = await prisma.coupon.findMany({
     include: {
       redemptions: true,

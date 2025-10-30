@@ -1,4 +1,4 @@
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import {
   Card,
   CardContent,
@@ -11,6 +11,9 @@ import { AdminColumns } from "./components/admin-columns";
 import { AdminCreateDialog } from "./components/admin-create-dialog";
 
 async function getAdmins() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("admins-page");
   const admins = await prisma.admin.findMany({
     include: {
       user: {
@@ -25,8 +28,6 @@ async function getAdmins() {
 }
 
 export default async function AdminsPage() {
-  "use cache";
-  cacheLife("hours");
   const { admins } = await getAdmins();
 
   return (

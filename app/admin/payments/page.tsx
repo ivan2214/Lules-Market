@@ -1,5 +1,5 @@
 import { Download } from "lucide-react";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
@@ -8,6 +8,8 @@ import { PaymentsClient } from "./components/payments-client";
 export default async function PaymentsPage() {
   "use cache";
   cacheLife("hours");
+  cacheTag("payments-page");
+
   const payments = await prisma.payment.findMany({
     include: {
       business: true,

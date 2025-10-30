@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -15,6 +15,7 @@ import { PlanCreateFormDialog } from "./components/plan-create-form-dialog";
 async function getPlans() {
   "use cache";
   cacheLife("days");
+  cacheTag("plans-page");
   const count = await prisma.plan.count();
 
   if (count === 0) {

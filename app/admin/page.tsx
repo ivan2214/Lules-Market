@@ -9,7 +9,7 @@ import {
   TrendingUp,
   XCircle,
 } from "lucide-react";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { BusinessGrowthChart } from "@/components/admin/business-growth-chart";
 import { PlanDistributionChart } from "@/components/admin/plan-distribution-chart";
 import { RevenueChart } from "@/components/admin/revenue-chart";
@@ -287,6 +287,7 @@ async function getAnalyticsData(): Promise<{
 export default async function AdminDashboard() {
   "use cache";
   cacheLife("seconds");
+  cacheTag("admin-page");
 
   const [{ stats }, analytics] = await Promise.all([
     getAdminDashboardStats(),

@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
 
-export default function loadingTrialPage() {
+export default function Loading() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
