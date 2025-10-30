@@ -7,7 +7,12 @@ import {
   Eye,
   MoreHorizontal,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import {
+  bannedBusiness,
+  unbannedBusiness,
+} from "@/app/admin/businesses/actions/banned-business";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
 import type { PlanType } from "@/app/generated/prisma";
 import {
@@ -45,19 +50,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "../ui/spinner";
 
 interface BusinessActionsProps {
   business: BusinessDTO;
-  onBan: (businessId: string) => void;
-  onUnban: (businessId: string) => void;
+
   onChangePlan: (businessId: string, plan: PlanType) => void;
   onViewDetails: (businessId: string) => void;
 }
 
 export function BusinessActions({
   business,
-  onBan,
-  onUnban,
   onChangePlan,
   onViewDetails,
 }: BusinessActionsProps) {
@@ -65,6 +68,44 @@ export function BusinessActions({
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>(business.plan);
+
+  const [pending, startTransition] = useTransition();
+
+  const handleBan = (businessId: string) => {
+    startTransition(async () => {
+      bannedBusiness(businessId)
+        .then((res) => {
+          res.ok
+            ? toast.success(`El comercio ${business?.name} fue baneado`)
+            : toast.error(res.error);
+        })
+        .catch((error) =>
+          toast.error("Ocurrio un error", {
+            description() {
+              return JSON.stringify(error);
+            },
+          }),
+        );
+    });
+  };
+
+  const handleUnban = (businessId: string) => {
+    startTransition(async () => {
+      unbannedBusiness(businessId)
+        .then((res) => {
+          res.ok
+            ? toast.info(`El comercio ${business?.name} fue desbaneado`)
+            : toast.error(res.error);
+        })
+        .catch((error) =>
+          toast.error("Ocurrio un error", {
+            description() {
+              return JSON.stringify(error);
+            },
+          }),
+        );
+    });
+  };
 
   const handleChangePlan = () => {
     onChangePlan(business.id, selectedPlan);
@@ -75,8 +116,8 @@ export function BusinessActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
+          <Button disabled={pending} variant="ghost" size="icon">
+            {pending ? <Spinner /> : <MoreHorizontal className="h-4 w-4" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -94,17 +135,31 @@ export function BusinessActions({
             <DropdownMenuItem
               onClick={() => setShowUnbanDialog(true)}
               className="text-green-600"
+              disabled={pending}
             >
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Desbanear
+              {pending ? (
+                <Spinner />
+              ) : (
+                <>
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Desbanear
+                </>
+              )}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               onClick={() => setShowBanDialog(true)}
               className="text-destructive"
+              disabled={pending}
             >
-              <Ban className="mr-2 h-4 w-4" />
-              Banear negocio
+              {pending ? (
+                <Spinner />
+              ) : (
+                <>
+                  <Ban className="mr-2 h-4 w-4" />
+                  Banear
+                </>
+              )}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -122,7 +177,7 @@ export function BusinessActions({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => onBan(business.id)}
+              onClick={() => handleBan(business.id)}
               className="bg-destructive text-destructive-foreground"
             >
               Banear
@@ -142,7 +197,7 @@ export function BusinessActions({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onUnban(business.id)}>
+            <AlertDialogAction onClick={() => handleUnban(business.id)}>
               Desbanear
             </AlertDialogAction>
           </AlertDialogFooter>

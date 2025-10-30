@@ -113,8 +113,6 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       cell: ({ row }) => (
         <BusinessActions
           business={row.original}
-          onBan={handleBan}
-          onUnban={handleUnban}
           onChangePlan={handleChangePlan}
           onViewDetails={handleViewDetails}
         />
