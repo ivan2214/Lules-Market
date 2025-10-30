@@ -1,4 +1,4 @@
-import { format, startOfMonth, subMonths } from "date-fns";
+import { addMonths, format, startOfMonth, subMonths } from "date-fns";
 import {
   AlertCircle,
   CheckCircle,
@@ -25,7 +25,16 @@ import {
 import prisma from "@/lib/prisma";
 import type { Analytics } from "@/types";
 
-async function getAdminDashboardStats() {
+export async function getAdminDashboardStats() {
+  const now = new Date();
+
+  // Rangos de fechas
+  const startCurrentMonth = startOfMonth(now);
+  const endCurrentMonth = addMonths(startCurrentMonth, 1);
+
+  const startLastMonth = startOfMonth(subMonths(now, 1));
+  const endLastMonth = startCurrentMonth;
+
   const [
     totalUsers,
     totalBusinesses,
@@ -41,11 +50,11 @@ async function getAdminDashboardStats() {
     usersCurrentMonth,
     businessesCurrentMonth,
     productsCurrentMonth,
-    paymentsApprovedCurrentMonth,
+    paymentsCurrentMonthAgg,
     usersLastMonth,
     businessesLastMonth,
     productsLastMonth,
-    paymentsApprovedLastMonth,
+    paymentsLastMonthAgg,
   ] = await prisma.$transaction([
     prisma.user.count(),
     prisma.business.count(),
@@ -53,80 +62,61 @@ async function getAdminDashboardStats() {
     prisma.business.count({ where: { bannedBusiness: { isNot: null } } }),
     prisma.product.count({ where: { bannedProduct: { isNot: null } } }),
     prisma.product.count(),
-    prisma.payment.count({ where: { status: "APPROVED" } }),
-    prisma.payment.count({ where: { status: "PENDING" } }),
-    prisma.payment.count({ where: { status: "REJECTED" } }),
 
+    prisma.payment.count({ where: { status: "approved" } }),
+    prisma.payment.count({ where: { status: "pending" } }),
+    prisma.payment.count({ where: { status: "rejected" } }),
     prisma.trial.count({ where: { isActive: true } }),
+
     prisma.coupon.count({ where: { active: true } }),
-    /* current month */
-    prisma.user.count({
+
+    // Mes actual
+    prisma.user.count({ where: { createdAt: { gte: startCurrentMonth } } }),
+    prisma.business.count({ where: { createdAt: { gte: startCurrentMonth } } }),
+    prisma.product.count({ where: { createdAt: { gte: startCurrentMonth } } }),
+    prisma.payment.aggregate({
+      _sum: { amount: true },
       where: {
-        createdAt: {
-          gte: startOfMonth(new Date()),
-        },
+        status: "approved",
+        createdAt: { gte: startCurrentMonth, lt: endCurrentMonth },
       },
+    }),
+
+    // Mes anterior
+    prisma.user.count({
+      where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
     }),
     prisma.business.count({
-      where: {
-        createdAt: {
-          gte: startOfMonth(new Date()),
-        },
-      },
+      where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
     }),
     prisma.product.count({
-      where: {
-        createdAt: {
-          gte: startOfMonth(new Date()),
-        },
-      },
+      where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
     }),
-    prisma.payment.count({
+    prisma.payment.aggregate({
+      _sum: { amount: true },
       where: {
-        status: "APPROVED",
-        createdAt: {
-          gte: startOfMonth(new Date()),
-        },
-      },
-    }),
-    /* last month */
-    prisma.user.count({
-      where: {
-        createdAt: {
-          gte: startOfMonth(subMonths(new Date(), 1)),
-        },
-      },
-    }),
-    prisma.business.count({
-      where: {
-        createdAt: {
-          gte: startOfMonth(subMonths(new Date(), 1)),
-        },
-      },
-    }),
-    prisma.product.count({
-      where: {
-        createdAt: {
-          gte: startOfMonth(subMonths(new Date(), 1)),
-        },
-      },
-    }),
-    prisma.payment.count({
-      where: {
-        status: "APPROVED",
-        createdAt: {
-          gte: startOfMonth(subMonths(new Date(), 1)),
-        },
+        status: "approved",
+        createdAt: { gte: startLastMonth, lt: endLastMonth },
       },
     }),
   ]);
+
+  const currentRevenue = paymentsCurrentMonthAgg._sum.amount ?? 0;
+  const lastRevenue = paymentsLastMonthAgg._sum.amount ?? 0;
+
+  // Función auxiliar para calcular porcentaje de variación
+  const calcTrend = (current: number, prev: number) => {
+    if (prev === 0) return current > 0 ? 100 : 0;
+    return ((current - prev) / prev) * 100;
+  };
+
   const stats = {
     users: {
       total: totalUsers,
       active: totalUsers - bannedUsers,
       banned: bannedUsers,
       trend: {
-        value: usersCurrentMonth - usersLastMonth,
+        percentage: calcTrend(usersCurrentMonth, usersLastMonth),
         isPositive: usersCurrentMonth >= usersLastMonth,
       },
     },
@@ -135,7 +125,7 @@ async function getAdminDashboardStats() {
       active: totalBusinesses - bannedBusinesses,
       banned: bannedBusinesses,
       trend: {
-        value: businessesCurrentMonth - businessesLastMonth,
+        percentage: calcTrend(businessesCurrentMonth, businessesLastMonth),
         isPositive: businessesCurrentMonth >= businessesLastMonth,
       },
     },
@@ -144,28 +134,26 @@ async function getAdminDashboardStats() {
       active: totalProducts - bannedProducts,
       banned: bannedProducts,
       trend: {
-        value: productsCurrentMonth - productsLastMonth,
+        percentage: calcTrend(productsCurrentMonth, productsLastMonth),
         isPositive: productsCurrentMonth >= productsLastMonth,
       },
     },
     payments: {
-      totalRevenue: totalApprovedPayments,
       approved: totalApprovedPayments,
       pending: totalPendingPayments,
       rejected: totalRejectedPayments,
-      trend: {
-        value: paymentsApprovedCurrentMonth - paymentsApprovedLastMonth,
-        isPositive: paymentsApprovedCurrentMonth >= paymentsApprovedLastMonth,
+      totalRevenue: {
+        total: currentRevenue,
+        trend: {
+          percentage: calcTrend(currentRevenue, lastRevenue),
+          isPositive: currentRevenue >= lastRevenue,
+        },
       },
     },
-
-    trials: {
-      actives: trialsActives,
-    },
-    coupons: {
-      actives: couponsActives,
-    },
+    trials: { actives: trialsActives },
+    coupons: { actives: couponsActives },
   };
+
   return { stats };
 }
 
@@ -233,7 +221,13 @@ async function getAnalyticsData(): Promise<{
         ? "down"
         : "stable";
 
-  const percentage = (currentMonthRevenue / previousMonthRevenue) * 100;
+  const percentage =
+    previousMonthRevenue === 0
+      ? currentMonthRevenue > 0
+        ? 100 // si el mes anterior era 0 y hay ingresos, crecimiento 100%
+        : 0 // si ambos meses 0, crecimiento 0%
+      : ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) *
+        100;
 
   const monthlyData: Analytics["monthlyRevenue"] = {
     data: monthlyRevenue,
@@ -291,7 +285,19 @@ export default async function AdminDashboard() {
   const { stats } = await getAdminDashboardStats();
   const { planDistribution, monthlyData, businessGrowthData } =
     await getAnalyticsData();
-  console.log("planDistribution", planDistribution);
+  console.log("DATOS DE LA PAGINA");
+
+  console.dir(
+    {
+      stats,
+      planDistribution,
+      monthlyData,
+      businessGrowthData,
+    },
+    {
+      depth: null,
+    },
+  );
 
   return (
     <div className="space-y-6">
@@ -309,7 +315,7 @@ export default async function AdminDashboard() {
           value={stats.users.total}
           description={`${stats.users.active} activos, ${stats.users.banned} baneados`}
           icon={Users}
-          trend={{ value: 12, isPositive: true }}
+          trend={stats.users.trend}
         />
         <StatCard
           title="Total Negocios"
@@ -327,10 +333,10 @@ export default async function AdminDashboard() {
         />
         <StatCard
           title="Ingresos Totales"
-          value={`$${(stats.payments.totalRevenue / 1000).toFixed(0)}k`}
+          value={`$${(stats.payments.totalRevenue.total / 1000).toFixed(0)}k`}
           description={`${stats.payments.approved} pagos aprobados`}
           icon={CreditCard}
-          trend={stats.payments.trend}
+          trend={stats.payments.totalRevenue.trend}
         />
       </div>
 

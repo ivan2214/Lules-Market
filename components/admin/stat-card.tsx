@@ -8,7 +8,7 @@ interface StatCardProps {
   description?: string;
   icon: LucideIcon;
   trend?: {
-    value: number;
+    percentage: number;
     isPositive: boolean;
   };
   className?: string;
@@ -43,7 +43,7 @@ export function StatCard({
             )}
           >
             {trend.isPositive ? "+" : ""}
-            {trend.value}% desde el mes pasado
+            {trend.percentage.toFixed(0)}% desde el mes pasado
           </p>
         )}
       </CardContent>
