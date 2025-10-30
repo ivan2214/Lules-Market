@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BarChart3,
   Clock,
   CreditCard,
   ImageIcon,
@@ -12,7 +11,6 @@ import {
   Shield,
   Store,
   Ticket,
-  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,14 +18,12 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Usuarios", href: "/admin/users", icon: Users },
   { name: "Negocios", href: "/admin/businesses", icon: Store },
   { name: "Productos", href: "/admin/products", icon: Package },
   { name: "Planes", href: "/admin/plans", icon: Layers },
   { name: "Pagos", href: "/admin/payments", icon: CreditCard },
   { name: "Cupones", href: "/admin/coupons", icon: Ticket },
   { name: "Trials", href: "/admin/trials", icon: Clock },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Moderación", href: "/admin/media", icon: ImageIcon },
   { name: "Administradores", href: "/admin/admins", icon: Shield },
   { name: "Configuración", href: "/admin/settings", icon: Settings },

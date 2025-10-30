@@ -147,18 +147,18 @@ exports.Prisma.BannedBusinessScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.BannedUserScalarFieldEnum = {
-  id: 'id',
-  bannedById: 'bannedById',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.BannedProductScalarFieldEnum = {
   id: 'id',
   bannedById: 'bannedById',
   productId: 'productId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BannedImagesScalarFieldEnum = {
+  id: 'id',
+  bannedById: 'bannedById',
+  imageKey: 'imageKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -273,12 +273,12 @@ exports.Prisma.ImageScalarFieldEnum = {
   name: 'name',
   size: 'size',
   isReported: 'isReported',
-  isBanned: 'isBanned',
   productId: 'productId',
   logoBusinessId: 'logoBusinessId',
   coverBusinessId: 'coverBusinessId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isBanned: 'isBanned'
 };
 
 exports.Prisma.ProductViewScalarFieldEnum = {
@@ -405,8 +405,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Admin: 'Admin',
   BannedBusiness: 'BannedBusiness',
-  BannedUser: 'BannedUser',
   BannedProduct: 'BannedProduct',
+  BannedImages: 'BannedImages',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',

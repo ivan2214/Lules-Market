@@ -15,7 +15,6 @@ async function getAdmins() {
     include: {
       user: {
         include: {
-          bannedUser: true,
           admin: true,
           business: true,
         },

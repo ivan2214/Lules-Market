@@ -13,6 +13,7 @@ import {
   bannedBusiness,
   unbannedBusiness,
 } from "@/app/admin/businesses/actions/banned-business";
+import { changePlan } from "@/app/admin/businesses/actions/change-plan";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
 import type { PlanType } from "@/app/generated/prisma";
 import {
@@ -50,25 +51,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Field, FieldContent, FieldDescription, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 
 interface BusinessActionsProps {
   business: BusinessDTO;
-
-  onChangePlan: (businessId: string, plan: PlanType) => void;
   onViewDetails: (businessId: string) => void;
 }
 
 export function BusinessActions({
   business,
-  onChangePlan,
   onViewDetails,
 }: BusinessActionsProps) {
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanType>(business.plan);
-
+  const [isTrial, setIsTrial] = useState(false); // flag para activar trial
   const [pending, startTransition] = useTransition();
 
   const handleBan = (businessId: string) => {
@@ -108,10 +108,26 @@ export function BusinessActions({
   };
 
   const handleChangePlan = () => {
-    onChangePlan(business.id, selectedPlan);
-    setShowPlanDialog(false);
+    startTransition(async () => {
+      try {
+        const res = await changePlan({
+          businessId: business.id,
+          planType: selectedPlan,
+          isTrial,
+          trialDays: 30, // podes parametrizar
+          planDurationDays: 30, // duración default del plan pagado
+        });
+        if (res.ok) {
+          toast.success(res.message || "Plan actualizado correctamente");
+          setShowPlanDialog(false);
+        } else {
+          toast.error(res.message || "Error al cambiar el plan");
+        }
+      } catch (error) {
+        toast.error("Ocurrió un error", { description: JSON.stringify(error) });
+      }
+    });
   };
-
   return (
     <>
       <DropdownMenu>
@@ -230,11 +246,27 @@ export function BusinessActions({
               </Select>
             </div>
           </div>
+          <Field orientation="horizontal">
+            <FieldContent>
+              <FieldLabel htmlFor="trial">Activar trial</FieldLabel>
+              <FieldDescription>
+                Marcar si querés que este plan sea un período de prueba. Solo
+                disponible si el plan actual está activo.
+              </FieldDescription>
+            </FieldContent>
+            <Switch
+              id="trial"
+              checked={isTrial}
+              onCheckedChange={(checked) => setIsTrial(checked)}
+            />
+          </Field>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowPlanDialog(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleChangePlan}>Guardar cambios</Button>
+            <Button onClick={handleChangePlan} disabled={pending}>
+              {pending ? <Spinner /> : "Guardar cambios"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

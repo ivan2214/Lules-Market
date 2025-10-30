@@ -7,7 +7,6 @@ import {
   Package,
   Store,
   TrendingUp,
-  Users,
   XCircle,
 } from "lucide-react";
 import { cacheLife } from "next/cache";
@@ -52,7 +51,6 @@ interface PaymentStats {
 }
 
 interface DashboardStats {
-  users: StatGroup;
   businesses: StatGroup;
   products: StatGroup;
   payments: PaymentStats;
@@ -89,9 +87,7 @@ export async function getAdminDashboardStats(): Promise<{
   const endLastMonth = startCurrentMonth;
 
   const [
-    totalUsers,
     totalBusinesses,
-    bannedUsers,
     bannedBusinesses,
     bannedProducts,
     totalProducts,
@@ -100,18 +96,14 @@ export async function getAdminDashboardStats(): Promise<{
     totalRejectedPayments,
     trialsActives,
     couponsActives,
-    usersCurrentMonth,
     businessesCurrentMonth,
     productsCurrentMonth,
     paymentsCurrentMonthAgg,
-    usersLastMonth,
     businessesLastMonth,
     productsLastMonth,
     paymentsLastMonthAgg,
   ] = await prisma.$transaction([
-    prisma.user.count(),
     prisma.business.count(),
-    prisma.user.count({ where: { bannedUser: { isNot: null } } }),
     prisma.business.count({ where: { bannedBusiness: { isNot: null } } }),
     prisma.product.count({ where: { bannedProduct: { isNot: null } } }),
     prisma.product.count(),
@@ -121,8 +113,6 @@ export async function getAdminDashboardStats(): Promise<{
     prisma.trial.count({ where: { isActive: true } }),
     prisma.coupon.count({ where: { active: true } }),
 
-    // Mes actual
-    prisma.user.count({ where: { createdAt: { gte: startCurrentMonth } } }),
     prisma.business.count({ where: { createdAt: { gte: startCurrentMonth } } }),
     prisma.product.count({ where: { createdAt: { gte: startCurrentMonth } } }),
     prisma.payment.aggregate({
@@ -134,9 +124,7 @@ export async function getAdminDashboardStats(): Promise<{
     }),
 
     // Mes anterior
-    prisma.user.count({
-      where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
-    }),
+
     prisma.business.count({
       where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
     }),
@@ -156,12 +144,6 @@ export async function getAdminDashboardStats(): Promise<{
   const lastRevenue = paymentsLastMonthAgg._sum.amount ?? 0;
 
   const stats: DashboardStats = {
-    users: {
-      total: totalUsers,
-      active: totalUsers - bannedUsers,
-      banned: bannedUsers,
-      trend: buildTrend(usersCurrentMonth, usersLastMonth),
-    },
     businesses: {
       total: totalBusinesses,
       active: totalBusinesses - bannedBusinesses,
@@ -323,14 +305,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats principales */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Total Usuarios"
-          value={stats.users.total}
-          description={`${stats.users.active} activos, ${stats.users.banned} baneados`}
-          icon={Users}
-          trend={stats.users.trend}
-        />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Total Negocios"
           value={stats.businesses.total}

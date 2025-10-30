@@ -4,7 +4,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Facebook, Instagram, MessageCircle, Store } from "lucide-react";
 import { useState } from "react";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
-import type { PlanType } from "@/app/generated/prisma";
 import { BusinessActions } from "@/components/admin/business-actions";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -34,18 +33,6 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessDTO | null>(
     null,
   );
-
-  const handleBan = (businessId: string) => {
-    console.log("Banear negocio:", businessId);
-  };
-
-  const handleUnban = (businessId: string) => {
-    console.log("Desbanear negocio:", businessId);
-  };
-
-  const handleChangePlan = (businessId: string, plan: PlanType) => {
-    console.log("Cambiar plan:", businessId, plan);
-  };
 
   const handleViewDetails = (businessId: string) => {
     const business = businesses.find((b) => b.id === businessId);
@@ -113,7 +100,6 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       cell: ({ row }) => (
         <BusinessActions
           business={row.original}
-          onChangePlan={handleChangePlan}
           onViewDetails={handleViewDetails}
         />
       ),

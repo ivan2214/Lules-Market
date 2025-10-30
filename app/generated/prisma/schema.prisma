@@ -33,9 +33,8 @@ model User {
   business Business? // un usuario puede tener un comercio
   admin    Admin? // o ser administrador
 
-  userRole   UserRole    @default(USER) // rol del usuario
-  bannedUser BannedUser? // si el usuario fue baneado
-  isBanned   Boolean?    @default(false)
+  userRole UserRole @default(USER) // rol del usuario
+  isBanned Boolean? @default(false)
 
   @@map("user")
 }
@@ -45,9 +44,9 @@ model Admin {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // un usuario puede ser admin
 
   // Relaciones con objetos baneados
-  bannedBusinesses BannedBusiness[]
-  bannedUsers      BannedUser[]
-  bannedProducts   BannedProduct[]
+  bannedBusinesses BannedBusiness[] // aqui se guardarian los comercios baneado por el admin y por quien fue baneado
+  bannedProducts   BannedProduct[] // aqui se guardarian los productos baneado por el admin y por quien fue baneado
+  bannedImages     BannedImages[] // aqui se guardarian las imagenes baneadas por el admin y por quien fue baneado
   permissions      Permission[]
 
   createdAt DateTime @default(now())
@@ -68,24 +67,24 @@ model BannedBusiness {
   @@index([bannedById])
 }
 
-model BannedUser {
-  id         String   @id @default(cuid())
-  bannedById String
-  bannedBy   Admin    @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@index([bannedById])
-}
-
 model BannedProduct {
   id         String   @id @default(cuid())
   bannedById String
   bannedBy   Admin    @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
   productId  String   @unique
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([bannedById])
+}
+
+model BannedImages {
+  id         String   @id @default(cuid())
+  bannedById String
+  bannedBy   Admin    @relation(fields: [bannedById], references: [userId], onDelete: Cascade)
+  imageKey   String   @unique
+  image      Image    @relation(fields: [imageKey], references: [key], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -204,7 +203,7 @@ model Business {
 
 model Plan {
   id          String   @id @default(cuid())
-  type        PlanType
+  type        PlanType @unique
   name        String
   description String
   price       Float
@@ -273,13 +272,12 @@ model Payment {
 }
 
 model Image {
-  key         String   @unique
-  url         String   @unique
-  isMainImage Boolean  @default(false)
+  key         String  @unique
+  url         String  @unique
+  isMainImage Boolean @default(false)
   name        String?
   size        Float?
-  isReported  Boolean  @default(false)
-  isBanned    Boolean? @default(false)
+  isReported  Boolean @default(false)
 
   // Relaciones con producto y comercio
   product   Product? @relation(fields: [productId], references: [id])
@@ -291,8 +289,10 @@ model Image {
   coverBusinessId String?   @unique
   coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  bannedImages BannedImages? // si la imagen fue baneada
+  isBanned     Boolean?      @default(false)
 
   @@index([productId])
   @@index([coverBusinessId])

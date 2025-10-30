@@ -7,7 +7,66 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Starting enhanced seed...");
+  const count = await prisma.plan.count();
 
+  if (count === 0) {
+    await prisma.plan.createMany({
+      data: [
+        {
+          type: "FREE",
+          name: "Plan Gratuito",
+          description: "Perfecto para comenzar tu negocio online",
+          price: 0,
+          features: [
+            "Hasta 10 productos",
+            "3 imágenes por producto",
+            "Catálogo básico",
+            "Soporte por email",
+          ],
+          maxProducts: 10,
+          maxImages: 3,
+          isActive: true,
+          createdAt: new Date("2023-12-01"),
+        },
+        {
+          type: "BASIC",
+          name: "Plan Básico",
+          description: "Para negocios en crecimiento",
+          price: 14999,
+          features: [
+            "Hasta 50 productos",
+            "10 imágenes por producto",
+            "Catálogo personalizado",
+            "Estadísticas básicas",
+            "Soporte prioritario",
+          ],
+          maxProducts: 50,
+          maxImages: 10,
+          isActive: true,
+          createdAt: new Date("2023-12-01"),
+        },
+        {
+          type: "PREMIUM",
+          name: "Plan Premium",
+          description: "Para negocios profesionales",
+          price: 29999,
+          features: [
+            "Productos ilimitados",
+            "Imágenes ilimitadas",
+            "Catálogo premium",
+            "Estadísticas avanzadas",
+            "Soporte 24/7",
+            "Dominio personalizado",
+            "Sin comisiones",
+          ],
+          maxProducts: -1,
+          maxImages: -1,
+          isActive: true,
+          createdAt: new Date("2023-12-01"),
+        },
+      ],
+    });
+  }
   /*  SUPER ADMIN */
   const { user: superAdmin } = await auth.api.signUpEmail({
     body: {
@@ -68,6 +127,9 @@ async function main() {
       },
       data: {
         userRole: "ADMIN",
+        createdAt: faker.date.recent({
+          days: 31 * 3,
+        }),
       },
     });
   }
@@ -90,40 +152,22 @@ async function main() {
       },
       data: {
         userRole: "BUSINESS",
+        createdAt: faker.date.recent({
+          days: 31 * 3,
+        }),
       },
     });
 
-    // Simulate inactive or banned users
-    const maybeBanned =
-      faker.datatype.boolean() && faker.number.int({ min: 1, max: 10 }) > 8;
-
-    if (maybeBanned) {
-      const adminUser = faker.helpers.arrayElement(admins);
-      await prisma.$transaction([
-        prisma.bannedUser.create({
-          data: {
-            bannedById: adminUser.userId,
-            userId: user.id,
-          },
-        }),
-        prisma.user.update({
-          where: { id: user.id },
-          data: {
-            isBanned: true,
-          },
-        }),
-      ]);
-    }
-
     // --- BUSINESS ---
-    const plan = faker.helpers.arrayElement(["FREE", "BASIC", "PREMIUM"]);
+    const plans = await prisma.plan.findMany();
+    const { type: plan } = faker.helpers.arrayElement(plans);
     const status = faker.helpers.arrayElement([
       "ACTIVE",
       "EXPIRED",
       "INACTIVE",
       "CANCELLED",
     ]);
-    const isActive = status === "ACTIVE" && !maybeBanned;
+    const isActive = status === "ACTIVE";
 
     const business = await prisma.business.create({
       data: {
@@ -147,6 +191,9 @@ async function main() {
             ? faker.date.past({ years: 0.3 })
             : faker.date.soon({ days: 60 }),
         userId: user.id,
+        createdAt: faker.date.recent({
+          days: 31 * 3,
+        }),
       },
     });
 
@@ -341,7 +388,7 @@ async function main() {
       const usedCount = faker.number.int({ min: 0, max: maxUses });
       const expiresAt = faker.helpers.maybe(
         () => faker.date.soon({ days: 90 }),
-        { probability: 0.7 },
+        { probability: 0.7 }
       );
 
       const coupon = await prisma.coupon.create({

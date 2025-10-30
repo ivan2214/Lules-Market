@@ -18,7 +18,6 @@ export default async function BusinessesPage() {
       },
       user: {
         include: {
-          bannedUser: true,
           admin: true,
           business: true,
         },

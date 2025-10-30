@@ -26,7 +26,7 @@ interface PlanDistributionChartProps {
 const chartConfig = {
   FREE: {
     label: "Free",
-    color: "var(--chart-1)",
+    color: "var(--chart-3)",
   },
   BASIC: {
     label: "Basic",
@@ -34,7 +34,7 @@ const chartConfig = {
   },
   PREMIUM: {
     label: "Premium",
-    color: "var(--chart-3)",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
 
@@ -70,7 +70,6 @@ export function PlanDistributionChart({ data }: PlanDistributionChartProps) {
               innerRadius={60}
               outerRadius={90}
               stroke="hsl(var(--background))"
-              strokeWidth={2}
             >
               {/* Aplica color diferente a cada sector */}
               {chartData.map((entry) => (
@@ -84,6 +83,7 @@ export function PlanDistributionChart({ data }: PlanDistributionChartProps) {
 
               {/* Etiqueta interna */}
               <LabelList
+                angle={-50}
                 dataKey="name"
                 className="fill-background"
                 stroke="none"

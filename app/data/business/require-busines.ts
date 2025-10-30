@@ -31,7 +31,7 @@ export const requireBusiness = cache(
         user: {
           include: {
             admin: true,
-            bannedUser: true,
+
             business: true,
           },
         },
@@ -54,5 +54,5 @@ export const requireBusiness = cache(
     }
 
     return { session, business };
-  },
+  }
 );
