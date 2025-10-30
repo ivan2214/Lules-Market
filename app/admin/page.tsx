@@ -23,6 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
+import type { Analytics } from "@/types";
 
 async function getAdminDashboardStats() {
   const [
@@ -35,9 +36,6 @@ async function getAdminDashboardStats() {
     totalApprovedPayments,
     totalPendingPayments,
     totalRejectedPayments,
-    freePlanBusinesses,
-    basicPlanBusinesses,
-    premiumPlanBusinesses,
     trialsActives,
     couponsActives,
     usersCurrentMonth,
@@ -58,9 +56,7 @@ async function getAdminDashboardStats() {
     prisma.payment.count({ where: { status: "APPROVED" } }),
     prisma.payment.count({ where: { status: "PENDING" } }),
     prisma.payment.count({ where: { status: "REJECTED" } }),
-    prisma.business.count({ where: { plan: "FREE" } }),
-    prisma.business.count({ where: { plan: "BASIC" } }),
-    prisma.business.count({ where: { plan: "PREMIUM" } }),
+
     prisma.trial.count({ where: { isActive: true } }),
     prisma.coupon.count({ where: { active: true } }),
     /* current month */
@@ -162,11 +158,7 @@ async function getAdminDashboardStats() {
         isPositive: paymentsApprovedCurrentMonth >= paymentsApprovedLastMonth,
       },
     },
-    plans: {
-      free: freePlanBusinesses,
-      basic: basicPlanBusinesses,
-      premium: premiumPlanBusinesses,
-    },
+
     trials: {
       actives: trialsActives,
     },
@@ -177,15 +169,32 @@ async function getAdminDashboardStats() {
   return { stats };
 }
 
-async function getAnalyticsData() {
+async function getAnalyticsData(): Promise<{
+  planDistribution: Analytics["planDistribution"];
+  monthlyData: Analytics["monthlyRevenue"];
+  businessGrowthData: Analytics["businessGrowth"];
+}> {
   // 1️⃣ Distribución de planes actuales
-  const [free, basic, premium] = await Promise.all([
+  const [free, basic, premium] = await prisma.$transaction([
     prisma.business.count({ where: { plan: "FREE" } }),
     prisma.business.count({ where: { plan: "BASIC" } }),
     prisma.business.count({ where: { plan: "PREMIUM" } }),
   ]);
 
-  const planDistribution = { FREE: free, BASIC: basic, PREMIUM: premium };
+  const planDistribution: Analytics["planDistribution"] = {
+    FREE: {
+      value: free,
+      percentage: (free / (free + basic + premium)) * 100,
+    },
+    BASIC: {
+      value: basic,
+      percentage: (basic / (free + basic + premium)) * 100,
+    },
+    PREMIUM: {
+      value: premium,
+      percentage: (premium / (free + basic + premium)) * 100,
+    },
+  };
 
   // 2️⃣ Últimos 6 meses de ingresos
   const sixMonthsAgo = startOfMonth(subMonths(new Date(), 5));
@@ -194,7 +203,7 @@ async function getAnalyticsData() {
     by: ["createdAt"],
     where: {
       createdAt: { gte: sixMonthsAgo },
-      status: "APPROVED",
+      status: "approved",
     },
     _sum: { amount: true },
   });
@@ -202,18 +211,35 @@ async function getAnalyticsData() {
   // Agrupamos por mes (ej: "Oct 2025")
   const monthlyRevenue = Array.from({ length: 6 }).map((_, i) => {
     const date = startOfMonth(subMonths(new Date(), 5 - i));
-    const month = format(date, "MMM yyyy");
+    const month = format(date, "MMM");
     const revenue =
       monthlyPayments
         .filter(
           (p) =>
-            format(startOfMonth(p.createdAt), "MMM yyyy") === month &&
-            p._sum.amount,
+            format(startOfMonth(p.createdAt), "MMM") === month && p._sum.amount,
         )
         .reduce((acc, p) => acc + (p._sum.amount || 0), 0) || 0;
 
     return { month, revenue };
   });
+
+  const currentMonthRevenue = monthlyRevenue[monthlyRevenue.length - 1].revenue;
+  const previousMonthRevenue =
+    monthlyRevenue[monthlyRevenue.length - 2].revenue;
+  const trend =
+    currentMonthRevenue > previousMonthRevenue
+      ? "up"
+      : currentMonthRevenue < previousMonthRevenue
+        ? "down"
+        : "stable";
+
+  const percentage = (currentMonthRevenue / previousMonthRevenue) * 100;
+
+  const monthlyData: Analytics["monthlyRevenue"] = {
+    data: monthlyRevenue,
+    trend,
+    percentage,
+  };
 
   // 3️⃣ Crecimiento de negocios (por mes)
   const businessByMonth = await prisma.business.groupBy({
@@ -224,27 +250,48 @@ async function getAnalyticsData() {
 
   const businessGrowth = Array.from({ length: 6 }).map((_, i) => {
     const date = startOfMonth(subMonths(new Date(), 5 - i));
-    const month = format(date, "MMM yyyy");
+    const month = format(date, "MMM");
     const count =
       businessByMonth
         .filter(
           (b) =>
-            format(startOfMonth(b.createdAt), "MMM yyyy") === month &&
-            b._count._all,
+            format(startOfMonth(b.createdAt), "MMM") === month && b._count._all,
         )
         .reduce((acc, b) => acc + b._count._all, 0) || 0;
 
     return { month, count };
   });
 
-  return { planDistribution, monthlyRevenue, businessGrowth };
+  const currentMonthBusiness = businessGrowth[businessGrowth.length - 1].count;
+  const previousMonthBusiness = businessGrowth[businessGrowth.length - 2].count;
+  const businessGrowthTrend =
+    currentMonthBusiness > previousMonthBusiness
+      ? "up"
+      : currentMonthBusiness < previousMonthBusiness
+        ? "down"
+        : "stable";
+  const businessGrowthPercentage =
+    previousMonthBusiness > 0
+      ? (currentMonthBusiness / previousMonthBusiness) * 100
+      : currentMonthBusiness > 0
+        ? 100
+        : 0;
+
+  const businessGrowthData: Analytics["businessGrowth"] = {
+    data: businessGrowth,
+    trend: businessGrowthTrend,
+    percentage: businessGrowthPercentage,
+  };
+
+  return { planDistribution, monthlyData, businessGrowthData };
 }
 export default async function AdminDashboard() {
   "use cache";
-  cacheLife("hours");
+  cacheLife("seconds");
   const { stats } = await getAdminDashboardStats();
-  const { planDistribution, monthlyRevenue, businessGrowth } =
+  const { planDistribution, monthlyData, businessGrowthData } =
     await getAnalyticsData();
+  console.log("planDistribution", planDistribution);
 
   return (
     <div className="space-y-6">
@@ -337,34 +384,33 @@ export default async function AdminDashboard() {
               <p className="font-medium text-muted-foreground text-sm">
                 Plan FREE
               </p>
-              <p className="font-bold text-3xl">{stats.plans.free}</p>
+              <p className="font-bold text-3xl">
+                {planDistribution.FREE.value}
+              </p>
               <p className="text-muted-foreground text-xs">
-                {((stats.plans.free / stats.businesses.total) * 100).toFixed(1)}
-                % del total
+                {planDistribution.FREE.percentage.toFixed(1)}% del total
               </p>
             </div>
             <div className="space-y-2">
               <p className="font-medium text-muted-foreground text-sm">
                 Plan BASIC
               </p>
-              <p className="font-bold text-3xl">{stats.plans.basic}</p>
+              <p className="font-bold text-3xl">
+                {planDistribution.BASIC.value}
+              </p>
               <p className="text-muted-foreground text-xs">
-                {((stats.plans.basic / stats.businesses.total) * 100).toFixed(
-                  1,
-                )}
-                % del total
+                {planDistribution.BASIC.percentage.toFixed(1)}% del total
               </p>
             </div>
             <div className="space-y-2">
               <p className="font-medium text-muted-foreground text-sm">
                 Plan PREMIUM
               </p>
-              <p className="font-bold text-3xl">{stats.plans.premium}</p>
+              <p className="font-bold text-3xl">
+                {planDistribution.PREMIUM.value}
+              </p>
               <p className="text-muted-foreground text-xs">
-                {((stats.plans.premium / stats.businesses.total) * 100).toFixed(
-                  1,
-                )}
-                % del total
+                {planDistribution.PREMIUM.percentage.toFixed(1)}% del total
               </p>
             </div>
           </div>
@@ -373,11 +419,10 @@ export default async function AdminDashboard() {
 
       {/* Charts */}
       <div className="grid gap-4 md:grid-cols-2">
-        <RevenueChart data={monthlyRevenue} />
-        <BusinessGrowthChart data={businessGrowth} />
+        <BusinessGrowthChart data={businessGrowthData} />
+        <PlanDistributionChart data={planDistribution} />
       </div>
-
-      <PlanDistributionChart data={planDistribution} />
+      <RevenueChart data={monthlyData} />
     </div>
   );
 }

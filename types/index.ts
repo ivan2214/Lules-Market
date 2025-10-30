@@ -109,12 +109,29 @@ export interface Analytics {
   bannedBusinesses: number;
   bannedProducts: number;
   planDistribution: {
-    FREE: number;
-    BASIC: number;
-    PREMIUM: number;
+    FREE: {
+      value: number;
+      percentage: number;
+    };
+    BASIC: {
+      value: number;
+      percentage: number;
+    };
+    PREMIUM: {
+      value: number;
+      percentage: number;
+    };
   };
-  monthlyRevenue: Array<{ month: string; revenue: number }>;
-  businessGrowth: Array<{ month: string; count: number }>;
+  monthlyRevenue: {
+    data: Array<{ month: string; revenue: number }>;
+    trend: "up" | "down" | "stable";
+    percentage: number;
+  };
+  businessGrowth: {
+    data: Array<{ month: string; count: number }>;
+    trend: "up" | "down" | "stable";
+    percentage: number;
+  };
 }
 
 export interface DashboardStats {

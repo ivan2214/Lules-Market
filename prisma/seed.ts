@@ -278,7 +278,7 @@ async function main() {
     }
 
     // --- PAYMENTS (past and present) ---
-    const payments = faker.number.int({ min: 1, max: 5 });
+    const payments = faker.number.int({ min: 1, max: 20 });
     let hasApprovedPayment = false;
 
     for (let p = 0; p < payments; p++) {
@@ -341,7 +341,7 @@ async function main() {
       const usedCount = faker.number.int({ min: 0, max: maxUses });
       const expiresAt = faker.helpers.maybe(
         () => faker.date.soon({ days: 90 }),
-        { probability: 0.7 }
+        { probability: 0.7 },
       );
 
       const coupon = await prisma.coupon.create({

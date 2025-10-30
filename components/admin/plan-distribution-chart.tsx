@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, LabelList, Pie, PieChart } from "recharts";
 import {
   Card,
   CardContent,
@@ -15,63 +8,98 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import type { Analytics } from "@/types";
 
 interface PlanDistributionChartProps {
   data: Analytics["planDistribution"];
 }
 
-const COLORS = {
-  FREE: "hsl(var(--chart-1))",
-  BASIC: "hsl(var(--chart-2))",
-  PREMIUM: "hsl(var(--chart-3))",
-};
+// Configuración de colores y etiquetas
+const chartConfig = {
+  FREE: {
+    label: "Free",
+    color: "var(--chart-1)",
+  },
+  BASIC: {
+    label: "Basic",
+    color: "var(--chart-2)",
+  },
+  PREMIUM: {
+    label: "Premium",
+    color: "var(--chart-3)",
+  },
+} satisfies ChartConfig;
 
 export function PlanDistributionChart({ data }: PlanDistributionChartProps) {
+  // 🔥 Adaptar a la estructura real que llega desde el backend
   const chartData = [
-    { name: "FREE", value: data.FREE },
-    { name: "BASIC", value: data.BASIC },
-    { name: "PREMIUM", value: data.PREMIUM },
+    { name: "FREE", value: data.FREE.value },
+    { name: "BASIC", value: data.BASIC.value },
+    { name: "PREMIUM", value: data.PREMIUM.value },
   ];
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="flex flex-col">
+      <CardHeader className="items-center pb-0">
         <CardTitle>Distribución de Planes</CardTitle>
         <CardDescription>Negocios por tipo de plan</CardDescription>
       </CardHeader>
+
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
+        >
           <PieChart>
+            <ChartTooltip
+              content={<ChartTooltipContent nameKey="name" hideLabel />}
+            />
+
             <Pie
               data={chartData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
-              }
-              outerRadius={80}
-              fill="#8884d8"
               dataKey="value"
+              nameKey="name"
+              innerRadius={60}
+              outerRadius={90}
+              stroke="hsl(var(--background))"
+              strokeWidth={2}
             >
+              {/* Aplica color diferente a cada sector */}
               {chartData.map((entry) => (
                 <Cell
-                  key={`cell-${entry.name}`}
-                  fill={COLORS[entry.name as keyof typeof COLORS]}
+                  key={entry.name}
+                  fill={
+                    chartConfig[entry.name as keyof typeof chartConfig].color
+                  }
                 />
               ))}
+
+              {/* Etiqueta interna */}
+              <LabelList
+                dataKey="name"
+                className="fill-background"
+                stroke="none"
+                fontSize={12}
+                formatter={(value: keyof typeof chartConfig) =>
+                  chartConfig[value]?.label
+                }
+              />
             </Pie>
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-              }}
+
+            <ChartLegend
+              content={<ChartLegendContent nameKey="name" />}
+              className="-translate-y-2 flex-wrap gap-2 *:basis-1/3 *:justify-center"
             />
-            <Legend />
           </PieChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
