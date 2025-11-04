@@ -1,10 +1,10 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
 import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { type HTMLAttributes, startTransition, useMemo, useState } from "react";
+import { type HTMLAttributes, useMemo, useState } from "react";
+import { Controller, Form } from "react-hook-form";
 import {
   createProductAction,
   updateProductAction,
@@ -12,7 +12,6 @@ import {
 import {
   ProductCreateInputSchema,
   type ProductDTO,
-  ProductUpdateInputSchema,
 } from "@/app/data/product/product.dto";
 import { Button } from "@/components/ui/button";
 import {
@@ -77,64 +76,41 @@ export function ProductFormDialog({
 
   const action = product ? updateProductAction : createProductAction;
 
-  const { execute, pending } = useAction(action, {}, actionOptions);
-
-  const form = useForm({
-    defaultValues: product?.id
-      ? {
-          productId: product.id,
-          name: product.name,
-          description: product.description || "",
-          price: product.price || 0,
-          category: product.category,
-          images: product?.images?.map((img) => ({
-            url: img.url,
-            key: img.key,
-            name: img.name ?? undefined,
-            isMainImage: img.isMainImage,
-            size: img.size ?? undefined,
-          })),
-          active: product.active,
-          featured: product.featured,
-        }
-      : {
-          name: "",
-          description: "",
-          price: 0,
-          category: "",
-          images: [],
-          active: true,
-          featured: false,
-        },
-    // Elimina los validators de aquí
-    onSubmit: ({ value }) => {
-      console.log("submite en form");
-
-      // Valida manualmente según el contexto
-      const schema = product
-        ? ProductUpdateInputSchema
-        : ProductCreateInputSchema;
-
-      const validation = schema.safeParse(value);
-
-      if (!validation.success) {
-        console.log("Invalid:", validation.error.issues);
-        return;
+  const defaultValue = product?.id
+    ? {
+        productId: product.id,
+        name: product.name,
+        description: product.description || "",
+        price: product.price || 0,
+        category: product.category,
+        images: product?.images?.map((img) => ({
+          url: img.url,
+          key: img.key,
+          name: img.name ?? undefined,
+          isMainImage: img.isMainImage,
+          size: img.size ?? undefined,
+        })),
+        active: product.active,
+        featured: product.featured,
       }
+    : {
+        name: "",
+        description: "",
+        price: 0,
+        category: "",
+        images: [],
+        active: true,
+        featured: false,
+      };
 
-      const data =
-        "productId" in value
-          ? {
-              ...value,
-              productId: value.productId,
-            }
-          : { ...value };
+  const { execute, form, pending } = useAction(
+    action,
+    {},
+    ProductCreateInputSchema,
+    defaultValue,
+    actionOptions,
+  );
 
-      startTransition(() => {
-        execute(data);
-      });
-    },
-  });
   return (
     <Dialog open={open} onOpenChange={setOpen} modal>
       <DialogTrigger asChild>
@@ -163,119 +139,111 @@ export function ProductFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form
-          id="product-form"
-          aria-disabled={isViewMode}
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (isViewMode) return;
-            form.handleSubmit();
-          }}
-          className="space-y-4"
-        >
-          <FieldGroup>
-            <form.Field name="name">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
+        <Form {...form}>
+          <form
+            id="product-form"
+            aria-disabled={isViewMode}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (isViewMode) return;
+              execute();
+            }}
+            className="space-y-4"
+          >
+            <FieldGroup>
+              {/* Nombre */}
+              <Controller
+                name="name"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
                     <Input
+                      {...field}
                       id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="Nombre del producto"
-                      aria-invalid={isInvalid}
+                      aria-invalid={!!fieldState.invalid}
                       disabled={isViewMode || pending}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="description">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor="product-form">Descripción</FieldLabel>
+                )}
+              />
+
+              {/* Descripción */}
+              <Controller
+                name="description"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Descripción</FieldLabel>
                     <Textarea
-                      id="product-form"
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
+                      {...field}
+                      id={field.name}
                       placeholder="Describe el producto"
                       className="min-h-[120px]"
+                      aria-invalid={!!fieldState.invalid}
                       disabled={isViewMode || pending}
                     />
                     <FieldDescription>Describe el producto</FieldDescription>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="price">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
+                )}
+              />
+
+              {/* Precio */}
+              <Controller
+                name="price"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Precio</FieldLabel>
                     <Input
                       type="number"
                       id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) =>
-                        field.handleChange(Number(e.target.value))
-                      }
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                       placeholder="Precio del producto"
-                      aria-invalid={isInvalid}
+                      aria-invalid={!!fieldState.invalid}
                       disabled={isViewMode || pending}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="category">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field orientation="responsive" data-invalid={isInvalid}>
+                )}
+              />
+
+              {/* Categoría */}
+              <Controller
+                name="category"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    orientation="responsive"
+                    data-invalid={!!fieldState.invalid}
+                  >
                     <FieldContent>
                       <FieldLabel htmlFor={field.name}>Categoría</FieldLabel>
                       <FieldDescription>
                         Selecciona la categoría del producto
                       </FieldDescription>
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
                       )}
                     </FieldContent>
                     <Select
-                      name={field.name}
-                      value={field.state.value || undefined}
-                      onValueChange={field.handleChange}
+                      value={field.value || ""}
+                      onValueChange={field.onChange}
                       disabled={isViewMode || pending}
-                      aria-invalid={isInvalid}
                     >
                       <SelectTrigger
-                        id="product-form"
-                        aria-invalid={isInvalid}
+                        id={field.name}
+                        aria-invalid={!!fieldState.invalid}
                         className="min-w-[120px]"
                       >
                         <SelectValue placeholder="Seleccionar categoría" />
@@ -293,71 +261,74 @@ export function ProductFormDialog({
                       </SelectContent>
                     </Select>
                   </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="featured">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field orientation="horizontal" data-invalid={isInvalid}>
+                )}
+              />
+
+              {/* Destacado */}
+              <Controller
+                name="featured"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    orientation="horizontal"
+                    data-invalid={!!fieldState.invalid}
+                  >
                     <FieldContent>
-                      <FieldLabel htmlFor="product-form">Destacado</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>Destacado</FieldLabel>
                       <FieldDescription>
                         Destaca este producto en la lista de productos.
                       </FieldDescription>
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
                       )}
                     </FieldContent>
                     <Switch
-                      id="product-form"
-                      name={field.name}
-                      checked={field.state.value}
-                      onCheckedChange={field.handleChange}
-                      aria-invalid={isInvalid}
+                      id={field.name}
+                      checked={!!field.value}
+                      onCheckedChange={field.onChange}
+                      aria-invalid={!!fieldState.invalid}
                       disabled={isViewMode || pending}
                     />
                   </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="active">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field orientation="horizontal" data-invalid={isInvalid}>
+                )}
+              />
+
+              {/* Activo */}
+              <Controller
+                name="active"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    orientation="horizontal"
+                    data-invalid={!!fieldState.invalid}
+                  >
                     <FieldContent>
-                      <FieldLabel htmlFor="product-form">Activo</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>Activo</FieldLabel>
                       <FieldDescription>
-                        Activa este producto para que sea visible en la lista de
-                        productos.
+                        Activa este producto para que sea visible en la lista.
                       </FieldDescription>
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
                       )}
                     </FieldContent>
                     <Switch
-                      id="product-form"
-                      name={field.name}
-                      checked={field.state.value}
-                      onCheckedChange={field.handleChange}
-                      aria-invalid={isInvalid}
+                      id={field.name}
+                      checked={!!field.value}
+                      onCheckedChange={field.onChange}
+                      aria-invalid={!!fieldState.invalid}
                       disabled={isViewMode || pending}
                     />
                   </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="images">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Imagenes</FieldLabel>
+                )}
+              />
+
+              {/* Imágenes */}
+              <Controller
+                name="images"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Imágenes</FieldLabel>
                     <Uploader
                       folder="products"
                       onChange={(value) => {
@@ -370,46 +341,47 @@ export function ProductFormDialog({
                           isMainImage: file.isMainImage ?? false,
                           size: file.size ?? undefined,
                         }));
-                        field.handleChange(images);
-                        console.log("Imagenes actualizadas", images);
+                        field.onChange(images);
+                        console.log("Imágenes actualizadas", images);
                       }}
                       variant="compact"
                       placeholder="Sube 1 imagen o máximo 4"
                       maxSize={1024 * 1024 * 5}
                       maxFiles={4}
-                      value={field.state.value}
-                      disabled={isViewMode || pending || isInvalid}
-                      aria-invalid={isInvalid}
+                      value={field.value}
+                      disabled={isViewMode || pending}
+                      aria-invalid={!!fieldState.invalid}
                     />
-
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
-                );
-              }}
-            </form.Field>
-          </FieldGroup>
+                )}
+              />
+            </FieldGroup>
 
-          {!isViewMode && (
-            <DialogFooter>
-              <Field orientation="horizontal">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={pending}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={pending}>
-                  {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {product ? "Actualizar" : "Crear Producto"}
-                </Button>
-              </Field>
-            </DialogFooter>
-          )}
-        </form>
+            {!isViewMode && (
+              <DialogFooter>
+                <Field orientation="horizontal">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                    disabled={pending}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={pending}>
+                    {pending && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {product ? "Actualizar" : "Crear Producto"}
+                  </Button>
+                </Field>
+              </DialogFooter>
+            )}
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

@@ -12,4 +12,5 @@ export interface UploaderProps {
   className?: string;
   placeholder?: string;
   folder: string;
+  id?: string | undefined;
 }

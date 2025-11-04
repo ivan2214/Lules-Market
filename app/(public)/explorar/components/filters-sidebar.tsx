@@ -57,7 +57,7 @@ export function FiltersSidebar({
       | undefined,
   };
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} collapsible="icon">
       <SidebarHeader className="mt-16">
         <SearchFormSidebar />
       </SidebarHeader>

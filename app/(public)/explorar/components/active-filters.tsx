@@ -39,27 +39,31 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
       {params.search && (
         <Badge variant="secondary" className="gap-1.5">
           <span>Búsqueda: {params.search}</span>
-          <button
+          <Button
             type="button"
             onClick={() => handleRemoveFilter("search")}
-            className="ml-1 rounded-sm p-0.5 transition-colors hover:bg-muted"
             aria-label="Eliminar filtro de búsqueda"
+            variant={"ghost"}
+            size={"icon"}
+            className="ml-2 h-6 w-6 rounded-full transition-colors hover:bg-muted"
           >
-            <X className="h-3 w-3" />
-          </button>
+            <X className="h-3 w-3 rounded-full text-destructive hover:rounded-full" />
+          </Button>
         </Badge>
       )}
       {params.category && (
         <Badge variant="secondary" className="gap-1.5">
           <span>Categoría: {params.category}</span>
-          <button
+          <Button
             type="button"
             onClick={() => handleRemoveFilter("category")}
-            className="ml-1 rounded-sm p-0.5 transition-colors hover:bg-muted"
             aria-label="Eliminar filtro de categoría"
+            variant={"ghost"}
+            size={"icon"}
+            className="ml-2 h-6 w-6 rounded-full transition-colors hover:bg-muted"
           >
-            <X className="h-3 w-3" />
-          </button>
+            <X className="h-3 w-3 rounded-full text-destructive hover:rounded-full" />
+          </Button>
         </Badge>
       )}
       {params.businessId && (
@@ -69,14 +73,16 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
             {businesses.find((b) => b.id === params.businessId)?.name ||
               params.businessId}
           </span>
-          <button
+          <Button
             type="button"
             onClick={() => handleRemoveFilter("businessId")}
-            className="ml-1 rounded-sm p-0.5 transition-colors hover:bg-muted"
             aria-label="Eliminar filtro de negocio"
+            variant={"ghost"}
+            size={"icon"}
+            className="ml-2 h-6 w-6 rounded-full transition-colors hover:bg-muted"
           >
-            <X className="h-3 w-3" />
-          </button>
+            <X className="h-3 w-3 rounded-full text-destructive hover:rounded-full" />
+          </Button>
         </Badge>
       )}
       {params.sort && (
@@ -91,14 +97,16 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
                   ? "Nombre: A-Z"
                   : "Nombre: Z-A"}
           </span>
-          <button
+          <Button
             type="button"
             onClick={() => handleRemoveFilter("sort")}
-            className="ml-1 rounded-sm p-0.5 transition-colors hover:bg-muted"
             aria-label="Eliminar ordenamiento"
+            variant={"ghost"}
+            size={"icon"}
+            className="ml-2 h-6 w-6 rounded-full transition-colors hover:bg-muted"
           >
-            <X className="h-3 w-3" />
-          </button>
+            <X className="h-3 w-3 rounded-full text-destructive hover:rounded-full" />
+          </Button>
         </Badge>
       )}
       {(params.search ||
@@ -106,9 +114,9 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
         params.businessId ||
         params.sort) && (
         <Button
-          variant="ghost"
           size="sm"
           onClick={handleClearAll}
+          variant={"destructive"}
           className="ml-auto"
         >
           Limpiar todos

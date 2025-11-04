@@ -10,7 +10,10 @@ import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { createBusiness, updateBusiness } from "../data/business/business.dal";
 
-export async function createBusinessAction(data: BusinessCreateInput) {
+export async function createBusinessAction(
+  _prevState: ActionResult,
+  data: BusinessCreateInput
+): Promise<ActionResult> {
   try {
     const result: ActionResult = await createBusiness(data);
 
@@ -29,7 +32,10 @@ export async function createBusinessAction(data: BusinessCreateInput) {
   }
 }
 
-export async function updateBusinessAction(data: BusinessUpdateInput) {
+export async function updateBusinessAction(
+  _prevState: ActionResult,
+  data: BusinessUpdateInput
+): Promise<ActionResult> {
   try {
     const result: ActionResult = await updateBusiness(data);
 

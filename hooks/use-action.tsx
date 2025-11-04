@@ -1,13 +1,27 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <necesario> */
 "use client";
-
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useActionState, useCallback, useEffect, useRef } from "react";
+import {
+  startTransition,
+  useActionState,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+import {
+  type DefaultValues,
+  type FieldValues,
+  type Resolver,
+  type UseFormReturn,
+  useForm,
+} from "react-hook-form";
 import { toast } from "sonner";
+import type { ZodType } from "zod";
 
 export interface ActionResult {
   errorMessage?: string;
   successMessage?: string;
-  // biome-ignore lint/suspicious/noExplicitAny: necesario
   data?: any;
 }
 
@@ -18,9 +32,16 @@ export interface ActionOptions<TState extends ActionResult> {
   showToasts?: boolean;
 }
 
-export function useAction<TInput, TState extends ActionResult>(
+export function useAction<
+  TInput extends FieldValues,
+  TState extends ActionResult,
+>(
   action: (prevState: TState, input: TInput) => Promise<TState>,
   initialState: Awaited<TState>,
+  // accept a ZodType parametrizado
+  formSchema: ZodType<TInput, any, any>,
+  // defaultValues tipado adecuadamente
+  defaultValues: DefaultValues<TInput>,
   options: ActionOptions<TState> = {},
 ) {
   const router = useRouter();
@@ -67,7 +88,26 @@ export function useAction<TInput, TState extends ActionResult>(
     }
   }, [state]);
 
-  const executeStable = useCallback(execute, []);
+  // zodResolver tiene firmas que a veces no encajan exactamente con los genéricos de RHF,
+  // así que creamos el resolver y casteamos al Resolver<TInput>.
+  const resolver = zodResolver(formSchema as any) as Resolver<TInput>;
 
-  return { state, execute: executeStable, pending };
+  const form = useForm<TInput>({
+    resolver,
+    defaultValues,
+  }) as UseFormReturn<TInput>; // opcional, ayuda al inference en el return
+
+  const executeForm = useCallback(
+    (input: TInput) => {
+      const isValid = formSchema.safeParse(input);
+      if (!isValid.success) {
+        toast.error(isValid.error.message);
+        return;
+      }
+      startTransition(() => execute(input));
+    },
+    [execute, formSchema.safeParse],
+  );
+
+  return { state, execute: form.handleSubmit(executeForm), pending, form };
 }

@@ -4,6 +4,7 @@ import type React from "react";
 import type { ImageCreateInput } from "@/app/data/image/image.dto";
 
 export type VariantCommonProps = {
+  id?: string | undefined;
   className?: string | undefined;
   disabled?: boolean | undefined;
   placeholder?: string | undefined;

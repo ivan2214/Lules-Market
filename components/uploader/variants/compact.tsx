@@ -35,6 +35,8 @@ export function CompactVariant(props: VariantCommonProps) {
     removeFile,
     handleMainImage,
     preview,
+    maxFiles,
+    id,
   } = props;
 
   return (
@@ -50,7 +52,7 @@ export function CompactVariant(props: VariantCommonProps) {
             disabled && "cursor-not-allowed opacity-50",
           )}
         >
-          <input {...getInputProps()} />
+          <input id={id} {...getInputProps()} />
           <Upload className="mx-auto mb-2 h-8 w-8 text-gray-400" />
           <p className="mb-1 font-medium text-gray-700 text-sm">
             {placeholder || "Subir archivos"}
@@ -92,7 +94,7 @@ export function CompactVariant(props: VariantCommonProps) {
                           alt={file.name || "Imagen"}
                           className="object-cover"
                         />
-                        {file.isMainImage && (
+                        {maxFiles && maxFiles > 1 && file.isMainImage && (
                           <Button
                             type="button"
                             size="icon"
@@ -141,7 +143,7 @@ export function CompactVariant(props: VariantCommonProps) {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                    {!file.isMainImage && (
+                    {maxFiles && maxFiles > 1 && !file.isMainImage && (
                       <Button
                         type="button"
                         size="icon"
@@ -235,7 +237,7 @@ export function CompactVariant(props: VariantCommonProps) {
                         </AlertDialog>
                       </div>
                     </CardContent>
-                    {!file.isMainImage && (
+                    {maxFiles && maxFiles > 1 && !file.isMainImage && (
                       <Button
                         title="Imagen principal"
                         type="button"
@@ -248,7 +250,7 @@ export function CompactVariant(props: VariantCommonProps) {
                         <StarIcon className="h-4 w-4 text-yellow-500" />
                       </Button>
                     )}
-                    {file.isMainImage && (
+                    {maxFiles && maxFiles > 1 && file.isMainImage && (
                       <Button
                         title="Marcar como principal"
                         type="button"
@@ -267,73 +269,72 @@ export function CompactVariant(props: VariantCommonProps) {
       ) : (
         value &&
         !Array.isArray(value) && (
-          <Card className="w-fit">
-            <CardContent>
-              <div
-                key={(value as ImageCreateInput).key}
-                className="group relative h-48 w-48"
-              >
-                {isImage(value as ImageCreateInput) ? (
-                  <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-                    <ImageWithSkeleton
-                      src={
-                        (value as ImageCreateInput).url || "/placeholder.svg"
-                      }
-                      alt={(value as ImageCreateInput).name || "Imagen"}
-                      className="object-cover"
-                    />
-                    {(value as ImageCreateInput).isMainImage && (
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="outline"
-                        className="absolute top-2 left-2 h-6 w-6"
-                      >
-                        <StarIcon className="h-4 w-4 text-yellow-500" />
-                      </Button>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex aspect-square items-center justify-center rounded-lg bg-gray-100">
-                    <File className="h-8 w-8 text-gray-400" />
-                  </div>
-                )}
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
+          <div className="w-fit">
+            <div
+              key={(value as ImageCreateInput).key}
+              className="group relative h-48 w-48"
+            >
+              {isImage(value as ImageCreateInput) ? (
+                <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+                  <ImageWithSkeleton
+                    src={(value as ImageCreateInput).url || "/placeholder.svg"}
+                    alt={(value as ImageCreateInput).name || "Imagen"}
+                    className="object-cover"
+                  />
+                  {(value as ImageCreateInput).isMainImage && (
                     <Button
                       type="button"
-                      variant="destructive"
                       size="icon"
-                      className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                      disabled={disabled}
+                      variant="outline"
+                      className="absolute top-2 left-2 h-6 w-6"
                     >
-                      <X className="h-3 w-3" />
+                      <StarIcon className="h-4 w-4 text-yellow-500" />
                     </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Estas seguro de eliminar esta imagen?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Es permanente (no se
-                        puede recuperar, deberas subir una nueva).
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-destructive text-white hover:bg-destructive/90"
-                        onClick={() =>
-                          removeFile((value as ImageCreateInput).key)
-                        }
-                      >
-                        Eliminar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                {!(value as ImageCreateInput).isMainImage && (
+                  )}
+                </div>
+              ) : (
+                <div className="flex aspect-square items-center justify-center rounded-lg bg-gray-100">
+                  <File className="h-8 w-8 text-gray-400" />
+                </div>
+              )}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                    disabled={disabled}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Estas seguro de eliminar esta imagen?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción no se puede deshacer. Es permanente (no se
+                      puede recuperar, deberas subir una nueva).
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-white hover:bg-destructive/90"
+                      onClick={() =>
+                        removeFile((value as ImageCreateInput).key)
+                      }
+                    >
+                      Eliminar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              {maxFiles &&
+                maxFiles > 1 &&
+                !(value as ImageCreateInput).isMainImage && (
                   <Button
                     type="button"
                     size="icon"
@@ -347,9 +348,8 @@ export function CompactVariant(props: VariantCommonProps) {
                     <StarIcon className="h-4 w-4 text-yellow-500" />
                   </Button>
                 )}
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )
       )}
     </div>

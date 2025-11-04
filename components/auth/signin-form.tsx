@@ -1,9 +1,8 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { startTransition } from "react";
+import { Controller } from "react-hook-form";
 import { businessSignInAction } from "@/app/actions/auth-actions";
 import { BusinessSignInInputSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
@@ -19,96 +18,80 @@ import { useAction } from "@/hooks/use-action";
 
 export function SignInForm() {
   const router = useRouter();
-  const { execute, pending } = useAction(
+
+  const defaultValues = {
+    email: "",
+    password: "",
+  };
+
+  const { execute, form, pending } = useAction(
     businessSignInAction,
     {},
+    BusinessSignInInputSchema,
+    defaultValues,
     {
       showToasts: true,
       onSuccess: ({ isAdmin, hasBusiness }) => {
-        isAdmin
-          ? router.push("/admin")
-          : hasBusiness
-            ? router.push("/dashboard")
-            : router.push("/auth/business-setup");
+        if (isAdmin) router.push("/admin");
+        else if (hasBusiness) router.push("/dashboard");
+        else router.push("/auth/business-setup");
       },
     },
   );
 
-  const form = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-    validators: {
-      onSubmit: BusinessSignInInputSchema,
-      onChange: BusinessSignInInputSchema,
-      onBlur: BusinessSignInInputSchema,
-    },
-    onSubmit: ({ value }) => {
-      startTransition(() => {
-        execute(value);
-      });
-    },
-  });
-
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-      className="space-y-4"
-      id="signin-form"
-    >
+    <form id="signin-form" className="space-y-4" onSubmit={execute}>
       <FieldGroup>
-        <form.Field name="email">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+        {/* Email */}
+        <Controller
+          name="email"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="email"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                onBlur={field.onBlur}
+                placeholder="tu@email.com"
+                aria-invalid={fieldState.invalid}
+                disabled={pending}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        {/* Password */}
+        <Controller
+          name="password"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Contraseña</FieldLabel>
+              <InputGroup>
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="tu@email.com"
-                  type="email"
-                  aria-invalid={isInvalid}
+                  type="password"
+                  value={field.value ?? ""}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  onBlur={field.onBlur}
+                  placeholder="••••••••"
+                  aria-invalid={fieldState.invalid}
+                  disabled={pending}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-        <form.Field name="password">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <InputGroup>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="••••••••"
-                    aria-invalid={isInvalid}
-                    type="password"
-                  />
-                </InputGroup>
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+              </InputGroup>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
       </FieldGroup>
 
+      {/* Botones */}
       <Field orientation="horizontal">
         <Button
           type="reset"
@@ -118,6 +101,7 @@ export function SignInForm() {
         >
           Cancelar
         </Button>
+
         <Button type="submit" disabled={pending} form="signin-form">
           {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Iniciar Sesión

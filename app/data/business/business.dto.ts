@@ -10,24 +10,20 @@ import type { UserDTO } from "../user/user.dto";
 export const BusinessCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   category: z.string().min(1, "La categoría es requerida"),
-  description: z.string().nullable(),
-  address: z.string().nullable(),
-  phone: z.string().nullable(),
-  email: z.string().email("Email inválido").nullable(),
-  website: z.string().url("URL inválida").nullable(),
-  hours: z.string().nullable(),
-  whatsapp: z.string().nullable(),
-  facebook: z.string().nullable(),
-  instagram: z.string().nullable(),
+  description: z.string(),
+  address: z.string(),
+  phone: z.string(),
+  email: z.email("Email inválido"),
+  website: z.url("URL inválida"),
+  whatsapp: z.string(),
+  facebook: z.string(),
+  instagram: z.string(),
   logo: ImageCreateInputSchema,
   coverImage: ImageCreateInputSchema,
 });
 export type BusinessCreateInput = z.infer<typeof BusinessCreateInputSchema>;
 
-export const BusinessUpdateInputSchema = BusinessCreateInputSchema.extend({
-  // para update no se requiere nada extra en la forma básica
-  id: z.string().min(1, "El ID del negocio es requerido").optional(),
-});
+export const BusinessUpdateInputSchema = BusinessCreateInputSchema;
 
 export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
 

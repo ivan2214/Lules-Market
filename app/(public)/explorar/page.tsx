@@ -61,7 +61,7 @@ export default async function ExplorePage({
   const { businesses } = await getPublicBusinesses();
 
   return (
-    <section className="mx-auto w-full py-5 lg:px-10">
+    <section className="mx-auto w-full px-4 py-5">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">

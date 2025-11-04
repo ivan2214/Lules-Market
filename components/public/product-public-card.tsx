@@ -2,18 +2,33 @@ import { Star, Store } from "lucide-react";
 import Link from "next/link";
 import type { ProductDTO } from "@/app/data/product/product.dto";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 
 interface ProductPublicCardProps {
   product: ProductDTO;
+  isCarrousel?: boolean;
 }
 
-export function ProductPublicCard({ product }: ProductPublicCardProps) {
+export function ProductPublicCard({
+  product,
+  isCarrousel = true,
+}: ProductPublicCardProps) {
   return (
-    <Card className="h-96 w-64 overflow-hidden p-0 transition-shadow hover:shadow-lg">
-      <div className="relative aspect-square overflow-hidden bg-muted">
+    <Card
+      className={cn(
+        "h-96 w-full overflow-hidden p-0 transition-shadow hover:shadow-lg lg:w-56",
+        isCarrousel && "w-64",
+      )}
+    >
+      <CardHeader className="relative aspect-square h-2/3 overflow-hidden bg-muted p-0 lg:h-1/3">
         {product.images?.[0] ? (
           <ImageWithSkeleton
             src={product.images[0].url || "/placeholder.svg"}
@@ -31,7 +46,7 @@ export function ProductPublicCard({ product }: ProductPublicCardProps) {
             Destacado
           </Badge>
         )}
-      </div>
+      </CardHeader>
 
       <CardContent className="px-4 py-0">
         <Link href={`/productos/${product.id}`}>

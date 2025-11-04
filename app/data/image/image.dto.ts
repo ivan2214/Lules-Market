@@ -14,9 +14,9 @@ export type CleanImage = Omit<
 export const ImageCreateInputSchema = z.object({
   url: z.url("La URL de la imagen es inválida"),
   key: z.string().min(1, "La llave de la imagen es requerida"),
-  name: z.string().nullish(),
+  name: z.string(),
   isMainImage: z.boolean(),
-  size: z.number().nullish(),
+  size: z.number(),
 });
 
 export type ImageCreateInput = z.infer<typeof ImageCreateInputSchema>;

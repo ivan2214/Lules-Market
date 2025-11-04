@@ -15,7 +15,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { VariantCommonProps } from "./types";
 
@@ -28,13 +27,17 @@ export function AvatarVariant(props: VariantCommonProps) {
     uploading,
     getRootProps,
     getInputProps,
-    canUploadMoreFiles,
+
     removeFile,
   } = props;
+  console.log({
+    value,
+    uploading,
+  });
 
   return (
     <div className={cn("space-y-2", className)}>
-      {!uploading && canUploadMoreFiles(value, props.maxFiles) && (
+      {!uploading && !(value as ImageCreateInput)?.url ? (
         <div
           {...getRootProps()}
           className={cn(
@@ -51,58 +54,50 @@ export function AvatarVariant(props: VariantCommonProps) {
             {placeholder || "Arrastra archivos o haz clic para seleccionar"}
           </p>
         </div>
+      ) : (
+        <div className="group relative h-32 w-32">
+          <ImageWithSkeleton
+            src={(value as ImageCreateInput).url || "/placeholder.svg"}
+            alt={(value as ImageCreateInput).name || "Avatar"}
+            className="aspect-square h-full min-h-32 w-full min-w-32 rounded-full border-4 border-gray-200 object-cover object-center"
+          />
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                disabled={disabled}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Estas seguro de eliminar esta imagen?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta acción no se puede deshacer. Es permanente (no se puede
+                  recuperar, deberas subir una nueva).
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                  onClick={() => removeFile((value as ImageCreateInput).key)}
+                >
+                  Eliminar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       )}
 
-      {uploading && <div className="h-2 bg-gray-100" />}
-
-      {value && !Array.isArray(value) && (
-        <Card className="w-fit">
-          <CardContent className="flex items-center gap-4">
-            <div className="group relative h-32 w-32">
-              <ImageWithSkeleton
-                src={(value as ImageCreateInput).url || "/placeholder.svg"}
-                alt={(value as ImageCreateInput).name || "Avatar"}
-                className="h-full min-h-32 w-full min-w-32 rounded-full border-4 border-gray-200"
-              />
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-0 right-0 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                    disabled={disabled}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Estas seguro de eliminar esta imagen?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Esta acción no se puede deshacer. Es permanente (no se
-                      puede recuperar, deberas subir una nueva).
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                      className="bg-destructive text-white hover:bg-destructive/90"
-                      onClick={() =>
-                        removeFile((value as ImageCreateInput).key)
-                      }
-                    >
-                      Eliminar
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {uploading && <div className="h-2 rounded-full bg-gray-100" />}
     </div>
   );
 }

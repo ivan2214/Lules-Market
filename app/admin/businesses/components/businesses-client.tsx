@@ -54,7 +54,16 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       ),
     },
     {
-      accessorKey: "ownerName",
+      accessorKey: "email",
+      header: "Email del negocio",
+      cell: ({ row }) => (
+        <div>
+          <div className="font-medium">{row.original.email}</div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "user.name",
       header: "Propietario",
     },
     {

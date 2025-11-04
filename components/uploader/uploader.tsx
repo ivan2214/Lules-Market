@@ -27,6 +27,7 @@ export function Uploader({
   className,
   placeholder,
   folder,
+  id,
 }: UploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -273,6 +274,7 @@ export function Uploader({
         preview={preview}
         maxFiles={maxFiles}
         maxSize={maxSize}
+        id={id}
       />
     );
   }

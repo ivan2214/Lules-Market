@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { startTransition, useEffect, useRef, useState } from "react";
+import { Activity, startTransition, useEffect, useRef, useState } from "react";
 import { getPublicProducts } from "@/app/actions/public-actions";
 import type { ProductDTO } from "@/app/data/product/product.dto";
 import { cn } from "@/lib/utils";
@@ -73,6 +73,7 @@ export const SearchForm = () => {
         </div>
       </form>
       {/* preview de los resultados que habira */}
+      <Activity mode={results.products.length && search!=="" ? "visible" : "hidden"}>
       <section
         className={cn(
           "absolute z-50 mt-2 flex h-auto max-h-60 w-full max-w-md flex-1 flex-col items-center gap-4 overflow-y-scroll rounded-md bg-white p-5 opacity-0 shadow-lg transition-opacity duration-200 ease-in lg:max-w-lg",
@@ -131,6 +132,7 @@ export const SearchForm = () => {
           </div>
         )}
       </section>
+      </Activity>
     </section>
   );
 };
