@@ -10,7 +10,6 @@ import { canUploadMoreFiles, isValueArray } from "./uploader.helpers";
 import type { UploaderProps } from "./uploader.types";
 import {
   AvatarVariant,
-  CompactVariant,
   DefaultVariant,
   MinimalVariant,
 } from "./uploader.variants";
@@ -29,7 +28,13 @@ export function Uploader({
   folder,
   id,
 }: UploaderProps) {
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState<{
+    isLoading: boolean;
+    isDeleting: boolean;
+  }>({
+    isLoading: false,
+    isDeleting: false,
+  });
   const [uploadProgress, setUploadProgress] = useState(0);
   const { uploadToS3, deleteFromS3 } = useS3Uploader(folder);
 
@@ -122,7 +127,10 @@ export function Uploader({
         return;
       }
 
-      setUploading(true);
+      setUploading({
+        isLoading: true,
+        isDeleting: false,
+      });
       setUploadProgress(0);
 
       const uploadedArray: ImageCreateInput[] = [];
@@ -151,7 +159,10 @@ export function Uploader({
         toast.success("Archivo subido");
       }
 
-      setUploading(false);
+      setUploading({
+        isLoading: false,
+        isDeleting: false,
+      });
       setUploadProgress(0);
     },
     [value, maxFiles, maxSize, onChange, disabled, uploadFile],
@@ -183,15 +194,18 @@ export function Uploader({
       {} as Record<string, string[]>,
     ),
     maxFiles: maxFiles - (isValueArray(value) ? value.length : 0),
-    disabled: disabled || uploading,
+    disabled: disabled || uploading.isLoading || uploading.isDeleting,
     maxSize: maxSize * 1024 * 1024, // in bytes
   });
 
   const removeFile = async (keyToRemove: string) => {
     if (disabled) return;
     try {
-      setUploading(true);
-      setUploadProgress(0);
+      setUploading({
+        isLoading: false,
+        isDeleting: true,
+      });
+
       const { success, error } = await deleteFromS3(keyToRemove);
 
       if (!success || error) {
@@ -217,6 +231,11 @@ export function Uploader({
       toast.success("Archivo eliminado");
     } catch {
       toast.error("Error al eliminar");
+    } finally {
+      setUploading({
+        isLoading: false,
+        isDeleting: false,
+      });
     }
   };
 
@@ -256,29 +275,6 @@ export function Uploader({
         maxSize={maxSize}
         id={id}
         preview={preview}
-      />
-    );
-  }
-
-  if (variant === "compact") {
-    return (
-      <CompactVariant
-        className={className}
-        disabled={disabled}
-        placeholder={placeholder}
-        value={value}
-        uploading={uploading}
-        uploadProgress={uploadProgress}
-        getRootProps={getRootProps}
-        getInputProps={getInputProps}
-        isDragActive={isDragActive}
-        canUploadMoreFiles={canUploadMoreFiles}
-        removeFile={removeFile}
-        handleMainImage={handleMainImage}
-        preview={preview}
-        maxFiles={maxFiles}
-        maxSize={maxSize}
-        id={id}
       />
     );
   }

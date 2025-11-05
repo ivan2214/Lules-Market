@@ -30,7 +30,7 @@ export function MinimalVariant(props: VariantCommonProps) {
     getInputProps,
     canUploadMoreFiles,
     removeFile,
-  } = props;
+  }: VariantCommonProps = props;
 
   const canUpload = canUploadMoreFiles(value, props.maxFiles);
   const { maxFiles } = props;
@@ -43,7 +43,7 @@ export function MinimalVariant(props: VariantCommonProps) {
 
   return (
     <div className={cn("space-y-2", className)}>
-      {!uploading && canUpload && (
+      {!uploading?.isLoading && !uploading?.isDeleting && canUpload && (
         <div
           {...getRootProps()}
           className={cn(
@@ -62,10 +62,17 @@ export function MinimalVariant(props: VariantCommonProps) {
         </div>
       )}
 
-      {uploading && (
+      {uploading?.isLoading && (
         <div className="space-y-2">
           <div className="h-2 bg-gray-100" />
           <p className="text-center text-gray-500 text-xs">Subiendo...</p>
+        </div>
+      )}
+
+      {uploading?.isDeleting && (
+        <div className="space-y-2">
+          <div className="h-2 bg-gray-100" />
+          <p className="text-center text-gray-500 text-xs">Eliminando...</p>
         </div>
       )}
 

@@ -29,15 +29,13 @@ export function AvatarVariant(props: VariantCommonProps) {
     getInputProps,
 
     removeFile,
-  } = props;
-  console.log({
-    value,
-    uploading,
-  });
+  }: VariantCommonProps = props;
 
   return (
     <div className={cn("space-y-2", className)}>
-      {!uploading && !(value as ImageCreateInput)?.url ? (
+      {!uploading?.isLoading &&
+      !uploading?.isDeleting &&
+      !(value as ImageCreateInput)?.url ? (
         <div
           {...getRootProps()}
           className={cn(
@@ -97,7 +95,9 @@ export function AvatarVariant(props: VariantCommonProps) {
         </div>
       )}
 
-      {uploading && <div className="h-2 rounded-full bg-gray-100" />}
+      {(uploading?.isLoading || uploading?.isDeleting) && (
+        <div className="h-2 rounded-full bg-gray-100" />
+      )}
     </div>
   );
 }

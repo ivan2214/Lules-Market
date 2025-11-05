@@ -34,63 +34,76 @@ export function DefaultVariant(props: VariantCommonProps) {
     getInputProps,
     canUploadMoreFiles,
     removeFile,
-  } = props;
+  }: VariantCommonProps = props;
 
   return (
     <div className={cn("space-y-4", className)}>
-      {!uploading && canUploadMoreFiles(value, props.maxFiles) && (
-        <div
-          {...getRootProps()}
-          className={cn(
-            "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
-            props.isDragActive
-              ? "border-red-500 bg-red-50"
-              : "border-gray-300 hover:border-gray-400",
-            disabled && "cursor-not-allowed opacity-50",
-          )}
-        >
-          <input {...getInputProps()} />
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <div className="rounded-full bg-gray-100 p-3">
-                <Upload className="h-8 w-8 text-gray-600" />
+      {!uploading?.isLoading &&
+        !uploading?.isDeleting &&
+        canUploadMoreFiles(value, props.maxFiles) && (
+          <div
+            {...getRootProps()}
+            className={cn(
+              "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
+              props.isDragActive
+                ? "border-red-500 bg-red-50"
+                : "border-gray-300 hover:border-gray-400",
+              disabled && "cursor-not-allowed opacity-50",
+            )}
+          >
+            <input {...getInputProps()} />
+            <div className="space-y-4">
+              <div className="flex justify-center">
+                <div className="rounded-full bg-gray-100 p-3">
+                  <Upload className="h-8 w-8 text-gray-600" />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <p className="mb-2 font-medium text-gray-700 text-lg">
-                {props.isDragActive
-                  ? "Suelta los archivos aquí"
-                  : placeholder || "Arrastra archivos aquí"}
-              </p>
-              <p className="mb-4 text-gray-500 text-sm">
-                o haz clic para seleccionar archivos
-              </p>
-              <div className="flex justify-center gap-4 text-gray-400 text-xs">
-                <span>Máximo {props.maxFiles} archivos</span>
-                <span>•</span>
-                <span>Hasta {props.maxSize}MB cada uno</span>
+              <div>
+                <p className="mb-2 font-medium text-gray-700 text-lg">
+                  {props.isDragActive
+                    ? "Suelta los archivos aquí"
+                    : placeholder || "Arrastra archivos aquí"}
+                </p>
+                <p className="mb-4 text-gray-500 text-sm">
+                  o haz clic para seleccionar archivos
+                </p>
+                <div className="flex justify-center gap-4 text-gray-400 text-xs">
+                  <span>Máximo {props.maxFiles} archivos</span>
+                  <span>•</span>
+                  <span>Hasta {props.maxSize}MB cada uno</span>
+                </div>
               </div>
-            </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              disabled={disabled || uploading}
-            >
-              Seleccionar archivos
-            </Button>
+              <Button type="button" variant="outline" disabled={disabled}>
+                Seleccionar archivos
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {uploading && (
+      {uploading?.isLoading && (
         <Card>
           <CardContent className="p-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-medium text-sm">
                   Subiendo archivos...
+                </span>
+                <span className="text-gray-500 text-sm">{uploadProgress}%</span>
+              </div>
+              <Progress value={uploadProgress} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      {uploading?.isDeleting && (
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-sm">
+                  Eliminando archivos...
                 </span>
                 <span className="text-gray-500 text-sm">{uploadProgress}%</span>
               </div>

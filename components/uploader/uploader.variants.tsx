@@ -2,7 +2,6 @@
 
 export {
   AvatarVariant,
-  CompactVariant,
   DefaultVariant,
   MinimalVariant,
 } from "./variants";
