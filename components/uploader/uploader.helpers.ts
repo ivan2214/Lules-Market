@@ -29,18 +29,18 @@ export const isImage = (file: ImageCreateInput): boolean => {
  * Guards de tipo utilizados por el componente principal.
  */
 export const isImageCreateInput = (
-  val: ImageCreateInput | ImageCreateInput[] | null | undefined
+  val: ImageCreateInput | ImageCreateInput[] | null | undefined,
 ): val is ImageCreateInput => !!val && !Array.isArray(val);
 
 export const isValueArray = (
-  val: ImageCreateInput | ImageCreateInput[] | null | undefined
+  val: ImageCreateInput | ImageCreateInput[] | null | undefined,
 ): val is ImageCreateInput[] => Array.isArray(val);
 
 export const canUploadMoreFiles = (
   value: ImageCreateInput | ImageCreateInput[] | null | undefined,
-  max = 5
+  max = 5,
 ): boolean => {
-  if (!value) return true;
+  if (!value || (value as ImageCreateInput).url === "") return true;
   if (Array.isArray(value)) return value.length < max;
   return max > 1 ? 1 < max : false;
 };

@@ -13,7 +13,7 @@ import prisma from "@/lib/prisma";
 
 export const businessSignInAction = async (
   _prevState: ActionResult,
-  data: BusinessSignInInput
+  data: BusinessSignInInput,
 ): Promise<
   ActionResult & {
     isAdmin?: boolean;
@@ -89,7 +89,7 @@ export const businessSignInAction = async (
 
 export const businessSignUpAction = async (
   _prevState: ActionResult,
-  data: BusinessSignUpInput
+  data: BusinessSignUpInput,
 ): Promise<
   ActionResult & {
     isAdmin?: boolean;
@@ -108,6 +108,19 @@ export const businessSignUpAction = async (
       };
     }
     const { name, email, password } = validatedData.data;
+
+    const exists = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (exists) {
+      return {
+        errorMessage: "Email ya registrado.",
+      };
+    }
+
     const { user } = await auth.api.signUpEmail({
       body: {
         name,

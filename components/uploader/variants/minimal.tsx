@@ -2,8 +2,21 @@
 
 import { Upload, X } from "lucide-react";
 import type { ImageCreateInput } from "@/app/data/image/image.dto";
+import { ImageWithSkeleton } from "@/components/image-with-skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { isImage } from "../uploader.helpers";
 import type { VariantCommonProps } from "./types";
 
 export function MinimalVariant(props: VariantCommonProps) {
@@ -19,9 +32,18 @@ export function MinimalVariant(props: VariantCommonProps) {
     removeFile,
   } = props;
 
+  const canUpload = canUploadMoreFiles(value, props.maxFiles);
+  const { maxFiles } = props;
+
+  console.log({
+    canUpload,
+    value,
+    maxFiles,
+  });
+
   return (
     <div className={cn("space-y-2", className)}>
-      {!uploading && canUploadMoreFiles(value, props.maxFiles) && (
+      {!uploading && canUpload && (
         <div
           {...getRootProps()}
           className={cn(
@@ -69,24 +91,63 @@ export function MinimalVariant(props: VariantCommonProps) {
         </div>
       ) : (
         value &&
-        !Array.isArray(value) && (
+        !Array.isArray(value) &&
+        value.url !== "" && (
           <div className="space-y-1">
             <div
               key={(value as ImageCreateInput).key}
               className="flex items-center justify-between rounded bg-gray-50 p-2"
             >
-              <span className="truncate text-sm">
-                {(value as ImageCreateInput).name || "Archivo"}
-              </span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => removeFile((value as ImageCreateInput).key)}
-                disabled={disabled}
-              >
-                <X className="h-3 w-3" />
-              </Button>
+              <div className="flex items-center justify-start gap-2">
+                {isImage(value as ImageCreateInput) && (
+                  <div className="h-12 w-12">
+                    <ImageWithSkeleton
+                      src={value.url}
+                      alt={(value as ImageCreateInput).name}
+                      className="aspect-square h-full w-full rounded object-cover object-center"
+                    />
+                  </div>
+                )}
+                <span className="truncate text-sm">
+                  {(value as ImageCreateInput).name || "Archivo"}
+                </span>
+              </div>
+              <div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={disabled}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Estas seguro de eliminar esta imagen?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Esta acción no se puede deshacer. Es permanente (no se
+                        puede recuperar, deberas subir una nueva).
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-destructive text-white hover:bg-destructive/90"
+                        onClick={() =>
+                          removeFile((value as ImageCreateInput).key)
+                        }
+                      >
+                        Eliminar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
           </div>
         )

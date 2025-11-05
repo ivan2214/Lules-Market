@@ -190,6 +190,8 @@ export function Uploader({
   const removeFile = async (keyToRemove: string) => {
     if (disabled) return;
     try {
+      setUploading(true);
+      setUploadProgress(0);
       const { success, error } = await deleteFromS3(keyToRemove);
 
       if (!success || error) {
@@ -217,8 +219,6 @@ export function Uploader({
       toast.error("Error al eliminar");
     }
   };
-
-  // formatFileSize, isImage proporcionados por helpers
 
   if (variant === "avatar") {
     return (
@@ -252,6 +252,10 @@ export function Uploader({
         isDragActive={isDragActive}
         canUploadMoreFiles={canUploadMoreFiles}
         removeFile={removeFile}
+        maxFiles={maxFiles}
+        maxSize={maxSize}
+        id={id}
+        preview={preview}
       />
     );
   }

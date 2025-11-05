@@ -1,7 +1,8 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller } from "react-hook-form";
 import { businessSignInAction } from "@/app/actions/auth-actions";
 import { BusinessSignInInputSchema } from "@/app/schemas/auth";
@@ -18,6 +19,7 @@ import { useAction } from "@/hooks/use-action";
 
 export function SignInForm() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const defaultValues = {
     email: "",
@@ -76,7 +78,7 @@ export function SignInForm() {
                 <Input
                   id={field.name}
                   name={field.name}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={field.value ?? ""}
                   onChange={(e) => field.onChange(e.target.value)}
                   onBlur={field.onBlur}
@@ -84,6 +86,22 @@ export function SignInForm() {
                   aria-invalid={fieldState.invalid}
                   disabled={pending}
                 />
+                <Button
+                  aria-label={
+                    showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
+                  disabled={pending}
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
               </InputGroup>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
