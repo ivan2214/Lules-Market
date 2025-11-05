@@ -456,7 +456,6 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
                         : null,
                     );
                   }}
-                  variant="compact"
                   placeholder="Subí tu imagen de portada"
                   maxSize={1024 * 1024 * 5}
                   maxFiles={1}

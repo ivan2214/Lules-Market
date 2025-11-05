@@ -344,7 +344,6 @@ export function ProductFormDialog({
                         field.onChange(images);
                         console.log("Imágenes actualizadas", images);
                       }}
-                      variant="compact"
                       placeholder="Sube 1 imagen o máximo 4"
                       maxSize={1024 * 1024 * 5}
                       maxFiles={4}
