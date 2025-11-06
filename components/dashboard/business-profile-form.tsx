@@ -110,13 +110,12 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
         },
       };
 
-  const { form, execute, pending } = useAction(
-    updateBusinessAction,
-    { successMessage: "", errorMessage: "" },
-    BusinessUpdateInputSchema,
+  const { form, execute, pending } = useAction({
+    action: updateBusinessAction,
+    formSchema: BusinessUpdateInputSchema,
     defaultValues,
-    { showToasts: true },
-  );
+    options: { showToasts: true },
+  });
 
   return (
     <form id="business-profile-form" className="space-y-6" onSubmit={execute}>

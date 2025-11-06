@@ -26,12 +26,12 @@ export function SignInForm() {
     password: "",
   };
 
-  const { execute, form, pending } = useAction(
-    businessSignInAction,
-    {},
-    BusinessSignInInputSchema,
+  const { execute, form, pending } = useAction({
+    action: businessSignInAction,
+
+    formSchema: BusinessSignInInputSchema,
     defaultValues,
-    {
+    options: {
       showToasts: true,
       onSuccess: ({ isAdmin, hasBusiness }) => {
         if (isAdmin) router.push("/admin");
@@ -39,7 +39,7 @@ export function SignInForm() {
         else router.push("/auth/business-setup");
       },
     },
-  );
+  });
 
   return (
     <form id="signin-form" className="space-y-4" onSubmit={execute}>

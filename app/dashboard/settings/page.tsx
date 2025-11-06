@@ -1,4 +1,5 @@
-import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/app/data/user/require-user";
 import { AccountSettingsForm } from "@/components/dashboard/account-settings-form";
 import { DangerZone } from "@/components/dashboard/danger-zone";
 import {
@@ -8,16 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
 
 export default async function SettingsPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const user = await getCurrentUser();
 
-  if (!session) {
-    return null;
+  if (!user) {
+    return redirect("/auth/signin");
   }
+
   return (
     <div className="space-y-6">
       <div>
@@ -33,7 +32,7 @@ export default async function SettingsPage() {
           <CardDescription>Actualiza tu información personal</CardDescription>
         </CardHeader>
         <CardContent>
-          <AccountSettingsForm user={session.user} />
+          <AccountSettingsForm user={user} />
         </CardContent>
       </Card>
 

@@ -4,7 +4,12 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<{
+  id: string;
+  email: string;
+  name: string;
+  token: string;
+} | null> => {
   "use cache: private";
 
   const session = await auth.api.getSession({

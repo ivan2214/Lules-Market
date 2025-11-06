@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 interface AccountSettingsFormProps {
   user: {
     id: string;
-    name: string;
     email: string;
+    name: string;
+    token: string;
   };
 }
 

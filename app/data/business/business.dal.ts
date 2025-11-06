@@ -1,5 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
@@ -277,4 +278,54 @@ export async function getBusinessProducts({
   });
 
   return products;
+}
+
+export async function deleteBusiness(): Promise<ActionResult> {
+  const user = await requireUser();
+
+  const business = await prisma.business.findUnique({
+    where: { userId: user.id },
+  });
+  if (!business) return { errorMessage: "No tienes un negocio registrado" };
+
+  try {
+    await prisma.business.delete({ where: { id: business.id } });
+    const allProductsBusiness = await prisma.product.findMany({
+      where: { businessId: business.id },
+    });
+    const imagesProducts = await prisma.image.findMany({
+      where: { productId: { in: allProductsBusiness.map((p) => p.id) } },
+    });
+    const logoBusiness = await prisma.image.findUnique({
+      where: { logoBusinessId: business.id },
+    });
+    const coverBusiness = await prisma.image.findUnique({
+      where: { coverBusinessId: business.id },
+    });
+
+    // eliminar la imagenes de s3
+    for (const image of imagesProducts) {
+      await deleteS3Object({ key: image.key });
+    }
+    if (coverBusiness) {
+      await deleteS3Object({ key: coverBusiness.key });
+    }
+    if (logoBusiness) {
+      await deleteS3Object({ key: logoBusiness.key });
+    }
+
+    // Invalidar caché
+    updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
+    updateTag(CACHE_TAGS.BUSINESSES);
+    updateTag(CACHE_TAGS.businessById(business.id));
+    updateTag(CACHE_TAGS.PUBLIC_PRODUCTS);
+    updateTag(CACHE_TAGS.PRODUCTS);
+
+    return { successMessage: "Negocio eliminado exitosamente" };
+  } catch (error) {
+    return {
+      errorMessage:
+        error instanceof Error ? error.message : "Error al eliminar negocio",
+    };
+  }
 }

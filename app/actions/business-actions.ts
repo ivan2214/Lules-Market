@@ -8,11 +8,15 @@ import type {
 } from "@/app/data/business/business.dto";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { createBusiness, updateBusiness } from "../data/business/business.dal";
+import {
+  createBusiness,
+  deleteBusiness,
+  updateBusiness,
+} from "../data/business/business.dal";
 
 export async function createBusinessAction(
   _prevState: ActionResult,
-  data: BusinessCreateInput
+  data: BusinessCreateInput,
 ): Promise<ActionResult> {
   try {
     const result: ActionResult = await createBusiness(data);
@@ -34,7 +38,7 @@ export async function createBusinessAction(
 
 export async function updateBusinessAction(
   _prevState: ActionResult,
-  data: BusinessUpdateInput
+  data: BusinessUpdateInput,
 ): Promise<ActionResult> {
   try {
     const result: ActionResult = await updateBusiness(data);
@@ -57,5 +61,18 @@ export async function updateBusinessAction(
   } finally {
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/settings");
+  }
+}
+
+export async function deleteBusinessAction(
+  _prevState: ActionResult,
+): Promise<ActionResult> {
+  try {
+    const result: ActionResult = await deleteBusiness();
+    return { successMessage: result.successMessage };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return { errorMessage: message };
+  } finally {
   }
 }

@@ -72,12 +72,11 @@ export function BusinessSetupForm() {
     },
   };
 
-  const { execute, pending, form } = useAction(
-    createBusinessAction,
-    {},
-    BusinessCreateInputSchema,
+  const { execute, pending, form } = useAction({
+    action: createBusinessAction,
+    formSchema: BusinessCreateInputSchema,
     defaultValues,
-    {
+    options: {
       showToasts: true,
       onSuccess: () => {
         toast.success("Negocio creado con éxito");
@@ -85,7 +84,7 @@ export function BusinessSetupForm() {
         router.refresh();
       },
     },
-  );
+  });
 
   return (
     <Form {...form}>

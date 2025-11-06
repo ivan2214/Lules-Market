@@ -76,7 +76,7 @@ export function ProductFormDialog({
 
   const action = product ? updateProductAction : createProductAction;
 
-  const defaultValue = product?.id
+  const defaultValues = product?.id
     ? {
         productId: product.id,
         name: product.name,
@@ -103,13 +103,12 @@ export function ProductFormDialog({
         featured: false,
       };
 
-  const { execute, form, pending } = useAction(
+  const { execute, form, pending } = useAction({
     action,
-    {},
-    ProductCreateInputSchema,
-    defaultValue,
-    actionOptions,
-  );
+    formSchema: ProductCreateInputSchema,
+    defaultValues,
+    options: actionOptions,
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen} modal>

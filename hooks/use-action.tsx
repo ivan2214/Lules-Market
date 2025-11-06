@@ -32,18 +32,30 @@ export interface ActionOptions<TState extends ActionResult> {
   showToasts?: boolean;
 }
 
+const ESTADO_INICIAL_POR_DEFECTO = {
+  errorMessage: undefined,
+  successMessage: undefined,
+  data: undefined,
+} as const;
+
 export function useAction<
   TInput extends FieldValues,
   TState extends ActionResult,
->(
-  action: (prevState: TState, input: TInput) => Promise<TState>,
-  initialState: Awaited<TState>,
+>({
+  action,
+  initialState = ESTADO_INICIAL_POR_DEFECTO as Awaited<TState>,
+  options = {},
+  defaultValues,
+  formSchema,
+}: {
+  action: (prevState: TState, input: TInput) => Promise<TState>;
+  initialState?: Awaited<TState>;
   // accept a ZodType parametrizado
-  formSchema: ZodType<TInput, any, any>,
+  formSchema?: ZodType<TInput, any, any>;
   // defaultValues tipado adecuadamente
-  defaultValues: DefaultValues<TInput>,
-  options: ActionOptions<TState> = {},
-) {
+  defaultValues?: DefaultValues<TInput>;
+  options: ActionOptions<TState>;
+}) {
   const router = useRouter();
   const [state, execute, pending] = useActionState<TState, TInput>(
     action,
@@ -90,7 +102,9 @@ export function useAction<
 
   // zodResolver tiene firmas que a veces no encajan exactamente con los genéricos de RHF,
   // así que creamos el resolver y casteamos al Resolver<TInput>.
-  const resolver = zodResolver(formSchema as any) as Resolver<TInput>;
+  const resolver = formSchema
+    ? (zodResolver(formSchema as any) as Resolver<TInput>)
+    : undefined;
 
   const form = useForm<TInput>({
     resolver,
@@ -99,14 +113,14 @@ export function useAction<
 
   const executeForm = useCallback(
     (input: TInput) => {
-      const isValid = formSchema.safeParse(input);
-      if (!isValid.success) {
-        toast.error(isValid.error.message);
+      const isValid = formSchema?.safeParse(input);
+      if (!isValid?.success) {
+        toast.error(isValid?.error.message);
         return;
       }
       startTransition(() => execute(input));
     },
-    [execute, formSchema.safeParse],
+    [execute, formSchema?.safeParse],
   );
 
   return { state, execute: form.handleSubmit(executeForm), pending, form };
