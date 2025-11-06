@@ -25,7 +25,7 @@ export const auth = betterAuth({
     process.env.APP_URL as string,
     process.env.BETTER_AUTH_URL as string,
     "http://localhost:3000",
-    "http://192.168.1.102:3000",
+    "http://192.168.1.103:3000",
   ],
   plugins: [nextCookies()], // make sure this is the last plugin in the array
 });
