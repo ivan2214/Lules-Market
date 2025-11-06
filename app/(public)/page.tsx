@@ -73,7 +73,7 @@ export default async function HomePage() {
             </Button>
           </div>
 
-          <CarrouselProducts autoplay products={featuredProducts} />
+          <CarrouselProducts products={featuredProducts} />
         </section>
       ) : (
         <EmptyStateCustomMessage

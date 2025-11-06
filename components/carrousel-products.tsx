@@ -6,8 +6,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 
 type CarrouselProductsProps = { products: ProductDTO[]; autoplay?: boolean };
@@ -19,8 +17,14 @@ export const CarrouselProducts: React.FC<CarrouselProductsProps> = ({
   return (
     <Carousel
       opts={{
-        align: "start",
-        loop: true,
+        breakpoints: {
+          "640": {
+            align: "center",
+          },
+          "1024": {
+            align: "start",
+          },
+        },
       }}
       plugins={
         autoplay
@@ -31,20 +35,18 @@ export const CarrouselProducts: React.FC<CarrouselProductsProps> = ({
             ]
           : []
       }
-      className="w-full max-w-xs md:max-w-2xl lg:max-w-6xl"
+      className="mx-auto w-full max-w-xs md:max-w-2xl lg:max-w-6xl"
     >
-      <CarouselContent className="-ml-52 md:-ml-40 lg:-ml-48">
+      <CarouselContent className="-mr-52 md:-mr-24 lg:-mr-2">
         {products.map((product) => (
           <CarouselItem
-            className="basis-1/2 pl-52 md:basis-1/3 md:pl-40 lg:basis-1/5 lg:pl-48"
+            className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/5"
             key={product.id}
           >
             <ProductPublicCard product={product} />
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
     </Carousel>
   );
 };

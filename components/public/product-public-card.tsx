@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 import { ImageWithSkeleton } from "../image-with-skeleton";
+import { Button } from "../ui/button";
 
 interface ProductPublicCardProps {
   product: ProductDTO;
@@ -24,28 +25,30 @@ export function ProductPublicCard({
   return (
     <Card
       className={cn(
-        "h-96 w-full overflow-hidden p-0 transition-shadow hover:shadow-lg lg:w-56",
+        "z-20 h-96 w-full overflow-hidden p-0 transition-shadow hover:shadow-lg lg:w-56",
         isCarrousel && "w-64",
       )}
     >
       <CardHeader className="relative aspect-square h-2/3 overflow-hidden bg-muted p-0 lg:h-1/3">
-        {product.images?.[0] ? (
-          <ImageWithSkeleton
-            src={product.images[0].url || "/placeholder.svg"}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-muted-foreground">
-            Sin imagen
-          </div>
-        )}
-        {product.featured && (
-          <Badge className="absolute top-2 right-2 bg-amber-500">
-            <Star className="mr-1 h-3 w-3" />
-            Destacado
-          </Badge>
-        )}
+        <Link href={`/productos/${product.id}`}>
+          {product.images?.[0] ? (
+            <ImageWithSkeleton
+              src={product.images[0].url || "/placeholder.svg"}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-muted-foreground">
+              Sin imagen
+            </div>
+          )}
+          {product.featured && (
+            <Badge className="absolute top-2 right-2 bg-amber-500">
+              <Star className="mr-1 h-3 w-3" />
+              Destacado
+            </Badge>
+          )}
+        </Link>
       </CardHeader>
 
       <CardContent className="px-4 py-0">
@@ -72,25 +75,28 @@ export function ProductPublicCard({
           )}
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="flex flex-col gap-4 p-4 pt-0">
         <Link href={`/comercios/${product.business?.id}`} className="w-full">
           <div className="flex items-center justify-start gap-2 text-muted-foreground text-sm hover:text-foreground">
-            <figure>
+            <div className="h-10 w-10 rounded-full">
               {product.business?.logo ? (
                 <ImageWithSkeleton
                   src={product.business?.logo?.url || "/placeholder.svg"}
                   alt={product.business?.name || "Logo"}
-                  className="h-10 w-10 rounded-full"
+                  className="aspect-square h-full w-full rounded-full object-cover object-center"
                 />
               ) : (
                 <Store className="h-4 w-4" />
               )}
-            </figure>
+            </div>
             <span className="line-clamp-6 hover:underline">
               {product.business?.name}
             </span>
           </div>
         </Link>
+        <Button variant="outline" className="w-full md:hidden" asChild>
+          <Link href={`/productos/${product.id}`}>Ver producto</Link>
+        </Button>
       </CardFooter>
     </Card>
   );
