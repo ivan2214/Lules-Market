@@ -11997,10 +11997,8 @@ export namespace Prisma {
     website: string | null
     facebook: string | null
     instagram: string | null
-    twitter: string | null
     address: string | null
     category: string | null
-    hours: string | null
     plan: $Enums.PlanType | null
     planStatus: $Enums.PlanStatus | null
     planExpiresAt: Date | null
@@ -12021,10 +12019,8 @@ export namespace Prisma {
     website: string | null
     facebook: string | null
     instagram: string | null
-    twitter: string | null
     address: string | null
     category: string | null
-    hours: string | null
     plan: $Enums.PlanType | null
     planStatus: $Enums.PlanStatus | null
     planExpiresAt: Date | null
@@ -12045,10 +12041,8 @@ export namespace Prisma {
     website: number
     facebook: number
     instagram: number
-    twitter: number
     address: number
     category: number
-    hours: number
     plan: number
     planStatus: number
     planExpiresAt: number
@@ -12071,10 +12065,8 @@ export namespace Prisma {
     website?: true
     facebook?: true
     instagram?: true
-    twitter?: true
     address?: true
     category?: true
-    hours?: true
     plan?: true
     planStatus?: true
     planExpiresAt?: true
@@ -12095,10 +12087,8 @@ export namespace Prisma {
     website?: true
     facebook?: true
     instagram?: true
-    twitter?: true
     address?: true
     category?: true
-    hours?: true
     plan?: true
     planStatus?: true
     planExpiresAt?: true
@@ -12119,10 +12109,8 @@ export namespace Prisma {
     website?: true
     facebook?: true
     instagram?: true
-    twitter?: true
     address?: true
     category?: true
-    hours?: true
     plan?: true
     planStatus?: true
     planExpiresAt?: true
@@ -12216,10 +12204,8 @@ export namespace Prisma {
     website: string | null
     facebook: string | null
     instagram: string | null
-    twitter: string | null
     address: string | null
     category: string | null
-    hours: string | null
     plan: $Enums.PlanType
     planStatus: $Enums.PlanStatus
     planExpiresAt: Date | null
@@ -12257,10 +12243,8 @@ export namespace Prisma {
     website?: boolean
     facebook?: boolean
     instagram?: boolean
-    twitter?: boolean
     address?: boolean
     category?: boolean
-    hours?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12293,10 +12277,8 @@ export namespace Prisma {
     website?: boolean
     facebook?: boolean
     instagram?: boolean
-    twitter?: boolean
     address?: boolean
     category?: boolean
-    hours?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12318,10 +12300,8 @@ export namespace Prisma {
     website?: boolean
     facebook?: boolean
     instagram?: boolean
-    twitter?: boolean
     address?: boolean
     category?: boolean
-    hours?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12343,10 +12323,8 @@ export namespace Prisma {
     website?: boolean
     facebook?: boolean
     instagram?: boolean
-    twitter?: boolean
     address?: boolean
     category?: boolean
-    hours?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12356,7 +12334,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "twitter" | "address" | "category" | "hours" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
+  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "address" | "category" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
   export type BusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     logo?: boolean | Business$logoArgs<ExtArgs>
     coverImage?: boolean | Business$coverImageArgs<ExtArgs>
@@ -12404,10 +12382,8 @@ export namespace Prisma {
       website: string | null
       facebook: string | null
       instagram: string | null
-      twitter: string | null
       address: string | null
       category: string | null
-      hours: string | null
       plan: $Enums.PlanType
       planStatus: $Enums.PlanStatus
       planExpiresAt: Date | null
@@ -12859,10 +12835,8 @@ export namespace Prisma {
     readonly website: FieldRef<"Business", 'String'>
     readonly facebook: FieldRef<"Business", 'String'>
     readonly instagram: FieldRef<"Business", 'String'>
-    readonly twitter: FieldRef<"Business", 'String'>
     readonly address: FieldRef<"Business", 'String'>
     readonly category: FieldRef<"Business", 'String'>
-    readonly hours: FieldRef<"Business", 'String'>
     readonly plan: FieldRef<"Business", 'PlanType'>
     readonly planStatus: FieldRef<"Business", 'PlanStatus'>
     readonly planExpiresAt: FieldRef<"Business", 'DateTime'>
@@ -28424,10 +28398,8 @@ export namespace Prisma {
     website: 'website',
     facebook: 'facebook',
     instagram: 'instagram',
-    twitter: 'twitter',
     address: 'address',
     category: 'category',
-    hours: 'hours',
     plan: 'plan',
     planStatus: 'planStatus',
     planExpiresAt: 'planExpiresAt',
@@ -29363,10 +29335,8 @@ export namespace Prisma {
     website?: StringNullableFilter<"Business"> | string | null
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
-    twitter?: StringNullableFilter<"Business"> | string | null
     address?: StringNullableFilter<"Business"> | string | null
     category?: StringNullableFilter<"Business"> | string | null
-    hours?: StringNullableFilter<"Business"> | string | null
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
@@ -29398,10 +29368,8 @@ export namespace Prisma {
     website?: SortOrderInput | SortOrder
     facebook?: SortOrderInput | SortOrder
     instagram?: SortOrderInput | SortOrder
-    twitter?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     category?: SortOrderInput | SortOrder
-    hours?: SortOrderInput | SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrderInput | SortOrder
@@ -29437,10 +29405,8 @@ export namespace Prisma {
     website?: StringNullableFilter<"Business"> | string | null
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
-    twitter?: StringNullableFilter<"Business"> | string | null
     address?: StringNullableFilter<"Business"> | string | null
     category?: StringNullableFilter<"Business"> | string | null
-    hours?: StringNullableFilter<"Business"> | string | null
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
@@ -29471,10 +29437,8 @@ export namespace Prisma {
     website?: SortOrderInput | SortOrder
     facebook?: SortOrderInput | SortOrder
     instagram?: SortOrderInput | SortOrder
-    twitter?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     category?: SortOrderInput | SortOrder
-    hours?: SortOrderInput | SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrderInput | SortOrder
@@ -29501,10 +29465,8 @@ export namespace Prisma {
     website?: StringNullableWithAggregatesFilter<"Business"> | string | null
     facebook?: StringNullableWithAggregatesFilter<"Business"> | string | null
     instagram?: StringNullableWithAggregatesFilter<"Business"> | string | null
-    twitter?: StringNullableWithAggregatesFilter<"Business"> | string | null
     address?: StringNullableWithAggregatesFilter<"Business"> | string | null
     category?: StringNullableWithAggregatesFilter<"Business"> | string | null
-    hours?: StringNullableWithAggregatesFilter<"Business"> | string | null
     plan?: EnumPlanTypeWithAggregatesFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusWithAggregatesFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableWithAggregatesFilter<"Business"> | Date | string | null
@@ -31068,10 +31030,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -31102,10 +31062,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -31136,10 +31094,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31170,10 +31126,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31204,10 +31158,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -31228,10 +31180,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31251,10 +31201,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32913,10 +32861,8 @@ export namespace Prisma {
     website?: SortOrder
     facebook?: SortOrder
     instagram?: SortOrder
-    twitter?: SortOrder
     address?: SortOrder
     category?: SortOrder
-    hours?: SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
@@ -32937,10 +32883,8 @@ export namespace Prisma {
     website?: SortOrder
     facebook?: SortOrder
     instagram?: SortOrder
-    twitter?: SortOrder
     address?: SortOrder
     category?: SortOrder
-    hours?: SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
@@ -32961,10 +32905,8 @@ export namespace Prisma {
     website?: SortOrder
     facebook?: SortOrder
     instagram?: SortOrder
-    twitter?: SortOrder
     address?: SortOrder
     category?: SortOrder
-    hours?: SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
@@ -35706,10 +35648,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -35739,10 +35679,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -35877,10 +35815,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35910,10 +35846,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36224,10 +36158,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -36257,10 +36189,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -36335,10 +36265,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36368,10 +36296,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37567,10 +37493,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -37600,10 +37524,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -37744,10 +37666,8 @@ export namespace Prisma {
     website?: StringNullableFilter<"Business"> | string | null
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
-    twitter?: StringNullableFilter<"Business"> | string | null
     address?: StringNullableFilter<"Business"> | string | null
     category?: StringNullableFilter<"Business"> | string | null
-    hours?: StringNullableFilter<"Business"> | string | null
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
@@ -37870,10 +37790,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -37903,10 +37821,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38117,10 +38033,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38150,10 +38064,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38338,10 +38250,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38371,10 +38281,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38523,10 +38431,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38556,10 +38462,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38605,10 +38509,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38638,10 +38540,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38712,10 +38612,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38745,10 +38643,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38783,10 +38679,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38816,10 +38710,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38985,10 +38877,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39018,10 +38908,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39062,10 +38950,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39095,10 +38981,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39307,10 +39191,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39340,10 +39222,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39389,10 +39269,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39422,10 +39300,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39455,10 +39331,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39488,10 +39362,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39537,10 +39409,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39570,10 +39440,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39672,10 +39540,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39705,10 +39571,8 @@ export namespace Prisma {
     website?: string | null
     facebook?: string | null
     instagram?: string | null
-    twitter?: string | null
     address?: string | null
     category?: string | null
-    hours?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39791,10 +39655,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39824,10 +39686,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40326,10 +40186,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40359,10 +40217,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40392,10 +40248,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40496,10 +40350,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40529,10 +40381,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40562,10 +40412,8 @@ export namespace Prisma {
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
-    twitter?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     category?: NullableStringFieldUpdateOperationsInput | string | null
-    hours?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

@@ -170,10 +170,8 @@ model Business {
   website     String?
   facebook    String?
   instagram   String?
-  twitter     String?
   address     String?
   category    String?
-  hours       String?
 
   // Subscripción del comercio
   plan          PlanType   @default(FREE)
