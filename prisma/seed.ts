@@ -175,11 +175,11 @@ async function main() {
 
     const business = await prisma.business.create({
       data: {
-        name: faker.company.name(),
+        name: user.name,
         description: faker.company.catchPhrase(),
         phone: faker.phone.number(),
         whatsapp: faker.phone.number(),
-        email: faker.internet.email(),
+        email: user.email,
         website: faker.internet.url(),
         facebook: faker.internet.url(),
         instagram: faker.internet.url(),
