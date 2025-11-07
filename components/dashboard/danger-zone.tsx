@@ -2,7 +2,8 @@
 
 import { Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { startTransition } from "react";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { deleteBusinessAction } from "@/app/actions/business-actions";
 import {
   AlertDialog,
@@ -16,27 +17,23 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useAction } from "@/hooks/use-action";
 import { signOut } from "@/lib/auth-client";
 
 export function DangerZone() {
   const router = useRouter();
-  const { pending, execute } = useAction({
-    action: deleteBusinessAction,
-    options: {
-      showToasts: true,
-      onSuccess({ successMessage }) {
-        if (successMessage) {
-          signOut();
-          router.push("/");
-        }
-      },
-    },
-  });
+  const [pending, startTransition] = useTransition();
 
   const handleDeleteAccount = () => {
-    startTransition(() => {
-      execute();
+    startTransition(async () => {
+      const { errorMessage, successMessage } = await deleteBusinessAction();
+      if (successMessage) {
+        toast.success(successMessage);
+        signOut();
+        router.push("/");
+      }
+      if (errorMessage) {
+        toast.error(errorMessage);
+      }
     });
   };
 

@@ -279,50 +279,70 @@ export async function getBusinessProducts({
 
   return products;
 }
-
 export async function deleteBusiness(): Promise<ActionResult> {
-  const user = await requireUser();
-
-  const business = await prisma.business.findUnique({
-    where: { userId: user.id },
-  });
+  const { business } = await requireBusiness();
   if (!business) return { errorMessage: "No tienes un negocio registrado" };
 
   try {
-    await prisma.business.delete({ where: { id: business.id } });
-    const allProductsBusiness = await prisma.product.findMany({
-      where: { businessId: business.id },
-    });
-    const imagesProducts = await prisma.image.findMany({
-      where: { productId: { in: allProductsBusiness.map((p) => p.id) } },
-    });
-    const logoBusiness = await prisma.image.findUnique({
-      where: { logoBusinessId: business.id },
-    });
-    const coverBusiness = await prisma.image.findUnique({
-      where: { coverBusinessId: business.id },
-    });
+    // Buscar todo lo necesario en paralelo
+    const [products, logoBusiness, coverBusiness] = await Promise.all([
+      prisma.product.findMany({
+        where: { businessId: business.id },
+        select: { id: true },
+      }),
+      prisma.image.findUnique({ where: { logoBusinessId: business.id } }),
+      prisma.image.findUnique({ where: { coverBusinessId: business.id } }),
+    ]);
 
-    // eliminar la imagenes de s3
-    for (const image of imagesProducts) {
-      await deleteS3Object({ key: image.key });
-    }
-    if (coverBusiness) {
-      await deleteS3Object({ key: coverBusiness.key });
-    }
-    if (logoBusiness) {
-      await deleteS3Object({ key: logoBusiness.key });
-    }
+    // Obtener imágenes de productos
+    const productIds = products.map((p) => p.id);
+    const imagesProducts = productIds.length
+      ? await prisma.image.findMany({
+          where: { productId: { in: productIds } },
+          select: { key: true },
+        })
+      : [];
+
+    // Agrupar todas las imágenes a borrar
+    const allImages = [
+      ...imagesProducts,
+      ...(logoBusiness ? [logoBusiness] : []),
+      ...(coverBusiness ? [coverBusiness] : []),
+    ];
+
+    // Borrar imágenes de S3 y DB en paralelo
+    await Promise.all(
+      allImages.map(async (image) => {
+        await Promise.all([
+          deleteS3Object({ key: image.key }).catch(console.error), // no bloquea si una falla
+          prisma.image
+            .delete({ where: { key: image.key } })
+            .catch(console.error),
+        ]);
+      }),
+    );
+
+    // Borrar productos, usuario y relaciones en paralelo
+    await Promise.all([
+      prisma.product.deleteMany({ where: { businessId: business.id } }),
+      prisma.session.deleteMany({ where: { userId: business.userId } }),
+      prisma.account.deleteMany({ where: { userId: business.userId } }),
+      prisma.business.delete({ where: { id: business.id } }),
+      prisma.user.delete({ where: { id: business.userId } }),
+    ]);
 
     // Invalidar caché
-    updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-    updateTag(CACHE_TAGS.BUSINESSES);
-    updateTag(CACHE_TAGS.businessById(business.id));
-    updateTag(CACHE_TAGS.PUBLIC_PRODUCTS);
-    updateTag(CACHE_TAGS.PRODUCTS);
+    [
+      CACHE_TAGS.PUBLIC_BUSINESSES,
+      CACHE_TAGS.BUSINESSES,
+      CACHE_TAGS.businessById(business.id),
+      CACHE_TAGS.PUBLIC_PRODUCTS,
+      CACHE_TAGS.PRODUCTS,
+    ].forEach(updateTag);
 
     return { successMessage: "Negocio eliminado exitosamente" };
   } catch (error) {
+    console.error(error);
     return {
       errorMessage:
         error instanceof Error ? error.message : "Error al eliminar negocio",

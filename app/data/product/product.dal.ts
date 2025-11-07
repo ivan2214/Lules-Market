@@ -51,10 +51,15 @@ export async function listAllProducts({
   const where: Prisma.ProductWhereInput = {
     active: true,
     business: {
-      planStatus: "ACTIVE" as const,
+      isActive: true,
     },
     ...(businessId && { businessId }),
-    ...(category && { category }),
+    ...(category && {
+      category: {
+        contains: category,
+        mode: "insensitive" as const,
+      },
+    }),
     ...(search && {
       OR: [
         { name: { contains: search, mode: "insensitive" as const } },
@@ -134,6 +139,9 @@ export async function listProductsGroupedByCategory(): Promise<
   const allProducts = await prisma.product.findMany({
     where: {
       active: true,
+      business: {
+        isActive: true,
+      },
     },
     include: {
       business: {

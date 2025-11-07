@@ -25,7 +25,7 @@ export function ProductPublicCard({
   return (
     <Card
       className={cn(
-        "z-20 h-96 w-full overflow-hidden p-0 transition-shadow hover:shadow-lg lg:w-56",
+        "z-20 h-96 w-full justify-between overflow-hidden p-0 transition-shadow hover:shadow-lg lg:w-56",
         isCarrousel && "w-64",
       )}
     >
@@ -78,17 +78,17 @@ export function ProductPublicCard({
       <CardFooter className="flex flex-col gap-4 p-4 pt-0">
         <Link href={`/comercios/${product.business?.id}`} className="w-full">
           <div className="flex items-center justify-start gap-2 text-muted-foreground text-sm hover:text-foreground">
-            <div className="h-10 w-10 rounded-full">
-              {product.business?.logo ? (
+            {product.business?.logo ? (
+              <div className="h-10 w-10 rounded-full">
                 <ImageWithSkeleton
                   src={product.business?.logo?.url || "/placeholder.svg"}
                   alt={product.business?.name || "Logo"}
-                  className="aspect-square h-full w-full rounded-full object-cover object-center"
+                  className="h-full w-full rounded-full object-cover object-center"
                 />
-              ) : (
-                <Store className="h-4 w-4" />
-              )}
-            </div>
+              </div>
+            ) : (
+              <Store className="h-4 w-4" />
+            )}
             <span className="line-clamp-6 hover:underline">
               {product.business?.name}
             </span>

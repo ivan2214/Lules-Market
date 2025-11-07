@@ -1,7 +1,11 @@
 // prisma/seed.ts
 import { faker } from "@faker-js/faker";
 import { auth } from "@/lib/auth";
-import { Permission, PrismaClient } from "../app/generated/prisma";
+import {
+  Permission,
+  type PlanType,
+  PrismaClient,
+} from "../app/generated/prisma";
 
 const prisma = new PrismaClient();
 
@@ -334,7 +338,7 @@ async function main() {
         "approved",
         "rejected",
       ]);
-      const paymentPlan = faker.helpers.arrayElement([
+      const paymentPlan: PlanType = faker.helpers.arrayElement([
         "FREE",
         "BASIC",
         "PREMIUM",
@@ -388,7 +392,7 @@ async function main() {
       const usedCount = faker.number.int({ min: 0, max: maxUses });
       const expiresAt = faker.helpers.maybe(
         () => faker.date.soon({ days: 90 }),
-        { probability: 0.7 }
+        { probability: 0.7 },
       );
 
       const coupon = await prisma.coupon.create({

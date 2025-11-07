@@ -64,15 +64,14 @@ export async function updateBusinessAction(
   }
 }
 
-export async function deleteBusinessAction(
-  _prevState: ActionResult,
-): Promise<ActionResult> {
+export async function deleteBusinessAction(): Promise<ActionResult> {
   try {
     const result: ActionResult = await deleteBusiness();
+
     return { successMessage: result.successMessage };
   } catch (err) {
+    console.log(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return { errorMessage: message };
-  } finally {
   }
 }
