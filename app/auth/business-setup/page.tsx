@@ -1,4 +1,4 @@
-import { BusinessSetupForm } from "@/components/dashboard/business-setup-form";
+import { BusinessSetupForm } from "@/components/auth/business-setup-form";
 import {
   Card,
   CardContent,

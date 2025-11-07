@@ -30,28 +30,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAction } from "@/hooks/use-action";
 import { Uploader } from "../uploader/uploader";
 
-const CATEGORIES = [
-  "Restaurante",
-  "Cafetería",
-  "Tienda de Ropa",
-  "Supermercado",
-  "Farmacia",
-  "Peluquería",
-  "Gimnasio",
-  "Librería",
-  "Ferretería",
-  "Panadería",
-  "Otro",
-];
-
 interface BusinessProfileFormProps {
   business: BusinessDTO & {
     coverImage: ImageCreateInput;
     logo: ImageCreateInput;
   };
+  categories: { label: string; value: string }[];
 }
 
-export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
+export function BusinessProfileForm({
+  business,
+  categories,
+}: BusinessProfileFormProps) {
   const defaultValues: BusinessUpdateInput = business.id
     ? {
         name: business.name ?? "",
@@ -65,7 +55,7 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
         facebook: business.facebook ?? "",
         instagram: business.instagram ?? "",
 
-        category: business.category ?? "",
+        category: business.category?.toLowerCase() ?? "",
         coverImage: business.coverImage ?? {
           url: "",
           key: "",
@@ -116,6 +106,8 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
     defaultValues,
     options: { showToasts: true },
   });
+
+  console.log(defaultValues);
 
   return (
     <form id="business-profile-form" className="space-y-6" onSubmit={execute}>
@@ -183,9 +175,9 @@ export function BusinessProfileForm({ business }: BusinessProfileFormProps) {
                     Seleccionar categoría
                   </SelectItem>
                   <SelectSeparator />
-                  {CATEGORIES.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
+                  {categories.map(({ label, value }) => (
+                    <SelectItem key={value} value={value.toLowerCase()}>
+                      {label}
                     </SelectItem>
                   ))}
                 </SelectContent>

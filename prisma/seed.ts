@@ -10,6 +10,18 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log("🧹Deleting existing data...");
+  await prisma.$transaction([
+    prisma.subCategory.deleteMany(),
+    prisma.category.deleteMany(),
+    prisma.plan.deleteMany(),
+    prisma.admin.deleteMany(),
+    prisma.user.deleteMany(),
+    prisma.business.deleteMany(),
+    prisma.product.deleteMany(),
+    prisma.image.deleteMany(),
+  ]);
+
   console.log("🌱 Starting enhanced seed...");
   const count = await prisma.plan.count();
 
@@ -71,6 +83,80 @@ async function main() {
       ],
     });
   }
+
+  // ---  CATEGORÍAS Y SUBCATEGORÍAS ---
+
+  const existingCategories = await prisma.category.count();
+  if (existingCategories === 0) {
+    console.log("🗂 Creando categorías y subcategorías...");
+
+    const categoryData = [
+      {
+        value: "supermercado",
+        label: "Supermercado",
+        subcategories: [
+          "Lácteos",
+          "Bebidas",
+          "Limpieza",
+          "Almacén",
+          "Congelados",
+        ],
+      },
+      {
+        value: "tecnologia",
+        label: "Tecnología",
+        subcategories: ["Celulares", "Notebooks", "Accesorios", "Gaming", "TV"],
+      },
+      {
+        value: "indumentaria",
+        label: "Indumentaria",
+        subcategories: ["Hombre", "Mujer", "Calzado", "Deportes", "Niños"],
+      },
+      {
+        value: "belleza_salud",
+        label: "Belleza y Salud",
+        subcategories: [
+          "Cosméticos",
+          "Perfumería",
+          "Farmacia",
+          "Cuidado Capilar",
+        ],
+      },
+      {
+        value: "mascotas",
+        label: "Mascotas",
+        subcategories: ["Alimentos", "Accesorios", "Veterinarias"],
+      },
+    ];
+
+    for (const cat of categoryData) {
+      const existingCategory = await prisma.category.findUnique({
+        where: { value: cat.value },
+        include: { subCategories: true },
+      });
+
+      if (!existingCategory) {
+        const category = await prisma.category.create({
+          data: {
+            value: cat.value,
+            label: cat.label,
+            subCategories: {
+              create: cat.subcategories.map((s) => ({
+                value: s.toLowerCase().replace(/\s+/g, "_"),
+                label: s,
+              })),
+            },
+          },
+        });
+        console.log(`✅ Creada categoría: ${category.label}`);
+      } else {
+        console.log(
+          `⚠️ Categoría existente: ${existingCategory.label}, saltando...`,
+        );
+      }
+    }
+  }
+
   /*  SUPER ADMIN */
   const { user: superAdmin } = await auth.api.signUpEmail({
     body: {
@@ -140,13 +226,17 @@ async function main() {
 
   const admins = await prisma.admin.findMany();
 
+  const categories = await prisma.category.findMany({
+    include: { subCategories: true },
+  });
+
   // --- 2️⃣ NORMAL USERS WITH BUSINESSES ---
   for (let i = 0; i < 15; i++) {
     const { user } = await auth.api.signUpEmail({
       body: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
-        password: "seedpassword123",
+        password: "test2214",
         image: faker.image.avatar(),
       },
     });
@@ -173,6 +263,11 @@ async function main() {
     ]);
     const isActive = status === "ACTIVE";
 
+    const randomCategory = faker.helpers.arrayElement(categories);
+    const randomSubCategory = faker.helpers.arrayElement(
+      randomCategory.subCategories,
+    );
+
     const business = await prisma.business.create({
       data: {
         name: user.name,
@@ -185,7 +280,8 @@ async function main() {
         instagram: faker.internet.url(),
         twitter: faker.internet.url(),
         address: faker.location.streetAddress(),
-        category: faker.commerce.department(),
+        categories: { connect: { id: randomCategory.id } },
+        subCategories: { connect: { id: randomSubCategory.id } },
         hours: "Lunes a Viernes: 9:00 - 18:00",
         plan,
         planStatus: status,
@@ -257,15 +353,21 @@ async function main() {
     const productCount = faker.number.int({ min: 3, max: 10 });
     for (let j = 0; j < productCount; j++) {
       const active = faker.datatype.boolean({ probability: 0.85 });
+      const productCategory = faker.helpers.arrayElement(categories);
+      const productSub = faker.helpers.arrayElement(
+        productCategory.subCategories,
+      );
       const product = await prisma.product.create({
         data: {
           name: faker.commerce.productName(),
           description: faker.commerce.productDescription(),
           price: parseFloat(faker.commerce.price({ min: 100, max: 20000 })),
-          category: faker.commerce.department(),
+
           featured: plan === "PREMIUM" && faker.datatype.boolean(),
           businessId: business.id,
           active,
+          categories: { connect: { id: productCategory.id } },
+          subCategories: { connect: { id: productSub.id } },
         },
       });
 

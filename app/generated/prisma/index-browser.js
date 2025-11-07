@@ -224,6 +224,23 @@ exports.Prisma.BusinessScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  label: 'label',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubCategoryScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  label: 'label',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PlanScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -411,6 +428,8 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Business: 'Business',
+  Category: 'Category',
+  SubCategory: 'SubCategory',
   Plan: 'Plan',
   Product: 'Product',
   Payment: 'Payment',

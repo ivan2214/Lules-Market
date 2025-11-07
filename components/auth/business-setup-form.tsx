@@ -28,21 +28,11 @@ import { Uploader } from "@/components/uploader/uploader";
 import { useAction } from "@/hooks/use-action";
 import { Form } from "../ui/form";
 
-const CATEGORIES = [
-  "Restaurante",
-  "Cafetería",
-  "Tienda de Ropa",
-  "Supermercado",
-  "Farmacia",
-  "Peluquería",
-  "Gimnasio",
-  "Librería",
-  "Ferretería",
-  "Panadería",
-  "Otro",
-];
-
-export function BusinessSetupForm() {
+export function BusinessSetupForm({
+  categories,
+}: {
+  categories: { label: string; value: string }[];
+}) {
   const router = useRouter();
 
   const defaultValues = {
@@ -133,9 +123,9 @@ export function BusinessSetupForm() {
                   <SelectContent>
                     <SelectItem value="null">Seleccionar categoría</SelectItem>
                     <SelectSeparator />
-                    {CATEGORIES.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
+                    {categories.map(({ label, value }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
                       </SelectItem>
                     ))}
                   </SelectContent>

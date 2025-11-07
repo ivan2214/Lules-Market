@@ -166,7 +166,7 @@ model Business {
   coverImage  Image?  @relation("CoverImage")
   phone       String?
   whatsapp    String?
-  email       String?
+  email       String? @unique
   website     String?
   facebook    String?
   instagram   String?
@@ -194,11 +194,43 @@ model Business {
   trial            Trial? // prueba gratuita activa
   couponRedemption CouponRedemption[] // canjes de cupones realizados
 
+  categories    Category[]
+  subCategories SubCategory[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([plan])
   @@index([planStatus])
+}
+
+model Category {
+  id    String @id @default(cuid())
+  value String @unique
+  label String
+
+  products      Product[]
+  businesses    Business[]
+  subCategories SubCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SubCategory {
+  id    String @id @default(cuid())
+  value String
+  label String
+
+  products   Product[]
+  businesses Business[]
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
 }
 
 model Plan {
@@ -240,6 +272,9 @@ model Product {
   productView productView[] // vistas del producto
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  categories    Category[]
+  subCategories SubCategory[]
 
   @@index([businessId])
   @@index([featured])

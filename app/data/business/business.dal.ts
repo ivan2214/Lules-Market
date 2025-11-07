@@ -142,13 +142,19 @@ export async function createBusiness(
   });
   if (existing) return { errorMessage: "Ya tienes un negocio registrado" };
 
+  const alreadyEmailBusiness = await prisma.business.findUnique({
+    where: { email: user.email },
+  });
+
+  if (alreadyEmailBusiness)
+    return { errorMessage: "Ya tienes un negocio registrado con este email" };
+
   try {
+    const { name, email } = user;
     const {
-      name,
       description,
       phone,
       whatsapp,
-      email,
       website,
       facebook,
       instagram,
