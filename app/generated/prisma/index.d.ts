@@ -11998,7 +11998,6 @@ export namespace Prisma {
     facebook: string | null
     instagram: string | null
     address: string | null
-    category: string | null
     plan: $Enums.PlanType | null
     planStatus: $Enums.PlanStatus | null
     planExpiresAt: Date | null
@@ -12020,7 +12019,6 @@ export namespace Prisma {
     facebook: string | null
     instagram: string | null
     address: string | null
-    category: string | null
     plan: $Enums.PlanType | null
     planStatus: $Enums.PlanStatus | null
     planExpiresAt: Date | null
@@ -12042,7 +12040,6 @@ export namespace Prisma {
     facebook: number
     instagram: number
     address: number
-    category: number
     plan: number
     planStatus: number
     planExpiresAt: number
@@ -12066,7 +12063,6 @@ export namespace Prisma {
     facebook?: true
     instagram?: true
     address?: true
-    category?: true
     plan?: true
     planStatus?: true
     planExpiresAt?: true
@@ -12088,7 +12084,6 @@ export namespace Prisma {
     facebook?: true
     instagram?: true
     address?: true
-    category?: true
     plan?: true
     planStatus?: true
     planExpiresAt?: true
@@ -12110,7 +12105,6 @@ export namespace Prisma {
     facebook?: true
     instagram?: true
     address?: true
-    category?: true
     plan?: true
     planStatus?: true
     planExpiresAt?: true
@@ -12205,7 +12199,6 @@ export namespace Prisma {
     facebook: string | null
     instagram: string | null
     address: string | null
-    category: string | null
     plan: $Enums.PlanType
     planStatus: $Enums.PlanStatus
     planExpiresAt: Date | null
@@ -12244,7 +12237,6 @@ export namespace Prisma {
     facebook?: boolean
     instagram?: boolean
     address?: boolean
-    category?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12278,7 +12270,6 @@ export namespace Prisma {
     facebook?: boolean
     instagram?: boolean
     address?: boolean
-    category?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12301,7 +12292,6 @@ export namespace Prisma {
     facebook?: boolean
     instagram?: boolean
     address?: boolean
-    category?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12324,7 +12314,6 @@ export namespace Prisma {
     facebook?: boolean
     instagram?: boolean
     address?: boolean
-    category?: boolean
     plan?: boolean
     planStatus?: boolean
     planExpiresAt?: boolean
@@ -12334,7 +12323,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "address" | "category" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
+  export type BusinessOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "address" | "plan" | "planStatus" | "planExpiresAt" | "userId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
   export type BusinessInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     logo?: boolean | Business$logoArgs<ExtArgs>
     coverImage?: boolean | Business$coverImageArgs<ExtArgs>
@@ -12383,7 +12372,6 @@ export namespace Prisma {
       facebook: string | null
       instagram: string | null
       address: string | null
-      category: string | null
       plan: $Enums.PlanType
       planStatus: $Enums.PlanStatus
       planExpiresAt: Date | null
@@ -12836,7 +12824,6 @@ export namespace Prisma {
     readonly facebook: FieldRef<"Business", 'String'>
     readonly instagram: FieldRef<"Business", 'String'>
     readonly address: FieldRef<"Business", 'String'>
-    readonly category: FieldRef<"Business", 'String'>
     readonly plan: FieldRef<"Business", 'PlanType'>
     readonly planStatus: FieldRef<"Business", 'PlanStatus'>
     readonly planExpiresAt: FieldRef<"Business", 'DateTime'>
@@ -16923,7 +16910,6 @@ export namespace Prisma {
     name: string | null
     description: string | null
     price: number | null
-    category: string | null
     featured: boolean | null
     active: boolean | null
     businessId: string | null
@@ -16937,7 +16923,6 @@ export namespace Prisma {
     name: string | null
     description: string | null
     price: number | null
-    category: string | null
     featured: boolean | null
     active: boolean | null
     businessId: string | null
@@ -16951,7 +16936,6 @@ export namespace Prisma {
     name: number
     description: number
     price: number
-    category: number
     featured: number
     active: number
     businessId: number
@@ -16975,7 +16959,6 @@ export namespace Prisma {
     name?: true
     description?: true
     price?: true
-    category?: true
     featured?: true
     active?: true
     businessId?: true
@@ -16989,7 +16972,6 @@ export namespace Prisma {
     name?: true
     description?: true
     price?: true
-    category?: true
     featured?: true
     active?: true
     businessId?: true
@@ -17003,7 +16985,6 @@ export namespace Prisma {
     name?: true
     description?: true
     price?: true
-    category?: true
     featured?: true
     active?: true
     businessId?: true
@@ -17104,7 +17085,6 @@ export namespace Prisma {
     name: string
     description: string | null
     price: number | null
-    category: string | null
     featured: boolean
     active: boolean
     businessId: string
@@ -17137,7 +17117,6 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     price?: boolean
-    category?: boolean
     featured?: boolean
     active?: boolean
     businessId?: boolean
@@ -17158,7 +17137,6 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     price?: boolean
-    category?: boolean
     featured?: boolean
     active?: boolean
     businessId?: boolean
@@ -17173,7 +17151,6 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     price?: boolean
-    category?: boolean
     featured?: boolean
     active?: boolean
     businessId?: boolean
@@ -17188,7 +17165,6 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     price?: boolean
-    category?: boolean
     featured?: boolean
     active?: boolean
     businessId?: boolean
@@ -17197,7 +17173,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "category" | "featured" | "active" | "businessId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "price" | "featured" | "active" | "businessId" | "isBanned" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     business?: boolean | BusinessDefaultArgs<ExtArgs>
     bannedProduct?: boolean | Product$bannedProductArgs<ExtArgs>
@@ -17229,7 +17205,6 @@ export namespace Prisma {
       name: string
       description: string | null
       price: number | null
-      category: string | null
       featured: boolean
       active: boolean
       businessId: string
@@ -17669,7 +17644,6 @@ export namespace Prisma {
     readonly name: FieldRef<"Product", 'String'>
     readonly description: FieldRef<"Product", 'String'>
     readonly price: FieldRef<"Product", 'Float'>
-    readonly category: FieldRef<"Product", 'String'>
     readonly featured: FieldRef<"Product", 'Boolean'>
     readonly active: FieldRef<"Product", 'Boolean'>
     readonly businessId: FieldRef<"Product", 'String'>
@@ -28399,7 +28373,6 @@ export namespace Prisma {
     facebook: 'facebook',
     instagram: 'instagram',
     address: 'address',
-    category: 'category',
     plan: 'plan',
     planStatus: 'planStatus',
     planExpiresAt: 'planExpiresAt',
@@ -28457,7 +28430,6 @@ export namespace Prisma {
     name: 'name',
     description: 'description',
     price: 'price',
-    category: 'category',
     featured: 'featured',
     active: 'active',
     businessId: 'businessId',
@@ -29336,7 +29308,6 @@ export namespace Prisma {
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
     address?: StringNullableFilter<"Business"> | string | null
-    category?: StringNullableFilter<"Business"> | string | null
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
@@ -29369,7 +29340,6 @@ export namespace Prisma {
     facebook?: SortOrderInput | SortOrder
     instagram?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
-    category?: SortOrderInput | SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrderInput | SortOrder
@@ -29406,7 +29376,6 @@ export namespace Prisma {
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
     address?: StringNullableFilter<"Business"> | string | null
-    category?: StringNullableFilter<"Business"> | string | null
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
@@ -29438,7 +29407,6 @@ export namespace Prisma {
     facebook?: SortOrderInput | SortOrder
     instagram?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
-    category?: SortOrderInput | SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrderInput | SortOrder
@@ -29466,7 +29434,6 @@ export namespace Prisma {
     facebook?: StringNullableWithAggregatesFilter<"Business"> | string | null
     instagram?: StringNullableWithAggregatesFilter<"Business"> | string | null
     address?: StringNullableWithAggregatesFilter<"Business"> | string | null
-    category?: StringNullableWithAggregatesFilter<"Business"> | string | null
     plan?: EnumPlanTypeWithAggregatesFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusWithAggregatesFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableWithAggregatesFilter<"Business"> | Date | string | null
@@ -29701,7 +29668,6 @@ export namespace Prisma {
     name?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatNullableFilter<"Product"> | number | null
-    category?: StringNullableFilter<"Product"> | string | null
     featured?: BoolFilter<"Product"> | boolean
     active?: BoolFilter<"Product"> | boolean
     businessId?: StringFilter<"Product"> | string
@@ -29721,7 +29687,6 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     price?: SortOrderInput | SortOrder
-    category?: SortOrderInput | SortOrder
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
@@ -29744,7 +29709,6 @@ export namespace Prisma {
     name?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatNullableFilter<"Product"> | number | null
-    category?: StringNullableFilter<"Product"> | string | null
     featured?: BoolFilter<"Product"> | boolean
     active?: BoolFilter<"Product"> | boolean
     businessId?: StringFilter<"Product"> | string
@@ -29764,7 +29728,6 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     price?: SortOrderInput | SortOrder
-    category?: SortOrderInput | SortOrder
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
@@ -29786,7 +29749,6 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Product"> | string
     description?: StringNullableWithAggregatesFilter<"Product"> | string | null
     price?: FloatNullableWithAggregatesFilter<"Product"> | number | null
-    category?: StringNullableWithAggregatesFilter<"Product"> | string | null
     featured?: BoolWithAggregatesFilter<"Product"> | boolean
     active?: BoolWithAggregatesFilter<"Product"> | boolean
     businessId?: StringWithAggregatesFilter<"Product"> | string
@@ -31031,7 +30993,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -31063,7 +31024,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -31095,7 +31055,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31127,7 +31086,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31159,7 +31117,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -31181,7 +31138,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31202,7 +31158,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31461,7 +31416,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -31480,7 +31434,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -31499,7 +31452,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -31518,7 +31470,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -31537,7 +31488,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -31551,7 +31501,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -31564,7 +31513,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -32862,7 +32810,6 @@ export namespace Prisma {
     facebook?: SortOrder
     instagram?: SortOrder
     address?: SortOrder
-    category?: SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
@@ -32884,7 +32831,6 @@ export namespace Prisma {
     facebook?: SortOrder
     instagram?: SortOrder
     address?: SortOrder
-    category?: SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
@@ -32906,7 +32852,6 @@ export namespace Prisma {
     facebook?: SortOrder
     instagram?: SortOrder
     address?: SortOrder
-    category?: SortOrder
     plan?: SortOrder
     planStatus?: SortOrder
     planExpiresAt?: SortOrder
@@ -33157,7 +33102,6 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     price?: SortOrder
-    category?: SortOrder
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
@@ -33175,7 +33119,6 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     price?: SortOrder
-    category?: SortOrder
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
@@ -33189,7 +33132,6 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     price?: SortOrder
-    category?: SortOrder
     featured?: SortOrder
     active?: SortOrder
     businessId?: SortOrder
@@ -35649,7 +35591,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -35680,7 +35621,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -35816,7 +35756,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35847,7 +35786,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36159,7 +36097,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -36190,7 +36127,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -36266,7 +36202,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36297,7 +36232,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36344,7 +36278,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -36362,7 +36295,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -36425,7 +36357,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -36443,7 +36374,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -36862,7 +36792,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -36880,7 +36809,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -37236,7 +37164,6 @@ export namespace Prisma {
     name?: StringFilter<"Product"> | string
     description?: StringNullableFilter<"Product"> | string | null
     price?: FloatNullableFilter<"Product"> | number | null
-    category?: StringNullableFilter<"Product"> | string | null
     featured?: BoolFilter<"Product"> | boolean
     active?: BoolFilter<"Product"> | boolean
     businessId?: StringFilter<"Product"> | string
@@ -37446,7 +37373,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -37464,7 +37390,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -37494,7 +37419,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -37525,7 +37449,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -37667,7 +37590,6 @@ export namespace Prisma {
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
     address?: StringNullableFilter<"Business"> | string | null
-    category?: StringNullableFilter<"Business"> | string | null
     plan?: EnumPlanTypeFilter<"Business"> | $Enums.PlanType
     planStatus?: EnumPlanStatusFilter<"Business"> | $Enums.PlanStatus
     planExpiresAt?: DateTimeNullableFilter<"Business"> | Date | string | null
@@ -37743,7 +37665,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -37761,7 +37682,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -37791,7 +37711,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -37822,7 +37741,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38034,7 +37952,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38065,7 +37982,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38251,7 +38167,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38282,7 +38197,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38432,7 +38346,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38463,7 +38376,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38510,7 +38422,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38541,7 +38452,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38565,7 +38475,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -38583,7 +38492,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -38613,7 +38521,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38644,7 +38551,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38680,7 +38586,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38711,7 +38616,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -38824,7 +38728,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -38842,7 +38745,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -38878,7 +38780,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38909,7 +38810,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38951,7 +38851,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38982,7 +38881,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39097,7 +38995,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -39115,7 +39012,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     businessId: string
@@ -39149,7 +39045,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -39167,7 +39062,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -39192,7 +39086,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39223,7 +39116,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39270,7 +39162,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39301,7 +39192,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39332,7 +39222,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39363,7 +39252,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39410,7 +39298,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39441,7 +39328,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39541,7 +39427,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39572,7 +39457,6 @@ export namespace Prisma {
     facebook?: string | null
     instagram?: string | null
     address?: string | null
-    category?: string | null
     plan?: $Enums.PlanType
     planStatus?: $Enums.PlanStatus
     planExpiresAt?: Date | string | null
@@ -39656,7 +39540,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39687,7 +39570,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39899,7 +39781,6 @@ export namespace Prisma {
     name: string
     description?: string | null
     price?: number | null
-    category?: string | null
     featured?: boolean
     active?: boolean
     isBanned?: boolean | null
@@ -39937,7 +39818,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -39955,7 +39835,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -39973,7 +39852,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -40130,7 +40008,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -40148,7 +40025,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -40166,7 +40042,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -40187,7 +40062,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40218,7 +40092,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40249,7 +40122,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40294,7 +40166,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -40312,7 +40183,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -40330,7 +40200,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     price?: NullableFloatFieldUpdateOperationsInput | number | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     businessId?: StringFieldUpdateOperationsInput | string
@@ -40351,7 +40220,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40382,7 +40250,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40413,7 +40280,6 @@ export namespace Prisma {
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     plan?: EnumPlanTypeFieldUpdateOperationsInput | $Enums.PlanType
     planStatus?: EnumPlanStatusFieldUpdateOperationsInput | $Enums.PlanStatus
     planExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
