@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import {
   getPublicBusiness,
   getPublicBusinesses,
+  getPublicBusinessesByCategories,
 } from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const keywords = [
     business.name,
-    business.category || "",
+    business.categories?.join(", ") || "",
     "comercio local",
     "tienda online",
     "Argentina",
@@ -112,7 +113,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url: `https://lules-market.vercel.app/comercios/${id}`,
       },
     ],
-    category: business.category,
+    category: business.categories?.join(", ") || "",
     other: {
       "business:contact_data:street_address": business.address || "",
       "business:contact_data:email": business.email || "",
@@ -146,9 +147,8 @@ export default async function BusinessPage({
   }
 
   // Comercios de la misma categoría
-  const allBusinesses = await getPublicBusinesses();
-  const similarBusinesses = allBusinesses.businesses.filter(
-    (b) => b.id !== id && b.category === business.category,
+  const similarBusinesses = await getPublicBusinessesByCategories(
+    business.categories || [],
   );
 
   return (
@@ -187,7 +187,9 @@ export default async function BusinessPage({
 
       <BusinessProducts products={business.products} />
 
-      <SimilarBusinesses businesses={similarBusinesses} />
+      {similarBusinesses && (
+        <SimilarBusinesses businesses={similarBusinesses} />
+      )}
     </div>
   );
 }

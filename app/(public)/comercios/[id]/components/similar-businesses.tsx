@@ -1,16 +1,19 @@
 import Link from "next/link";
-import type { Image } from "@/app/generated/prisma";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 
-type Business = {
-  id: string;
-  name: string;
-  logo?: Image | null;
-};
-
 type Props = {
-  businesses: Business[];
+  businesses: {
+    id: string;
+    name: string;
+    logo: {
+      key: string;
+      url: string;
+    } | null;
+    _count: {
+      products: number;
+    };
+  }[];
 };
 
 export function SimilarBusinesses({ businesses }: Props) {

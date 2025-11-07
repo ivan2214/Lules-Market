@@ -68,11 +68,12 @@ export function ProductPublicCard({
               ? `ARS ${formatCurrency(product.price, "ARS")}`
               : "Consultar"}
           </p>
-          {product.category && (
-            <Badge variant="outline" className="text-xs">
-              {product.category}
-            </Badge>
-          )}
+          {product.categories?.length &&
+            product.categories.map((category) => (
+              <Badge variant="outline" className="text-xs" key={category.id}>
+                {category.value}
+              </Badge>
+            ))}
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-4 p-4 pt-0">

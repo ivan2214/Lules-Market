@@ -139,9 +139,7 @@ export async function listProductsGroupedByCategory(): Promise<
   const allProducts = await prisma.product.findMany({
     where: {
       active: true,
-      business: {
-        isActive: true,
-      },
+      business: { isActive: true },
     },
     include: {
       business: {
@@ -152,25 +150,31 @@ export async function listProductsGroupedByCategory(): Promise<
       },
       images: true,
       productView: true,
+      categories: true, // <-- ahora incluimos el array
+      subCategories: {
+        include: {
+          category: true,
+        },
+      },
     },
   });
 
-  const allCategories = allProducts.map(
-    (product) => product.category?.toLowerCase() || "",
-  );
-  const uniqueCategories = [...new Set(allCategories)];
+  const productsByCategory: Record<string, ProductDTO[]> = {};
 
-  const productsByCategory = uniqueCategories.splice(0, 10).reduce(
-    (acc, category) => {
-      acc[category] = allProducts.filter(
-        (product) => product.category?.toLowerCase() === category.toLowerCase(),
-      );
-      return acc;
-    },
-    {} as Record<string, ProductDTO[]>,
+  allProducts.forEach((product) => {
+    product.categories.forEach((cat) => {
+      const key = cat.value.toLowerCase(); // o cat.label si preferís
+      if (!productsByCategory[key]) productsByCategory[key] = [];
+      productsByCategory[key].push(product);
+    });
+  });
+
+  // si querés limitar a 10 categorías como antes:
+  const limitedProductsByCategory = Object.fromEntries(
+    Object.entries(productsByCategory).slice(0, 10),
   );
 
-  return productsByCategory;
+  return limitedProductsByCategory;
 }
 
 export async function getProductById(
@@ -251,7 +255,7 @@ export async function createProduct(
       };
     }
 
-    const { name, description, price, images, category, featured } = data;
+    const { name, description, price, images, categories, featured } = data;
 
     // fijatse si existe cada imagen en la db y sino crearrla
     let imagesDB = await prisma.image.findMany({
@@ -292,7 +296,9 @@ export async function createProduct(
         images: {
           connect: imagesDB.map((image) => ({ key: image.key })),
         },
-        category,
+        categories: {
+          connect: categories.map((category) => ({ value: category })),
+        },
         featured,
         businessId: business.id,
       },
@@ -359,7 +365,7 @@ export async function updateProduct(
       };
     }
 
-    const { name, description, price, images, category, featured, active } =
+    const { name, description, price, images, categories, featured, active } =
       rest;
 
     // Obtenemos las imágenes existentes del producto
@@ -411,7 +417,9 @@ export async function updateProduct(
         name,
         description,
         price,
-        category,
+        categories: {
+          connect: categories.map((category) => ({ value: category })),
+        },
         featured,
         active,
       },

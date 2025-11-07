@@ -3,12 +3,14 @@ import type {
   BannedBusiness,
   Business as BusinessPrisma,
 } from "@/app/generated/prisma";
+import type { CategoryDTO } from "../category/category.dto";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";
+import type { SubCategoryDTO } from "../sub-category/sub-category.dto";
 import type { UserDTO } from "../user/user.dto";
 
 export const BusinessCreateInputSchema = z.object({
-  category: z.string().min(1, "La categoría es requerida"),
+  categories: z.array(z.string()).min(1, "La categoría es requerida"),
   description: z.string().min(1, "La descripción es requerida"),
   address: z.string().min(1, "La dirección es requerida"),
   phone: z.string().optional(),
@@ -34,4 +36,6 @@ export interface BusinessDTO extends BusinessPrisma {
   products?: ProductDTO[] | null;
   user?: UserDTO | null;
   bannedBusiness?: BannedBusiness | null;
+  categories?: CategoryDTO[] | null;
+  subCategories?: SubCategoryDTO[] | null;
 }

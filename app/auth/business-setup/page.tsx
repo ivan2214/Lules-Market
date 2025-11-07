@@ -1,3 +1,4 @@
+import { getCategories } from "@/app/actions/public-actions";
 import { BusinessSetupForm } from "@/components/auth/business-setup-form";
 import {
   Card,
@@ -7,7 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function BusinessSetup() {
+export default async function BusinessSetup() {
+  const categories = await getCategories();
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
@@ -19,7 +21,7 @@ export default function BusinessSetup() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <BusinessSetupForm />
+          <BusinessSetupForm categories={categories} />
         </CardContent>
       </Card>
     </div>

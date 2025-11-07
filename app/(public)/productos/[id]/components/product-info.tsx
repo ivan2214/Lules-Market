@@ -1,22 +1,27 @@
+import type { CategoryDTO } from "@/app/data/category/category.dto";
 import { Badge } from "@/components/ui/badge";
 
 type Props = {
   name: string;
   price?: number | null;
-  category?: string | null;
+  categories: CategoryDTO[];
   description?: string | null;
 };
 
 export async function ProductInfo({
   name,
   price,
-  category,
+  categories,
   description,
 }: Props) {
   return (
     <div className="space-y-6">
       <div>
-        {category && <Badge className="mb-2">{category}</Badge>}
+        {categories?.map((category) => (
+          <Badge className="mb-2" key={category.id}>
+            {category.value}
+          </Badge>
+        ))}
         <h1 className="font-bold text-3xl tracking-tight">{name}</h1>
         <p className="mt-4 font-bold text-3xl">
           {price ? `$${price.toLocaleString()}` : "Consultar precio"}

@@ -82,7 +82,7 @@ export function ProductFormDialog({
         name: product.name,
         description: product.description || "",
         price: product.price || 0,
-        category: product.category,
+        categories: product.categories?.map((category) => category.value) || [],
         images: product?.images?.map((img) => ({
           url: img.url,
           key: img.key,
@@ -97,7 +97,7 @@ export function ProductFormDialog({
         name: "",
         description: "",
         price: 0,
-        category: "",
+        categories: [],
         images: [],
         active: true,
         featured: false,

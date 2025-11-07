@@ -3,6 +3,7 @@ import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type * as React from "react";
+import type { CategoryDTO } from "@/app/data/category/category.dto";
 import type { Business } from "@/app/generated/prisma";
 import {
   Collapsible,
@@ -26,7 +27,7 @@ import { createSearchUrl } from "@/lib/utils";
 import { SearchFormSidebar } from "./search-form-sidebar";
 
 interface FiltersSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  categories: string[];
+  categories: CategoryDTO[];
   businesses: Business[];
   currentParams?: {
     search?: string;
@@ -80,21 +81,21 @@ export function FiltersSidebar({
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {categories.map((item) => (
-                      <SidebarMenuSubItem key={item}>
+                      <SidebarMenuSubItem key={item.id}>
                         <SidebarMenuSubButton
                           asChild
                           isActive={
-                            item === currentParams?.category &&
+                            item.id === currentParams?.category &&
                             currentParams?.category !== undefined
                           }
                           size="sm"
                         >
                           <Link
                             href={createSearchUrl(currentParams ?? {}, {
-                              category: item,
+                              category: item.value,
                             })}
                           >
-                            {item}
+                            {item.value}
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

@@ -153,7 +153,7 @@ async function DashboardContent() {
                     canFeature={limits.canFeatureProducts}
                     product={{
                       ...product,
-                      category: product.category || "Otros",
+                      categories: product.categories || [],
                     }}
                     trigger={
                       <Button variant="outline" size="sm">

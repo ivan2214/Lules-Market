@@ -7,14 +7,16 @@ import type {
   productView,
 } from "@/app/generated/prisma";
 import type { BusinessDTO } from "../business/business.dto";
+import type { CategoryDTO } from "../category/category.dto";
 import { ImageCreateInputSchema } from "../image/image.dto";
+import type { SubCategoryDTO } from "../sub-category/sub-category.dto";
 
 export const ProductCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   description: z.string().min(1, "La descripción es requerida"),
   price: z.number().min(0, "El precio debe ser mayor o igual a 0"),
   // opcional string o undefined o null
-  category: z.string().min(1, "La categoría es requerida").optional().nullish(),
+  categories: z.array(z.string().min(1, "La categoría es requerida")),
   featured: z.boolean().optional(),
   active: z.boolean().optional(),
   images: ImageCreateInputSchema.array().min(
@@ -42,4 +44,6 @@ export interface ProductDTO extends ProductPrisma {
   views?: productView[] | null;
   business?: BusinessDTO | null;
   bannedProduct?: BannedProduct | null;
+  categories?: CategoryDTO[] | null;
+  subCategories?: SubCategoryDTO[] | null;
 }

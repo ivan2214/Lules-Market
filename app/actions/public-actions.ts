@@ -5,22 +5,34 @@ import * as BusinessDAL from "@/app/data/business/business.dal";
 import * as ProductDAL from "@/app/data/product/product.dal";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
+import type { BusinessDTO } from "../data/business/business.dto";
+import type { CategoryDTO } from "../data/category/category.dto";
 
 export async function getPublicBusinesses(params?: {
   search?: string;
-  category?: string;
+  categories: BusinessDTO["categories"];
   page?: number;
   limit?: number;
 }) {
-  const { search, category, page = 1, limit = 12 } = params || {};
+  const { search, categories, page = 1, limit = 12 } = params || {};
 
   // Llamar directamente a la función del DAL
   return BusinessDAL.listAllBusinesses({
     search,
-    category,
+    categories,
     page,
     limit,
   });
+}
+
+export async function getPublicBusinessesByCategories(
+  categories: CategoryDTO[],
+) {
+  const { businesses } = await BusinessDAL.listAllBusinessesByCategories({
+    categories,
+  });
+
+  return businesses;
 }
 
 export async function getPublicProducts(params?: {
@@ -64,19 +76,7 @@ export async function getCategories() {
   cacheLife("days");
   cacheTag(CACHE_TAGS.CATEGORIES, CACHE_TAGS.PRODUCTS);
 
-  const categories = await prisma.product.findMany({
-    where: {
-      active: true,
-      category: { not: null },
-      business: {
-        planStatus: "ACTIVE",
-      },
-    },
-    select: {
-      category: true,
-    },
-    distinct: ["category"],
-  });
+  const categories = await prisma.category.findMany();
 
-  return categories.map((c) => c.category).filter(Boolean) as string[];
+  return categories;
 }

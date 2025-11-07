@@ -91,11 +91,11 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
                 ? `$${product.price.toLocaleString()}`
                 : "Sin precio"}
             </p>
-            {product.category && (
-              <Badge variant="outline" className="text-xs">
-                {product.category}
+            {product.categories?.map((category) => (
+              <Badge variant="outline" className="text-xs" key={category.id}>
+                {category.value}
               </Badge>
-            )}
+            ))}
           </div>
         </div>
       </CardContent>
@@ -104,7 +104,7 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
           canFeature={canFeature}
           product={{
             ...product,
-            category: product.category || "Otros",
+            categories: product.categories || [],
           }}
           trigger={
             <Button

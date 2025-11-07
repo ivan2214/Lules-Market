@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const keywords = [
     product.name,
-    product.category || "",
+    product.categories?.map((category) => category.value).join(", ") || "",
     product.business?.name,
     "comprar online",
     "Argentina",
@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url: `https://lules-market.vercel.app/comercios/${product.business?.id}`,
       },
     ],
-    category: product.category,
+    category: product.categories?.map((category) => category.value).join(", "),
     other: {
       "product:price:amount": product.price?.toString() || "",
       "product:price:currency": "ARS",
@@ -170,12 +170,6 @@ export default async function ProductPage({ params }: Props) {
       href: product.business?.instagram,
       icon: "Instagram",
     },
-    {
-      label: "Twitter",
-      value: product.business?.twitter,
-      href: product.business?.twitter,
-      icon: "Twitter",
-    },
   ];
 
   return (
@@ -211,7 +205,7 @@ export default async function ProductPage({ params }: Props) {
           <ProductInfo
             name={product.name}
             price={product.price}
-            category={product.category}
+            categories={product.categories || []}
             description={product.description}
           />
           <BusinessCard

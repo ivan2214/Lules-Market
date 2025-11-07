@@ -73,65 +73,71 @@ export const SearchForm = () => {
         </div>
       </form>
       {/* preview de los resultados que habira */}
-      <Activity mode={results.products.length && search!=="" ? "visible" : "hidden"}>
-      <section
-        className={cn(
-          "absolute z-50 mt-2 flex h-auto max-h-60 w-full max-w-md flex-1 flex-col items-center gap-4 overflow-y-scroll rounded-md bg-white p-5 opacity-0 shadow-lg transition-opacity duration-200 ease-in lg:max-w-lg",
-          search && "opacity-100",
-        )}
+      <Activity
+        mode={results.products.length && search !== "" ? "visible" : "hidden"}
       >
-        {results.products.length ? (
-          results.products.map((product) => (
-            <div
-              key={product.id}
-              className="flex w-full items-center justify-start gap-2 border-b pb-2 last:border-0 last:pb-0"
-            >
-              <div className="h-12 w-12">
-                <ImageWithSkeleton
-                  src={
-                    mainImage(product.images || []) ||
-                    product.images?.[0].url ||
-                    ""
-                  }
-                  alt={product.name}
-                  className="rounded object-cover"
-                />
+        <section
+          className={cn(
+            "absolute z-50 mt-2 flex h-auto max-h-60 w-full max-w-md flex-1 flex-col items-center gap-4 overflow-y-scroll rounded-md bg-white p-5 opacity-0 shadow-lg transition-opacity duration-200 ease-in lg:max-w-lg",
+            search && "opacity-100",
+          )}
+        >
+          {results.products.length ? (
+            results.products.map((product) => (
+              <div
+                key={product.id}
+                className="flex w-full items-center justify-start gap-2 border-b pb-2 last:border-0 last:pb-0"
+              >
+                <div className="h-12 w-12">
+                  <ImageWithSkeleton
+                    src={
+                      mainImage(product.images || []) ||
+                      product.images?.[0].url ||
+                      ""
+                    }
+                    alt={product.name}
+                    className="rounded object-cover"
+                  />
+                </div>
+                <div>
+                  <Link
+                    href={`/productos/${product.id}`}
+                    className="font-semibold text-sm hover:underline"
+                    title={product.name}
+                    aria-label={product.name}
+                    onClick={() => {
+                      setSearch("");
+                      setResults({
+                        products: [],
+                        total: 0,
+                      });
+                    }}
+                  >
+                    {product.name}
+                  </Link>
+                  <span className="font-extralight text-sm">
+                    ARS {formatCurrency(product.price || 0, "ARS")}
+                  </span>
+                </div>
+                {product.categories?.length && (
+                  <div className="ml-auto">
+                    <Badge variant="outline" className="text-xs">
+                      {product.categories
+                        ?.map((category) => category.value)
+                        .join(", ") || "Sin categoría"}
+                    </Badge>
+                  </div>
+                )}
               </div>
-              <div>
-                <Link
-                  href={`/productos/${product.id}`}
-                  className="font-semibold text-sm hover:underline"
-                  title={product.name}
-                  aria-label={product.name}
-                  onClick={() => {
-                    setSearch("");
-                    setResults({
-                      products: [],
-                      total: 0,
-                    });
-                  }}
-                >
-                  {product.name}
-                </Link>
-                <span className="font-extralight text-sm">
-                  ARS {formatCurrency(product.price || 0, "ARS")}
-                </span>
-              </div>
-              <div className="ml-auto">
-                <Badge variant="outline" className="text-xs">
-                  {product.category ? product.category : "Sin categoría"}
-                </Badge>
-              </div>
+            ))
+          ) : (
+            <div className="mx-auto flex w-full flex-1 items-center justify-center py-10">
+              <p className="mx-auto text-muted-foreground text-sm">
+                No se encontraron resultados
+              </p>
             </div>
-          ))
-        ) : (
-          <div className="mx-auto flex w-full flex-1 items-center justify-center py-10">
-            <p className="mx-auto text-muted-foreground text-sm">
-              No se encontraron resultados
-            </p>
-          </div>
-        )}
-      </section>
+          )}
+        </section>
       </Activity>
     </section>
   );

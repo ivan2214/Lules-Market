@@ -62,7 +62,9 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
         <div>
           <div className="font-medium">{row.original.name}</div>
           <div className="text-muted-foreground text-sm">
-            {row.original.category}
+            {row.original.categories
+              ?.map((category) => category.value)
+              .join(", ")}
           </div>
         </div>
       ),
@@ -178,7 +180,11 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
                     <div className="font-medium text-muted-foreground text-sm">
                       Categoría
                     </div>
-                    <div>{selectedProduct.category}</div>
+                    <div>
+                      {selectedProduct.categories
+                        ?.map((category) => category.value)
+                        .join(", ")}
+                    </div>
                   </div>
                 </div>
                 <div>

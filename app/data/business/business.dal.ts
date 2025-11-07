@@ -5,6 +5,7 @@ import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
+import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
 import { requireUser } from "../user/require-user";
 import {
@@ -23,12 +24,12 @@ import { requireBusiness } from "./require-busines";
 
 export async function listAllBusinesses({
   search,
-  category,
+  categories,
   limit,
   page,
 }: {
   search?: string;
-  category?: string;
+  categories?: BusinessDTO["categories"];
   page: number;
   limit: number;
 }) {
@@ -49,7 +50,9 @@ export async function listAllBusinesses({
         { description: { contains: search, mode: "insensitive" as const } },
       ],
     }),
-    ...(category && { category }),
+    ...(categories && {
+      category: { in: categories, mode: "insensitive" as const },
+    }),
   };
 
   const [businesses, total] = await prisma.$transaction([
@@ -79,6 +82,53 @@ export async function listAllBusinesses({
   ]);
 
   return { businesses, total };
+}
+
+export async function listAllBusinessesByCategories({
+  categories,
+}: {
+  categories: CategoryDTO[];
+}) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
+
+  const categoriesIds = categories.map((category) => category.id);
+
+  const businesses = await prisma.business.findMany({
+    where: {
+      categories: {
+        some: {
+          id: {
+            in: categoriesIds,
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      _count: {
+        select: {
+          products: true,
+        },
+      },
+      logo: {
+        select: {
+          key: true,
+          url: true,
+        },
+      },
+    },
+    orderBy: [
+      {
+        plan: "asc" as const,
+      },
+      { createdAt: "desc" },
+    ],
+  });
+
+  return { businesses };
 }
 
 export async function getBusinessById(

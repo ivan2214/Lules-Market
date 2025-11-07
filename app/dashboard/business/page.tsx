@@ -1,3 +1,4 @@
+import { getCategories } from "@/app/actions/public-actions";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import { BusinessProfileForm } from "@/components/dashboard/business-profile-form";
 import {
@@ -10,6 +11,7 @@ import {
 
 export default async function BusinessPage() {
   const business = await getMyBusiness();
+  const categories = await getCategories();
 
   return (
     <div className="space-y-6">
@@ -61,6 +63,7 @@ export default async function BusinessPage() {
                     size: 0,
                   },
             }}
+            categories={categories}
           />
         </CardContent>
       </Card>

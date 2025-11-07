@@ -54,5 +54,5 @@ export const requireBusiness = cache(
     }
 
     return { session, business };
-  }
+  },
 );

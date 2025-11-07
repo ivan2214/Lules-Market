@@ -10,6 +10,8 @@ export type CleanImage = Omit<
   | "updatedAt"
   | "isReported"
   | "isBanned"
+  | "categoryId"
+  | "subCategoryId"
 >;
 export const ImageCreateInputSchema = z.object({
   url: z.url("La URL de la imagen es inválida"),

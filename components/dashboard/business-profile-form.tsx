@@ -55,7 +55,8 @@ export function BusinessProfileForm({
         facebook: business.facebook ?? "",
         instagram: business.instagram ?? "",
 
-        category: business.category?.toLowerCase() ?? "",
+        categories:
+          business.categories?.map((category) => category.value) ?? [],
         coverImage: business.coverImage ?? {
           url: "",
           key: "",
@@ -83,7 +84,7 @@ export function BusinessProfileForm({
         facebook: "",
         instagram: "",
 
-        category: "",
+        categories: [],
         coverImage: {
           url: "",
           key: "",
