@@ -327,7 +327,7 @@ async function main() {
         url: faker.image.urlPicsumPhotos({ width: 300, height: 300 }),
         isMainImage: true,
         logoBusinessId: business.id,
-        name: "Logo",
+
         size: faker.number.float({ min: 50, max: 250 }),
         isReported: isReportedLogo,
         isBanned: isBannedLogo,
@@ -342,7 +342,7 @@ async function main() {
         url: faker.image.urlPicsumPhotos({ width: 1200, height: 400 }),
         isMainImage: false,
         coverBusinessId: business.id,
-        name: "Cover",
+
         size: faker.number.float({ min: 400, max: 2000 }),
         isReported: isReportedCover,
         isBanned: isBannedCover,
@@ -406,7 +406,7 @@ async function main() {
             isMainImage: first,
             productId: product.id,
             size: faker.number.float({ min: 100, max: 1800 }),
-            name: faker.commerce.productAdjective(),
+
             isReported,
             isBanned,
           },
@@ -558,6 +558,81 @@ async function main() {
         totalRevenue: faker.number.float({ min: 1000, max: 10000 }),
       },
     });
+  }
+
+  console.log(
+    "🏁 Asignando imágenes destacadas a categorías y subcategorías...",
+  );
+
+  const allCategories = await prisma.category.findMany({
+    include: {
+      products: {
+        include: {
+          productView: true,
+          images: { where: { isMainImage: true } },
+        },
+      },
+      subCategories: {
+        include: {
+          products: {
+            include: {
+              productView: true,
+              images: { where: { isMainImage: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  for (const category of allCategories) {
+    // --- Imagen destacada de la categoría ---
+    let bestCategoryProduct = null;
+    let bestCategoryViews = -1;
+
+    for (const product of category.products) {
+      const views = product.productView.length;
+      if (views > bestCategoryViews && product.images.length > 0) {
+        bestCategoryProduct = product;
+        bestCategoryViews = views;
+      }
+    }
+
+    if (bestCategoryProduct?.images) {
+      const img = bestCategoryProduct.images[0];
+      await prisma.image.update({
+        where: { key: img.key },
+        data: { categoryId: category.id },
+      });
+      console.log(
+        `📸 Asignada imagen de "${bestCategoryProduct.name}" a categoría ${category.label}`,
+      );
+    }
+
+    // --- Imagen destacada de cada subcategoría ---
+    for (const sub of category.subCategories) {
+      let bestSubProduct = null;
+      let bestSubViews = -1;
+
+      for (const product of sub.products) {
+        const views = product.productView.length;
+        if (views > bestSubViews && product.images.length > 0) {
+          bestSubProduct = product;
+          bestSubViews = views;
+        }
+      }
+
+      if (bestSubProduct?.images) {
+        const img = bestSubProduct.images[0];
+        await prisma.image.update({
+          where: { key: img.key },
+          data: { subCategoryId: sub.id },
+        });
+        console.log(
+          `🖼️  Imagen de "${bestSubProduct.name}" asignada a subcategoría ${sub.label}`,
+        );
+      }
+    }
   }
 
   console.log("✅ Enhanced seed completed!");

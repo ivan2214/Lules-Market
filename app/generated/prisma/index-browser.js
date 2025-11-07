@@ -293,6 +293,8 @@ exports.Prisma.ImageScalarFieldEnum = {
   productId: 'productId',
   logoBusinessId: 'logoBusinessId',
   coverBusinessId: 'coverBusinessId',
+  categoryId: 'categoryId',
+  subCategoryId: 'subCategoryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   isBanned: 'isBanned'

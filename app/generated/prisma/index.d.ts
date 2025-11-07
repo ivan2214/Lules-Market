@@ -13671,6 +13671,7 @@ export namespace Prisma {
     products?: boolean | Category$productsArgs<ExtArgs>
     businesses?: boolean | Category$businessesArgs<ExtArgs>
     subCategories?: boolean | Category$subCategoriesArgs<ExtArgs>
+    categoryImage?: boolean | Category$categoryImageArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -13703,6 +13704,7 @@ export namespace Prisma {
     products?: boolean | Category$productsArgs<ExtArgs>
     businesses?: boolean | Category$businessesArgs<ExtArgs>
     subCategories?: boolean | Category$subCategoriesArgs<ExtArgs>
+    categoryImage?: boolean | Category$categoryImageArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -13714,6 +13716,11 @@ export namespace Prisma {
       products: Prisma.$ProductPayload<ExtArgs>[]
       businesses: Prisma.$BusinessPayload<ExtArgs>[]
       subCategories: Prisma.$SubCategoryPayload<ExtArgs>[]
+      /**
+       * *
+       *    * imagen de la categoria
+       */
+      categoryImage: Prisma.$ImagePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14118,6 +14125,7 @@ export namespace Prisma {
     products<T extends Category$productsArgs<ExtArgs> = {}>(args?: Subset<T, Category$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     businesses<T extends Category$businessesArgs<ExtArgs> = {}>(args?: Subset<T, Category$businessesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     subCategories<T extends Category$subCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Category$subCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    categoryImage<T extends Category$categoryImageArgs<ExtArgs> = {}>(args?: Subset<T, Category$categoryImageArgs<ExtArgs>>): Prisma__ImageClient<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14612,6 +14620,25 @@ export namespace Prisma {
   }
 
   /**
+   * Category.categoryImage
+   */
+  export type Category$categoryImageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Image
+     */
+    select?: ImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Image
+     */
+    omit?: ImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImageInclude<ExtArgs> | null
+    where?: ImageWhereInput
+  }
+
+  /**
    * Category without action
    */
   export type CategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14805,6 +14832,7 @@ export namespace Prisma {
     products?: boolean | SubCategory$productsArgs<ExtArgs>
     businesses?: boolean | SubCategory$businessesArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    subCategoryImage?: boolean | SubCategory$subCategoryImageArgs<ExtArgs>
     _count?: boolean | SubCategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["subCategory"]>
 
@@ -14842,6 +14870,7 @@ export namespace Prisma {
     products?: boolean | SubCategory$productsArgs<ExtArgs>
     businesses?: boolean | SubCategory$businessesArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    subCategoryImage?: boolean | SubCategory$subCategoryImageArgs<ExtArgs>
     _count?: boolean | SubCategoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SubCategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14857,6 +14886,11 @@ export namespace Prisma {
       products: Prisma.$ProductPayload<ExtArgs>[]
       businesses: Prisma.$BusinessPayload<ExtArgs>[]
       category: Prisma.$CategoryPayload<ExtArgs>
+      /**
+       * *
+       *    * imagen de la subcategoria
+       */
+      subCategoryImage: Prisma.$ImagePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -15262,6 +15296,7 @@ export namespace Prisma {
     products<T extends SubCategory$productsArgs<ExtArgs> = {}>(args?: Subset<T, SubCategory$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     businesses<T extends SubCategory$businessesArgs<ExtArgs> = {}>(args?: Subset<T, SubCategory$businessesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     category<T extends CategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryDefaultArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    subCategoryImage<T extends SubCategory$subCategoryImageArgs<ExtArgs> = {}>(args?: Subset<T, SubCategory$subCategoryImageArgs<ExtArgs>>): Prisma__ImageClient<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15738,6 +15773,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BusinessScalarFieldEnum | BusinessScalarFieldEnum[]
+  }
+
+  /**
+   * SubCategory.subCategoryImage
+   */
+  export type SubCategory$subCategoryImageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Image
+     */
+    select?: ImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Image
+     */
+    omit?: ImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImageInclude<ExtArgs> | null
+    where?: ImageWhereInput
   }
 
   /**
@@ -19377,6 +19431,8 @@ export namespace Prisma {
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
+    categoryId: string | null
+    subCategoryId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     isBanned: boolean | null
@@ -19392,6 +19448,8 @@ export namespace Prisma {
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
+    categoryId: string | null
+    subCategoryId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     isBanned: boolean | null
@@ -19407,6 +19465,8 @@ export namespace Prisma {
     productId: number
     logoBusinessId: number
     coverBusinessId: number
+    categoryId: number
+    subCategoryId: number
     createdAt: number
     updatedAt: number
     isBanned: number
@@ -19432,6 +19492,8 @@ export namespace Prisma {
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
+    categoryId?: true
+    subCategoryId?: true
     createdAt?: true
     updatedAt?: true
     isBanned?: true
@@ -19447,6 +19509,8 @@ export namespace Prisma {
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
+    categoryId?: true
+    subCategoryId?: true
     createdAt?: true
     updatedAt?: true
     isBanned?: true
@@ -19462,6 +19526,8 @@ export namespace Prisma {
     productId?: true
     logoBusinessId?: true
     coverBusinessId?: true
+    categoryId?: true
+    subCategoryId?: true
     createdAt?: true
     updatedAt?: true
     isBanned?: true
@@ -19564,6 +19630,8 @@ export namespace Prisma {
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
+    categoryId: string | null
+    subCategoryId: string | null
     createdAt: Date
     updatedAt: Date
     isBanned: boolean | null
@@ -19598,12 +19666,16 @@ export namespace Prisma {
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    categoryId?: boolean
+    subCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isBanned?: boolean
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
+    category?: boolean | Image$categoryArgs<ExtArgs>
+    subCategory?: boolean | Image$subCategoryArgs<ExtArgs>
     bannedImages?: boolean | Image$bannedImagesArgs<ExtArgs>
   }, ExtArgs["result"]["image"]>
 
@@ -19617,12 +19689,16 @@ export namespace Prisma {
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    categoryId?: boolean
+    subCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isBanned?: boolean
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
+    category?: boolean | Image$categoryArgs<ExtArgs>
+    subCategory?: boolean | Image$subCategoryArgs<ExtArgs>
   }, ExtArgs["result"]["image"]>
 
   export type ImageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -19635,12 +19711,16 @@ export namespace Prisma {
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    categoryId?: boolean
+    subCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isBanned?: boolean
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
+    category?: boolean | Image$categoryArgs<ExtArgs>
+    subCategory?: boolean | Image$subCategoryArgs<ExtArgs>
   }, ExtArgs["result"]["image"]>
 
   export type ImageSelectScalar = {
@@ -19653,27 +19733,35 @@ export namespace Prisma {
     productId?: boolean
     logoBusinessId?: boolean
     coverBusinessId?: boolean
+    categoryId?: boolean
+    subCategoryId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isBanned?: boolean
   }
 
-  export type ImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "productId" | "logoBusinessId" | "coverBusinessId" | "createdAt" | "updatedAt" | "isBanned", ExtArgs["result"]["image"]>
+  export type ImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "productId" | "logoBusinessId" | "coverBusinessId" | "categoryId" | "subCategoryId" | "createdAt" | "updatedAt" | "isBanned", ExtArgs["result"]["image"]>
   export type ImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
+    category?: boolean | Image$categoryArgs<ExtArgs>
+    subCategory?: boolean | Image$subCategoryArgs<ExtArgs>
     bannedImages?: boolean | Image$bannedImagesArgs<ExtArgs>
   }
   export type ImageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
+    category?: boolean | Image$categoryArgs<ExtArgs>
+    subCategory?: boolean | Image$subCategoryArgs<ExtArgs>
   }
   export type ImageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | Image$productArgs<ExtArgs>
     logoBusiness?: boolean | Image$logoBusinessArgs<ExtArgs>
     coverBusiness?: boolean | Image$coverBusinessArgs<ExtArgs>
+    category?: boolean | Image$categoryArgs<ExtArgs>
+    subCategory?: boolean | Image$subCategoryArgs<ExtArgs>
   }
 
   export type $ImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19682,6 +19770,8 @@ export namespace Prisma {
       product: Prisma.$ProductPayload<ExtArgs> | null
       logoBusiness: Prisma.$BusinessPayload<ExtArgs> | null
       coverBusiness: Prisma.$BusinessPayload<ExtArgs> | null
+      category: Prisma.$CategoryPayload<ExtArgs> | null
+      subCategory: Prisma.$SubCategoryPayload<ExtArgs> | null
       bannedImages: Prisma.$BannedImagesPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -19694,6 +19784,8 @@ export namespace Prisma {
       productId: string | null
       logoBusinessId: string | null
       coverBusinessId: string | null
+      categoryId: string | null
+      subCategoryId: string | null
       createdAt: Date
       updatedAt: Date
       isBanned: boolean | null
@@ -20094,6 +20186,8 @@ export namespace Prisma {
     product<T extends Image$productArgs<ExtArgs> = {}>(args?: Subset<T, Image$productArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     logoBusiness<T extends Image$logoBusinessArgs<ExtArgs> = {}>(args?: Subset<T, Image$logoBusinessArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     coverBusiness<T extends Image$coverBusinessArgs<ExtArgs> = {}>(args?: Subset<T, Image$coverBusinessArgs<ExtArgs>>): Prisma__BusinessClient<$Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    category<T extends Image$categoryArgs<ExtArgs> = {}>(args?: Subset<T, Image$categoryArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    subCategory<T extends Image$subCategoryArgs<ExtArgs> = {}>(args?: Subset<T, Image$subCategoryArgs<ExtArgs>>): Prisma__SubCategoryClient<$Result.GetResult<Prisma.$SubCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     bannedImages<T extends Image$bannedImagesArgs<ExtArgs> = {}>(args?: Subset<T, Image$bannedImagesArgs<ExtArgs>>): Prisma__BannedImagesClient<$Result.GetResult<Prisma.$BannedImagesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -20133,6 +20227,8 @@ export namespace Prisma {
     readonly productId: FieldRef<"Image", 'String'>
     readonly logoBusinessId: FieldRef<"Image", 'String'>
     readonly coverBusinessId: FieldRef<"Image", 'String'>
+    readonly categoryId: FieldRef<"Image", 'String'>
+    readonly subCategoryId: FieldRef<"Image", 'String'>
     readonly createdAt: FieldRef<"Image", 'DateTime'>
     readonly updatedAt: FieldRef<"Image", 'DateTime'>
     readonly isBanned: FieldRef<"Image", 'Boolean'>
@@ -20586,6 +20682,44 @@ export namespace Prisma {
      */
     include?: BusinessInclude<ExtArgs> | null
     where?: BusinessWhereInput
+  }
+
+  /**
+   * Image.category
+   */
+  export type Image$categoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    where?: CategoryWhereInput
+  }
+
+  /**
+   * Image.subCategory
+   */
+  export type Image$subCategoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SubCategory
+     */
+    select?: SubCategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SubCategory
+     */
+    omit?: SubCategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubCategoryInclude<ExtArgs> | null
+    where?: SubCategoryWhereInput
   }
 
   /**
@@ -28390,6 +28524,8 @@ export namespace Prisma {
     productId: 'productId',
     logoBusinessId: 'logoBusinessId',
     coverBusinessId: 'coverBusinessId',
+    categoryId: 'categoryId',
+    subCategoryId: 'subCategoryId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isBanned: 'isBanned'
@@ -29390,6 +29526,7 @@ export namespace Prisma {
     products?: ProductListRelationFilter
     businesses?: BusinessListRelationFilter
     subCategories?: SubCategoryListRelationFilter
+    categoryImage?: XOR<ImageNullableScalarRelationFilter, ImageWhereInput> | null
   }
 
   export type CategoryOrderByWithRelationInput = {
@@ -29401,6 +29538,7 @@ export namespace Prisma {
     products?: ProductOrderByRelationAggregateInput
     businesses?: BusinessOrderByRelationAggregateInput
     subCategories?: SubCategoryOrderByRelationAggregateInput
+    categoryImage?: ImageOrderByWithRelationInput
   }
 
   export type CategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -29415,6 +29553,7 @@ export namespace Prisma {
     products?: ProductListRelationFilter
     businesses?: BusinessListRelationFilter
     subCategories?: SubCategoryListRelationFilter
+    categoryImage?: XOR<ImageNullableScalarRelationFilter, ImageWhereInput> | null
   }, "id" | "value">
 
   export type CategoryOrderByWithAggregationInput = {
@@ -29452,6 +29591,7 @@ export namespace Prisma {
     products?: ProductListRelationFilter
     businesses?: BusinessListRelationFilter
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+    subCategoryImage?: XOR<ImageNullableScalarRelationFilter, ImageWhereInput> | null
   }
 
   export type SubCategoryOrderByWithRelationInput = {
@@ -29464,6 +29604,7 @@ export namespace Prisma {
     products?: ProductOrderByRelationAggregateInput
     businesses?: BusinessOrderByRelationAggregateInput
     category?: CategoryOrderByWithRelationInput
+    subCategoryImage?: ImageOrderByWithRelationInput
   }
 
   export type SubCategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -29479,6 +29620,7 @@ export namespace Prisma {
     products?: ProductListRelationFilter
     businesses?: BusinessListRelationFilter
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+    subCategoryImage?: XOR<ImageNullableScalarRelationFilter, ImageWhereInput> | null
   }, "id">
 
   export type SubCategoryOrderByWithAggregationInput = {
@@ -29791,12 +29933,16 @@ export namespace Prisma {
     productId?: StringNullableFilter<"Image"> | string | null
     logoBusinessId?: StringNullableFilter<"Image"> | string | null
     coverBusinessId?: StringNullableFilter<"Image"> | string | null
+    categoryId?: StringNullableFilter<"Image"> | string | null
+    subCategoryId?: StringNullableFilter<"Image"> | string | null
     createdAt?: DateTimeFilter<"Image"> | Date | string
     updatedAt?: DateTimeFilter<"Image"> | Date | string
     isBanned?: BoolNullableFilter<"Image"> | boolean | null
     product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     logoBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
     coverBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
+    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
+    subCategory?: XOR<SubCategoryNullableScalarRelationFilter, SubCategoryWhereInput> | null
     bannedImages?: XOR<BannedImagesNullableScalarRelationFilter, BannedImagesWhereInput> | null
   }
 
@@ -29810,12 +29956,16 @@ export namespace Prisma {
     productId?: SortOrderInput | SortOrder
     logoBusinessId?: SortOrderInput | SortOrder
     coverBusinessId?: SortOrderInput | SortOrder
+    categoryId?: SortOrderInput | SortOrder
+    subCategoryId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isBanned?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
     logoBusiness?: BusinessOrderByWithRelationInput
     coverBusiness?: BusinessOrderByWithRelationInput
+    category?: CategoryOrderByWithRelationInput
+    subCategory?: SubCategoryOrderByWithRelationInput
     bannedImages?: BannedImagesOrderByWithRelationInput
   }
 
@@ -29824,6 +29974,8 @@ export namespace Prisma {
     url?: string
     logoBusinessId?: string
     coverBusinessId?: string
+    categoryId?: string
+    subCategoryId?: string
     AND?: ImageWhereInput | ImageWhereInput[]
     OR?: ImageWhereInput[]
     NOT?: ImageWhereInput | ImageWhereInput[]
@@ -29838,8 +29990,10 @@ export namespace Prisma {
     product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     logoBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
     coverBusiness?: XOR<BusinessNullableScalarRelationFilter, BusinessWhereInput> | null
+    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
+    subCategory?: XOR<SubCategoryNullableScalarRelationFilter, SubCategoryWhereInput> | null
     bannedImages?: XOR<BannedImagesNullableScalarRelationFilter, BannedImagesWhereInput> | null
-  }, "key" | "url" | "logoBusinessId" | "coverBusinessId">
+  }, "key" | "url" | "logoBusinessId" | "coverBusinessId" | "categoryId" | "subCategoryId">
 
   export type ImageOrderByWithAggregationInput = {
     key?: SortOrder
@@ -29851,6 +30005,8 @@ export namespace Prisma {
     productId?: SortOrderInput | SortOrder
     logoBusinessId?: SortOrderInput | SortOrder
     coverBusinessId?: SortOrderInput | SortOrder
+    categoryId?: SortOrderInput | SortOrder
+    subCategoryId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isBanned?: SortOrderInput | SortOrder
@@ -29874,6 +30030,8 @@ export namespace Prisma {
     productId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     logoBusinessId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     coverBusinessId?: StringNullableWithAggregatesFilter<"Image"> | string | null
+    categoryId?: StringNullableWithAggregatesFilter<"Image"> | string | null
+    subCategoryId?: StringNullableWithAggregatesFilter<"Image"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Image"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Image"> | Date | string
     isBanned?: BoolNullableWithAggregatesFilter<"Image"> | boolean | null
@@ -31115,6 +31273,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutCategoriesInput
     businesses?: BusinessCreateNestedManyWithoutCategoriesInput
     subCategories?: SubCategoryCreateNestedManyWithoutCategoryInput
+    categoryImage?: ImageCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateInput = {
@@ -31126,6 +31285,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutCategoriesInput
     businesses?: BusinessUncheckedCreateNestedManyWithoutCategoriesInput
     subCategories?: SubCategoryUncheckedCreateNestedManyWithoutCategoryInput
+    categoryImage?: ImageUncheckedCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryUpdateInput = {
@@ -31137,6 +31297,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutCategoriesNestedInput
     businesses?: BusinessUpdateManyWithoutCategoriesNestedInput
     subCategories?: SubCategoryUpdateManyWithoutCategoryNestedInput
+    categoryImage?: ImageUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateInput = {
@@ -31148,6 +31309,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutCategoriesNestedInput
     businesses?: BusinessUncheckedUpdateManyWithoutCategoriesNestedInput
     subCategories?: SubCategoryUncheckedUpdateManyWithoutCategoryNestedInput
+    categoryImage?: ImageUncheckedUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryCreateManyInput = {
@@ -31183,6 +31345,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutSubCategoriesInput
     businesses?: BusinessCreateNestedManyWithoutSubCategoriesInput
     category: CategoryCreateNestedOneWithoutSubCategoriesInput
+    subCategoryImage?: ImageCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryUncheckedCreateInput = {
@@ -31194,6 +31357,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutSubCategoriesInput
     businesses?: BusinessUncheckedCreateNestedManyWithoutSubCategoriesInput
+    subCategoryImage?: ImageUncheckedCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryUpdateInput = {
@@ -31205,6 +31369,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutSubCategoriesNestedInput
     businesses?: BusinessUpdateManyWithoutSubCategoriesNestedInput
     category?: CategoryUpdateOneRequiredWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateInput = {
@@ -31216,6 +31381,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutSubCategoriesNestedInput
     businesses?: BusinessUncheckedUpdateManyWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUncheckedUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryCreateManyInput = {
@@ -31569,6 +31735,8 @@ export namespace Prisma {
     product?: ProductCreateNestedOneWithoutImagesInput
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
+    category?: CategoryCreateNestedOneWithoutCategoryImageInput
+    subCategory?: SubCategoryCreateNestedOneWithoutSubCategoryImageInput
     bannedImages?: BannedImagesCreateNestedOneWithoutImageInput
   }
 
@@ -31582,6 +31750,8 @@ export namespace Prisma {
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -31601,6 +31771,8 @@ export namespace Prisma {
     product?: ProductUpdateOneWithoutImagesNestedInput
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
+    category?: CategoryUpdateOneWithoutCategoryImageNestedInput
+    subCategory?: SubCategoryUpdateOneWithoutSubCategoryImageNestedInput
     bannedImages?: BannedImagesUpdateOneWithoutImageNestedInput
   }
 
@@ -31614,6 +31786,8 @@ export namespace Prisma {
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -31630,6 +31804,8 @@ export namespace Prisma {
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -31657,6 +31833,8 @@ export namespace Prisma {
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -33153,6 +33331,16 @@ export namespace Prisma {
     isNot?: ProductWhereInput | null
   }
 
+  export type CategoryNullableScalarRelationFilter = {
+    is?: CategoryWhereInput | null
+    isNot?: CategoryWhereInput | null
+  }
+
+  export type SubCategoryNullableScalarRelationFilter = {
+    is?: SubCategoryWhereInput | null
+    isNot?: SubCategoryWhereInput | null
+  }
+
   export type BannedImagesNullableScalarRelationFilter = {
     is?: BannedImagesWhereInput | null
     isNot?: BannedImagesWhereInput | null
@@ -33168,6 +33356,8 @@ export namespace Prisma {
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
+    categoryId?: SortOrder
+    subCategoryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isBanned?: SortOrder
@@ -33187,6 +33377,8 @@ export namespace Prisma {
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
+    categoryId?: SortOrder
+    subCategoryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isBanned?: SortOrder
@@ -33202,6 +33394,8 @@ export namespace Prisma {
     productId?: SortOrder
     logoBusinessId?: SortOrder
     coverBusinessId?: SortOrder
+    categoryId?: SortOrder
+    subCategoryId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isBanned?: SortOrder
@@ -34371,6 +34565,12 @@ export namespace Prisma {
     connect?: SubCategoryWhereUniqueInput | SubCategoryWhereUniqueInput[]
   }
 
+  export type ImageCreateNestedOneWithoutCategoryInput = {
+    create?: XOR<ImageCreateWithoutCategoryInput, ImageUncheckedCreateWithoutCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutCategoryInput
+    connect?: ImageWhereUniqueInput
+  }
+
   export type ProductUncheckedCreateNestedManyWithoutCategoriesInput = {
     create?: XOR<ProductCreateWithoutCategoriesInput, ProductUncheckedCreateWithoutCategoriesInput> | ProductCreateWithoutCategoriesInput[] | ProductUncheckedCreateWithoutCategoriesInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutCategoriesInput | ProductCreateOrConnectWithoutCategoriesInput[]
@@ -34388,6 +34588,12 @@ export namespace Prisma {
     connectOrCreate?: SubCategoryCreateOrConnectWithoutCategoryInput | SubCategoryCreateOrConnectWithoutCategoryInput[]
     createMany?: SubCategoryCreateManyCategoryInputEnvelope
     connect?: SubCategoryWhereUniqueInput | SubCategoryWhereUniqueInput[]
+  }
+
+  export type ImageUncheckedCreateNestedOneWithoutCategoryInput = {
+    create?: XOR<ImageCreateWithoutCategoryInput, ImageUncheckedCreateWithoutCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutCategoryInput
+    connect?: ImageWhereUniqueInput
   }
 
   export type ProductUpdateManyWithoutCategoriesNestedInput = {
@@ -34430,6 +34636,16 @@ export namespace Prisma {
     deleteMany?: SubCategoryScalarWhereInput | SubCategoryScalarWhereInput[]
   }
 
+  export type ImageUpdateOneWithoutCategoryNestedInput = {
+    create?: XOR<ImageCreateWithoutCategoryInput, ImageUncheckedCreateWithoutCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutCategoryInput
+    upsert?: ImageUpsertWithoutCategoryInput
+    disconnect?: ImageWhereInput | boolean
+    delete?: ImageWhereInput | boolean
+    connect?: ImageWhereUniqueInput
+    update?: XOR<XOR<ImageUpdateToOneWithWhereWithoutCategoryInput, ImageUpdateWithoutCategoryInput>, ImageUncheckedUpdateWithoutCategoryInput>
+  }
+
   export type ProductUncheckedUpdateManyWithoutCategoriesNestedInput = {
     create?: XOR<ProductCreateWithoutCategoriesInput, ProductUncheckedCreateWithoutCategoriesInput> | ProductCreateWithoutCategoriesInput[] | ProductUncheckedCreateWithoutCategoriesInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutCategoriesInput | ProductCreateOrConnectWithoutCategoriesInput[]
@@ -34470,6 +34686,16 @@ export namespace Prisma {
     deleteMany?: SubCategoryScalarWhereInput | SubCategoryScalarWhereInput[]
   }
 
+  export type ImageUncheckedUpdateOneWithoutCategoryNestedInput = {
+    create?: XOR<ImageCreateWithoutCategoryInput, ImageUncheckedCreateWithoutCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutCategoryInput
+    upsert?: ImageUpsertWithoutCategoryInput
+    disconnect?: ImageWhereInput | boolean
+    delete?: ImageWhereInput | boolean
+    connect?: ImageWhereUniqueInput
+    update?: XOR<XOR<ImageUpdateToOneWithWhereWithoutCategoryInput, ImageUpdateWithoutCategoryInput>, ImageUncheckedUpdateWithoutCategoryInput>
+  }
+
   export type ProductCreateNestedManyWithoutSubCategoriesInput = {
     create?: XOR<ProductCreateWithoutSubCategoriesInput, ProductUncheckedCreateWithoutSubCategoriesInput> | ProductCreateWithoutSubCategoriesInput[] | ProductUncheckedCreateWithoutSubCategoriesInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutSubCategoriesInput | ProductCreateOrConnectWithoutSubCategoriesInput[]
@@ -34488,6 +34714,12 @@ export namespace Prisma {
     connect?: CategoryWhereUniqueInput
   }
 
+  export type ImageCreateNestedOneWithoutSubCategoryInput = {
+    create?: XOR<ImageCreateWithoutSubCategoryInput, ImageUncheckedCreateWithoutSubCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutSubCategoryInput
+    connect?: ImageWhereUniqueInput
+  }
+
   export type ProductUncheckedCreateNestedManyWithoutSubCategoriesInput = {
     create?: XOR<ProductCreateWithoutSubCategoriesInput, ProductUncheckedCreateWithoutSubCategoriesInput> | ProductCreateWithoutSubCategoriesInput[] | ProductUncheckedCreateWithoutSubCategoriesInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutSubCategoriesInput | ProductCreateOrConnectWithoutSubCategoriesInput[]
@@ -34498,6 +34730,12 @@ export namespace Prisma {
     create?: XOR<BusinessCreateWithoutSubCategoriesInput, BusinessUncheckedCreateWithoutSubCategoriesInput> | BusinessCreateWithoutSubCategoriesInput[] | BusinessUncheckedCreateWithoutSubCategoriesInput[]
     connectOrCreate?: BusinessCreateOrConnectWithoutSubCategoriesInput | BusinessCreateOrConnectWithoutSubCategoriesInput[]
     connect?: BusinessWhereUniqueInput | BusinessWhereUniqueInput[]
+  }
+
+  export type ImageUncheckedCreateNestedOneWithoutSubCategoryInput = {
+    create?: XOR<ImageCreateWithoutSubCategoryInput, ImageUncheckedCreateWithoutSubCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutSubCategoryInput
+    connect?: ImageWhereUniqueInput
   }
 
   export type ProductUpdateManyWithoutSubCategoriesNestedInput = {
@@ -34534,6 +34772,16 @@ export namespace Prisma {
     update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutSubCategoriesInput, CategoryUpdateWithoutSubCategoriesInput>, CategoryUncheckedUpdateWithoutSubCategoriesInput>
   }
 
+  export type ImageUpdateOneWithoutSubCategoryNestedInput = {
+    create?: XOR<ImageCreateWithoutSubCategoryInput, ImageUncheckedCreateWithoutSubCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutSubCategoryInput
+    upsert?: ImageUpsertWithoutSubCategoryInput
+    disconnect?: ImageWhereInput | boolean
+    delete?: ImageWhereInput | boolean
+    connect?: ImageWhereUniqueInput
+    update?: XOR<XOR<ImageUpdateToOneWithWhereWithoutSubCategoryInput, ImageUpdateWithoutSubCategoryInput>, ImageUncheckedUpdateWithoutSubCategoryInput>
+  }
+
   export type ProductUncheckedUpdateManyWithoutSubCategoriesNestedInput = {
     create?: XOR<ProductCreateWithoutSubCategoriesInput, ProductUncheckedCreateWithoutSubCategoriesInput> | ProductCreateWithoutSubCategoriesInput[] | ProductUncheckedCreateWithoutSubCategoriesInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutSubCategoriesInput | ProductCreateOrConnectWithoutSubCategoriesInput[]
@@ -34558,6 +34806,16 @@ export namespace Prisma {
     update?: BusinessUpdateWithWhereUniqueWithoutSubCategoriesInput | BusinessUpdateWithWhereUniqueWithoutSubCategoriesInput[]
     updateMany?: BusinessUpdateManyWithWhereWithoutSubCategoriesInput | BusinessUpdateManyWithWhereWithoutSubCategoriesInput[]
     deleteMany?: BusinessScalarWhereInput | BusinessScalarWhereInput[]
+  }
+
+  export type ImageUncheckedUpdateOneWithoutSubCategoryNestedInput = {
+    create?: XOR<ImageCreateWithoutSubCategoryInput, ImageUncheckedCreateWithoutSubCategoryInput>
+    connectOrCreate?: ImageCreateOrConnectWithoutSubCategoryInput
+    upsert?: ImageUpsertWithoutSubCategoryInput
+    disconnect?: ImageWhereInput | boolean
+    delete?: ImageWhereInput | boolean
+    connect?: ImageWhereUniqueInput
+    update?: XOR<XOR<ImageUpdateToOneWithWhereWithoutSubCategoryInput, ImageUpdateWithoutSubCategoryInput>, ImageUncheckedUpdateWithoutSubCategoryInput>
   }
 
   export type PlanCreatefeaturesInput = {
@@ -34831,6 +35089,18 @@ export namespace Prisma {
     connect?: BusinessWhereUniqueInput
   }
 
+  export type CategoryCreateNestedOneWithoutCategoryImageInput = {
+    create?: XOR<CategoryCreateWithoutCategoryImageInput, CategoryUncheckedCreateWithoutCategoryImageInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutCategoryImageInput
+    connect?: CategoryWhereUniqueInput
+  }
+
+  export type SubCategoryCreateNestedOneWithoutSubCategoryImageInput = {
+    create?: XOR<SubCategoryCreateWithoutSubCategoryImageInput, SubCategoryUncheckedCreateWithoutSubCategoryImageInput>
+    connectOrCreate?: SubCategoryCreateOrConnectWithoutSubCategoryImageInput
+    connect?: SubCategoryWhereUniqueInput
+  }
+
   export type BannedImagesCreateNestedOneWithoutImageInput = {
     create?: XOR<BannedImagesCreateWithoutImageInput, BannedImagesUncheckedCreateWithoutImageInput>
     connectOrCreate?: BannedImagesCreateOrConnectWithoutImageInput
@@ -34871,6 +35141,26 @@ export namespace Prisma {
     delete?: BusinessWhereInput | boolean
     connect?: BusinessWhereUniqueInput
     update?: XOR<XOR<BusinessUpdateToOneWithWhereWithoutCoverImageInput, BusinessUpdateWithoutCoverImageInput>, BusinessUncheckedUpdateWithoutCoverImageInput>
+  }
+
+  export type CategoryUpdateOneWithoutCategoryImageNestedInput = {
+    create?: XOR<CategoryCreateWithoutCategoryImageInput, CategoryUncheckedCreateWithoutCategoryImageInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutCategoryImageInput
+    upsert?: CategoryUpsertWithoutCategoryImageInput
+    disconnect?: CategoryWhereInput | boolean
+    delete?: CategoryWhereInput | boolean
+    connect?: CategoryWhereUniqueInput
+    update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutCategoryImageInput, CategoryUpdateWithoutCategoryImageInput>, CategoryUncheckedUpdateWithoutCategoryImageInput>
+  }
+
+  export type SubCategoryUpdateOneWithoutSubCategoryImageNestedInput = {
+    create?: XOR<SubCategoryCreateWithoutSubCategoryImageInput, SubCategoryUncheckedCreateWithoutSubCategoryImageInput>
+    connectOrCreate?: SubCategoryCreateOrConnectWithoutSubCategoryImageInput
+    upsert?: SubCategoryUpsertWithoutSubCategoryImageInput
+    disconnect?: SubCategoryWhereInput | boolean
+    delete?: SubCategoryWhereInput | boolean
+    connect?: SubCategoryWhereUniqueInput
+    update?: XOR<XOR<SubCategoryUpdateToOneWithWhereWithoutSubCategoryImageInput, SubCategoryUpdateWithoutSubCategoryImageInput>, SubCategoryUncheckedUpdateWithoutSubCategoryImageInput>
   }
 
   export type BannedImagesUpdateOneWithoutImageNestedInput = {
@@ -36276,6 +36566,8 @@ export namespace Prisma {
     product?: ProductCreateNestedOneWithoutImagesInput
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
+    category?: CategoryCreateNestedOneWithoutCategoryImageInput
+    subCategory?: SubCategoryCreateNestedOneWithoutSubCategoryImageInput
   }
 
   export type ImageUncheckedCreateWithoutBannedImagesInput = {
@@ -36288,6 +36580,8 @@ export namespace Prisma {
     productId?: string | null
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -36351,6 +36645,8 @@ export namespace Prisma {
     product?: ProductUpdateOneWithoutImagesNestedInput
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
+    category?: CategoryUpdateOneWithoutCategoryImageNestedInput
+    subCategory?: SubCategoryUpdateOneWithoutSubCategoryImageNestedInput
   }
 
   export type ImageUncheckedUpdateWithoutBannedImagesInput = {
@@ -36363,6 +36659,8 @@ export namespace Prisma {
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -36532,6 +36830,8 @@ export namespace Prisma {
     isBanned?: boolean | null
     product?: ProductCreateNestedOneWithoutImagesInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
+    category?: CategoryCreateNestedOneWithoutCategoryImageInput
+    subCategory?: SubCategoryCreateNestedOneWithoutSubCategoryImageInput
     bannedImages?: BannedImagesCreateNestedOneWithoutImageInput
   }
 
@@ -36544,6 +36844,8 @@ export namespace Prisma {
     isReported?: boolean
     productId?: string | null
     coverBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -36567,6 +36869,8 @@ export namespace Prisma {
     isBanned?: boolean | null
     product?: ProductCreateNestedOneWithoutImagesInput
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
+    category?: CategoryCreateNestedOneWithoutCategoryImageInput
+    subCategory?: SubCategoryCreateNestedOneWithoutSubCategoryImageInput
     bannedImages?: BannedImagesCreateNestedOneWithoutImageInput
   }
 
@@ -36579,6 +36883,8 @@ export namespace Prisma {
     isReported?: boolean
     productId?: string | null
     logoBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -36803,6 +37109,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutCategoriesInput
     subCategories?: SubCategoryCreateNestedManyWithoutCategoryInput
+    categoryImage?: ImageCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutBusinessesInput = {
@@ -36813,6 +37120,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutCategoriesInput
     subCategories?: SubCategoryUncheckedCreateNestedManyWithoutCategoryInput
+    categoryImage?: ImageUncheckedCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutBusinessesInput = {
@@ -36828,6 +37136,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutSubCategoriesInput
     category: CategoryCreateNestedOneWithoutSubCategoriesInput
+    subCategoryImage?: ImageCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryUncheckedCreateWithoutBusinessesInput = {
@@ -36838,6 +37147,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutSubCategoriesInput
+    subCategoryImage?: ImageUncheckedCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryCreateOrConnectWithoutBusinessesInput = {
@@ -36868,6 +37178,8 @@ export namespace Prisma {
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     product?: ProductUpdateOneWithoutImagesNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
+    category?: CategoryUpdateOneWithoutCategoryImageNestedInput
+    subCategory?: SubCategoryUpdateOneWithoutSubCategoryImageNestedInput
     bannedImages?: BannedImagesUpdateOneWithoutImageNestedInput
   }
 
@@ -36880,6 +37192,8 @@ export namespace Prisma {
     isReported?: BoolFieldUpdateOperationsInput | boolean
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -36909,6 +37223,8 @@ export namespace Prisma {
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     product?: ProductUpdateOneWithoutImagesNestedInput
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
+    category?: CategoryUpdateOneWithoutCategoryImageNestedInput
+    subCategory?: SubCategoryUpdateOneWithoutSubCategoryImageNestedInput
     bannedImages?: BannedImagesUpdateOneWithoutImageNestedInput
   }
 
@@ -36921,6 +37237,8 @@ export namespace Prisma {
     isReported?: BoolFieldUpdateOperationsInput | boolean
     productId?: NullableStringFieldUpdateOperationsInput | string | null
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -37317,6 +37635,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutSubCategoriesInput
     businesses?: BusinessCreateNestedManyWithoutSubCategoriesInput
+    subCategoryImage?: ImageCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryUncheckedCreateWithoutCategoryInput = {
@@ -37327,6 +37646,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutSubCategoriesInput
     businesses?: BusinessUncheckedCreateNestedManyWithoutSubCategoriesInput
+    subCategoryImage?: ImageUncheckedCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryCreateOrConnectWithoutCategoryInput = {
@@ -37337,6 +37657,45 @@ export namespace Prisma {
   export type SubCategoryCreateManyCategoryInputEnvelope = {
     data: SubCategoryCreateManyCategoryInput | SubCategoryCreateManyCategoryInput[]
     skipDuplicates?: boolean
+  }
+
+  export type ImageCreateWithoutCategoryInput = {
+    key: string
+    url: string
+    isMainImage?: boolean
+    name?: string | null
+    size?: number | null
+    isReported?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isBanned?: boolean | null
+    product?: ProductCreateNestedOneWithoutImagesInput
+    logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
+    coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
+    subCategory?: SubCategoryCreateNestedOneWithoutSubCategoryImageInput
+    bannedImages?: BannedImagesCreateNestedOneWithoutImageInput
+  }
+
+  export type ImageUncheckedCreateWithoutCategoryInput = {
+    key: string
+    url: string
+    isMainImage?: boolean
+    name?: string | null
+    size?: number | null
+    isReported?: boolean
+    productId?: string | null
+    logoBusinessId?: string | null
+    coverBusinessId?: string | null
+    subCategoryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isBanned?: boolean | null
+    bannedImages?: BannedImagesUncheckedCreateNestedOneWithoutImageInput
+  }
+
+  export type ImageCreateOrConnectWithoutCategoryInput = {
+    where: ImageWhereUniqueInput
+    create: XOR<ImageCreateWithoutCategoryInput, ImageUncheckedCreateWithoutCategoryInput>
   }
 
   export type ProductUpsertWithWhereUniqueWithoutCategoriesInput = {
@@ -37412,6 +37771,51 @@ export namespace Prisma {
   export type SubCategoryUpdateManyWithWhereWithoutCategoryInput = {
     where: SubCategoryScalarWhereInput
     data: XOR<SubCategoryUpdateManyMutationInput, SubCategoryUncheckedUpdateManyWithoutCategoryInput>
+  }
+
+  export type ImageUpsertWithoutCategoryInput = {
+    update: XOR<ImageUpdateWithoutCategoryInput, ImageUncheckedUpdateWithoutCategoryInput>
+    create: XOR<ImageCreateWithoutCategoryInput, ImageUncheckedCreateWithoutCategoryInput>
+    where?: ImageWhereInput
+  }
+
+  export type ImageUpdateToOneWithWhereWithoutCategoryInput = {
+    where?: ImageWhereInput
+    data: XOR<ImageUpdateWithoutCategoryInput, ImageUncheckedUpdateWithoutCategoryInput>
+  }
+
+  export type ImageUpdateWithoutCategoryInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    isMainImage?: BoolFieldUpdateOperationsInput | boolean
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    product?: ProductUpdateOneWithoutImagesNestedInput
+    logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
+    coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
+    subCategory?: SubCategoryUpdateOneWithoutSubCategoryImageNestedInput
+    bannedImages?: BannedImagesUpdateOneWithoutImageNestedInput
+  }
+
+  export type ImageUncheckedUpdateWithoutCategoryInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    isMainImage?: BoolFieldUpdateOperationsInput | boolean
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    bannedImages?: BannedImagesUncheckedUpdateOneWithoutImageNestedInput
   }
 
   export type ProductCreateWithoutSubCategoriesInput = {
@@ -37534,6 +37938,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutCategoriesInput
     businesses?: BusinessCreateNestedManyWithoutCategoriesInput
+    categoryImage?: ImageCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutSubCategoriesInput = {
@@ -37544,11 +37949,51 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutCategoriesInput
     businesses?: BusinessUncheckedCreateNestedManyWithoutCategoriesInput
+    categoryImage?: ImageUncheckedCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutSubCategoriesInput = {
     where: CategoryWhereUniqueInput
     create: XOR<CategoryCreateWithoutSubCategoriesInput, CategoryUncheckedCreateWithoutSubCategoriesInput>
+  }
+
+  export type ImageCreateWithoutSubCategoryInput = {
+    key: string
+    url: string
+    isMainImage?: boolean
+    name?: string | null
+    size?: number | null
+    isReported?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isBanned?: boolean | null
+    product?: ProductCreateNestedOneWithoutImagesInput
+    logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
+    coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
+    category?: CategoryCreateNestedOneWithoutCategoryImageInput
+    bannedImages?: BannedImagesCreateNestedOneWithoutImageInput
+  }
+
+  export type ImageUncheckedCreateWithoutSubCategoryInput = {
+    key: string
+    url: string
+    isMainImage?: boolean
+    name?: string | null
+    size?: number | null
+    isReported?: boolean
+    productId?: string | null
+    logoBusinessId?: string | null
+    coverBusinessId?: string | null
+    categoryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isBanned?: boolean | null
+    bannedImages?: BannedImagesUncheckedCreateNestedOneWithoutImageInput
+  }
+
+  export type ImageCreateOrConnectWithoutSubCategoryInput = {
+    where: ImageWhereUniqueInput
+    create: XOR<ImageCreateWithoutSubCategoryInput, ImageUncheckedCreateWithoutSubCategoryInput>
   }
 
   export type ProductUpsertWithWhereUniqueWithoutSubCategoriesInput = {
@@ -37602,6 +38047,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutCategoriesNestedInput
     businesses?: BusinessUpdateManyWithoutCategoriesNestedInput
+    categoryImage?: ImageUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutSubCategoriesInput = {
@@ -37612,6 +38058,52 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutCategoriesNestedInput
     businesses?: BusinessUncheckedUpdateManyWithoutCategoriesNestedInput
+    categoryImage?: ImageUncheckedUpdateOneWithoutCategoryNestedInput
+  }
+
+  export type ImageUpsertWithoutSubCategoryInput = {
+    update: XOR<ImageUpdateWithoutSubCategoryInput, ImageUncheckedUpdateWithoutSubCategoryInput>
+    create: XOR<ImageCreateWithoutSubCategoryInput, ImageUncheckedCreateWithoutSubCategoryInput>
+    where?: ImageWhereInput
+  }
+
+  export type ImageUpdateToOneWithWhereWithoutSubCategoryInput = {
+    where?: ImageWhereInput
+    data: XOR<ImageUpdateWithoutSubCategoryInput, ImageUncheckedUpdateWithoutSubCategoryInput>
+  }
+
+  export type ImageUpdateWithoutSubCategoryInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    isMainImage?: BoolFieldUpdateOperationsInput | boolean
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    product?: ProductUpdateOneWithoutImagesNestedInput
+    logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
+    coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
+    category?: CategoryUpdateOneWithoutCategoryImageNestedInput
+    bannedImages?: BannedImagesUpdateOneWithoutImageNestedInput
+  }
+
+  export type ImageUncheckedUpdateWithoutSubCategoryInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    isMainImage?: BoolFieldUpdateOperationsInput | boolean
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableFloatFieldUpdateOperationsInput | number | null
+    isReported?: BoolFieldUpdateOperationsInput | boolean
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    bannedImages?: BannedImagesUncheckedUpdateOneWithoutImageNestedInput
   }
 
   export type BusinessCreateWithoutProductsInput = {
@@ -37716,6 +38208,8 @@ export namespace Prisma {
     isBanned?: boolean | null
     logoBusiness?: BusinessCreateNestedOneWithoutLogoInput
     coverBusiness?: BusinessCreateNestedOneWithoutCoverImageInput
+    category?: CategoryCreateNestedOneWithoutCategoryImageInput
+    subCategory?: SubCategoryCreateNestedOneWithoutSubCategoryImageInput
     bannedImages?: BannedImagesCreateNestedOneWithoutImageInput
   }
 
@@ -37728,6 +38222,8 @@ export namespace Prisma {
     isReported?: boolean
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -37774,6 +38270,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     businesses?: BusinessCreateNestedManyWithoutCategoriesInput
     subCategories?: SubCategoryCreateNestedManyWithoutCategoryInput
+    categoryImage?: ImageCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutProductsInput = {
@@ -37784,6 +38281,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     businesses?: BusinessUncheckedCreateNestedManyWithoutCategoriesInput
     subCategories?: SubCategoryUncheckedCreateNestedManyWithoutCategoryInput
+    categoryImage?: ImageUncheckedCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutProductsInput = {
@@ -37799,6 +38297,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     businesses?: BusinessCreateNestedManyWithoutSubCategoriesInput
     category: CategoryCreateNestedOneWithoutSubCategoriesInput
+    subCategoryImage?: ImageCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryUncheckedCreateWithoutProductsInput = {
@@ -37809,6 +38308,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     businesses?: BusinessUncheckedCreateNestedManyWithoutSubCategoriesInput
+    subCategoryImage?: ImageUncheckedCreateNestedOneWithoutSubCategoryInput
   }
 
   export type SubCategoryCreateOrConnectWithoutProductsInput = {
@@ -37947,6 +38447,8 @@ export namespace Prisma {
     productId?: StringNullableFilter<"Image"> | string | null
     logoBusinessId?: StringNullableFilter<"Image"> | string | null
     coverBusinessId?: StringNullableFilter<"Image"> | string | null
+    categoryId?: StringNullableFilter<"Image"> | string | null
+    subCategoryId?: StringNullableFilter<"Image"> | string | null
     createdAt?: DateTimeFilter<"Image"> | Date | string
     updatedAt?: DateTimeFilter<"Image"> | Date | string
     isBanned?: BoolNullableFilter<"Image"> | boolean | null
@@ -38341,6 +38843,60 @@ export namespace Prisma {
     create: XOR<BusinessCreateWithoutCoverImageInput, BusinessUncheckedCreateWithoutCoverImageInput>
   }
 
+  export type CategoryCreateWithoutCategoryImageInput = {
+    id?: string
+    value: string
+    label: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    products?: ProductCreateNestedManyWithoutCategoriesInput
+    businesses?: BusinessCreateNestedManyWithoutCategoriesInput
+    subCategories?: SubCategoryCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUncheckedCreateWithoutCategoryImageInput = {
+    id?: string
+    value: string
+    label: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    products?: ProductUncheckedCreateNestedManyWithoutCategoriesInput
+    businesses?: BusinessUncheckedCreateNestedManyWithoutCategoriesInput
+    subCategories?: SubCategoryUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryCreateOrConnectWithoutCategoryImageInput = {
+    where: CategoryWhereUniqueInput
+    create: XOR<CategoryCreateWithoutCategoryImageInput, CategoryUncheckedCreateWithoutCategoryImageInput>
+  }
+
+  export type SubCategoryCreateWithoutSubCategoryImageInput = {
+    id?: string
+    value: string
+    label: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    products?: ProductCreateNestedManyWithoutSubCategoriesInput
+    businesses?: BusinessCreateNestedManyWithoutSubCategoriesInput
+    category: CategoryCreateNestedOneWithoutSubCategoriesInput
+  }
+
+  export type SubCategoryUncheckedCreateWithoutSubCategoryImageInput = {
+    id?: string
+    value: string
+    label: string
+    categoryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    products?: ProductUncheckedCreateNestedManyWithoutSubCategoriesInput
+    businesses?: BusinessUncheckedCreateNestedManyWithoutSubCategoriesInput
+  }
+
+  export type SubCategoryCreateOrConnectWithoutSubCategoryImageInput = {
+    where: SubCategoryWhereUniqueInput
+    create: XOR<SubCategoryCreateWithoutSubCategoryImageInput, SubCategoryUncheckedCreateWithoutSubCategoryImageInput>
+  }
+
   export type BannedImagesCreateWithoutImageInput = {
     id?: string
     createdAt?: Date | string
@@ -38559,6 +39115,72 @@ export namespace Prisma {
     couponRedemption?: CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
     categories?: CategoryUncheckedUpdateManyWithoutBusinessesNestedInput
     subCategories?: SubCategoryUncheckedUpdateManyWithoutBusinessesNestedInput
+  }
+
+  export type CategoryUpsertWithoutCategoryImageInput = {
+    update: XOR<CategoryUpdateWithoutCategoryImageInput, CategoryUncheckedUpdateWithoutCategoryImageInput>
+    create: XOR<CategoryCreateWithoutCategoryImageInput, CategoryUncheckedCreateWithoutCategoryImageInput>
+    where?: CategoryWhereInput
+  }
+
+  export type CategoryUpdateToOneWithWhereWithoutCategoryImageInput = {
+    where?: CategoryWhereInput
+    data: XOR<CategoryUpdateWithoutCategoryImageInput, CategoryUncheckedUpdateWithoutCategoryImageInput>
+  }
+
+  export type CategoryUpdateWithoutCategoryImageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUpdateManyWithoutCategoriesNestedInput
+    businesses?: BusinessUpdateManyWithoutCategoriesNestedInput
+    subCategories?: SubCategoryUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateWithoutCategoryImageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUncheckedUpdateManyWithoutCategoriesNestedInput
+    businesses?: BusinessUncheckedUpdateManyWithoutCategoriesNestedInput
+    subCategories?: SubCategoryUncheckedUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type SubCategoryUpsertWithoutSubCategoryImageInput = {
+    update: XOR<SubCategoryUpdateWithoutSubCategoryImageInput, SubCategoryUncheckedUpdateWithoutSubCategoryImageInput>
+    create: XOR<SubCategoryCreateWithoutSubCategoryImageInput, SubCategoryUncheckedCreateWithoutSubCategoryImageInput>
+    where?: SubCategoryWhereInput
+  }
+
+  export type SubCategoryUpdateToOneWithWhereWithoutSubCategoryImageInput = {
+    where?: SubCategoryWhereInput
+    data: XOR<SubCategoryUpdateWithoutSubCategoryImageInput, SubCategoryUncheckedUpdateWithoutSubCategoryImageInput>
+  }
+
+  export type SubCategoryUpdateWithoutSubCategoryImageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUpdateManyWithoutSubCategoriesNestedInput
+    businesses?: BusinessUpdateManyWithoutSubCategoriesNestedInput
+    category?: CategoryUpdateOneRequiredWithoutSubCategoriesNestedInput
+  }
+
+  export type SubCategoryUncheckedUpdateWithoutSubCategoryImageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUncheckedUpdateManyWithoutSubCategoriesNestedInput
+    businesses?: BusinessUncheckedUpdateManyWithoutSubCategoriesNestedInput
   }
 
   export type BannedImagesUpsertWithoutImageInput = {
@@ -39582,6 +40204,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutCategoriesNestedInput
     subCategories?: SubCategoryUpdateManyWithoutCategoryNestedInput
+    categoryImage?: ImageUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutBusinessesInput = {
@@ -39592,6 +40215,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutCategoriesNestedInput
     subCategories?: SubCategoryUncheckedUpdateManyWithoutCategoryNestedInput
+    categoryImage?: ImageUncheckedUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateManyWithoutBusinessesInput = {
@@ -39610,6 +40234,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutSubCategoriesNestedInput
     category?: CategoryUpdateOneRequiredWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateWithoutBusinessesInput = {
@@ -39620,6 +40245,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUncheckedUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateManyWithoutBusinessesInput = {
@@ -39787,6 +40413,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutSubCategoriesNestedInput
     businesses?: BusinessUpdateManyWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateWithoutCategoryInput = {
@@ -39797,6 +40424,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutSubCategoriesNestedInput
     businesses?: BusinessUncheckedUpdateManyWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUncheckedUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateManyWithoutCategoryInput = {
@@ -39956,6 +40584,8 @@ export namespace Prisma {
     isReported?: boolean
     logoBusinessId?: string | null
     coverBusinessId?: string | null
+    categoryId?: string | null
+    subCategoryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     isBanned?: boolean | null
@@ -39979,6 +40609,8 @@ export namespace Prisma {
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
     logoBusiness?: BusinessUpdateOneWithoutLogoNestedInput
     coverBusiness?: BusinessUpdateOneWithoutCoverImageNestedInput
+    category?: CategoryUpdateOneWithoutCategoryImageNestedInput
+    subCategory?: SubCategoryUpdateOneWithoutSubCategoryImageNestedInput
     bannedImages?: BannedImagesUpdateOneWithoutImageNestedInput
   }
 
@@ -39991,6 +40623,8 @@ export namespace Prisma {
     isReported?: BoolFieldUpdateOperationsInput | boolean
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -40006,6 +40640,8 @@ export namespace Prisma {
     isReported?: BoolFieldUpdateOperationsInput | boolean
     logoBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
     coverBusinessId?: NullableStringFieldUpdateOperationsInput | string | null
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isBanned?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -40037,6 +40673,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     businesses?: BusinessUpdateManyWithoutCategoriesNestedInput
     subCategories?: SubCategoryUpdateManyWithoutCategoryNestedInput
+    categoryImage?: ImageUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutProductsInput = {
@@ -40047,6 +40684,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     businesses?: BusinessUncheckedUpdateManyWithoutCategoriesNestedInput
     subCategories?: SubCategoryUncheckedUpdateManyWithoutCategoryNestedInput
+    categoryImage?: ImageUncheckedUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateManyWithoutProductsInput = {
@@ -40065,6 +40703,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     businesses?: BusinessUpdateManyWithoutSubCategoriesNestedInput
     category?: CategoryUpdateOneRequiredWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateWithoutProductsInput = {
@@ -40075,6 +40714,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     businesses?: BusinessUncheckedUpdateManyWithoutSubCategoriesNestedInput
+    subCategoryImage?: ImageUncheckedUpdateOneWithoutSubCategoryNestedInput
   }
 
   export type SubCategoryUncheckedUpdateManyWithoutProductsInput = {
