@@ -1,8 +1,7 @@
 ---
-alwaysApply: true
+inclusion: fileMatch
 fileMatchPattern: ['**/*form*.tsx', '**/*Form*.tsx', '**/actions/*.ts', '**/schemas/*.ts']
 ---
-
 
 # Form Development Guidelines
 
