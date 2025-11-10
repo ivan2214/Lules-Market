@@ -77,7 +77,7 @@ export async function listAllProducts({
   if (sort) {
     const [field, direction] = sort.split("_") as [
       Prisma.SortOrder,
-      Prisma.SortOrderInput,
+      Prisma.SortOrderInput
     ];
     orderBy.unshift({ [field]: direction });
   }
@@ -171,14 +171,14 @@ export async function listProductsGroupedByCategory(): Promise<
 
   // si querés limitar a 10 categorías como antes:
   const limitedProductsByCategory = Object.fromEntries(
-    Object.entries(productsByCategory).slice(0, 10),
+    Object.entries(productsByCategory).slice(0, 10)
   );
 
   return limitedProductsByCategory;
 }
 
 export async function getProductById(
-  productId: string,
+  productId: string
 ): Promise<ProductDTO | null> {
   "use cache";
   cacheLife("hours");
@@ -221,7 +221,7 @@ export async function getProductsByBusinessId(): Promise<ProductDTO[]> {
 }
 
 export async function createProduct(
-  data: ProductCreateInput,
+  data: ProductCreateInput
 ): Promise<ActionResult> {
   try {
     const validatedData = ProductCreateInputSchema.safeParse(data);
@@ -268,7 +268,7 @@ export async function createProduct(
 
     // Crear imágenes que no existan
     const imagesToCreate = images.filter(
-      (image) => !imagesDB.some((dbImage) => dbImage.url === image.url),
+      (image) => !imagesDB.some((dbImage) => dbImage.url === image.url)
     );
 
     // Crear imágenes en la base de datos
@@ -328,7 +328,7 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-  data: ProductUpdateInput,
+  data: ProductUpdateInput
 ): Promise<ActionResult> {
   try {
     const validatedData = ProductUpdateInputSchema.safeParse(data);
@@ -382,7 +382,7 @@ export async function updateProduct(
 
     // Imágenes a borrar → existen en DB pero no vienen en el request
     const imagesToDelete = existingImages.filter(
-      (img) => !incomingKeys.has(img.key),
+      (img) => !incomingKeys.has(img.key)
     );
 
     if (imagesToDelete.length) {
@@ -451,20 +451,19 @@ export async function updateProduct(
 
 export async function deleteProduct(productId: string) {
   try {
-    const user = await requireUser();
+    const { userId, email } = await requireUser();
     const { business } = await requireBusiness();
 
-    canDeleteProduct(
-      {
-        activePlan: business.plan,
-        id: user.id,
-        email: user.email,
-      },
-      {
-        id: productId,
-        businesId: user.id,
-      },
-    );
+    const policyUser = {
+      userId: userId,
+      email: email,
+      activePlan: business.plan,
+    };
+
+    canDeleteProduct(policyUser, {
+      id: productId,
+      businesId: business.id,
+    });
 
     const product = await prisma.product.findFirst({
       where: {

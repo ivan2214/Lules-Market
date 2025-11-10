@@ -1,5 +1,6 @@
 import "server-only";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { cache } from "react";
 import prisma from "@/lib/prisma";
 import { requireUser } from "../user/require-user";
@@ -7,24 +8,17 @@ import type { BusinessDTO } from "./business.dto";
 
 export const requireBusiness = cache(
   async (): Promise<{
-    session: {
-      id: string;
-      email: string;
-      name: string;
-      token: string;
-    };
+    userId: string;
+    email: string;
     business: BusinessDTO;
+    name: string;
   }> => {
+    await connection();
+
     const session = await requireUser();
 
-    const isAdmin = await prisma.admin.findUnique({
-      where: {
-        userId: session.id,
-      },
-    });
-
     const business = await prisma.business.findUnique({
-      where: { userId: session.id },
+      where: { userId: session.userId },
       include: {
         logo: true,
         coverImage: true,
@@ -45,7 +39,7 @@ export const requireBusiness = cache(
       },
     });
 
-    if (!business && !isAdmin) {
+    if (!business) {
       redirect("/auth/business-setup");
     }
 
@@ -53,6 +47,11 @@ export const requireBusiness = cache(
       redirect("/auth/business-setup");
     }
 
-    return { session, business };
-  },
+    return {
+      userId: session.userId,
+      email: session.email,
+      business,
+      name: session.name,
+    };
+  }
 );

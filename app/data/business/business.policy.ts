@@ -2,7 +2,7 @@ import type { PlanType } from "@/app/generated/prisma";
 import "server-only";
 
 type PolicyUser = {
-  id: string;
+  userId: string;
   email?: string | null;
   activePlan?: PlanType | null;
 };
@@ -18,7 +18,7 @@ export function canEditBusiness(
   business: { id: string; userId?: string }
 ) {
   if (!user) return false;
-  if (business.userId && business.userId === user.id) return true;
+  if (business.userId && business.userId === user.userId) return true;
   return false;
 }
 

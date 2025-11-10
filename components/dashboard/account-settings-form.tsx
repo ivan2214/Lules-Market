@@ -14,7 +14,6 @@ interface AccountSettingsFormProps {
     id: string;
     email: string;
     name: string;
-    token: string;
   };
 }
 

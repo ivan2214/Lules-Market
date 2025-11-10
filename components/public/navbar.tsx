@@ -1,67 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getCurrentUser } from "@/app/data/user/require-user";
 import { Button } from "@/components/ui/button";
-import prisma from "@/lib/prisma";
-import { UserMenu } from "../auth/user-menu";
 import { SearchForm } from "../search-form";
-import { PublicMenuMobile } from "./menu-mobile";
+import { UserMenuWrapper } from "../wrappers/user-menu-wrapper";
 
-export async function PublicNavbar() {
-  const session = await getCurrentUser();
-  const business = await prisma.business.findUnique({
-    where: {
-      id: session?.id || "",
-    },
-    include: {
-      logo: true,
-      coverImage: true,
-    },
-  });
-
+export function PublicNavbar() {
   return (
     <header className="container sticky top-0 z-50 mx-auto w-full border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-10">
       <div className="flex h-14 w-full items-center justify-between gap-2">
-        <Link href="/">
-          <div className="w-32">
-            <Image
-              src="/logo-tp.png"
-              width={48}
-              height={48}
-              className="h-full w-full object-cover"
-              alt=""
-            />
-          </div>
+        <Link href="/" className="w-32">
+          <Image
+            src="/logo-tp.png"
+            width={48}
+            height={48}
+            className="h-full w-full object-cover"
+            alt="Logo"
+          />
         </Link>
-        <SearchForm />
-        {business ? (
-          <div className="flex items-center gap-2">
-            <div className="hidden md:flex">
-              <Button asChild variant="ghost">
-                <Link href="/explorar">Explorar</Link>
-              </Button>
-            </div>
-            <UserMenu business={business} />
-            <div className="flex md:hidden">
-              <PublicMenuMobile isLoggedIn={!!business} />
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="flex md:hidden">
-              <PublicMenuMobile />
-            </div>
-            <nav className="hidden items-center gap-2 md:flex">
-              <Button asChild variant="ghost">
-                <Link href="/explorar">Explorar</Link>
-              </Button>
 
-              <Button asChild>
-                <Link href="/para-comercios">Para comercios</Link>
-              </Button>
-            </nav>
-          </>
-        )}
+        <SearchForm />
+
+        <div className="flex items-center gap-2">
+          <Button asChild variant="ghost" className="hidden md:flex">
+            <Link href="/explorar">Explorar</Link>
+          </Button>
+
+          <UserMenuWrapper />
+        </div>
       </div>
     </header>
   );

@@ -3,7 +3,6 @@ import { getCurrentUser } from "@/app/data/user/require-user";
 import prisma from "@/lib/prisma";
 
 export const getCurrentAdmin = async () => {
-  "use cache: private";
   try {
     const user = await getCurrentUser();
     const admin = await prisma.admin.findUnique({

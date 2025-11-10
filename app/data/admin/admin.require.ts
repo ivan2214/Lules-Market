@@ -8,7 +8,7 @@ export const requireAdmin = cache(async () => {
   const session = await requireUser();
 
   const admin = await prisma.admin.findUnique({
-    where: { userId: session.id },
+    where: { userId: session.userId },
   });
 
   if (!admin) {

@@ -3,7 +3,7 @@ import { getSubscriptionLimits } from "@/lib/subscription-limits";
 import "server-only";
 
 type PolicyUser = {
-  id: string;
+  userId: string;
   email: string;
   activePlan: PlanType;
 };
@@ -21,7 +21,7 @@ export function canEditProduct(
   product: { id: string; businesId?: string }
 ) {
   if (!user) return false;
-  if (product.businesId && product.businesId === user.id) return true;
+  if (product.businesId && product.businesId === user.userId) return true;
   return false;
 }
 

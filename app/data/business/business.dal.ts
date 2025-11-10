@@ -7,7 +7,7 @@ import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
 import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
-import { requireUser } from "../user/require-user";
+
 import {
   type BusinessCreateInput,
   BusinessCreateInputSchema,
@@ -132,14 +132,14 @@ export async function listAllBusinessesByCategories({
 }
 
 export async function getBusinessById(
-  businessId: string,
+  businessId: string
 ): Promise<BusinessDTO | null> {
   "use cache";
   cacheLife("hours");
   cacheTag(
     CACHE_TAGS.PUBLIC_BUSINESSES,
     CACHE_TAGS.BUSINESSES,
-    `business-${businessId}`,
+    `business-${businessId}`
   );
 
   const business = await prisma.business.findFirst({
@@ -173,7 +173,7 @@ export async function getMyBusiness(): Promise<BusinessDTO> {
 }
 
 export async function createBusiness(
-  data: BusinessCreateInput,
+  data: BusinessCreateInput
 ): Promise<ActionResult> {
   const validated = BusinessCreateInputSchema.safeParse(data);
   if (!validated.success) {
@@ -184,23 +184,22 @@ export async function createBusiness(
     };
   }
 
-  const user = await requireUser();
+  const { userId, email, name } = await requireBusiness();
 
   // Check if user already has a business
   const existing = await prisma.business.findUnique({
-    where: { userId: user.id },
+    where: { userId },
   });
   if (existing) return { errorMessage: "Ya tienes un negocio registrado" };
 
   const alreadyEmailBusiness = await prisma.business.findUnique({
-    where: { email: user.email },
+    where: { email: email },
   });
 
   if (alreadyEmailBusiness)
     return { errorMessage: "Ya tienes un negocio registrado con este email" };
 
   try {
-    const { name, email } = user;
     const {
       description,
       phone,
@@ -224,7 +223,7 @@ export async function createBusiness(
         facebook,
         instagram,
         address,
-        user: { connect: { id: user.id } },
+        user: { connect: { id: userId } },
         logo: logo ? { create: logo as Prisma.ImageCreateInput } : undefined,
         coverImage: coverImage
           ? { create: coverImage as Prisma.ImageCreateInput }
@@ -249,7 +248,7 @@ export async function createBusiness(
 }
 
 export async function updateBusiness(
-  data: BusinessUpdateInput,
+  data: BusinessUpdateInput
 ): Promise<ActionResult> {
   const validated = BusinessUpdateInputSchema.safeParse(data);
   if (!validated.success) {
@@ -260,13 +259,19 @@ export async function updateBusiness(
     };
   }
 
-  const user = await requireUser();
-  const business = await prisma.business.findUnique({
-    where: { userId: user.id },
-  });
+  const { business, email, userId } = await requireBusiness();
+
   if (!business) return { errorMessage: "No tienes un negocio registrado" };
 
-  if (!canEditBusiness(user, { id: business.id, userId: business.userId })) {
+  const userPolicy = {
+    userId,
+    email,
+    activePlan: business.plan,
+  };
+
+  if (
+    !canEditBusiness(userPolicy, { id: business.id, userId: business.userId })
+  ) {
     return { errorMessage: "No tienes permisos para editar este negocio" };
   }
 
@@ -321,10 +326,12 @@ export async function getBusinessProducts({
   offset: number;
 }): Promise<ProductDTO[]> {
   // NO usar "use cache" - requiere autenticación
-  const user = await requireUser();
+  const { business } = await requireBusiness();
+
+  if (!business) return [];
 
   const products = await prisma.product.findMany({
-    where: { business: { userId: user.id } },
+    where: { businessId: business.id },
     take: limit,
     skip: offset,
     orderBy: { createdAt: "desc" },
@@ -375,7 +382,7 @@ export async function deleteBusiness(): Promise<ActionResult> {
             .delete({ where: { key: image.key } })
             .catch(console.error),
         ]);
-      }),
+      })
     );
 
     // Borrar productos, usuario y relaciones en paralelo

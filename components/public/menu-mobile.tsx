@@ -55,7 +55,7 @@ export const PublicMenuMobile = ({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>
+      <SheetTrigger className="flex md:hidden">
         <Menu className="h-6 w-6" />
       </SheetTrigger>
       <SheetContent>
