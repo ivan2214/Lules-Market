@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { getCurrentUser } from "@/app/data/user/require-user";
 import { AccountSettingsForm } from "@/components/dashboard/account-settings-form";
 import { DangerZone } from "@/components/dashboard/danger-zone";
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/card";
 
 export default async function SettingsPage() {
+  await connection();
   const user = await getCurrentUser();
 
   if (!user) {
