@@ -36,7 +36,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -111,7 +110,7 @@ export function ProductFormDialog({
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen} modal>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
           <Button type="button" className={className}>
@@ -140,7 +139,6 @@ export function ProductFormDialog({
 
         <Form {...form}>
           <form
-            id="product-form"
             aria-disabled={isViewMode}
             onSubmit={(e) => {
               e.preventDefault();
@@ -219,46 +217,46 @@ export function ProductFormDialog({
 
               {/* Categoría */}
               <Controller
-                name="category"
+                name="categories"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field
-                    orientation="responsive"
-                    data-invalid={!!fieldState.invalid}
-                  >
-                    <FieldContent>
-                      <FieldLabel htmlFor={field.name}>Categoría</FieldLabel>
-                      <FieldDescription>
-                        Selecciona la categoría del producto
-                      </FieldDescription>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </FieldContent>
+                  <Field data-invalid={!!fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Categorías</FieldLabel>
+                    <FieldDescription>
+                      Selecciona una o varias categorías
+                    </FieldDescription>
+
                     <Select
-                      value={field.value || ""}
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        const newValues = field.value.includes(value)
+                          ? field.value.filter((v: string) => v !== value)
+                          : [...field.value, value];
+                        field.onChange(newValues);
+                      }}
                       disabled={isViewMode || pending}
                     >
-                      <SelectTrigger
-                        id={field.name}
-                        aria-invalid={!!fieldState.invalid}
-                        className="min-w-[120px]"
-                      >
-                        <SelectValue placeholder="Seleccionar categoría" />
+                      <SelectTrigger className="min-w-[200px]">
+                        <SelectValue placeholder="Seleccionar categorías" />
                       </SelectTrigger>
-                      <SelectContent position="item-aligned">
-                        <SelectItem value="auto">
-                          Seleccionar categoría
-                        </SelectItem>
-                        <SelectSeparator />
+                      <SelectContent>
                         {CATEGORIES.map((category) => (
                           <SelectItem key={category} value={category}>
-                            {category}
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={field.value?.includes(category)}
+                                readOnly
+                              />
+                              {category}
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 )}
               />

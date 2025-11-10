@@ -275,7 +275,20 @@ export async function updateBusiness(
     return { errorMessage: "No tienes permisos para editar este negocio" };
   }
 
-  const { logo, coverImage, ...rest } = data as BusinessUpdateInput;
+  const {
+    logo,
+    coverImage,
+    address,
+    categories,
+    description,
+    email: newEmail,
+    name,
+    facebook,
+    instagram,
+    phone,
+    website,
+    whatsapp,
+  } = data as BusinessUpdateInput;
 
   try {
     // eliminar logo previo si está siendo reemplazado
@@ -283,17 +296,71 @@ export async function updateBusiness(
       await prisma.image.deleteMany({
         where: { logoBusinessId: business.id },
       });
+      if (business.logo?.key) {
+        await deleteS3Object({ key: business.logo?.key });
+      }
     }
     if (coverImage) {
       await prisma.image.deleteMany({
         where: { coverBusinessId: business.id },
       });
+      if (business.coverImage?.key) {
+        await deleteS3Object({ key: business.coverImage?.key });
+      }
     }
+
+    const categoriesAlreadyConnected = await prisma.category.findMany({
+      where: {
+        businesses: {
+          some: {
+            id: business.id,
+          },
+        },
+      },
+    });
+
+    // categorias a quitar para ese negocio
+    const categoriesToDisconnect = categoriesAlreadyConnected.filter(
+      (c) => !categories.includes(c.value)
+    );
+
+    // categorias a agregar para ese negocio
+    const categoriesToConnect = categories.filter(
+      (c) => !categoriesAlreadyConnected.map((c) => c.value).includes(c)
+    );
+
+    // conectamos categorias nuevas al negocio
+    await prisma.business.update({
+      where: { id: business.id },
+      data: {
+        categories: {
+          connect: categoriesToConnect.map((c) => ({ value: c })),
+        },
+      },
+    });
+
+    // desconectamos categorias antiguas del negocio
+    await prisma.business.update({
+      where: { id: business.id },
+      data: {
+        categories: {
+          disconnect: categoriesToDisconnect.map((c) => ({ value: c.value })),
+        },
+      },
+    });
 
     const updated = await prisma.business.update({
       where: { id: business.id },
       data: {
-        ...rest,
+        name,
+        description,
+        phone,
+        whatsapp,
+        email: newEmail,
+        website,
+        facebook,
+        instagram,
+        address,
         logo: logo ? { create: logo as Prisma.ImageCreateInput } : undefined,
         coverImage: coverImage
           ? { create: coverImage as Prisma.ImageCreateInput }

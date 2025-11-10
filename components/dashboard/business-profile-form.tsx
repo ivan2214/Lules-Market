@@ -144,7 +144,7 @@ export function BusinessProfileForm({
 
         {/* Categoría */}
         <Controller
-          name="category"
+          name="categories"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field orientation="vertical" data-invalid={fieldState.invalid}>
@@ -159,22 +159,16 @@ export function BusinessProfileForm({
               </FieldContent>
 
               <Select
-                value={field.value || ""}
-                onValueChange={(val) => field.onChange(val)}
+                value={field.value?.[0] || ""}
+                onValueChange={(val) => field.onChange([val])}
                 disabled={pending}
                 aria-invalid={fieldState.invalid}
               >
-                <SelectTrigger
-                  id="business-profile-form"
-                  aria-invalid={fieldState.invalid}
-                  className="min-w-[120px]"
-                >
+                <SelectTrigger id="category" className="min-w-[120px]">
                   <SelectValue placeholder="Seleccionar categoría" />
                 </SelectTrigger>
                 <SelectContent position="item-aligned">
-                  <SelectItem value={field.value || "null"}>
-                    Seleccionar categoría
-                  </SelectItem>
+                  <SelectItem value="">Seleccionar categoría</SelectItem>
                   <SelectSeparator />
                   {categories.map(({ label, value }) => (
                     <SelectItem key={value} value={value.toLowerCase()}>

@@ -9,6 +9,7 @@ import { BusinessCreateInputSchema } from "@/app/data/business/business.dto";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
@@ -81,55 +82,42 @@ export function BusinessSetupForm({
       <form id="business-setup-form" className="space-y-8" onSubmit={execute}>
         {/* Nombre y Categoría */}
         <FieldGroup className="grid gap-6 md:grid-cols-2">
-          {/* Nombre */}
-          <Controller
-            name="name"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>
-                  Nombre del Negocio *
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id={field.name}
-                  aria-invalid={!!fieldState.invalid}
-                  placeholder="Ej: Panadería El Sol"
-                />
-                <FieldDescription>
-                  El nombre que verán tus clientes.
-                </FieldDescription>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-
           {/* Categoría */}
           <Controller
-            name="category"
+            name="categories"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field data-invalid={!!fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Categoría *</FieldLabel>
+              <Field orientation="vertical" data-invalid={fieldState.invalid}>
+                <FieldContent>
+                  <FieldLabel htmlFor={field.name}>Categoría</FieldLabel>
+                  <FieldDescription>
+                    Selecciona la categoría del negocio
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </FieldContent>
+
                 <Select
-                  value={field.value || ""}
-                  onValueChange={field.onChange}
+                  value={field.value?.[0] || ""}
+                  onValueChange={(val) => field.onChange([val])}
+                  disabled={pending}
+                  aria-invalid={fieldState.invalid}
                 >
-                  <SelectTrigger aria-invalid={!!fieldState.invalid}>
+                  <SelectTrigger id="category" className="min-w-[120px]">
                     <SelectValue placeholder="Seleccionar categoría" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="null">Seleccionar categoría</SelectItem>
+                  <SelectContent position="item-aligned">
+                    <SelectItem value="">Seleccionar categoría</SelectItem>
                     <SelectSeparator />
                     {categories.map(({ label, value }) => (
-                      <SelectItem key={value} value={value}>
+                      <SelectItem key={value} value={value.toLowerCase()}>
                         {label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -160,10 +148,10 @@ export function BusinessSetupForm({
 
         {/* Datos de contacto */}
         <FieldGroup className="grid gap-6 md:grid-cols-2">
-          {["address", "phone", "email", "website"].map((name) => (
+          {["address", "phone", "website"].map((name) => (
             <Controller
               key={name}
-              name={name as "address" | "phone" | "email" | "website"}
+              name={name as "address" | "phone" | "website"}
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.invalid}>
