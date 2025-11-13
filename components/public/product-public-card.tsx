@@ -30,7 +30,7 @@ export function ProductPublicCard({
       )}
     >
       <CardHeader className="relative aspect-square h-2/3 overflow-hidden bg-muted p-0 lg:h-1/3">
-        <Link href={`/productos/${product.id}`}>
+        <Link href={`/producto/${product.id}`}>
           {product.images?.[0] ? (
             <ImageWithSkeleton
               src={product.images[0].url || "/placeholder.svg"}
@@ -52,7 +52,7 @@ export function ProductPublicCard({
       </CardHeader>
 
       <CardContent className="px-4 py-0">
-        <Link href={`/productos/${product.id}`}>
+        <Link href={`/producto/${product.id}`}>
           <h3 className="line-clamp-1 font-semibold hover:underline">
             {product.name}
           </h3>
@@ -96,7 +96,7 @@ export function ProductPublicCard({
           </div>
         </Link>
         <Button variant="outline" className="w-full md:hidden" asChild>
-          <Link href={`/productos/${product.id}`}>Ver producto</Link>
+          <Link href={`/producto/${product.id}`}>Ver producto</Link>
         </Button>
       </CardFooter>
     </Card>

@@ -212,6 +212,7 @@ exports.Prisma.BusinessScalarFieldEnum = {
   facebook: 'facebook',
   instagram: 'instagram',
   address: 'address',
+  verified: 'verified',
   plan: 'plan',
   planStatus: 'planStatus',
   planExpiresAt: 'planExpiresAt',
@@ -259,6 +260,10 @@ exports.Prisma.ProductScalarFieldEnum = {
   price: 'price',
   featured: 'featured',
   active: 'active',
+  stock: 'stock',
+  condition: 'condition',
+  brand: 'brand',
+  model: 'model',
   businessId: 'businessId',
   isBanned: 'isBanned',
   createdAt: 'createdAt',
@@ -363,12 +368,136 @@ exports.Prisma.CouponRedemptionScalarFieldEnum = {
   redeemedAt: 'redeemedAt'
 };
 
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  rating: 'rating',
+  comment: 'comment',
+  userId: 'userId',
+  productId: 'productId',
+  businessId: 'businessId',
+  helpfulCount: 'helpfulCount',
+  isHidden: 'isHidden',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewImageScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  key: 'key',
+  reviewId: 'reviewId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.QuestionScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  isAnonymous: 'isAnonymous',
+  userId: 'userId',
+  categoryId: 'categoryId',
+  isResolved: 'isResolved',
+  viewCount: 'viewCount',
+  isHidden: 'isHidden',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AnswerScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  questionId: 'questionId',
+  reviewId: 'reviewId',
+  userId: 'userId',
+  businessId: 'businessId',
+  isAccepted: 'isAccepted',
+  helpfulCount: 'helpfulCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FavoriteProductScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.FavoriteBusinessScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  businessId: 'businessId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReportedReviewScalarFieldEnum = {
+  id: 'id',
+  reason: 'reason',
+  details: 'details',
+  userId: 'userId',
+  reviewId: 'reviewId',
+  status: 'status',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+};
+
+exports.Prisma.ReportedQuestionScalarFieldEnum = {
+  id: 'id',
+  reason: 'reason',
+  details: 'details',
+  userId: 'userId',
+  questionId: 'questionId',
+  status: 'status',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+};
+
+exports.Prisma.ReportedProductScalarFieldEnum = {
+  id: 'id',
+  reason: 'reason',
+  details: 'details',
+  userId: 'userId',
+  productId: 'productId',
+  status: 'status',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+};
+
+exports.Prisma.ReportedBusinessScalarFieldEnum = {
+  id: 'id',
+  reason: 'reason',
+  details: 'details',
+  userId: 'userId',
+  businessId: 'businessId',
+  status: 'status',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  read: 'read',
+  userId: 'userId',
+  actionUrl: 'actionUrl',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  readAt: 'readAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -416,6 +545,33 @@ exports.PlanStatus = exports.$Enums.PlanStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.ProductCondition = exports.$Enums.ProductCondition = {
+  NEW: 'NEW',
+  USED: 'USED',
+  REFURBISHED: 'REFURBISHED'
+};
+
+exports.ReportStatus = exports.$Enums.ReportStatus = {
+  PENDING: 'PENDING',
+  REVIEWED: 'REVIEWED',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
+};
+
+exports.NotificationType = exports.$Enums.NotificationType = {
+  NEW_REVIEW: 'NEW_REVIEW',
+  NEW_QUESTION: 'NEW_QUESTION',
+  NEW_ANSWER: 'NEW_ANSWER',
+  REVIEW_RESPONSE: 'REVIEW_RESPONSE',
+  QUESTION_RESPONSE: 'QUESTION_RESPONSE',
+  PRODUCT_AVAILABLE: 'PRODUCT_AVAILABLE',
+  PLAN_EXPIRING: 'PLAN_EXPIRING',
+  PLAN_EXPIRED: 'PLAN_EXPIRED',
+  PAYMENT_RECEIVED: 'PAYMENT_RECEIVED',
+  ACONT_VERIFIED: 'ACONT_VERIFIED',
+  REPORT_RESOLVED: 'REPORT_RESOLVED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Admin: 'Admin',
@@ -438,7 +594,18 @@ exports.Prisma.ModelName = {
   Analytics: 'Analytics',
   Trial: 'Trial',
   Coupon: 'Coupon',
-  CouponRedemption: 'CouponRedemption'
+  CouponRedemption: 'CouponRedemption',
+  Review: 'Review',
+  ReviewImage: 'ReviewImage',
+  Question: 'Question',
+  Answer: 'Answer',
+  FavoriteProduct: 'FavoriteProduct',
+  FavoriteBusiness: 'FavoriteBusiness',
+  ReportedReview: 'ReportedReview',
+  ReportedQuestion: 'ReportedQuestion',
+  ReportedProduct: 'ReportedProduct',
+  ReportedBusiness: 'ReportedBusiness',
+  Notification: 'Notification'
 };
 
 /**

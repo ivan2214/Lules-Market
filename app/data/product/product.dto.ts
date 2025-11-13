@@ -8,7 +8,10 @@ import type {
 } from "@/app/generated/prisma";
 import type { BusinessDTO } from "../business/business.dto";
 import type { CategoryDTO } from "../category/category.dto";
+import type { FavoriteProductDTO } from "../favorites/favorite-product.dto";
 import { ImageCreateInputSchema } from "../image/image.dto";
+import type { ReportedProductDTO } from "../reported/reported-product.dto";
+import type { ReviewDTO } from "../review/review.dto";
 import type { SubCategoryDTO } from "../sub-category/sub-category.dto";
 
 export const ProductCreateInputSchema = z.object({
@@ -46,4 +49,7 @@ export interface ProductDTO extends ProductPrisma {
   bannedProduct?: BannedProduct | null;
   categories?: CategoryDTO[] | null;
   subCategories?: SubCategoryDTO[] | null;
+  reviews?: ReviewDTO[] | null;
+  favorites?: FavoriteProductDTO[] | null;
+  reportedProducts?: ReportedProductDTO[] | null;
 }

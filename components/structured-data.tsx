@@ -37,6 +37,7 @@ export function OrganizationSchema({
   return (
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
@@ -88,9 +89,9 @@ export function ProductSchema({
   };
 
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
@@ -134,9 +135,9 @@ export function LocalBusinessSchema({
   };
 
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
@@ -162,9 +163,9 @@ export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
   };
 
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
