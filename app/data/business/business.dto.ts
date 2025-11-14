@@ -11,7 +11,7 @@ import type { ReviewDTO } from "../review/review.dto";
 import type { UserDTO } from "../user/user.dto";
 
 export const BusinessCreateInputSchema = z.object({
-  categories: z.array(z.string()).min(1, "La categoría es requerida"),
+  category: z.string().min(1, "La categoría es requerida"),
   description: z.string().min(1, "La descripción es requerida"),
   address: z.string().min(1, "La dirección es requerida"),
   phone: z.string().optional(),

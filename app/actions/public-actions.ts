@@ -5,31 +5,41 @@ import * as BusinessDAL from "@/app/data/business/business.dal";
 import * as ProductDAL from "@/app/data/product/product.dal";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
-import type { BusinessDTO } from "../data/business/business.dto";
 import type { CategoryDTO } from "../data/category/category.dto";
 
 export async function getPublicBusinesses(params?: {
   search?: string;
-  categories: BusinessDTO["categories"];
+  category?: string;
   page?: number;
   limit?: number;
+  sortBy?: string;
+  minRating?: number;
 }) {
-  const { search, categories, page = 1, limit = 12 } = params || {};
+  const {
+    search,
+    category,
+    page = 1,
+    limit = 12,
+    minRating,
+    sortBy,
+  } = params || {};
 
   // Llamar directamente a la función del DAL
   return BusinessDAL.listAllBusinesses({
     search,
-    categories,
+    category,
     page,
     limit,
+    minRating,
+    sortBy,
   });
 }
 
 export async function getPublicBusinessesByCategories(
-  categories: CategoryDTO[],
+  category?: CategoryDTO | null,
 ) {
   const { businesses } = await BusinessDAL.listAllBusinessesByCategories({
-    categories,
+    category,
   });
 
   return businesses;

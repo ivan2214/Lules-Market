@@ -6,12 +6,12 @@ import { cn } from "@/lib/utils";
 interface EmptyStateProps {
   title: string;
   description: string;
-  icons?: LucideIcon[];
+  icons: LucideIcon[];
   action?: {
     label: string;
     onClick: () => void;
   };
-  className?: string;
+  className?: React.HTMLAttributes<HTMLDivElement>["className"];
 }
 
 export function EmptyState({

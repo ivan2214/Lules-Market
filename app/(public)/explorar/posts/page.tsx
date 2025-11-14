@@ -95,7 +95,7 @@ const opinions = [
     id: 6,
     author: "Roberto Silva",
     avatar: "/man-avatar-3.png",
-    question: "Opiniones sobre el nuevo café que abrió en el centro",
+    question: "Posts sobre el nuevo café que abrió en el centro",
     content: "Vi que abrieron un café nuevo cerca del parque, ¿alguien ya fue?",
     answers: 14,
     likes: 28,
@@ -104,7 +104,7 @@ const opinions = [
   },
 ];
 
-export default function OpinionesPage() {
+export default function PostsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [sortBy, setSortBy] = useState("recent");
@@ -134,7 +134,7 @@ export default function OpinionesPage() {
     <main className="container px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="mb-2 font-bold text-4xl">Opiniones de la Comunidad</h1>
+        <h1 className="mb-2 font-bold text-4xl">Posts de la Comunidad</h1>
         <p className="text-lg text-muted-foreground">
           Pregunta, comparte experiencias y ayuda a otros usuarios
         </p>

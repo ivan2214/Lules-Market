@@ -1,0 +1,114 @@
+"use client";
+import { Search, SlidersHorizontal } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+type SearchAndFiltersProps = {
+  searchQuery?: string;
+  sortBy?: string;
+  minRating?: number;
+};
+
+export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
+  minRating,
+  searchQuery,
+  sortBy,
+}) => {
+  const [showOpenOnly, setShowOpenOnly] = useState(false);
+
+  return (
+    <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
+      <div className="relative flex-1">
+        <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Buscar comercios, ubicaciones..."
+          className="pl-10"
+          value={searchQuery}
+          onChange={() => {}}
+        />
+      </div>
+
+      <Select value={sortBy} onValueChange={() => {}}>
+        <SelectTrigger className="w-full md:w-[200px]">
+          <SelectValue placeholder="Ordenar por" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="rating">Mejor valorados</SelectItem>
+          <SelectItem value="reviews">Más opiniones</SelectItem>
+          <SelectItem value="name">Nombre (A-Z)</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="gap-2 bg-transparent">
+            <SlidersHorizontal className="h-4 w-4" />
+            Filtros
+          </Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Filtros</SheetTitle>
+            <SheetDescription>Refina tu búsqueda de comercios</SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-6">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="open"
+                checked={showOpenOnly}
+                onCheckedChange={(checked) =>
+                  setShowOpenOnly(checked as boolean)
+                }
+              />
+              <Label htmlFor="open">Solo comercios abiertos</Label>
+            </div>
+            <div>
+              <Label>Calificación mínima</Label>
+              <Select value={minRating?.toString()} onValueChange={() => {}}>
+                <SelectTrigger className="mt-2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Todas</SelectItem>
+                  <SelectItem value="3">3+ estrellas</SelectItem>
+                  <SelectItem value="4">4+ estrellas</SelectItem>
+                  <SelectItem value="4.5">4.5+ estrellas</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  setShowOpenOnly(false);
+                }}
+              >
+                Limpiar filtros
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+};

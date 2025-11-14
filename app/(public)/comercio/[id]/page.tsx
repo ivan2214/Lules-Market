@@ -10,11 +10,8 @@ import {
 } from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
-import { BusinessHeader } from "./components/business-header";
-import { BusinessProducts } from "./components/business-products";
+import { BusinessInfo } from "./components/business-info";
 import { BusinessViewTracker } from "./components/business-view-tracker";
-import { ContactCard } from "./components/contact-card";
-import { SimilarBusinesses } from "./components/similar-businesses";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -54,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const keywords = [
     business.name,
-    business.categories?.join(", ") || "",
+    business.category,
     "comercio local",
     "tienda online",
     "Argentina",
@@ -113,7 +110,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url: `https://lules-market.vercel.app/comercios/${id}`,
       },
     ],
-    category: business.categories?.join(", ") || "",
+    category: business.category?.value,
     other: {
       "business:contact_data:street_address": business.address || "",
       "business:contact_data:email": business.email || "",
@@ -148,7 +145,7 @@ export default async function BusinessPage({
 
   // Comercios de la misma categoría
   const similarBusinesses = await getPublicBusinessesByCategories(
-    business.categories || [],
+    business.category,
   );
 
   return (
@@ -173,23 +170,7 @@ export default async function BusinessPage({
         </Link>
       </Button>
 
-      <BusinessHeader
-        businessId={id}
-        name={business.name}
-        description={business.description}
-        logo={business.logo}
-        address={business.address}
-        phone={business.phone}
-        email={business.email}
-      />
-
-      <ContactCard whatsapp={business.whatsapp} website={business.website} />
-
-      <BusinessProducts products={business.products} />
-
-      {similarBusinesses && (
-        <SimilarBusinesses businesses={similarBusinesses} />
-      )}
+      <BusinessInfo similarBusinesses={similarBusinesses} business={business} />
     </div>
   );
 }
