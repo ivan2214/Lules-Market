@@ -132,6 +132,15 @@ exports.Prisma.UserScalarFieldEnum = {
   isBanned: 'isBanned'
 };
 
+exports.Prisma.ProfileScalarFieldEnum = {
+  userId: 'userId',
+  name: 'name',
+  phone: 'phone',
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AdminScalarFieldEnum = {
   userId: 'userId',
   permissions: 'permissions',
@@ -218,6 +227,9 @@ exports.Prisma.BusinessScalarFieldEnum = {
   planExpiresAt: 'planExpiresAt',
   userId: 'userId',
   isBanned: 'isBanned',
+  categoryId: 'categoryId',
+  tags: 'tags',
+  rating: 'rating',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -226,15 +238,6 @@ exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
   value: 'value',
   label: 'label',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SubCategoryScalarFieldEnum = {
-  id: 'id',
-  value: 'value',
-  label: 'label',
-  categoryId: 'categoryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -267,7 +270,9 @@ exports.Prisma.ProductScalarFieldEnum = {
   businessId: 'businessId',
   isBanned: 'isBanned',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  categoryId: 'categoryId',
+  tags: 'tags'
 };
 
 exports.Prisma.PaymentScalarFieldEnum = {
@@ -294,8 +299,8 @@ exports.Prisma.ImageScalarFieldEnum = {
   productId: 'productId',
   logoBusinessId: 'logoBusinessId',
   coverBusinessId: 'coverBusinessId',
-  categoryId: 'categoryId',
-  subCategoryId: 'subCategoryId',
+  postId: 'postId',
+  avatarId: 'avatarId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   isBanned: 'isBanned'
@@ -357,6 +362,7 @@ exports.Prisma.CouponScalarFieldEnum = {
   usedCount: 'usedCount',
   expiresAt: 'expiresAt',
   active: 'active',
+  discountPercent: 'discountPercent',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -375,103 +381,30 @@ exports.Prisma.ReviewScalarFieldEnum = {
   userId: 'userId',
   productId: 'productId',
   businessId: 'businessId',
-  helpfulCount: 'helpfulCount',
   isHidden: 'isHidden',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ReviewImageScalarFieldEnum = {
+exports.Prisma.PostScalarFieldEnum = {
   id: 'id',
-  url: 'url',
-  key: 'key',
-  reviewId: 'reviewId',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.QuestionScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
+  authorId: 'authorId',
   content: 'content',
-  isAnonymous: 'isAnonymous',
-  userId: 'userId',
-  categoryId: 'categoryId',
-  isResolved: 'isResolved',
-  viewCount: 'viewCount',
-  isHidden: 'isHidden',
+  isAnon: 'isAnon',
+  isQuestion: 'isQuestion',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AnswerScalarFieldEnum = {
   id: 'id',
+  postId: 'postId',
+  authorId: 'authorId',
   content: 'content',
-  questionId: 'questionId',
-  reviewId: 'reviewId',
-  userId: 'userId',
-  businessId: 'businessId',
-  isAccepted: 'isAccepted',
-  helpfulCount: 'helpfulCount',
+  isAnon: 'isAnon',
+  isBest: 'isBest',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.FavoriteProductScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  productId: 'productId',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.FavoriteBusinessScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  businessId: 'businessId',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ReportedReviewScalarFieldEnum = {
-  id: 'id',
-  reason: 'reason',
-  details: 'details',
-  userId: 'userId',
-  reviewId: 'reviewId',
-  status: 'status',
-  createdAt: 'createdAt',
-  resolvedAt: 'resolvedAt'
-};
-
-exports.Prisma.ReportedQuestionScalarFieldEnum = {
-  id: 'id',
-  reason: 'reason',
-  details: 'details',
-  userId: 'userId',
-  questionId: 'questionId',
-  status: 'status',
-  createdAt: 'createdAt',
-  resolvedAt: 'resolvedAt'
-};
-
-exports.Prisma.ReportedProductScalarFieldEnum = {
-  id: 'id',
-  reason: 'reason',
-  details: 'details',
-  userId: 'userId',
-  productId: 'productId',
-  status: 'status',
-  createdAt: 'createdAt',
-  resolvedAt: 'resolvedAt'
-};
-
-exports.Prisma.ReportedBusinessScalarFieldEnum = {
-  id: 'id',
-  reason: 'reason',
-  details: 'details',
-  userId: 'userId',
-  businessId: 'businessId',
-  status: 'status',
-  createdAt: 'createdAt',
-  resolvedAt: 'resolvedAt'
 };
 
 exports.Prisma.NotificationScalarFieldEnum = {
@@ -551,13 +484,6 @@ exports.ProductCondition = exports.$Enums.ProductCondition = {
   REFURBISHED: 'REFURBISHED'
 };
 
-exports.ReportStatus = exports.$Enums.ReportStatus = {
-  PENDING: 'PENDING',
-  REVIEWED: 'REVIEWED',
-  RESOLVED: 'RESOLVED',
-  DISMISSED: 'DISMISSED'
-};
-
 exports.NotificationType = exports.$Enums.NotificationType = {
   NEW_REVIEW: 'NEW_REVIEW',
   NEW_QUESTION: 'NEW_QUESTION',
@@ -574,6 +500,7 @@ exports.NotificationType = exports.$Enums.NotificationType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Profile: 'Profile',
   Admin: 'Admin',
   BannedBusiness: 'BannedBusiness',
   BannedProduct: 'BannedProduct',
@@ -583,7 +510,6 @@ exports.Prisma.ModelName = {
   Verification: 'Verification',
   Business: 'Business',
   Category: 'Category',
-  SubCategory: 'SubCategory',
   Plan: 'Plan',
   Product: 'Product',
   Payment: 'Payment',
@@ -596,15 +522,8 @@ exports.Prisma.ModelName = {
   Coupon: 'Coupon',
   CouponRedemption: 'CouponRedemption',
   Review: 'Review',
-  ReviewImage: 'ReviewImage',
-  Question: 'Question',
+  Post: 'Post',
   Answer: 'Answer',
-  FavoriteProduct: 'FavoriteProduct',
-  FavoriteBusiness: 'FavoriteBusiness',
-  ReportedReview: 'ReportedReview',
-  ReportedQuestion: 'ReportedQuestion',
-  ReportedProduct: 'ReportedProduct',
-  ReportedBusiness: 'ReportedBusiness',
   Notification: 'Notification'
 };
 

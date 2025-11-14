@@ -2,15 +2,12 @@ import { z } from "zod";
 import type {
   BannedBusiness,
   Business as BusinessPrisma,
-  ReportedBusiness,
 } from "@/app/generated/prisma";
 import type { AnswerDTO } from "../answer/answer.dto";
 import type { CategoryDTO } from "../category/category.dto";
-import type { FavoriteBusinessDTO } from "../favorites/favorite-business.dto";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";
 import type { ReviewDTO } from "../review/review.dto";
-import type { SubCategoryDTO } from "../sub-category/sub-category.dto";
 import type { UserDTO } from "../user/user.dto";
 
 export const BusinessCreateInputSchema = z.object({
@@ -40,10 +37,7 @@ export interface BusinessDTO extends BusinessPrisma {
   products?: ProductDTO[] | null;
   user?: UserDTO | null;
   bannedBusiness?: BannedBusiness | null;
-  categories?: CategoryDTO[] | null;
-  subCategories?: SubCategoryDTO[] | null;
+  category?: CategoryDTO | null;
   reviews?: ReviewDTO[] | null;
   answers?: AnswerDTO[] | null;
-  favorites?: FavoriteBusinessDTO[] | null;
-  reportedBusinesses?: ReportedBusiness[] | null;
 }

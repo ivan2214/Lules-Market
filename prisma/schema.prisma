@@ -32,22 +32,32 @@ model User {
   accounts Account[] // conexiones externas (Google, etc.)
   business Business? // un usuario puede tener un comercio
   admin    Admin? // o ser administrador
+  profile  Profile? // perfil del usuario
 
-  reviews            Review[] // Opiniones del usuario
-  questions          Question[] // Preguntas realizadas por el usuario
-  answers            Answer[] // Respuestas del usuario
-  favoriteProducts   FavoriteProduct[] // Productos favoritos del usuario
-  favoriteBusinesses FavoriteBusiness[] // Comercios favoritos del usuario
-  notifications      Notification[] // Notificaciones del usuario
-  reportedReviews    ReportedReview[] // Reviews reportadas por el usuario
-  reportedQuestions  ReportedQuestion[] // Preguntas reportadas por el usuario
-  reportedProducts   ReportedProduct[] // Productos reportados por el usuario
-  reportedBusinesses ReportedBusiness[] // Comercios reportados por el usuario
+  reviews       Review[] // Opiniones del usuario
+  notifications Notification[] // Notificaciones del usuario
 
   userRole UserRole @default(USER) // rol del usuario
   isBanned Boolean? @default(false)
 
   @@map("user")
+}
+
+model Profile {
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // un usuario puede tener un perfil
+  name      String
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  avatar Image? @relation("Avatar")
+
+  posts   Post[]
+  answers Answer[]
+
+  @@map("profile")
 }
 
 model Admin {
@@ -203,19 +213,20 @@ model Business {
   trial            Trial? // prueba gratuita activa
   couponRedemption CouponRedemption[] // canjes de cupones realizados
 
-  categories    Category[]
-  subCategories SubCategory[]
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String?
 
-  reviews            Review[] // opiniones sobre el comercio
-  answers            Answer[] // respuestas del comercio
-  favorites          FavoriteBusiness[] // usuarios que marcaron el comercio como favorito
-  reportedBusinesses ReportedBusiness[] // reportes realizados sobre el comercio
+  tags String[]
+
+  reviews Review[] // opiniones sobre el comercio
+  rating  Float?   @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([plan])
   @@index([planStatus])
+  @@index([categoryId])
 }
 
 model Category {
@@ -223,44 +234,11 @@ model Category {
   value String @unique
   label String
 
-  products      Product[]
-  businesses    Business[]
-  subCategories SubCategory[]
-
-  /**
-   * imagen de la categoria
-   */
-  categoryImage Image?
-
-  /**
-   * Answer category
-   */
-
-  categoryQuestions Question[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model SubCategory {
-  id    String @id @default(cuid())
-  value String
-  label String
-
   products   Product[]
   businesses Business[]
-  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId String
-
-  /**
-   * imagen de la subcategoria
-   */
-  subCategoryImage Image?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([categoryId])
 }
 
 model Plan {
@@ -308,16 +286,17 @@ model Product {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  categories    Category[]
-  subCategories SubCategory[]
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String?
 
-  reviews          Review[] // opiniones sobre el producto
-  favorites        FavoriteProduct[] // usuarios que marcaron el producto como favorito
-  reportedProducts ReportedProduct[] // reportes realizados sobre el producto
+  tags String[]
+
+  reviews Review[] // opiniones sobre el producto
 
   @@index([businessId])
   @@index([featured])
   @@index([active])
+  @@index([categoryId])
 }
 
 model Payment {
@@ -346,13 +325,13 @@ model Payment {
 
 model Image {
   key         String  @unique
-  url         String  @unique
+  url         String
   isMainImage Boolean @default(false)
   name        String?
   size        Float?
   isReported  Boolean @default(false)
 
-  // Relaciones con producto y comercio
+  // Relaciones con producto, comercio y posts
   product   Product? @relation(fields: [productId], references: [id])
   productId String?
 
@@ -362,11 +341,11 @@ model Image {
   coverBusinessId String?   @unique
   coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id])
 
-  categoryId String?   @unique
-  category   Category? @relation(fields: [categoryId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
 
-  subCategoryId String?      @unique
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  avatarId String?  @unique
+  avatar   Profile? @relation("Avatar", fields: [avatarId], references: [userId])
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -376,6 +355,7 @@ model Image {
   @@index([productId])
   @@index([coverBusinessId])
   @@index([logoBusinessId])
+  @@index([postId])
 }
 
 /**
@@ -446,14 +426,15 @@ model Trial {
 }
 
 model Coupon {
-  id           String    @id @default(cuid())
-  code         String    @unique // código canjeable
-  plan         PlanType  @default(PREMIUM)
-  durationDays Int       @default(30) // duración del beneficio
-  maxUses      Int? // límite de usos (opcional)
-  usedCount    Int       @default(0)
-  expiresAt    DateTime? // fecha de expiración del cupón
-  active       Boolean   @default(true)
+  id              String    @id @default(cuid())
+  code            String    @unique // código canjeable
+  plan            PlanType  @default(PREMIUM)
+  durationDays    Int       @default(30) // duración del beneficio
+  maxUses         Int? // límite de usos (opcional)
+  usedCount       Int       @default(0)
+  expiresAt       DateTime? // fecha de expiración del cupón
+  active          Boolean   @default(true)
+  discountPercent Int
 
   // Canjes realizados con este cupón
   redemptions CouponRedemption[]
@@ -474,12 +455,6 @@ model CouponRedemption {
   @@index([couponId])
 }
 
-/**
- * ===============================================================
- * REVIEWS / OPINIONES
- * ===============================================================
- */
-
 model Review {
   id      String @id @default(cuid())
   rating  Int // 1-5 estrellas
@@ -495,18 +470,6 @@ model Review {
   businessId String?
   business   Business? @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
-  // Respuesta del comercio
-  answer Answer?
-
-  // Imágenes adjuntas a la review
-  images ReviewImage[]
-
-  // Utilidad de la review
-  helpfulCount Int @default(0)
-
-  // Reportes
-  reports ReportedReview[]
-
   isHidden Boolean @default(false) // si fue ocultada por moderación
 
   createdAt DateTime @default(now())
@@ -518,206 +481,37 @@ model Review {
   @@index([rating])
 }
 
-model ReviewImage {
-  id       String @id @default(cuid())
-  url      String
-  key      String
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+model Post {
+  id       String   @id @default(cuid())
+  authorId String
+  author   Profile  @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  content  String
+  images   Image[]
+  answers  Answer[]
 
-  createdAt DateTime @default(now())
+  isAnon     Boolean  @default(false)
+  isQuestion Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@index([reviewId])
+  @@index([authorId])
 }
-
-/**
- * ===============================================================
- * QUESTIONS / PREGUNTAS
- * ===============================================================
- */
-
-model Question {
-  id          String  @id @default(cuid())
-  title       String
-  content     String
-  isAnonymous Boolean @default(false)
-
-  // Autor de la pregunta
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Categoría opcional para filtrar preguntas
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id])
-
-  // Respuestas a la pregunta
-  answers Answer[]
-
-  // Reportes
-  reports ReportedQuestion[]
-
-  isResolved Boolean @default(false) // si tiene una respuesta aceptada
-  viewCount  Int     @default(0)
-  isHidden   Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-  @@index([categoryId])
-  @@index([isResolved])
-}
-
-/**
- * ===============================================================
- * ANSWERS / RESPUESTAS
- * ===============================================================
- */
 
 model Answer {
-  id      String @id @default(cuid())
-  content String
+  id       String  @id @default(cuid())
+  postId   String
+  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId String
+  author   Profile @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  content  String
 
-  // Puede ser respuesta a una pregunta o a una review
-  questionId String?   @unique
-  question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  reviewId   String?   @unique
-  review     Review?   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-
-  // Autor de la respuesta (usuario o comercio)
-  userId     String?
-  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessId String?
-  business   Business? @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
-  isAccepted   Boolean @default(false) // si es la respuesta aceptada (para preguntas)
-  helpfulCount Int     @default(0)
-
+  isAnon    Boolean  @default(false)
+  isBest    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
-  @@index([businessId])
-  @@index([questionId])
-  @@index([reviewId])
-}
-
-/**
- * ===============================================================
- * FAVORITES / FAVORITOS
- * ===============================================================
- */
-
-model FavoriteProduct {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@unique([userId, productId])
-  @@index([userId])
-  @@index([productId])
-}
-
-model FavoriteBusiness {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-
-  @@unique([userId, businessId])
-  @@index([userId])
-  @@index([businessId])
-}
-
-/**
- * ===============================================================
- * REPORTS / REPORTES
- * ===============================================================
- */
-
-model ReportedReview {
-  id      String  @id @default(cuid())
-  reason  String
-  details String?
-
-  userId   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-
-  status ReportStatus @default(PENDING)
-
-  createdAt  DateTime  @default(now())
-  resolvedAt DateTime?
-
-  @@index([userId])
-  @@index([reviewId])
-  @@index([status])
-}
-
-model ReportedQuestion {
-  id      String  @id @default(cuid())
-  reason  String
-  details String?
-
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  status ReportStatus @default(PENDING)
-
-  createdAt  DateTime  @default(now())
-  resolvedAt DateTime?
-
-  @@index([userId])
-  @@index([questionId])
-  @@index([status])
-}
-
-model ReportedProduct {
-  id      String  @id @default(cuid())
-  reason  String
-  details String?
-
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  status ReportStatus @default(PENDING)
-
-  createdAt  DateTime  @default(now())
-  resolvedAt DateTime?
-
-  @@index([userId])
-  @@index([productId])
-  @@index([status])
-}
-
-model ReportedBusiness {
-  id      String  @id @default(cuid())
-  reason  String
-  details String?
-
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-
-  status ReportStatus @default(PENDING)
-
-  createdAt  DateTime  @default(now())
-  resolvedAt DateTime?
-
-  @@index([userId])
-  @@index([businessId])
-  @@index([status])
+  @@index([authorId])
+  @@index([postId])
 }
 
 /**
@@ -783,13 +577,6 @@ enum Permission {
   MANAGE_PAYMENTS
   MANAGE_COUPONS
   VIEW_ANALYTIICS
-}
-
-enum ReportStatus {
-  PENDING
-  REVIEWED
-  RESOLVED
-  DISMISSED
 }
 
 enum NotificationType {
