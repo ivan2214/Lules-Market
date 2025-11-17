@@ -2,6 +2,8 @@ import { startOfMonth, subMonths } from "date-fns";
 import { ArrowRight, MessageSquare, Package, Star, Store } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import { ProductPublicCard } from "@/components/public/product-public-card";
 import { PublicBusinessCard } from "@/components/public/public-business-card";
 import { PublicPostCard } from "@/components/public/public-post-card";
@@ -9,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import prisma from "@/lib/prisma";
 
-// Metadata para SEO
 export const metadata: Metadata = {
   title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
   description:
@@ -49,145 +50,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function HomePage() {
-  // 🔥 Todo en una sola transacción
-  const [featuredBusinesses, recentProducts, recentPosts] =
-    await prisma.$transaction([
-      // 🔥 BUSINESS DESTACADOS (mejores valorados)
-      prisma.business.findMany({
-        where: { isActive: true, isBanned: false },
-        include: {
-          reviews: {
-            include: {
-              author: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          },
-          category: true,
-          logo: true,
-        },
-        orderBy: {
-          reviews: { _count: "desc" },
-        },
-        take: 6,
-      }),
-
-      // 🔥 PRODUCTOS RECIENTES
-      prisma.product.findMany({
-        where: { active: true, isBanned: false },
-        include: {
-          images: true,
-          business: true,
-          category: true,
-        },
-        orderBy: { createdAt: "desc" },
-        take: 8,
-      }),
-
-      // 🔥 POSTS RECIENTES
-      prisma.post.findMany({
-        where: { content: { not: "" } },
-        include: {
-          author: { include: { avatar: true } },
-          answers: { include: { author: { include: { avatar: true } } } },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-      }),
-    ]);
-
-  const now = new Date();
-  const startThisMonth = startOfMonth(now);
-  const startLastMonth = startOfMonth(subMonths(now, 1));
-  const endLastMonth = startThisMonth;
-
-  const [
-    // Comercios activos
-    activeBusinessesTotal,
-    activeBusinessesLastMonth,
-    // Productos publicados
-    productsTotal,
-    productsLastMonth,
-    // Opiniones compartidas
-    reviewsTotal,
-    reviewsLastMonth,
-    // Valoración promedio
-    avgRatingObj,
-    avgRatingLastMonthObj,
-  ] = await prisma.$transaction([
-    prisma.business.count({ where: { isActive: true, isBanned: false } }),
-    prisma.business.count({
-      where: {
-        isActive: true,
-        isBanned: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-
-    prisma.product.count({ where: { active: true, isBanned: false } }),
-    prisma.product.count({
-      where: {
-        active: true,
-        isBanned: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-
-    prisma.review.count({ where: { isHidden: false } }),
-    prisma.review.count({
-      where: {
-        isHidden: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-
-    prisma.review.aggregate({
-      _avg: { rating: true },
-      where: { isHidden: false },
-    }),
-    prisma.review.aggregate({
-      _avg: { rating: true },
-      where: {
-        isHidden: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-  ]);
-
-  // Función para calcular tendencia %
-  function calcTrend(current: number, previous: number) {
-    if (previous === 0) return 100;
-    return ((current - previous) / previous) * 100;
-  }
-
-  const stats = {
-    businesses: {
-      value: activeBusinessesTotal,
-      trend: calcTrend(activeBusinessesTotal, activeBusinessesLastMonth),
-    },
-    products: {
-      value: productsTotal,
-      trend: calcTrend(productsTotal, productsLastMonth),
-    },
-    reviews: {
-      value: reviewsTotal,
-      trend: calcTrend(reviewsTotal, reviewsLastMonth),
-    },
-    avgRating: {
-      value: avgRatingObj._avg.rating ?? 0,
-      trend:
-        (((avgRatingObj._avg.rating ?? 0) -
-          (avgRatingLastMonthObj._avg.rating ?? 0)) *
-          100) /
-        5, // opcional: % cambio de rating sobre 5
-    },
-  };
+export default function HomePage() {
+  // ✅ NO database queries here - they're all moved into Suspense boundaries
   return (
     <main className="container px-4 py-8">
-      {/* Hero Section */}
+      {/* Hero Section - Completely static */}
       <section className="mb-12 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 p-8 md:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="mb-4 text-balance font-bold text-4xl tracking-tight md:text-5xl lg:text-6xl">
@@ -211,172 +78,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="font-medium text-sm">
-              Comercios Activos
-            </CardTitle>
-            <Store className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats.businesses.value}</div>
-            <p className="text-muted-foreground text-xs">
-              {stats.businesses.trend.toFixed(2)}% este mes
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="font-medium text-sm">
-              Productos Publicados
-            </CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats.products.value}</div>
-            <p className="text-muted-foreground text-xs">
-              {stats.products.trend.toFixed(2)}% este mes
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="font-medium text-sm">
-              Opiniones Compartidas
-            </CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{stats.reviews.value}</div>
-            <p className="text-muted-foreground text-xs">
-              {stats.reviews.trend.toFixed(2)}% este mes
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="font-medium text-sm">
-              Valoración Promedio
-            </CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">
-              {stats.avgRating.value.toFixed(2)}
-            </div>
-            <p className="text-muted-foreground text-xs">De 5 estrellas</p>
-          </CardContent>
-        </Card>
-      </section>
+      {/* Stats Section - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<StatsSkeletons />}>
+        <DynamicStats />
+      </Suspense>
 
-      {/* Featured Businesses */}
-      <section className="mb-12">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-3xl">Comercios Destacados</h2>
-            <p className="text-muted-foreground">
-              Los mejores negocios de tu comunidad
-            </p>
-          </div>
-          <Button variant="ghost" className="gap-2" asChild>
-            <Link href="/explorar/comercios">
-              Ver todos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredBusinesses.map((business) => (
-            <PublicBusinessCard key={business.id} business={business} />
-          ))}
-        </div>
-      </section>
+      {/* Featured Businesses - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<BusinessesSkeletons />}>
+        <FeaturedBusinesses />
+      </Suspense>
 
-      {/* Recent Products */}
-      <section className="mb-12">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-3xl">Productos Recientes</h2>
-            <p className="text-muted-foreground">
-              Últimos productos publicados
-            </p>
-          </div>
-          <Button variant="ghost" className="gap-2" asChild>
-            <Link href="/explorar/productos">
-              Ver todos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {/*   {recentProducts.map((product) => (
-            <Link key={product.id} href={`/producto/${product.id}`}>
-              <Card className="overflow-hidden transition-all hover:shadow-lg">
-                <div className="aspect-square overflow-hidden">
-                  <ImageWithSkeleton
-                    src={mainImage(product.images) || "/placeholder.svg"}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform hover:scale-105"
-                  />
-                </div>
-                <CardHeader className="p-4">
-                  <div className="mb-2 flex items-start justify-between">
-                    <Badge variant="outline" className="text-xs">
-                      {product.category?.label}
-                    </Badge>
-                  </div>
-                  <CardTitle className="line-clamp-2 text-base">
-                    {product.name}
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    {product.business?.name || "Anónimo"}
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter className="p-4 pt-0">
-                  <div className="flex w-full items-center justify-between">
-                    <p className="font-bold text-primary text-xl">
-                      {product.price}
-                    </p>
-                    <Button size="sm" variant="outline">
-                      Ver
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))} */}
-          {recentProducts.map((product) => (
-            <ProductPublicCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+      {/* Recent Products - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<ProductsSkeletons />}>
+        <RecentProducts />
+      </Suspense>
 
-      {/* Recent posts */}
-      <section className="mb-12">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-3xl">Posts Recientes</h2>
-            <p className="text-muted-foreground">
-              La comunidad pregunta y responde
-            </p>
-          </div>
-          <Button variant="ghost" className="gap-2" asChild>
-            <Link href="/explorar/posts">
-              Ver todos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {recentPosts.map((post) => (
-            <PublicPostCard key={post.id} post={post} />
-          ))}
-        </div>
-      </section>
+      {/* Recent posts - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<PostsSkeletons />}>
+        <RecentPosts />
+      </Suspense>
 
-      {/* CTA Section */}
+      {/* CTA Section - Static */}
       <section className="rounded-2xl bg-primary p-8 text-primary-foreground md:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-balance font-bold text-3xl md:text-4xl">
@@ -393,5 +115,370 @@ export default async function HomePage() {
         </div>
       </section>
     </main>
+  );
+}
+
+// ✅ Stats Component - with date calculations and queries inside Suspense
+async function DynamicStats() {
+  // ✅ CRITICAL: Call connection() BEFORE new Date() to mark as dynamic
+  await connection();
+
+  const now = new Date();
+  const startThisMonth = startOfMonth(now);
+  const startLastMonth = startOfMonth(subMonths(now, 1));
+  const endLastMonth = startThisMonth;
+
+  const [
+    activeBusinessesTotal,
+    activeBusinessesLastMonth,
+    productsTotal,
+    productsLastMonth,
+    reviewsTotal,
+    reviewsLastMonth,
+    avgRatingObj,
+    avgRatingLastMonthObj,
+  ] = await prisma.$transaction([
+    prisma.business.count({ where: { isActive: true, isBanned: false } }),
+    prisma.business.count({
+      where: {
+        isActive: true,
+        isBanned: false,
+        createdAt: { gte: startLastMonth, lt: endLastMonth },
+      },
+    }),
+    prisma.product.count({ where: { active: true, isBanned: false } }),
+    prisma.product.count({
+      where: {
+        active: true,
+        isBanned: false,
+        createdAt: { gte: startLastMonth, lt: endLastMonth },
+      },
+    }),
+    prisma.review.count({ where: { isHidden: false } }),
+    prisma.review.count({
+      where: {
+        isHidden: false,
+        createdAt: { gte: startLastMonth, lt: endLastMonth },
+      },
+    }),
+    prisma.review.aggregate({
+      _avg: { rating: true },
+      where: { isHidden: false },
+    }),
+    prisma.review.aggregate({
+      _avg: { rating: true },
+      where: {
+        isHidden: false,
+        createdAt: { gte: startLastMonth, lt: endLastMonth },
+      },
+    }),
+  ]);
+
+  function calcTrend(current: number, previous: number) {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / previous) * 100;
+  }
+
+  const stats = {
+    businesses: {
+      value: activeBusinessesTotal,
+      trend: calcTrend(activeBusinessesTotal, activeBusinessesLastMonth),
+    },
+    products: {
+      value: productsTotal,
+      trend: calcTrend(productsTotal, productsLastMonth),
+    },
+    reviews: {
+      value: reviewsTotal,
+      trend: calcTrend(reviewsTotal, reviewsLastMonth),
+    },
+    avgRating: {
+      value: avgRatingObj._avg.rating ?? 0,
+      trend:
+        (((avgRatingObj._avg.rating ?? 0) -
+          (avgRatingLastMonthObj._avg.rating ?? 0)) *
+          100) /
+        5,
+    },
+  };
+
+  return (
+    <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="font-medium text-sm">
+            Comercios Activos
+          </CardTitle>
+          <Store className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="font-bold text-2xl">{stats.businesses.value}</div>
+          <p className="text-muted-foreground text-xs">
+            {stats.businesses.trend > 0 ? "+" : ""}
+            {stats.businesses.trend.toFixed(1)}% este mes
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="font-medium text-sm">
+            Productos Publicados
+          </CardTitle>
+          <Package className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="font-bold text-2xl">{stats.products.value}</div>
+          <p className="text-muted-foreground text-xs">
+            {stats.products.trend > 0 ? "+" : ""}
+            {stats.products.trend.toFixed(1)}% este mes
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="font-medium text-sm">
+            Opiniones Compartidas
+          </CardTitle>
+          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="font-bold text-2xl">{stats.reviews.value}</div>
+          <p className="text-muted-foreground text-xs">
+            {stats.reviews.trend > 0 ? "+" : ""}
+            {stats.reviews.trend.toFixed(1)}% este mes
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="font-medium text-sm">
+            Valoración Promedio
+          </CardTitle>
+          <Star className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="font-bold text-2xl">
+            {stats.avgRating.value.toFixed(1)}
+          </div>
+          <p className="text-muted-foreground text-xs">De 5 estrellas</p>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
+// ✅ Featured Businesses Component
+async function FeaturedBusinesses() {
+  // ✅ Mark as dynamic
+  await connection();
+
+  const featuredBusinesses = await prisma.business.findMany({
+    where: { isActive: true, isBanned: false },
+    include: {
+      reviews: {
+        include: {
+          author: {
+            include: {
+              avatar: true,
+            },
+          },
+        },
+      },
+      category: true,
+      logo: true,
+    },
+    orderBy: {
+      reviews: { _count: "desc" },
+    },
+    take: 6,
+  });
+
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Comercios Destacados</h2>
+          <p className="text-muted-foreground">
+            Los mejores negocios de tu comunidad
+          </p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/comercios">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {featuredBusinesses.map((business) => (
+          <PublicBusinessCard key={business.id} business={business} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ✅ Recent Products Component
+async function RecentProducts() {
+  // ✅ Mark as dynamic
+  await connection();
+
+  const recentProducts = await prisma.product.findMany({
+    where: { active: true, isBanned: false },
+    include: {
+      images: true,
+      business: true,
+      category: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: 8,
+  });
+
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Productos Recientes</h2>
+          <p className="text-muted-foreground">Últimos productos publicados</p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/productos">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {recentProducts.map((product) => (
+          <ProductPublicCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ✅ Recent Posts Component
+async function RecentPosts() {
+  // ✅ Mark as dynamic
+  await connection();
+
+  const recentPosts = await prisma.post.findMany({
+    where: { content: { not: "" } },
+    include: {
+      author: { include: { avatar: true } },
+      answers: { include: { author: { include: { avatar: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+  });
+
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Posts Recientes</h2>
+          <p className="text-muted-foreground">
+            La comunidad pregunta y responde
+          </p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/posts">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {recentPosts.map((post) => (
+          <PublicPostCard key={post.id} post={post} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ✅ Loading Skeletons
+function StatsSkeletons() {
+  return (
+    <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <Card key={i}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+            <div className="h-4 w-4 animate-pulse rounded bg-gray-200" />
+          </CardHeader>
+          <CardContent>
+            <div className="mb-2 h-8 w-16 animate-pulse rounded bg-gray-200" />
+            <div className="h-3 w-20 animate-pulse rounded bg-gray-200" />
+          </CardContent>
+        </Card>
+      ))}
+    </section>
+  );
+}
+
+function BusinessesSkeletons() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6">
+        <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <Card key={i} className="overflow-hidden">
+            <div className="aspect-video w-full animate-pulse bg-gray-200" />
+            <CardHeader>
+              <div className="mb-2 h-6 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProductsSkeletons() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6">
+        <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <Card key={i} className="overflow-hidden">
+            <div className="aspect-square w-full animate-pulse bg-gray-200" />
+            <CardHeader className="p-4">
+              <div className="mb-2 h-5 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PostsSkeletons() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6">
+        <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <Card key={i}>
+            <CardHeader>
+              <div className="mb-2 h-6 w-full animate-pulse rounded bg-gray-200" />
+              <div className="mb-2 h-4 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </section>
   );
 }
