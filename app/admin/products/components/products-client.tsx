@@ -33,17 +33,11 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
     null,
   );
 
-  const handleBan = (productId: string) => {
-    console.log("Banear producto:", productId);
-  };
+  const handleBan = (productId: string) => {};
 
-  const handleUnban = (productId: string) => {
-    console.log("Desbanear producto:", productId);
-  };
+  const handleUnban = (productId: string) => {};
 
-  const handleToggleActive = (productId: string) => {
-    console.log("Toggle activo producto:", productId);
-  };
+  const handleToggleActive = (productId: string) => {};
 
   const handleViewDetails = (productId: string) => {
     const product = products.find((p) => p.id === productId);
@@ -51,7 +45,6 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
       setSelectedProduct(product);
       setDetailsDialogOpen(true);
     }
-    console.log("Ver detalles del producto:", productId);
   };
 
   const columns: ColumnDef<ProductDTO>[] = [
@@ -62,9 +55,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
         <div>
           <div className="font-medium">{row.original.name}</div>
           <div className="text-muted-foreground text-sm">
-            {row.original.categories
-              ?.map((category) => category.value)
-              .join(", ")}
+            {row.original.category?.label || "Sin categoría"}
           </div>
         </div>
       ),
@@ -181,9 +172,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
                       Categoría
                     </div>
                     <div>
-                      {selectedProduct.categories
-                        ?.map((category) => category.value)
-                        .join(", ")}
+                      {selectedProduct.category?.label || "Sin categoría"}
                     </div>
                   </div>
                 </div>

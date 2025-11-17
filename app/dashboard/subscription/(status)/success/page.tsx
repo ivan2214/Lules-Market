@@ -27,10 +27,8 @@ export default async function PaymentSuccessPage({
 
   if (!paymentIdMP || !paymentIdDB) {
     if (!paymentIdMP) {
-      console.log("paymentIdMP is missing", paymentIdMP);
     }
     if (!paymentIdDB) {
-      console.log("paymentIdDB is missing", paymentIdDB);
     }
 
     redirect("/dashboard/subscription");

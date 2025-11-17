@@ -14,8 +14,6 @@ import {
 type BusinessCardProps = { business: BusinessDTO };
 
 export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
-  console.log(business.category);
-
   return (
     <Link key={business.id} href={`/comercio/${business.id}`}>
       <Card className="h-full overflow-hidden p-0 transition-all hover:shadow-lg">

@@ -54,7 +54,6 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
 
   const handleToggleActive = (planId: string) => {
     setToggleAlertOpen(false);
-    console.log("Toggle activo plan:", planId);
   };
 
   const handleEdit = (plan: Plan) => {
@@ -64,7 +63,6 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
 
   const handleSaveEdit = () => {
     if (selectedPlan) {
-      console.log("Editar plan:", selectedPlan);
     }
     setIsEditDialogOpen(false);
   };

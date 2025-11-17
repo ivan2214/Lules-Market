@@ -84,7 +84,7 @@ export function BusinessSetupForm({
         <FieldGroup className="grid gap-6 md:grid-cols-2">
           {/* Categoría */}
           <Controller
-            name="categories"
+            name="category"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field orientation="vertical" data-invalid={fieldState.invalid}>
@@ -99,8 +99,8 @@ export function BusinessSetupForm({
                 </FieldContent>
 
                 <Select
-                  value={field.value?.[0] || ""}
-                  onValueChange={(val) => field.onChange([val])}
+                  value={field.value || ""}
+                  onValueChange={(val) => field.onChange(val)}
                   disabled={pending}
                   aria-invalid={fieldState.invalid}
                 >

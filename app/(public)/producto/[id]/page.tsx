@@ -41,12 +41,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  console.log("id:", id);
 
   const product = await getPublicProduct(id);
-  console.log({
-    product,
-  });
 
   if (!product) {
     notFound();
@@ -65,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const keywords = [
     product.name,
-    product.categories?.map((category) => category.value).join(", ") || "",
+    product.category,
     product.business?.name,
     "comprar online",
     "Argentina",
@@ -124,7 +120,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url: `https://lules-market.vercel.app/comercios/${product.business?.id}`,
       },
     ],
-    category: product.categories?.map((category) => category.value).join(", "),
+    category: product.category?.label,
     other: {
       "product:price:amount": product.price?.toString() || "",
       "product:price:currency": "ARS",
@@ -362,16 +358,14 @@ export default async function ProductPage({ params }: Props) {
           <Card>
             <CardHeader>
               <div className="mb-2 flex items-start justify-between">
-                {product.categories?.length &&
-                  product.categories.map((category) => (
-                    <Badge
-                      key={category.id}
-                      variant="outline"
-                      className="text-xs"
-                    >
-                      {category.value}
-                    </Badge>
-                  ))}
+                <Badge
+                  key={product.category?.id}
+                  variant="outline"
+                  className="text-xs"
+                >
+                  {product.category?.value}
+                </Badge>
+
                 <div className="flex gap-1">
                   <Button variant="ghost" size="icon">
                     <Heart className="h-5 w-5" />

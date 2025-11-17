@@ -27,7 +27,6 @@ export const PlanCreateFormDialog = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const handleCreate = () => {
-    console.log("Crear nuevo plan");
     setIsCreateDialogOpen(false);
   };
 

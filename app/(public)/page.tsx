@@ -51,13 +51,21 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // 🔥 Todo en una sola transacción
-  const [featuredBusinessesRaw, recentProducts, recentPosts] =
+  const [featuredBusinesses, recentProducts, recentPosts] =
     await prisma.$transaction([
       // 🔥 BUSINESS DESTACADOS (mejores valorados)
       prisma.business.findMany({
         where: { isActive: true, isBanned: false },
         include: {
-          reviews: true,
+          reviews: {
+            include: {
+              author: {
+                include: {
+                  avatar: true,
+                },
+              },
+            },
+          },
           category: true,
           logo: true,
         },
@@ -90,14 +98,6 @@ export default async function HomePage() {
         take: 6,
       }),
     ]);
-
-  // 🔥 Calculamos rating después de la transacción
-  const featuredBusinesses = featuredBusinessesRaw.map((business) => ({
-    ...business,
-    rating:
-      business.reviews.reduce((acc, review) => acc + review.rating, 0) /
-        business.reviews.length || 0,
-  }));
 
   const now = new Date();
   const startThisMonth = startOfMonth(now);

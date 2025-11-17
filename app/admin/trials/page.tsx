@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -6,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import prisma from "@/lib/prisma";
 import { TrialColumns } from "./components/trial-columns";
 import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
@@ -14,6 +16,9 @@ async function getTrialsAndActiveCount() {
   "use cache";
   cacheLife("hours");
   cacheTag("trials-page");
+
+  const now = new Date(); // <-- permitido aquí
+
   const [trials, activeTrials] = await prisma.$transaction([
     prisma.trial.findMany({
       include: {
@@ -22,23 +27,30 @@ async function getTrialsAndActiveCount() {
     }),
     prisma.trial.findMany({ where: { isActive: true } }),
   ]);
+
+  const calculateDaysRemaining = (endDate: Date) => {
+    const end = new Date(endDate);
+    return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
   return {
-    trials,
-    activeTrials,
+    trials: trials.map((t) => ({
+      ...t,
+      daysRemaining: calculateDaysRemaining(t.expiresAt),
+    })),
+    activeTrials: activeTrials.map((t) => ({
+      ...t,
+      daysRemaining: calculateDaysRemaining(t.expiresAt),
+    })),
   };
 }
 
 export default async function TrialsPage() {
   const { activeTrials, trials } = await getTrialsAndActiveCount();
 
-  const getDaysRemaining = (endDate: Date) => {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diff = Math.ceil(
-      (end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
-    );
-    return diff;
-  };
+  const expiringSoon = activeTrials.filter(
+    (t) => t.daysRemaining <= 3 && t.daysRemaining > 0,
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -65,6 +77,7 @@ export default async function TrialsPage() {
             <div className="font-bold text-2xl">{trials.length}</div>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="font-medium text-muted-foreground text-sm">
@@ -77,6 +90,7 @@ export default async function TrialsPage() {
             </div>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="font-medium text-muted-foreground text-sm">
@@ -85,13 +99,9 @@ export default async function TrialsPage() {
           </CardHeader>
           <CardContent>
             <div className="font-bold text-2xl text-yellow-600">
-              {
-                activeTrials.filter(
-                  (t) =>
-                    getDaysRemaining(t.expiresAt) <= 3 &&
-                    getDaysRemaining(t.expiresAt) > 0,
-                ).length
-              }
+              <Suspense fallback={<Skeleton className="h-8 w-8" />}>
+                {expiringSoon}
+              </Suspense>
             </div>
           </CardContent>
         </Card>
@@ -102,6 +112,7 @@ export default async function TrialsPage() {
           <CardTitle>Lista de Pruebas Gratuitas</CardTitle>
           <CardDescription>{trials.length} trials registrados</CardDescription>
         </CardHeader>
+
         <CardContent>
           <TrialColumns
             trials={trials.map((trial) => ({

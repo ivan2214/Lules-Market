@@ -33,13 +33,6 @@ export function MinimalVariant(props: VariantCommonProps) {
   }: VariantCommonProps = props;
 
   const canUpload = canUploadMoreFiles(value, props.maxFiles);
-  const { maxFiles } = props;
-
-  console.log({
-    canUpload,
-    value,
-    maxFiles,
-  });
 
   return (
     <div className={cn("space-y-2", className)}>

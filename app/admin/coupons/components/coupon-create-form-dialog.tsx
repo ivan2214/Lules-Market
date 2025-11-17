@@ -26,7 +26,6 @@ export const CouponCreateFormDialog = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const handleCreate = () => {
-    console.log("Crear nuevo cupón");
     setIsCreateDialogOpen(false);
   };
   return (

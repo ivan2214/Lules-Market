@@ -6,12 +6,13 @@ export type CleanImage = Omit<
   | "productId"
   | "logoBusinessId"
   | "coverBusinessId"
+  | "postId"
+  | "avatarId"
   | "createdAt"
   | "updatedAt"
-  | "isReported"
+  | "id"
   | "isBanned"
-  | "categoryId"
-  | "subCategoryId"
+  | "isReported"
 >;
 export const ImageCreateInputSchema = z.object({
   url: z.url("La URL de la imagen es inválida"),

@@ -17,12 +17,12 @@ export const ProductCreateInputSchema = z.object({
   description: z.string().min(1, "La descripción es requerida"),
   price: z.number().min(0, "El precio debe ser mayor o igual a 0"),
   // opcional string o undefined o null
-  categories: z.array(z.string().min(1, "La categoría es requerida")),
+  category: z.string().min(1, "La categoría es requerida"),
   featured: z.boolean().optional(),
   active: z.boolean().optional(),
   images: ImageCreateInputSchema.array().min(
     1,
-    "Se requiere al menos una imagen"
+    "Se requiere al menos una imagen",
   ),
 });
 

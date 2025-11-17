@@ -21,9 +21,7 @@ export const TrialFinishAlertDialog = ({
   onOpenChange: (value: boolean) => void;
   selectedTrial: TrialDTO | null;
 }) => {
-  const handleEndTrial = (trialId: string) => {
-    console.log("Finalizar trial:", trialId);
-  };
+  const handleEndTrial = (trialId: string) => {};
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>

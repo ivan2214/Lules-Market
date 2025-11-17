@@ -15,9 +15,7 @@ export const getCurrentAdmin = async () => {
     });
 
     return admin;
-  } catch (error) {
-    console.log(error);
-
+  } catch {
     return null;
   }
 };

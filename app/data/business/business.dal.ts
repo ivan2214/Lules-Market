@@ -114,7 +114,7 @@ export async function listAllBusinessesByCategories({
   category,
 }: {
   category?: CategoryDTO | null;
-}) {
+}): Promise<{ businesses: BusinessDTO[] }> {
   "use cache";
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
@@ -128,18 +128,25 @@ export async function listAllBusinessesByCategories({
         },
       },
     },
-    select: {
-      id: true,
-      name: true,
-      _count: {
-        select: {
-          products: true,
+    include: {
+      products: {
+        include: {
+          images: true,
         },
       },
-      logo: {
-        select: {
-          key: true,
-          url: true,
+      logo: true,
+      category: true,
+      coverImage: true,
+      _count: {
+        select: { products: true },
+      },
+      reviews: {
+        include: {
+          author: {
+            include: {
+              avatar: true,
+            },
+          },
         },
       },
     },
@@ -168,17 +175,36 @@ export async function getBusinessById(
   const business = await prisma.business.findFirst({
     where: {
       id: businessId,
-      planStatus: "ACTIVE",
     },
     include: {
       logo: true,
       coverImage: true,
+      category: true,
       products: {
         include: {
           images: true,
+          category: true,
+          reviews: {
+            include: {
+              author: {
+                include: {
+                  avatar: true,
+                },
+              },
+            },
+          },
         },
         where: { active: true },
         orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+      },
+      reviews: {
+        include: {
+          author: {
+            include: {
+              avatar: true,
+            },
+          },
+        },
       },
     },
   });

@@ -64,8 +64,6 @@ export const businessSignInAction = async (
     };
   } catch (error) {
     if (error instanceof APIError) {
-      console.log(error.status);
-
       switch (error.status as APIError["status"]) {
         case "UNPROCESSABLE_ENTITY":
           return { errorMessage: "Email o contraseña incorrectos." };
@@ -154,8 +152,6 @@ export const businessSignUpAction = async (
     };
   } catch (error) {
     if (error instanceof APIError) {
-      console.log(error.status);
-
       switch (error.status as APIError["status"]) {
         case "INTERNAL_SERVER_ERROR":
           return { errorMessage: "Algo salio mal." };

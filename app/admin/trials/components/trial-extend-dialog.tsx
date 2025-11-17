@@ -26,7 +26,6 @@ export const TrialExtendDialog = ({
 
   const handleConfirmExtend = () => {
     if (selectedTrial && extendDate) {
-      console.log("Extender trial:", selectedTrial.id, "hasta:", extendDate);
     }
   };
 
