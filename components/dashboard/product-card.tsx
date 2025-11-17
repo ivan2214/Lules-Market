@@ -91,21 +91,18 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
                 ? `$${product.price.toLocaleString()}`
                 : "Sin precio"}
             </p>
-            {product.categories?.map((category) => (
-              <Badge variant="outline" className="text-xs" key={category.id}>
-                {category.value}
+            {product.category && (
+              <Badge variant="outline" className="text-xs">
+                {product.category.value}
               </Badge>
-            ))}
+            )}
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex gap-2 p-4 pt-0">
         <ProductFormDialog
           canFeature={canFeature}
-          product={{
-            ...product,
-            categories: product.categories || [],
-          }}
+          product={product}
           trigger={
             <Button
               variant="outline"

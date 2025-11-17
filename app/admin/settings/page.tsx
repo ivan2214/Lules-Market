@@ -41,7 +41,6 @@ export default function SettingsPage() {
   });
 
   const handleSave = (section: string) => {
-    console.log("Guardar configuración:", section, settings);
     toast.success("Configuración guardada", {
       description: `Los cambios en ${section} se han guardado correctamente.`,
     });

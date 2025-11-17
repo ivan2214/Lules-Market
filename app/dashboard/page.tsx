@@ -151,10 +151,7 @@ async function DashboardContent() {
                   </div>
                   <ProductFormDialog
                     canFeature={limits.canFeatureProducts}
-                    product={{
-                      ...product,
-                      categories: product.categories || [],
-                    }}
+                    product={product}
                     trigger={
                       <Button variant="outline" size="sm">
                         <Eye className="h-4 w-4" />

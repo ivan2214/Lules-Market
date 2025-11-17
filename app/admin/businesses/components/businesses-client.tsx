@@ -40,7 +40,6 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       setSelectedBusiness(business);
       setDetailsDialogOpen(true);
     }
-    console.log("Ver detalles del negocio:", businessId);
   };
 
   const columns: ColumnDef<BusinessDTO>[] = [

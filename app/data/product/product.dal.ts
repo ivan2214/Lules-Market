@@ -31,6 +31,7 @@ export async function listAllProducts({
   sort,
   businessId,
   category,
+  minRating,
 }: {
   search?: string;
   category?: string;
@@ -38,6 +39,7 @@ export async function listAllProducts({
   page: number;
   limit: number;
   sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+  minRating?: number;
 }): Promise<{
   products: ProductDTO[];
   total: number;
@@ -56,8 +58,7 @@ export async function listAllProducts({
     ...(businessId && { businessId }),
     ...(category && {
       category: {
-        contains: category,
-        mode: "insensitive" as const,
+        label: { contains: category, mode: "insensitive" as const },
       },
     }),
     ...(search && {
@@ -66,6 +67,7 @@ export async function listAllProducts({
         { description: { contains: search, mode: "insensitive" as const } },
       ],
     }),
+    ...(minRating && { business: { rating: { gte: minRating } } }),
   };
 
   const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
@@ -77,7 +79,7 @@ export async function listAllProducts({
   if (sort) {
     const [field, direction] = sort.split("_") as [
       Prisma.SortOrder,
-      Prisma.SortOrderInput
+      Prisma.SortOrderInput,
     ];
     orderBy.unshift({ [field]: direction });
   }
@@ -88,12 +90,26 @@ export async function listAllProducts({
       include: {
         business: true,
         images: true,
+        category: true,
+        reviews: {
+          include: {
+            author: {
+              include: {
+                avatar: true,
+              },
+            },
+          },
+        },
       },
       orderBy,
       skip: (page - 1) * limit,
       take: limit,
     }),
-    prisma.product.count({ where }),
+    prisma.product.count({
+      where: {
+        active: true,
+      },
+    }),
   ]);
 
   return {
@@ -129,56 +145,8 @@ export async function listFeaturedProducts(): Promise<ProductDTO[]> {
   });
 }
 
-export async function listProductsGroupedByCategory(): Promise<
-  Record<string, ProductDTO[]>
-> {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, "categories");
-
-  const allProducts = await prisma.product.findMany({
-    where: {
-      active: true,
-      business: { isActive: true },
-    },
-    include: {
-      business: {
-        include: {
-          logo: true,
-          coverImage: true,
-        },
-      },
-      images: true,
-      productView: true,
-      categories: true, // <-- ahora incluimos el array
-      subCategories: {
-        include: {
-          category: true,
-        },
-      },
-    },
-  });
-
-  const productsByCategory: Record<string, ProductDTO[]> = {};
-
-  allProducts.forEach((product) => {
-    product.categories.forEach((cat) => {
-      const key = cat.value.toLowerCase(); // o cat.label si preferís
-      if (!productsByCategory[key]) productsByCategory[key] = [];
-      productsByCategory[key].push(product);
-    });
-  });
-
-  // si querés limitar a 10 categorías como antes:
-  const limitedProductsByCategory = Object.fromEntries(
-    Object.entries(productsByCategory).slice(0, 10)
-  );
-
-  return limitedProductsByCategory;
-}
-
 export async function getProductById(
-  productId: string
+  productId: string,
 ): Promise<ProductDTO | null> {
   "use cache";
   cacheLife("hours");
@@ -188,12 +156,25 @@ export async function getProductById(
     where: {
       id: productId,
       active: true,
-      business: {
-        planStatus: "ACTIVE",
-      },
     },
     include: {
-      business: true,
+      category: true,
+      business: {
+        include: {
+          logo: true,
+          coverImage: true,
+          category: true,
+          reviews: {
+            include: {
+              author: {
+                include: {
+                  avatar: true,
+                },
+              },
+            },
+          },
+        },
+      },
       images: true,
     },
   });
@@ -221,7 +202,7 @@ export async function getProductsByBusinessId(): Promise<ProductDTO[]> {
 }
 
 export async function createProduct(
-  data: ProductCreateInput
+  data: ProductCreateInput,
 ): Promise<ActionResult> {
   try {
     const validatedData = ProductCreateInputSchema.safeParse(data);
@@ -255,7 +236,7 @@ export async function createProduct(
       };
     }
 
-    const { name, description, price, images, categories, featured } = data;
+    const { name, description, price, images, category, featured } = data;
 
     // fijatse si existe cada imagen en la db y sino crearrla
     let imagesDB = await prisma.image.findMany({
@@ -268,7 +249,7 @@ export async function createProduct(
 
     // Crear imágenes que no existan
     const imagesToCreate = images.filter(
-      (image) => !imagesDB.some((dbImage) => dbImage.url === image.url)
+      (image) => !imagesDB.some((dbImage) => dbImage.url === image.url),
     );
 
     // Crear imágenes en la base de datos
@@ -296,9 +277,6 @@ export async function createProduct(
         images: {
           connect: imagesDB.map((image) => ({ key: image.key })),
         },
-        categories: {
-          connect: categories.map((category) => ({ value: category })),
-        },
         featured,
         businessId: business.id,
       },
@@ -310,6 +288,35 @@ export async function createProduct(
       };
     }
 
+    const existingCategory = await prisma.category.findUnique({
+      where: { value: category },
+    });
+
+    if (existingCategory) {
+      await prisma.category.update({
+        where: { id: existingCategory.id },
+        data: {
+          products: {
+            connect: {
+              id: product.id,
+            },
+          },
+        },
+      });
+    } else {
+      await prisma.category.create({
+        data: {
+          label: category,
+          value: category,
+          products: {
+            connect: {
+              id: product.id,
+            },
+          },
+        },
+      });
+    }
+
     // Invalidar caché
     updateTag(CACHE_TAGS.PUBLIC_PRODUCTS);
     updateTag(CACHE_TAGS.PRODUCTS);
@@ -318,8 +325,6 @@ export async function createProduct(
       successMessage: "Producto creado exitosamente",
     };
   } catch (error) {
-    console.log("Error al crear el producto:", error);
-
     return {
       errorMessage:
         error instanceof Error ? error.message : "Error al crear el producto",
@@ -328,7 +333,7 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-  data: ProductUpdateInput
+  data: ProductUpdateInput,
 ): Promise<ActionResult> {
   try {
     const validatedData = ProductUpdateInputSchema.safeParse(data);
@@ -365,7 +370,7 @@ export async function updateProduct(
       };
     }
 
-    const { name, description, price, images, categories, featured, active } =
+    const { name, description, price, images, category, featured, active } =
       rest;
 
     // Obtenemos las imágenes existentes del producto
@@ -382,7 +387,7 @@ export async function updateProduct(
 
     // Imágenes a borrar → existen en DB pero no vienen en el request
     const imagesToDelete = existingImages.filter(
-      (img) => !incomingKeys.has(img.key)
+      (img) => !incomingKeys.has(img.key),
     );
 
     if (imagesToDelete.length) {
@@ -417,8 +422,11 @@ export async function updateProduct(
         name,
         description,
         price,
-        categories: {
-          connect: categories.map((category) => ({ value: category })),
+        category: {
+          connectOrCreate: {
+            where: { value: category },
+            create: { label: category, value: category },
+          },
         },
         featured,
         active,

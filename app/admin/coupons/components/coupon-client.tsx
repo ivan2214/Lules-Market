@@ -60,9 +60,7 @@ export const CouponClient: React.FC<CouponClientProps> = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<CouponDTO | null>(null);
 
-  const handleToggleActive = (couponId: string) => {
-    console.log("Toggle activo cupón:", couponId);
-  };
+  const handleToggleActive = (couponId: string) => {};
 
   const handleEdit = (coupon: CouponDTO) => {
     setSelectedCoupon(coupon);
@@ -71,14 +69,12 @@ export const CouponClient: React.FC<CouponClientProps> = ({
 
   const handleSaveEdit = () => {
     if (selectedCoupon) {
-      console.log("Editar cupón:", selectedCoupon);
     }
     setIsEditDialogOpen(false);
   };
 
   const handleDelete = (couponId: string) => {
     setDeleteDialogOpen(false);
-    console.log("Eliminar cupón:", couponId);
   };
 
   const couponColumns: ColumnDef<CouponDTO>[] = [

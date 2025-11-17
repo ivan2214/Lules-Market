@@ -81,7 +81,7 @@ export function ProductFormDialog({
         name: product.name,
         description: product.description || "",
         price: product.price || 0,
-        categories: product.categories?.map((category) => category.value) || [],
+        categories: product.category,
         images: product?.images?.map((img) => ({
           url: img.url,
           key: img.key,
@@ -217,7 +217,7 @@ export function ProductFormDialog({
 
               {/* Categoría */}
               <Controller
-                name="categories"
+                name="category"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.invalid}>
@@ -228,10 +228,7 @@ export function ProductFormDialog({
 
                     <Select
                       onValueChange={(value) => {
-                        const newValues = field.value.includes(value)
-                          ? field.value.filter((v: string) => v !== value)
-                          : [...field.value, value];
-                        field.onChange(newValues);
+                        field.onChange(value);
                       }}
                       disabled={isViewMode || pending}
                     >
@@ -339,7 +336,6 @@ export function ProductFormDialog({
                           size: file.size ?? undefined,
                         }));
                         field.onChange(images);
-                        console.log("Imágenes actualizadas", images);
                       }}
                       placeholder="Sube 1 imagen o máximo 4"
                       maxSize={1024 * 1024 * 5}

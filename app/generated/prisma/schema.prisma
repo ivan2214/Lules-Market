@@ -32,11 +32,32 @@ model User {
   accounts Account[] // conexiones externas (Google, etc.)
   business Business? // un usuario puede tener un comercio
   admin    Admin? // o ser administrador
+  profile  Profile? // perfil del usuario
+
+  notifications Notification[] // Notificaciones del usuario
 
   userRole UserRole @default(USER) // rol del usuario
   isBanned Boolean? @default(false)
 
   @@map("user")
+}
+
+model Profile {
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // un usuario puede tener un perfil
+  name      String
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  avatar  Image?   @relation("Avatar")
+  reviews Review[] // Opiniones del usuario
+
+  posts   Post[]
+  answers Answer[]
+
+  @@map("profile")
 }
 
 model Admin {
@@ -171,6 +192,7 @@ model Business {
   facebook    String?
   instagram   String?
   address     String?
+  verified    Boolean @default(false)
 
   // Subscripción del comercio
   plan          PlanType   @default(FREE)
@@ -191,14 +213,20 @@ model Business {
   trial            Trial? // prueba gratuita activa
   couponRedemption CouponRedemption[] // canjes de cupones realizados
 
-  categories    Category[]
-  subCategories SubCategory[]
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String?
+
+  tags String[]
+
+  reviews Review[] // opiniones sobre el comercio
+  rating  Float?   @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([plan])
   @@index([planStatus])
+  @@index([categoryId])
 }
 
 model Category {
@@ -206,38 +234,11 @@ model Category {
   value String @unique
   label String
 
-  products      Product[]
-  businesses    Business[]
-  subCategories SubCategory[]
-
-  /**
-   * imagen de la categoria
-   */
-  categoryImage Image?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model SubCategory {
-  id    String @id @default(cuid())
-  value String
-  label String
-
   products   Product[]
   businesses Business[]
-  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId String
-
-  /**
-   * imagen de la subcategoria
-   */
-  subCategoryImage Image?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([categoryId])
 }
 
 model Plan {
@@ -269,6 +270,11 @@ model Product {
   featured Boolean @default(false) // solo visible si el plan es PREMIUM
   active   Boolean @default(true)
 
+  stock     Int?             @default(0)
+  condition ProductCondition @default(NEW)
+  brand     String?
+  model     String?
+
   businessId String
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
@@ -280,12 +286,17 @@ model Product {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  categories    Category[]
-  subCategories SubCategory[]
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String?
+
+  tags String[]
+
+  reviews Review[] // opiniones sobre el producto
 
   @@index([businessId])
   @@index([featured])
   @@index([active])
+  @@index([categoryId])
 }
 
 model Payment {
@@ -314,13 +325,13 @@ model Payment {
 
 model Image {
   key         String  @unique
-  url         String  @unique
+  url         String
   isMainImage Boolean @default(false)
   name        String?
   size        Float?
   isReported  Boolean @default(false)
 
-  // Relaciones con producto y comercio
+  // Relaciones con producto, comercio y posts
   product   Product? @relation(fields: [productId], references: [id])
   productId String?
 
@@ -330,11 +341,11 @@ model Image {
   coverBusinessId String?   @unique
   coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id])
 
-  categoryId String?   @unique
-  category   Category? @relation(fields: [categoryId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
 
-  subCategoryId String?      @unique
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  avatarId String?  @unique
+  avatar   Profile? @relation("Avatar", fields: [avatarId], references: [userId])
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -344,6 +355,7 @@ model Image {
   @@index([productId])
   @@index([coverBusinessId])
   @@index([logoBusinessId])
+  @@index([postId])
 }
 
 /**
@@ -414,14 +426,15 @@ model Trial {
 }
 
 model Coupon {
-  id           String    @id @default(cuid())
-  code         String    @unique // código canjeable
-  plan         PlanType  @default(PREMIUM)
-  durationDays Int       @default(30) // duración del beneficio
-  maxUses      Int? // límite de usos (opcional)
-  usedCount    Int       @default(0)
-  expiresAt    DateTime? // fecha de expiración del cupón
-  active       Boolean   @default(true)
+  id              String    @id @default(cuid())
+  code            String    @unique // código canjeable
+  plan            PlanType  @default(PREMIUM)
+  durationDays    Int       @default(30) // duración del beneficio
+  maxUses         Int? // límite de usos (opcional)
+  usedCount       Int       @default(0)
+  expiresAt       DateTime? // fecha de expiración del cupón
+  active          Boolean   @default(true)
+  discountPercent Int
 
   // Canjes realizados con este cupón
   redemptions CouponRedemption[]
@@ -440,6 +453,95 @@ model CouponRedemption {
 
   @@index([businessId])
   @@index([couponId])
+}
+
+model Review {
+  id      String @id @default(cuid())
+  rating  Int // 1-5 estrellas
+  comment String
+
+  // Autor de la review
+  authorId String
+  author   Profile @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+
+  // Puede ser sobre un producto o un comercio
+  productId  String?
+  product    Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  businessId String?
+  business   Business? @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  isHidden Boolean @default(false) // si fue ocultada por moderación
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([productId])
+  @@index([businessId])
+  @@index([rating])
+}
+
+model Post {
+  id       String   @id @default(cuid())
+  authorId String
+  author   Profile  @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  content  String
+  images   Image[]
+  answers  Answer[]
+
+  isAnon     Boolean  @default(false)
+  isQuestion Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([authorId])
+}
+
+model Answer {
+  id       String  @id @default(cuid())
+  postId   String
+  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId String
+  author   Profile @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  content  String
+
+  isAnon    Boolean  @default(false)
+  isBest    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([postId])
+}
+
+/**
+ * ===============================================================
+ * NOTIFICATIONS / NOTIFICACIONES
+ * ===============================================================
+ */
+
+model Notification {
+  id      String           @id @default(cuid())
+  type    NotificationType
+  title   String
+  message String
+  read    Boolean          @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // URLs opcionales para redireccionar
+  actionUrl String?
+
+  // Metadata adicional en JSON
+  metadata Json?
+
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+
+  @@index([userId])
+  @@index([read])
+  @@index([type])
 }
 
 /**
@@ -475,4 +577,24 @@ enum Permission {
   MANAGE_PAYMENTS
   MANAGE_COUPONS
   VIEW_ANALYTIICS
+}
+
+enum NotificationType {
+  NEW_REVIEW
+  NEW_QUESTION
+  NEW_ANSWER
+  REVIEW_RESPONSE
+  QUESTION_RESPONSE
+  PRODUCT_AVAILABLE
+  PLAN_EXPIRING
+  PLAN_EXPIRED
+  PAYMENT_RECEIVED
+  ACONT_VERIFIED
+  REPORT_RESOLVED
+}
+
+enum ProductCondition {
+  NEW
+  USED
+  REFURBISHED
 }

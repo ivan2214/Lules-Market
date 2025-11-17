@@ -3,7 +3,7 @@
  */
 export function formatCurrency(
   amount: number,
-  currency: Intl.NumberFormatOptions["currency"],
+  currency: Intl.NumberFormatOptions["currency"]
 ): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",

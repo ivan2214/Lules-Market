@@ -26,7 +26,6 @@ export const TrialCreateFormDialog = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const handleCreate = () => {
-    console.log("Crear nuevo trial");
     setIsCreateDialogOpen(false);
   };
 

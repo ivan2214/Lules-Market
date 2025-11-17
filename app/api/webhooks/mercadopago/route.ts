@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     ) {
       return Response.json(
         { error: "Invalid webhook signature" },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -44,10 +44,6 @@ export async function POST(request: Request) {
     } catch (err: any) {
       // Si la creación falla por unique constraint -> ya procesado
       if (isPrismaUniqueConstraintError(err)) {
-        console.log(
-          "Webhook already received (idempotent), skipping processing:",
-          requestId
-        );
         return new Response(JSON.stringify({ received: true }), {
           status: 200,
         });
@@ -63,7 +59,7 @@ export async function POST(request: Request) {
     if (body.type === "payment" || body.topic === "payment") {
       // Mercado Pago puede enviar "topic" or "type" depending on API version
       const mpPaymentId = String(
-        body.data?.id || body.data?.id || getMpIdFromBody(body)
+        body.data?.id || body.data?.id || getMpIdFromBody(body),
       );
       // Confirm with Mercado Pago API the current status (defense in depth)
       let mpPayment = null;
@@ -75,7 +71,7 @@ export async function POST(request: Request) {
       } catch (err) {
         console.warn(
           "Error fetching payment from MP API, continuing with webhook payload",
-          err
+          err,
         );
       }
 
@@ -112,12 +108,12 @@ export async function POST(request: Request) {
         body.data?.status_detail ||
         null;
       const normalizedStatus = normalizeMpStatus(
-        String(mpStatus || "").toLowerCase()
+        String(mpStatus || "").toLowerCase(),
       );
 
       if (!paymentIdDB) {
         console.warn(
-          "No external_reference/paymentId in payload. Skipping DB update."
+          "No external_reference/paymentId in payload. Skipping DB update.",
         );
       } else {
         // fetch payment record
@@ -187,8 +183,6 @@ export async function POST(request: Request) {
         }
       }
     } else {
-      // Otros eventos: merchant_order, chargeback, subscription etc. Log y guardar.
-      console.log("Unhandled event type:", body.type, "payload:", body);
       await prisma.webhookEvent.update({
         where: { requestId },
         data: { processed: true, processedAt: new Date() },
@@ -201,7 +195,7 @@ export async function POST(request: Request) {
     console.error("Error processing webhook:", error);
     return new Response(
       JSON.stringify({ error: "Webhook processing failed" }),
-      { status: 200 }
+      { status: 200 },
     );
   }
 }

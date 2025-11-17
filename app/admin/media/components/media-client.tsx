@@ -28,12 +28,9 @@ export const MediaClient: React.FC<MediaClientProps> = ({ images }) => {
 
   const handleDelete = (imageId: string) => {
     setDeleteDialogOpen(false);
-    console.log("Eliminar imagen:", imageId);
   };
 
-  const handleMarkSafe = (imageId: string) => {
-    console.log("Marcar como segura:", imageId);
-  };
+  const handleMarkSafe = (imageId: string) => {};
 
   return (
     <>

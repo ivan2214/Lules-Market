@@ -55,8 +55,7 @@ export function BusinessProfileForm({
         facebook: business.facebook ?? "",
         instagram: business.instagram ?? "",
 
-        categories:
-          business.categories?.map((category) => category.value) ?? [],
+        category: business.category?.value ?? "",
         coverImage: business.coverImage ?? {
           url: "",
           key: "",
@@ -84,7 +83,7 @@ export function BusinessProfileForm({
         facebook: "",
         instagram: "",
 
-        categories: [],
+        category: "",
         coverImage: {
           url: "",
           key: "",
@@ -107,8 +106,6 @@ export function BusinessProfileForm({
     defaultValues,
     options: { showToasts: true },
   });
-
-  console.log(defaultValues);
 
   return (
     <form id="business-profile-form" className="space-y-6" onSubmit={execute}>
@@ -144,7 +141,7 @@ export function BusinessProfileForm({
 
         {/* Categoría */}
         <Controller
-          name="categories"
+          name="category"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field orientation="vertical" data-invalid={fieldState.invalid}>
@@ -159,8 +156,8 @@ export function BusinessProfileForm({
               </FieldContent>
 
               <Select
-                value={field.value?.[0] || ""}
-                onValueChange={(val) => field.onChange([val])}
+                value={field.value || ""}
+                onValueChange={(val) => field.onChange(val)}
                 disabled={pending}
                 aria-invalid={fieldState.invalid}
               >

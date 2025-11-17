@@ -24,21 +24,25 @@ import { requireBusiness } from "./require-busines";
 
 export async function listAllBusinesses({
   search,
-  categories,
+  category,
   limit,
   page,
+  minRating,
+  sortBy,
 }: {
   search?: string;
-  categories?: BusinessDTO["categories"];
+  category?: string;
   page: number;
   limit: number;
+  sortBy?: string;
+  minRating?: number;
 }) {
   "use cache";
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
 
   const where: Prisma.BusinessWhereInput = {
-    planStatus: "ACTIVE" as const,
+    isActive: true,
     products: {
       some: {
         active: true,
@@ -50,8 +54,18 @@ export async function listAllBusinesses({
         { description: { contains: search, mode: "insensitive" as const } },
       ],
     }),
-    ...(categories && {
-      category: { in: categories, mode: "insensitive" as const },
+    ...(category && {
+      category: {
+        value: {
+          contains: category,
+          mode: "insensitive" as const,
+        },
+      },
+    }),
+    ...(minRating && {
+      averageRating: {
+        gte: minRating,
+      },
     }),
   };
 
@@ -60,11 +74,16 @@ export async function listAllBusinesses({
       where,
       include: {
         products: {
+          include: {
+            images: true,
+          },
           where: { active: true },
           take: 4,
           orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
         },
         logo: true,
+        category: true,
+        coverImage: true,
         _count: {
           select: { products: true },
         },
@@ -74,6 +93,13 @@ export async function listAllBusinesses({
           plan: "asc" as const,
         },
         { createdAt: "desc" },
+        ...(sortBy
+          ? [
+              {
+                [sortBy]: "desc" as const,
+              },
+            ]
+          : []),
       ],
       skip: (page - 1) * limit,
       take: limit,
@@ -85,38 +111,42 @@ export async function listAllBusinesses({
 }
 
 export async function listAllBusinessesByCategories({
-  categories,
+  category,
 }: {
-  categories: CategoryDTO[];
-}) {
+  category?: CategoryDTO | null;
+}): Promise<{ businesses: BusinessDTO[] }> {
   "use cache";
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
 
-  const categoriesIds = categories.map((category) => category.id);
-
   const businesses = await prisma.business.findMany({
     where: {
-      categories: {
-        some: {
-          id: {
-            in: categoriesIds,
-          },
+      category: {
+        value: {
+          contains: category?.value,
+          mode: "insensitive" as const,
         },
       },
     },
-    select: {
-      id: true,
-      name: true,
-      _count: {
-        select: {
-          products: true,
+    include: {
+      products: {
+        include: {
+          images: true,
         },
       },
-      logo: {
-        select: {
-          key: true,
-          url: true,
+      logo: true,
+      category: true,
+      coverImage: true,
+      _count: {
+        select: { products: true },
+      },
+      reviews: {
+        include: {
+          author: {
+            include: {
+              avatar: true,
+            },
+          },
         },
       },
     },
@@ -132,30 +162,49 @@ export async function listAllBusinessesByCategories({
 }
 
 export async function getBusinessById(
-  businessId: string
+  businessId: string,
 ): Promise<BusinessDTO | null> {
   "use cache";
   cacheLife("hours");
   cacheTag(
     CACHE_TAGS.PUBLIC_BUSINESSES,
     CACHE_TAGS.BUSINESSES,
-    `business-${businessId}`
+    `business-${businessId}`,
   );
 
   const business = await prisma.business.findFirst({
     where: {
       id: businessId,
-      planStatus: "ACTIVE",
     },
     include: {
       logo: true,
       coverImage: true,
+      category: true,
       products: {
         include: {
           images: true,
+          category: true,
+          reviews: {
+            include: {
+              author: {
+                include: {
+                  avatar: true,
+                },
+              },
+            },
+          },
         },
         where: { active: true },
         orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+      },
+      reviews: {
+        include: {
+          author: {
+            include: {
+              avatar: true,
+            },
+          },
+        },
       },
     },
   });
@@ -173,7 +222,7 @@ export async function getMyBusiness(): Promise<BusinessDTO> {
 }
 
 export async function createBusiness(
-  data: BusinessCreateInput
+  data: BusinessCreateInput,
 ): Promise<ActionResult> {
   const validated = BusinessCreateInputSchema.safeParse(data);
   if (!validated.success) {
@@ -248,7 +297,7 @@ export async function createBusiness(
 }
 
 export async function updateBusiness(
-  data: BusinessUpdateInput
+  data: BusinessUpdateInput,
 ): Promise<ActionResult> {
   const validated = BusinessUpdateInputSchema.safeParse(data);
   if (!validated.success) {
@@ -279,7 +328,7 @@ export async function updateBusiness(
     logo,
     coverImage,
     address,
-    categories,
+    category,
     description,
     email: newEmail,
     name,
@@ -309,32 +358,16 @@ export async function updateBusiness(
       }
     }
 
-    const categoriesAlreadyConnected = await prisma.category.findMany({
-      where: {
-        businesses: {
-          some: {
-            id: business.id,
-          },
-        },
-      },
-    });
-
     // categorias a quitar para ese negocio
-    const categoriesToDisconnect = categoriesAlreadyConnected.filter(
-      (c) => !categories.includes(c.value)
-    );
-
-    // categorias a agregar para ese negocio
-    const categoriesToConnect = categories.filter(
-      (c) => !categoriesAlreadyConnected.map((c) => c.value).includes(c)
-    );
-
+    const categoryToDisconnect = business.category?.value;
     // conectamos categorias nuevas al negocio
     await prisma.business.update({
       where: { id: business.id },
       data: {
-        categories: {
-          connect: categoriesToConnect.map((c) => ({ value: c })),
+        category: {
+          connect: {
+            value: category,
+          },
         },
       },
     });
@@ -343,8 +376,10 @@ export async function updateBusiness(
     await prisma.business.update({
       where: { id: business.id },
       data: {
-        categories: {
-          disconnect: categoriesToDisconnect.map((c) => ({ value: c.value })),
+        category: {
+          disconnect: {
+            value: categoryToDisconnect,
+          },
         },
       },
     });
@@ -449,7 +484,7 @@ export async function deleteBusiness(): Promise<ActionResult> {
             .delete({ where: { key: image.key } })
             .catch(console.error),
         ]);
-      })
+      }),
     );
 
     // Borrar productos, usuario y relaciones en paralelo

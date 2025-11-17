@@ -119,12 +119,10 @@ export const SearchForm = () => {
                     ARS {formatCurrency(product.price || 0, "ARS")}
                   </span>
                 </div>
-                {product.categories?.length && (
+                {product.category && (
                   <div className="ml-auto">
                     <Badge variant="outline" className="text-xs">
-                      {product.categories
-                        ?.map((category) => category.value)
-                        .join(", ") || "Sin categoría"}
+                      {product.category.value}
                     </Badge>
                   </div>
                 )}

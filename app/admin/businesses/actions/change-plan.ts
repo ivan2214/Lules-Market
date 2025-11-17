@@ -22,9 +22,8 @@ export const changePlan = async ({
 }: ChangePlanParams): Promise<{ ok: boolean; message?: string }> => {
   try {
     // Buscamos el plan
-    console.log(planType);
+
     const plans = await prisma.plan.findMany();
-    console.log(plans);
 
     const plan = await prisma.plan.findUnique({
       where: { type: planType },
