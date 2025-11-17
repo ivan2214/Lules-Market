@@ -2,6 +2,7 @@ import { startOfMonth, subMonths } from "date-fns";
 import { ArrowRight, MessageSquare, Package, Star, Store } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { ProductPublicCard } from "@/components/public/product-public-card";
 import { PublicBusinessCard } from "@/components/public/public-business-card";
@@ -119,6 +120,9 @@ export default function HomePage() {
 
 // ✅ Stats Component - with date calculations and queries inside Suspense
 async function DynamicStats() {
+  // ✅ CRITICAL: Call connection() BEFORE new Date() to mark as dynamic
+  await connection();
+
   const now = new Date();
   const startThisMonth = startOfMonth(now);
   const startLastMonth = startOfMonth(subMonths(now, 1));
@@ -265,6 +269,9 @@ async function DynamicStats() {
 
 // ✅ Featured Businesses Component
 async function FeaturedBusinesses() {
+  // ✅ Mark as dynamic
+  await connection();
+
   const featuredBusinesses = await prisma.business.findMany({
     where: { isActive: true, isBanned: false },
     include: {
@@ -313,6 +320,9 @@ async function FeaturedBusinesses() {
 
 // ✅ Recent Products Component
 async function RecentProducts() {
+  // ✅ Mark as dynamic
+  await connection();
+
   const recentProducts = await prisma.product.findMany({
     where: { active: true, isBanned: false },
     include: {
@@ -349,6 +359,9 @@ async function RecentProducts() {
 
 // ✅ Recent Posts Component
 async function RecentPosts() {
+  // ✅ Mark as dynamic
+  await connection();
+
   const recentPosts = await prisma.post.findMany({
     where: { content: { not: "" } },
     include: {
