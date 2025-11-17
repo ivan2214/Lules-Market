@@ -49,59 +49,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function HomePage() {
-  // 🔥 Fetch static content first (no Date() here!)
-  const [featuredBusinesses, recentProducts, recentPosts] =
-    await prisma.$transaction([
-      // 🔥 BUSINESS DESTACADOS (mejores valorados)
-      prisma.business.findMany({
-        where: { isActive: true, isBanned: false },
-        include: {
-          reviews: {
-            include: {
-              author: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          },
-          category: true,
-          logo: true,
-        },
-        orderBy: {
-          reviews: { _count: "desc" },
-        },
-        take: 6,
-      }),
-
-      // 🔥 PRODUCTOS RECIENTES
-      prisma.product.findMany({
-        where: { active: true, isBanned: false },
-        include: {
-          images: true,
-          business: true,
-          category: true,
-        },
-        orderBy: { createdAt: "desc" },
-        take: 8,
-      }),
-
-      // 🔥 POSTS RECIENTES
-      prisma.post.findMany({
-        where: { content: { not: "" } },
-        include: {
-          author: { include: { avatar: true } },
-          answers: { include: { author: { include: { avatar: true } } } },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-      }),
-    ]);
-
+export default function HomePage() {
+  // ✅ NO database queries here - they're all moved into Suspense boundaries
   return (
     <main className="container px-4 py-8">
-      {/* Hero Section - Static, renders immediately */}
+      {/* Hero Section - Completely static */}
       <section className="mb-12 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 p-8 md:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="mb-4 text-balance font-bold text-4xl tracking-tight md:text-5xl lg:text-6xl">
@@ -130,76 +82,22 @@ export default async function HomePage() {
         <DynamicStats />
       </Suspense>
 
-      {/* Featured Businesses - Static content */}
-      <section className="mb-12">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-3xl">Comercios Destacados</h2>
-            <p className="text-muted-foreground">
-              Los mejores negocios de tu comunidad
-            </p>
-          </div>
-          <Button variant="ghost" className="gap-2" asChild>
-            <Link href="/explorar/comercios">
-              Ver todos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredBusinesses.map((business) => (
-            <PublicBusinessCard key={business.id} business={business} />
-          ))}
-        </div>
-      </section>
+      {/* Featured Businesses - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<BusinessesSkeletons />}>
+        <FeaturedBusinesses />
+      </Suspense>
 
-      {/* Recent Products */}
-      <section className="mb-12">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-3xl">Productos Recientes</h2>
-            <p className="text-muted-foreground">
-              Últimos productos publicados
-            </p>
-          </div>
-          <Button variant="ghost" className="gap-2" asChild>
-            <Link href="/explorar/productos">
-              Ver todos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {recentProducts.map((product) => (
-            <ProductPublicCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+      {/* Recent Products - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<ProductsSkeletons />}>
+        <RecentProducts />
+      </Suspense>
 
-      {/* Recent posts */}
-      <section className="mb-12">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-3xl">Posts Recientes</h2>
-            <p className="text-muted-foreground">
-              La comunidad pregunta y responde
-            </p>
-          </div>
-          <Button variant="ghost" className="gap-2" asChild>
-            <Link href="/explorar/posts">
-              Ver todos
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {recentPosts.map((post) => (
-            <PublicPostCard key={post.id} post={post} />
-          ))}
-        </div>
-      </section>
+      {/* Recent posts - Dynamic, wrapped in Suspense */}
+      <Suspense fallback={<PostsSkeletons />}>
+        <RecentPosts />
+      </Suspense>
 
-      {/* CTA Section */}
+      {/* CTA Section - Static */}
       <section className="rounded-2xl bg-primary p-8 text-primary-foreground md:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-balance font-bold text-3xl md:text-4xl">
@@ -219,9 +117,8 @@ export default async function HomePage() {
   );
 }
 
-// ✅ Separate component for dynamic stats with date calculations
+// ✅ Stats Component - with date calculations and queries inside Suspense
 async function DynamicStats() {
-  // ✅ NOW it's safe to use new Date() inside Suspense
   const now = new Date();
   const startThisMonth = startOfMonth(now);
   const startLastMonth = startOfMonth(subMonths(now, 1));
@@ -274,7 +171,7 @@ async function DynamicStats() {
   ]);
 
   function calcTrend(current: number, previous: number) {
-    if (previous === 0) return 100;
+    if (previous === 0) return current > 0 ? 100 : 0;
     return ((current - previous) / previous) * 100;
   }
 
@@ -366,7 +263,128 @@ async function DynamicStats() {
   );
 }
 
-// ✅ Loading skeleton for stats section
+// ✅ Featured Businesses Component
+async function FeaturedBusinesses() {
+  const featuredBusinesses = await prisma.business.findMany({
+    where: { isActive: true, isBanned: false },
+    include: {
+      reviews: {
+        include: {
+          author: {
+            include: {
+              avatar: true,
+            },
+          },
+        },
+      },
+      category: true,
+      logo: true,
+    },
+    orderBy: {
+      reviews: { _count: "desc" },
+    },
+    take: 6,
+  });
+
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Comercios Destacados</h2>
+          <p className="text-muted-foreground">
+            Los mejores negocios de tu comunidad
+          </p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/comercios">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {featuredBusinesses.map((business) => (
+          <PublicBusinessCard key={business.id} business={business} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ✅ Recent Products Component
+async function RecentProducts() {
+  const recentProducts = await prisma.product.findMany({
+    where: { active: true, isBanned: false },
+    include: {
+      images: true,
+      business: true,
+      category: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: 8,
+  });
+
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Productos Recientes</h2>
+          <p className="text-muted-foreground">Últimos productos publicados</p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/productos">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {recentProducts.map((product) => (
+          <ProductPublicCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ✅ Recent Posts Component
+async function RecentPosts() {
+  const recentPosts = await prisma.post.findMany({
+    where: { content: { not: "" } },
+    include: {
+      author: { include: { avatar: true } },
+      answers: { include: { author: { include: { avatar: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+  });
+
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Posts Recientes</h2>
+          <p className="text-muted-foreground">
+            La comunidad pregunta y responde
+          </p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/posts">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {recentPosts.map((post) => (
+          <PublicPostCard key={post.id} post={post} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ✅ Loading Skeletons
 function StatsSkeletons() {
   return (
     <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -382,6 +400,72 @@ function StatsSkeletons() {
           </CardContent>
         </Card>
       ))}
+    </section>
+  );
+}
+
+function BusinessesSkeletons() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6">
+        <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <Card key={i} className="overflow-hidden">
+            <div className="aspect-video w-full animate-pulse bg-gray-200" />
+            <CardHeader>
+              <div className="mb-2 h-6 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProductsSkeletons() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6">
+        <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <Card key={i} className="overflow-hidden">
+            <div className="aspect-square w-full animate-pulse bg-gray-200" />
+            <CardHeader className="p-4">
+              <div className="mb-2 h-5 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PostsSkeletons() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6">
+        <div className="mb-2 h-8 w-64 animate-pulse rounded bg-gray-200" />
+        <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <Card key={i}>
+            <CardHeader>
+              <div className="mb-2 h-6 w-full animate-pulse rounded bg-gray-200" />
+              <div className="mb-2 h-4 w-3/4 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
     </section>
   );
 }
