@@ -31,6 +31,7 @@ export async function listAllProducts({
   sort,
   businessId,
   category,
+  minRating,
 }: {
   search?: string;
   category?: string;
@@ -38,6 +39,7 @@ export async function listAllProducts({
   page: number;
   limit: number;
   sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+  minRating?: number;
 }): Promise<{
   products: ProductDTO[];
   total: number;
@@ -65,6 +67,7 @@ export async function listAllProducts({
         { description: { contains: search, mode: "insensitive" as const } },
       ],
     }),
+    ...(minRating && { business: { rating: { gte: minRating } } }),
   };
 
   const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
@@ -87,12 +90,26 @@ export async function listAllProducts({
       include: {
         business: true,
         images: true,
+        category: true,
+        reviews: {
+          include: {
+            author: {
+              include: {
+                avatar: true,
+              },
+            },
+          },
+        },
       },
       orderBy,
       skip: (page - 1) * limit,
       take: limit,
     }),
-    prisma.product.count({ where }),
+    prisma.product.count({
+      where: {
+        active: true,
+      },
+    }),
   ]);
 
   return {

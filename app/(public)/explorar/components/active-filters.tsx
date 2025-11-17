@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Business } from "@/app/generated/prisma";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { createSearchUrl } from "@/lib/utils";
+import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
 
 type ActiveFiltersProps = {
   params: {
@@ -13,24 +13,32 @@ type ActiveFiltersProps = {
     category?: string;
     page?: string;
     businessId?: string;
-    sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+    limit?: string;
+    sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+    minRating?: string;
   };
   businesses: Business[];
+  typeExplorer: TypeExplorer;
 };
 
 export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   params,
   businesses,
+  typeExplorer,
 }) => {
   const router = useRouter();
 
   const handleRemoveFilter = (filterKey: string) => {
-    const newUrl = createSearchUrl(params, { [filterKey]: undefined });
+    const newUrl = createSearchUrl({
+      currentParams: params,
+      updates: { [filterKey]: undefined },
+      typeExplorer,
+    });
     router.push(newUrl);
   };
 
   const handleClearAll = () => {
-    router.push("/explorar");
+    router.push(`/explorar/${typeExplorer}`);
   };
 
   return (
@@ -85,21 +93,21 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
           </Button>
         </Badge>
       )}
-      {params.sort && (
+      {params.sortBy && (
         <Badge variant="secondary" className="gap-1.5">
           <span>
             Ordenamiento:{" "}
-            {params.sort === "price_asc"
+            {params.sortBy === "price_asc"
               ? "Precio: Menor a Mayor"
-              : params.sort === "price_desc"
+              : params.sortBy === "price_desc"
                 ? "Precio: Mayor a Menor"
-                : params.sort === "name_asc"
+                : params.sortBy === "name_asc"
                   ? "Nombre: A-Z"
                   : "Nombre: Z-A"}
           </span>
           <Button
             type="button"
-            onClick={() => handleRemoveFilter("sort")}
+            onClick={() => handleRemoveFilter("sortBy")}
             aria-label="Eliminar ordenamiento"
             variant={"ghost"}
             size={"icon"}
@@ -112,7 +120,10 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
       {(params.search ||
         params.category ||
         params.businessId ||
-        params.sort) && (
+        params.sortBy ||
+        params.minRating ||
+        params.limit ||
+        params.page) && (
         <Button
           size="sm"
           onClick={handleClearAll}

@@ -42,7 +42,7 @@ export async function listAllBusinesses({
   cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
 
   const where: Prisma.BusinessWhereInput = {
-    planStatus: "ACTIVE" as const,
+    isActive: true,
     products: {
       some: {
         active: true,

@@ -4,9 +4,9 @@ import {
   getPublicBusinesses,
 } from "@/app/actions/public-actions";
 import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
+import { CategoryPills } from "../components/category-pills";
+import { SearchAndFilters } from "../components/search-and-filters";
 import { BusinessGrid } from "./components/business-grid";
-import { CategoryPills } from "./components/category-pills";
-import { SearchAndFilters } from "./components/search-and-filters";
 
 type SearchParams = {
   search?: string;
@@ -46,9 +46,9 @@ export default async function ComerciosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters />
+      <SearchAndFilters typeExplorer="comercios" params={await searchParams} />
       {/* Category Pills */}
-      <CategoryPills categories={categories} />
+      <CategoryPills categories={categories} typeExplorer="comercios" />
 
       {/* Results Count */}
       <p className="mb-4 text-muted-foreground text-sm">

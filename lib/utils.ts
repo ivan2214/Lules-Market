@@ -5,16 +5,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export type TypeExplorer = "productos" | "comercios" | "posts";
+
 /**
  * Crea una URL con los parámetros de búsqueda actualizados
  * @param currentParams Parámetros actuales
  * @param updates Actualizaciones a aplicar
  * @returns URL con parámetros actualizados
  */
-export function createSearchUrl(
-  currentParams: Record<string, string | undefined>,
-  updates: Record<string, string | undefined>,
-): string {
+export function createSearchUrl({
+  currentParams,
+  updates,
+  typeExplorer,
+}: {
+  currentParams?: Record<string, string | undefined>;
+  updates: Record<string, string | undefined>;
+  typeExplorer: TypeExplorer;
+}): string {
+  // obtenemos el tipo de exlporacion desde la url ya que puede ser /explorar/productos o /explorar/comercios
+
   // Crear una copia de los parámetros actuales
   const newParams = { ...currentParams };
 
@@ -40,7 +49,7 @@ export function createSearchUrl(
     if (value) searchParams.append(key, value);
   });
 
-  return `/explorar${
+  return `/explorar/${typeExplorer}/${
     searchParams.toString() ? `?${searchParams.toString()}` : ""
   }`;
 }

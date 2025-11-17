@@ -51,15 +51,17 @@ export async function getPublicProducts(params?: {
   businessId?: string;
   page?: number;
   limit?: number;
-  sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+  sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+  minRating?: number;
 }) {
   const {
     search,
     category,
     businessId,
     page = 1,
-    limit = 12,
-    sort,
+    limit = 25,
+    sortBy,
+    minRating,
   } = params || {};
 
   // Llamar directamente a la función del DAL
@@ -69,7 +71,8 @@ export async function getPublicProducts(params?: {
     businessId,
     page,
     limit,
-    sort,
+    sort: sortBy,
+    minRating,
   });
 }
 

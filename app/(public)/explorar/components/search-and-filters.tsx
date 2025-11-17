@@ -21,18 +21,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
 
 type SearchAndFiltersProps = {
-  searchQuery?: string;
-  sortBy?: string;
-  minRating?: number;
+  params?: {
+    search?: string;
+    category?: string;
+    page?: string;
+    businessId?: string;
+    limit?: string;
+    sortBy?: string;
+    minRating?: string;
+  };
+  typeExplorer: TypeExplorer;
 };
 
 export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
-  minRating,
-  searchQuery,
-  sortBy,
+  params,
+  typeExplorer,
 }) => {
+  const { minRating, search, sortBy } = params || {};
   const [showOpenOnly, setShowOpenOnly] = useState(false);
 
   return (
@@ -43,19 +51,29 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           type="search"
           placeholder="Buscar comercios, ubicaciones..."
           className="pl-10"
-          value={searchQuery}
+          value={search}
           onChange={() => {}}
         />
       </div>
 
-      <Select value={sortBy} onValueChange={() => {}}>
+      <Select
+        value={sortBy}
+        onValueChange={(value) => {
+          createSearchUrl({
+            currentParams: params,
+            updates: { sortBy: value },
+            typeExplorer,
+          });
+        }}
+      >
         <SelectTrigger className="w-full md:w-[200px]">
           <SelectValue placeholder="Ordenar por" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="rating">Mejor valorados</SelectItem>
-          <SelectItem value="reviews">Más opiniones</SelectItem>
-          <SelectItem value="name">Nombre (A-Z)</SelectItem>
+          <SelectItem value="price_asc">Precio ascendente</SelectItem>
+          <SelectItem value="price_desc">Precio descendente</SelectItem>
+          <SelectItem value="name_asc">Nombre ascendente</SelectItem>
+          <SelectItem value="name_desc">Nombre descendente</SelectItem>
         </SelectContent>
       </Select>
 
