@@ -12,6 +12,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
+    requireEmailVerification: true,
   },
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -27,5 +28,8 @@ export const auth = betterAuth({
     "http://localhost:3000",
     "http://192.168.1.103:3000",
   ],
+  emailVerification: {
+    autoSignInAfterVerification: true,
+  },
   plugins: [nextCookies()], // make sure this is the last plugin in the array
 });
