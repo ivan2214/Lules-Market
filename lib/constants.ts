@@ -1,3 +1,4 @@
+import { MessageSquare, ShoppingBag, Store } from "lucide-react";
 import type { PlanType } from "@/app/generated/prisma";
 
 export const PLAN_PRICES: Record<PlanType, number> = {
@@ -60,3 +61,10 @@ export const CONTACT_TYPES = {
   facebook: "Facebook",
   instagram: "Instagram",
 } as const;
+
+export const navigation = [
+  { name: "Inicio", href: "/", icon: Store },
+  { name: "Productos", href: "/explorar/productos", icon: ShoppingBag },
+  { name: "Opiniones", href: "/explorar/opiniones", icon: MessageSquare },
+  { name: "Comercios", href: "/explorar/comercios", icon: Store },
+];

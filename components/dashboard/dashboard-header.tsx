@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { UserMenu } from "../auth/user-menu";
+import { UserMenu } from "../navigation/user-menu";
 import { DashboardSidebar } from "./dashboard-sidebar";
 
 export function DashboardHeader({ business }: { business: BusinessDTO }) {
@@ -45,7 +45,13 @@ export function DashboardHeader({ business }: { business: BusinessDTO }) {
 
       <div className="flex-1" />
 
-      <UserMenu business={business} />
+      <UserMenu
+        avatar={business?.logo?.url as string}
+        name={business?.name}
+        isBusiness
+        email={business?.email as string}
+        businessId={business?.id}
+      />
     </header>
   );
 }

@@ -1,6 +1,6 @@
 import type React from "react";
+import { Navigation } from "@/components/navigation";
 import { PublicFooter } from "@/components/public/footer";
-import { PublicNavbar } from "@/components/public/navbar";
 
 export default function PublicLayout({
   children,
@@ -9,7 +9,7 @@ export default function PublicLayout({
 }) {
   return (
     <div className="mx-auto flex min-h-screen flex-col">
-      <PublicNavbar />
+      <Navigation />
 
       {children}
       <PublicFooter />
