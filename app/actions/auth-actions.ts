@@ -11,7 +11,6 @@ import {
 import type { ActionResult } from "@/hooks/use-action";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { daysFromNow } from "@/utils";
 import { getUserByEmail } from "../data/user/utils";
 
 export async function businessSignInAction(
@@ -129,6 +128,8 @@ export async function businessSignInAction(
     throw error;
   } finally {
     revalidatePath("/");
+    revalidatePath("/auth/signin");
+    revalidatePath("/auth/signup");
   }
 }
 
@@ -165,84 +166,23 @@ export const businessSignUpAction = async (
       };
     }
 
-    // Create user and business in transaction
-    const res = await prisma.$transaction(async (tx) => {
-      const res = await auth.api.signUpEmail({
-        body: {
-          email: validatedData.email,
-          password: validatedData.password,
-          name: validatedData.name,
-        },
-      });
-
-      const user = await tx.user.findUnique({
-        where: {
-          id: res.user.id,
-        },
-      });
-
-      if (!user) {
-        return {
-          errorMessage: "Error al crear el usuario",
-        };
-      }
-
-      const currentPlanType = await tx.plan
-        .findUnique({
-          where: {
-            type: "FREE",
-          },
-          select: {
-            type: true,
-          },
-        })
-        .then((plan) => plan?.type);
-
-      if (!currentPlanType) {
-        return {
-          errorMessage: "Error al obtener el plan",
-        };
-      }
-
-      // Create business
-      const business = await tx.business.create({
-        data: {
-          name: validatedData.name,
-          email: validatedData.email,
-          userId: user.id,
-          status: "ACTIVE",
-        },
-      });
-
-      // asignamos el plan gratuito
-
-      await tx.trial.create({
-        data: {
-          businessId: business.id,
-          plan: currentPlanType,
-          expiresAt: daysFromNow(30), // Expire in 30 days
-          activatedAt: new Date(),
-          isActive: true,
-        },
-      });
-
-      await tx.currentPlan.create({
-        data: {
-          businessId: business.id,
-          planType: currentPlanType,
-          expiresAt: daysFromNow(30), // Expire in 30 days
-          activatedAt: new Date(),
-          isActive: true,
-          isTrial: true,
-        },
-      });
-
-      return { user, business };
+    const res = await auth.api.signUpEmail({
+      body: {
+        email: validatedData.email,
+        password: validatedData.password,
+        name: validatedData.name,
+      },
     });
 
-    if (!res) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: res.user.id,
+      },
+    });
+
+    if (!user) {
       return {
-        errorMessage: "Error al crear el negocio",
+        errorMessage: "Error al crear el usuario",
       };
     }
 
@@ -254,7 +194,7 @@ export const businessSignUpAction = async (
 
     const hasBusiness = await prisma.business.findUnique({
       where: {
-        userId: res.business?.id,
+        userId: res.user?.id,
       },
     });
 

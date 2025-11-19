@@ -2,7 +2,7 @@
 
 import { CheckCircle, Loader2, Mail, Store, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { AuthHeader } from "@/components/auth/auth-header";
@@ -19,7 +19,6 @@ export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const hasVerified = useRef(false); // evitar re-verificación
-  const router = useRouter();
 
   const [pending, startTransition] = useTransition();
 
@@ -42,16 +41,13 @@ export default function VerifyEmailPage() {
             toast.success(
               "Email verificado exitosamente, redirigiendo a la pantalla de dashboard",
             );
-            setTimeout(() => {
-              router.push("/dashboard");
-            }, 2000);
           }
         });
       });
     };
 
     verifyToken();
-  }, [token, router]);
+  }, [token]);
 
   const handleResendEmail = () => {
     if (email) {

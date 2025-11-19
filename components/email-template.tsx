@@ -28,7 +28,7 @@ const baseUrl = process.env.APP_URL;
 export const EmailTemplate = ({
   userFirstname,
   appName,
-  logoUrl = "https://images-ofertas-lules.t3.storage.dev/lulesmarket-logo.png",
+  logoUrl = "https://lules-market-dev.t3.storage.dev/logo.webp",
   title = `${appName} - Notificación`,
   description,
   buttonText,

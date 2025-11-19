@@ -43,10 +43,6 @@ export const requireBusiness = cache(
       redirect("/auth/business-setup");
     }
 
-    if (!business) {
-      redirect("/auth/business-setup");
-    }
-
     return {
       userId: session.userId,
       email: session.email,

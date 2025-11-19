@@ -1,14 +1,16 @@
 import "server-only";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { connection } from "next/server";
 import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
+import { auth } from "@/lib/auth";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prisma";
-import { generateEmailVerificationToken } from "@/lib/tokens";
+import { daysFromNow } from "@/utils";
 import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
+import { requireUser } from "../user/require-user";
 import {
   type BusinessDTO,
   type BusinessSetupInput,
@@ -221,7 +223,35 @@ export async function getBusinessById(
 // ========================================
 
 export async function getMyBusiness(): Promise<BusinessDTO> {
-  const { business } = await requireBusiness();
+  await connection();
+
+  const session = await requireUser();
+
+  const business = await prisma.business.findUnique({
+    where: { userId: session.userId },
+    include: {
+      logo: true,
+      coverImage: true,
+      user: {
+        include: {
+          admin: true,
+
+          business: true,
+        },
+      },
+      products: {
+        include: {
+          images: true,
+        },
+        where: { active: true },
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+      },
+    },
+  });
+
+  if (!business) {
+    throw new Error("No se encontro el negocio");
+  }
 
   return business;
 }
@@ -250,6 +280,7 @@ export async function businessSetup(
       logo,
       coverImage,
       category,
+      tags,
     } = data as BusinessSetupInput;
 
     const { userId, email, name } = await requireBusiness();
@@ -265,39 +296,32 @@ export async function businessSetup(
       where: { email: email, AND: { emailVerified: true } },
     });
 
-    // Generate verification token
-    const verificationToken = generateEmailVerificationToken();
-    const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
     if (!emailVerified) {
-      await prisma.emailVerificationToken.create({
-        data: {
-          userId,
-          token: verificationToken,
-          expiresAt: tokenExpiresAt,
+      auth.api.sendVerificationEmail({
+        body: {
+          email,
         },
       });
-      // Send verification email
-      await sendEmail({
-        to: email,
-        subject: "Verificá tu cuenta en LulesMarket",
-        title: "Verificación de cuenta",
-        description:
-          "Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo.",
-        buttonText: "Verificar Email",
-        buttonUrl: `${process.env.APP_URL}/auth/verify?token=${verificationToken}`,
-        userFirstname: name,
-      });
+    }
+
+    const currentPlanType = await prisma.plan
+      .findUnique({
+        where: {
+          type: "FREE",
+        },
+        select: {
+          type: true,
+        },
+      })
+      .then((plan) => plan?.type);
+
+    if (!currentPlanType) {
       return {
-        errorMessage:
-          "El email no ha sido verificado, por favor verifica tu email para continuar",
+        errorMessage: "Error al obtener el plan",
       };
     }
 
-    const business = await prisma.business.update({
-      where: {
-        userId,
-      },
+    const business = await prisma.business.create({
       data: {
         name,
         description,
@@ -314,6 +338,28 @@ export async function businessSetup(
           ? { create: coverImage as Prisma.ImageCreateInput }
           : undefined,
         status: "ACTIVE",
+        tags,
+      },
+    });
+
+    await prisma.trial.create({
+      data: {
+        businessId: business.id,
+        plan: currentPlanType,
+        expiresAt: daysFromNow(30), // Expire in 30 days
+        activatedAt: new Date(),
+        isActive: true,
+      },
+    });
+
+    await prisma.currentPlan.create({
+      data: {
+        businessId: business.id,
+        planType: currentPlanType,
+        expiresAt: daysFromNow(30), // Expire in 30 days
+        activatedAt: new Date(),
+        isActive: true,
+        isTrial: true,
       },
     });
 

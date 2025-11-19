@@ -37,7 +37,7 @@ export function SignInForm() {
       onSuccess: ({ isAdmin, hasBusiness }) => {
         if (isAdmin) router.push("/admin");
         else if (hasBusiness) router.push("/dashboard");
-        else router.push("/auth/business-setup");
+        else if (!hasBusiness) router.push("/auth/business-setup");
       },
     },
   });

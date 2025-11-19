@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 // If your Prisma file is located elsewhere, you can change the path
 import { BusinessStatus, PrismaClient } from "@/app/generated/prisma";
 import { sendEmail } from "./email";
@@ -101,6 +103,19 @@ export const auth = betterAuth({
         buttonUrl: `${process.env.APP_URL}/dashboard`,
         userFirstname: verificationToken.user.name.split(" ")[0],
       });
+
+      // si tiene un negocio, redirigir a dashboard
+      const hassBusiness = await prisma.business.findFirst({
+        where: { userId: verificationToken.userId },
+      });
+
+      if (hassBusiness) {
+        revalidatePath("/auth/verify");
+        redirect("/dashboard");
+      } else {
+        revalidatePath("/auth/verify");
+        redirect("/auth/business-setup");
+      }
     },
 
     async sendVerificationEmail({ token, user }) {
@@ -152,7 +167,7 @@ export const auth = betterAuth({
       if (user && user?.email === process.env.ADMIN_EMAIL) {
         await prisma.user?.update({
           where: { id: user?.id },
-          data: { userRole: "ADMIN" },
+          data: { userRole: "ADMIN", emailVerified: true },
         });
         const existingAdmin = await prisma.admin.findUnique({
           where: { userId: user?.id },
@@ -169,7 +184,7 @@ export const auth = betterAuth({
       if (user && user?.email === process.env.SUPER_ADMIN_EMAIL) {
         await prisma.user?.update({
           where: { id: user?.id },
-          data: { userRole: "SUPER_ADMIN" },
+          data: { userRole: "SUPER_ADMIN", emailVerified: true },
         });
 
         const existingSuperAdmin = await prisma.admin.findUnique({

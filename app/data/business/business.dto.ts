@@ -23,6 +23,7 @@ export const BusinessSetupInputSchema = z.object({
   instagram: z.string().optional(),
   logo: ImageCreateInputSchema,
   coverImage: ImageCreateInputSchema,
+  tags: z.array(z.string()).optional(),
 });
 export type BusinessSetupInput = z.infer<typeof BusinessSetupInputSchema>;
 
@@ -45,14 +46,11 @@ export interface BusinessDTO extends BusinessPrisma {
   currentPlan?: CurrentPlanDTO | null;
 }
 
-
 export interface CurrentPlanDTO extends CurrentPlan {
-  business: BusinessDTO
-  plan: PlanDTO
+  business: BusinessDTO;
+  plan: PlanDTO;
 }
 
 export interface PlanDTO extends Plan {
-  currentPlans: CurrentPlanDTO[]
+  currentPlans: CurrentPlanDTO[];
 }
-
-
