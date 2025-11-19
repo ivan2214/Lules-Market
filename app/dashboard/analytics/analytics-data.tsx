@@ -38,7 +38,7 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
       );
     }
 
-    const limits = getSubscriptionLimits(business.plan);
+    const limits = getSubscriptionLimits(business.currentPlan?.planType || "FREE");
 
     // If no stats available, return early with default data
     if (!limits.hasStatistics) {

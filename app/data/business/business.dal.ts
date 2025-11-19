@@ -91,7 +91,9 @@ export async function listAllBusinesses({
       },
       orderBy: [
         {
-          plan: "asc" as const,
+          currentPlan: {
+            expiresAt: "desc",
+          },
         },
         { createdAt: "desc" },
         ...(sortBy
@@ -153,7 +155,9 @@ export async function listAllBusinessesByCategories({
     },
     orderBy: [
       {
-        plan: "asc" as const,
+        currentPlan: {
+          expiresAt: "desc",
+        },
       },
       { createdAt: "desc" },
     ],
@@ -381,7 +385,7 @@ export async function updateBusiness(
   const userPolicy = {
     userId,
     email,
-    activePlan: business.plan,
+    activePlan: business.currentPlan?.planType || "FREE",
   };
 
   if (

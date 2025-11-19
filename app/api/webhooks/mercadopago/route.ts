@@ -139,12 +139,18 @@ export async function POST(request: Request) {
                   currency: mpPayment?.currency_id ?? paymentRecord.currency,
                 },
               }),
-              prisma.business.update({
-                where: { id: paymentRecord.businessId },
+              prisma.currentPlan.update({
+                where: { businessId: paymentRecord.businessId },
                 data: {
-                  plan: paymentRecord.plan,
+                  planType: paymentRecord.plan,
                   planStatus: "ACTIVE",
-                  planExpiresAt: expireAt,
+                  expiresAt: expireAt,
+                  activatedAt: new Date(),
+                  imagesUsed: 0,
+                  productsUsed:0,
+                  isActive: true,
+                  isTrial:false,
+                  
                 },
               }),
               prisma.webhookEvent.update({

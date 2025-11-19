@@ -70,12 +70,12 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       header: "Plan",
       cell: ({ row }) => {
         const variant =
-          row.original.plan === "PREMIUM"
+          row.original.currentPlan?.planType === "PREMIUM"
             ? "default"
-            : row.original.plan === "BASIC"
+            : row.original.currentPlan?.planType === "BASIC"
               ? "secondary"
               : "outline";
-        return <Badge variant={variant}>{row.original.plan}</Badge>;
+        return <Badge variant={variant}>{row.original.currentPlan?.planType}</Badge>;
       },
     },
     {
@@ -153,14 +153,14 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
                 </div>
                 <Badge
                   variant={
-                    selectedBusiness.plan === "PREMIUM"
+                    selectedBusiness.currentPlan?.planType === "PREMIUM"
                       ? "default"
-                      : selectedBusiness.plan === "BASIC"
+                      : selectedBusiness.currentPlan?.planType === "BASIC"
                         ? "secondary"
                         : "outline"
                   }
                 >
-                  {selectedBusiness.plan}
+                  {selectedBusiness.currentPlan?.planType}
                 </Badge>
               </div>
 

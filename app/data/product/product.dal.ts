@@ -72,7 +72,7 @@ export async function listAllProducts({
 
   const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
     { featured: "desc" },
-    { business: { plan: "asc" as const } },
+    { business: { currentPlan: { planType: "asc" as const } } },
     { createdAt: "desc" },
   ];
 
@@ -223,14 +223,14 @@ export async function createProduct(
       where: { businessId: business.id },
     });
 
-    if (!canAddProduct(productCount, business.plan)) {
+    if (!canAddProduct(productCount, business.currentPlan?.planType || "FREE")) {
       return {
         errorMessage: "Has alcanzado el límite de productos para tu plan",
       };
     }
 
     // Check if can feature products
-    if (data.featured && !canFeatureProduct(business.plan)) {
+    if (data.featured && !canFeatureProduct(business.currentPlan?.planType || "FREE")) {
       return {
         errorMessage: "Tu plan no permite destacar productos",
       };
@@ -364,7 +364,7 @@ export async function updateProduct(
     }
 
     // Check if can feature products
-    if (data.featured && !canFeatureProduct(business.plan)) {
+    if (data.featured && !canFeatureProduct(business.currentPlan?.planType || "FREE")) {
       return {
         errorMessage: "Tu plan no permite destacar productos",
       };
@@ -465,7 +465,7 @@ export async function deleteProduct(productId: string) {
     const policyUser = {
       userId: userId,
       email: email,
-      activePlan: business.plan,
+      activePlan: business.currentPlan?.planType || "FREE",
     };
 
     canDeleteProduct(policyUser, {

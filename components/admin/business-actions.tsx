@@ -67,7 +67,7 @@ export function BusinessActions({
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [showUnbanDialog, setShowUnbanDialog] = useState(false);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<PlanType>(business.plan);
+  const [selectedPlan, setSelectedPlan] = useState<PlanType>(business.currentPlan?.planType || "FREE");
   const [isTrial, setIsTrial] = useState(false); // flag para activar trial
   const [pending, startTransition] = useTransition();
 

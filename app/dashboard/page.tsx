@@ -19,7 +19,7 @@ async function DashboardContent() {
     limit: 5,
     offset: 0,
   });
-  const limits = getSubscriptionLimits(business.plan);
+  const limits = getSubscriptionLimits(business.currentPlan?.planType || "FREE");
   const productCount = business.products?.length || 0;
   const productLimit =
     limits.maxProducts === -1 ? "Ilimitado" : limits.maxProducts;
@@ -46,9 +46,9 @@ async function DashboardContent() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{business.plan}</div>
+            <div className="font-bold text-2xl">{business.currentPlan?.planType}</div>
             <p className="text-muted-foreground text-xs">
-              {business.planStatus === "ACTIVE" ? "Activo" : "Inactivo"}
+              {business.currentPlan?.planStatus === "ACTIVE" ? "Activo" : "Inactivo"}
             </p>
           </CardContent>
         </Card>

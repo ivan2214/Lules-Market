@@ -180,9 +180,9 @@ async function getAnalyticsData(): Promise<{
   businessGrowthData: Analytics["businessGrowth"];
 }> {
   const [free, basic, premium] = await prisma.$transaction([
-    prisma.business.count({ where: { plan: "FREE" } }),
-    prisma.business.count({ where: { plan: "BASIC" } }),
-    prisma.business.count({ where: { plan: "PREMIUM" } }),
+    prisma.business.count({ where: { currentPlan: { planType: "FREE" } } }),
+    prisma.business.count({ where: { currentPlan: { planType: "BASIC" } } }),
+    prisma.business.count({ where: { currentPlan: { planType: "PREMIUM" } } }),
   ]);
 
   const totalPlans = free + basic + premium || 1;

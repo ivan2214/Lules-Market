@@ -86,16 +86,16 @@ export async function createPaymentPreference(
 export async function upgradePlan(plan: PlanType) {
   const { business } = await requireBusiness();
 
-  if (business.plan === plan) {
+  if (business.currentPlan?.planType === plan) {
     throw new Error("Ya tienes este plan activo");
   }
 
-  const updated = await prisma.business.update({
+  const updated = await prisma.currentPlan.update({
     where: { id: business.id },
     data: {
-      plan,
+      planType: plan,
       planStatus: "ACTIVE",
-      planExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     },
   });
 
@@ -110,14 +110,16 @@ export async function upgradePlan(plan: PlanType) {
 export async function cancelSubscription() {
   const { business } = await requireBusiness();
 
-  if (business.plan === "FREE") {
+  if (business.currentPlan?.planType === "FREE") {
     throw new Error("No tienes una suscripción activa");
   }
 
-  const updated = await prisma.business.update({
+  const updated = await prisma.currentPlan.update({
     where: { id: business.id },
     data: {
       planStatus: "CANCELLED",
+      expiresAt: new Date(),
+
     },
   });
 
@@ -191,12 +193,12 @@ export async function processPaymentSuccess({
     });
 
     // Update business plan
-    await prisma.business.update({
+    await prisma.currentPlan.update({
       where: { id: payment.businessId },
       data: {
-        plan: payment.plan,
+        planType: payment.plan,
         planStatus: "ACTIVE",
-        planExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       },
     });
 
@@ -289,12 +291,12 @@ export async function startTrial(plan: PlanType = "PREMIUM") {
     },
   });
 
-  await prisma.business.update({
+  await prisma.currentPlan.update({
     where: { id: business.id },
     data: {
-      plan,
+      planType: plan,
       planStatus: "ACTIVE",
-      planExpiresAt: expiresAt,
+      expiresAt: expiresAt,
     },
   });
 
@@ -346,12 +348,12 @@ export async function redeemCoupon(code: string) {
     data: { usedCount: { increment: 1 } },
   });
 
-  await prisma.business.update({
+  await prisma.currentPlan.update({
     where: { id: business.id },
     data: {
-      plan: coupon.plan,
+      planType: coupon.plan,
       planStatus: "ACTIVE",
-      planExpiresAt: expiresAt,
+      expiresAt: expiresAt,
     },
   });
 

@@ -2,6 +2,8 @@ import { z } from "zod";
 import type {
   BannedBusiness,
   Business as BusinessPrisma,
+  CurrentPlan,
+  Plan,
 } from "@/app/generated/prisma";
 import type { AnswerDTO } from "../answer/answer.dto";
 import type { CategoryDTO } from "../category/category.dto";
@@ -40,4 +42,17 @@ export interface BusinessDTO extends BusinessPrisma {
   category?: CategoryDTO | null;
   reviews?: ReviewDTO[] | null;
   answers?: AnswerDTO[] | null;
+  currentPlan?: CurrentPlanDTO | null;
 }
+
+
+export interface CurrentPlanDTO extends CurrentPlan {
+  business: BusinessDTO
+  plan: PlanDTO
+}
+
+export interface PlanDTO extends Plan {
+  currentPlans: CurrentPlanDTO[]
+}
+
+

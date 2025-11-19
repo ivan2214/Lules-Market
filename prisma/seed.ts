@@ -451,9 +451,9 @@ async function main() {
   for (const negocio of negocios) {
     const cantidad = faker.number.int({
       min: 1,
-      max: negocio.currentPlan?.plan.maxProducts,
+      max: Math.min(negocio.currentPlan?.plan.maxProducts, 20),
     });
-    for (let i = 0; i < cantidad; i++) {
+    for (let i = 1; i <= cantidad; i++) {
       const category = faker.helpers.arrayElement(createdCategories);
       const product = await prisma.product.create({
         data: {
@@ -474,6 +474,9 @@ async function main() {
             ProductCondition.REFURBISHED,
           ]),
           tags: faker.lorem.words(3).split(" "),
+          active: faker.datatype.boolean(),
+          model: faker.vehicle.model(),
+
         },
       });
 
@@ -481,7 +484,7 @@ async function main() {
 
       const imgCount = faker.number.int({
         min: 1,
-        max: negocio.currentPlan?.plan.maxImages,
+        max: Math.min(negocio.currentPlan?.plan.maxImages, 5),
       });
       const imagenes: Prisma.ImageCreateManyProductInput[] = Array.from(
         { length: imgCount },
@@ -619,49 +622,7 @@ async function main() {
     });
   }
 
-  // --- 10) Trials: algunos expirados, algunos activos (ya tenías) ---
-  console.log("⏳ Creando trials (algunos expirados)...");
-  const negociosDisponibles = [...negocios];
-  for (let i = 0; i < 10 && negociosDisponibles.length > 0; i++) {
-    const index = Math.floor(Math.random() * negociosDisponibles.length);
-    const negocio = negociosDisponibles.splice(index, 1)[0];
-    const activatedAt = faker.date.past();
-    // algunos expirarán pronto o ya expiraron
-    const expiresAt =
-      Math.random() < 0.3 ? faker.date.past() : faker.date.future();
-    const trial = await prisma.trial.create({
-      data: {
-        businessId: negocio.id,
-        activatedAt,
-        expiresAt,
-        isActive: expiresAt > new Date(),
-      },
-    });
-    const currentPlan = await prisma.currentPlan.create({
-      data: {
-        id: trial.id,
-        businessId: negocio.id,
-        planType: PlanType.FREE,
-        isTrial: true,
-        expiresAt,
-        activatedAt,
-        isActive: expiresAt > new Date(),
-      },
-    });
-
-    // si trial expirado, actualizar plan actual
-    if (trial.isActive === false) {
-      await prisma.currentPlan.update({
-        where: { id: currentPlan.id },
-        data: {
-          planType: PlanType.FREE,
-          isActive: false,
-          planStatus: "EXPIRED",
-          expiresAt: new Date(),
-        },
-      });
-    }
-  }
+ 
 
   // --- 11) Pagos: crear pagos para muchas tiendas en distintos estados ---
   console.log(

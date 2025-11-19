@@ -16,7 +16,7 @@ async function ProductsContent() {
     return null;
   }
 
-  const limits = getSubscriptionLimits(business.plan);
+  const limits = getSubscriptionLimits(business.currentPlan?.planType || "FREE");
   const canAdd =
     limits.maxProducts === -1 ||
     (business?.products?.length || 0) < limits.maxProducts;

@@ -95,23 +95,23 @@ export default async function SubscriptionPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-2xl">{business.plan}</p>
+              <p className="font-bold text-2xl">{business.currentPlan?.planType}</p>
               <p className="text-muted-foreground text-sm">
                 Estado:{" "}
                 <Badge
                   variant={
-                    business.planStatus === "ACTIVE" ? "default" : "secondary"
+                    business.currentPlan?.planStatus === "ACTIVE" ? "default" : "secondary"
                   }
                 >
-                  {business.planStatus === "ACTIVE"
+                  {business.currentPlan?.planStatus === "ACTIVE"
                     ? "Activo"
-                    : business.planStatus}
+                    : business.currentPlan?.planStatus}
                 </Badge>
               </p>
-              {business.planExpiresAt && (
+              {business.currentPlan?.expiresAt && (
                 <p className="mt-1 text-muted-foreground text-sm">
                   Vence:{" "}
-                  {new Date(business.planExpiresAt).toLocaleDateString("es-AR")}
+                  {new Date(business.currentPlan.expiresAt).toLocaleDateString("es-AR")}
                 </p>
               )}
             </div>
@@ -119,9 +119,9 @@ export default async function SubscriptionPage() {
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
                 {business.products?.length ?? 0} /{" "}
-                {SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts === -1
+                {SUBSCRIPTION_LIMITS[business.currentPlan?.planType || "FREE"].maxProducts === -1
                   ? "∞"
-                  : SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts}
+                  : SUBSCRIPTION_LIMITS[business.currentPlan?.planType || "FREE"].maxProducts}
               </p>
             </div>
           </div>
@@ -135,8 +135,8 @@ export default async function SubscriptionPage() {
             <PlanCard
               key={plan.name}
               plan={plan}
-              currentPlan={business.plan}
-              planStatus={business.planStatus}
+              currentPlan={business.currentPlan?.planType}
+              planStatus={business.currentPlan?.planStatus}
             />
           ))}
         </div>
