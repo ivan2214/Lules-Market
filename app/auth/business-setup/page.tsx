@@ -1,4 +1,5 @@
 import { getCategories } from "@/app/actions/public-actions";
+import { requireBusiness } from "@/app/data/business/require-busines";
 import { BusinessSetupForm } from "@/components/auth/business-setup-form";
 import {
   Card,
@@ -9,6 +10,8 @@ import {
 } from "@/components/ui/card";
 
 export default async function BusinessSetup() {
+  await requireBusiness();
+
   const categories = await getCategories();
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">

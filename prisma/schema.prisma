@@ -34,12 +34,40 @@ model User {
   admin    Admin? // o ser administrador
   profile  Profile? // perfil del usuario
 
-  notifications Notification[] // Notificaciones del usuario
+  notifications           Notification[] // Notificaciones del usuario
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
 
   userRole UserRole @default(USER) // rol del usuario
   isBanned Boolean? @default(false)
 
   @@map("user")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Profile {
@@ -179,25 +207,24 @@ model Verification {
  */
 
 model Business {
-  id          String  @id @default(cuid())
+  id          String         @id @default(cuid())
   name        String
-  isActive    Boolean @default(true)
+  isActive    Boolean        @default(true)
   description String?
-  logo        Image?  @relation("Logo")
-  coverImage  Image?  @relation("CoverImage")
+  logo        Image?         @relation("Logo")
+  coverImage  Image?         @relation("CoverImage")
   phone       String?
   whatsapp    String?
-  email       String? @unique
+  email       String?        @unique
   website     String?
   facebook    String?
   instagram   String?
   address     String?
-  verified    Boolean @default(false)
+  verified    Boolean        @default(false)
+  status      BusinessStatus @default(PENDING_VERIFICATION)
 
   // Subscripción del comercio
-  plan          PlanType   @default(FREE)
-  planStatus    PlanStatus @default(ACTIVE)
-  planExpiresAt DateTime? // fecha de expiración del plan actual
+  currentPlan CurrentPlan?
 
   // Propietario
   userId String @unique
@@ -224,9 +251,27 @@ model Business {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([plan])
-  @@index([planStatus])
   @@index([categoryId])
+}
+
+model CurrentPlan {
+  id           String     @id @default(cuid())
+  businessId   String     @unique
+  business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  planType     PlanType   
+  plan         Plan       @relation(fields: [planType], references: [type], onDelete: Cascade)
+  planStatus   PlanStatus @default(INACTIVE)
+  isTrial      Boolean    @default(false)
+  productsUsed Int        @default(0)
+  imagesUsed   Int        @default(0)
+
+  expiresAt   DateTime
+  activatedAt DateTime
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([planType])
 }
 
 model Category {
@@ -242,7 +287,6 @@ model Category {
 }
 
 model Plan {
-  id          String   @id @default(cuid())
   type        PlanType @unique
   name        String
   description String
@@ -253,6 +297,8 @@ model Plan {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  currentPlans CurrentPlan[]
 }
 
 /**
@@ -544,6 +590,23 @@ model Notification {
   @@index([type])
 }
 
+model Log {
+  id         String   @id @default(cuid())
+  timestamp  DateTime @default(now())
+  businessId String?
+  adminId    String?
+  action     String
+  entityType String?
+  entityId   String?
+  details    Json?
+
+  @@index([timestamp])
+  @@index([businessId])
+  @@index([adminId])
+  @@index([entityType])
+  @@index([entityId])
+}
+
 /**
  * ===============================================================
  * ENUMERACIONES
@@ -597,4 +660,11 @@ enum ProductCondition {
   NEW
   USED
   REFURBISHED
+}
+
+enum BusinessStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  INACTIVE
 }

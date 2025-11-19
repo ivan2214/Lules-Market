@@ -119,6 +119,9 @@ importers:
       nodemailer:
         specifier: ^7.0.10
         version: 7.0.10
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
       react:
         specifier: 19.2.0
         version: 19.2.0

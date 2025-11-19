@@ -210,7 +210,7 @@ import { getCurrentUser } from '@/lib/auth';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser(); // usa headers/cookies internamente
-  if (!user) redirect('/auth/login');
+  if (!user) redirect('/auth/signin');
 
   return (
     <div className="admin-layout">

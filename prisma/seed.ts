@@ -8,7 +8,9 @@ import { addDays, addMonths, subMonths } from "date-fns";
 import { auth } from "@/lib/auth";
 import {
   type Business,
+  type CurrentPlan,
   Permission,
+  type Plan,
   PlanStatus,
   PlanType,
   type Prisma,
@@ -18,6 +20,14 @@ import {
 } from "../app/generated/prisma";
 
 const prisma = new PrismaClient();
+
+interface CurrentPlanSeed extends CurrentPlan {
+  plan: Plan;
+}
+
+interface BusinessSeed extends Business {
+  currentPlan: CurrentPlanSeed;
+}
 
 async function crearUsuario(name: string, email: string, password: string) {
   const { user } = await auth.api.signUpEmail({
@@ -45,6 +55,42 @@ function getRandomBrandName() {
   ];
   return randomFrom(brands);
 }
+
+const pickPlanForBusiness = async (): Promise<{
+  plan: Plan;
+  planStatus: PlanStatus;
+  expiresAt: Date;
+}> => {
+  const roll = Math.random();
+  if (roll < 0.55) {
+    // mayoría FREE
+    return {
+      plan: (await prisma.plan.findUnique({
+        where: { type: PlanType.FREE },
+      })) as Plan,
+      planStatus: PlanStatus.ACTIVE,
+      expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
+    };
+  } else if (roll < 0.85) {
+    // básico
+    return {
+      plan: (await prisma.plan.findUnique({
+        where: { type: PlanType.BASIC },
+      })) as Plan,
+      planStatus: PlanStatus.ACTIVE,
+      expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
+    };
+  } else {
+    // premium
+    return {
+      plan: (await prisma.plan.findUnique({
+        where: { type: PlanType.PREMIUM },
+      })) as Plan,
+      planStatus: PlanStatus.ACTIVE,
+      expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 12 })),
+    };
+  }
+};
 
 async function main() {
   console.log("🧹 Eliminando datos anteriores");
@@ -80,6 +126,7 @@ async function main() {
     // Negocios + baneos
     prisma.bannedBusiness.deleteMany(),
     prisma.business.deleteMany(),
+    prisma.currentPlan.deleteMany(),
 
     // Profile / Admin / Users
     prisma.profile.deleteMany(),
@@ -256,7 +303,7 @@ async function main() {
 
   // --- 5) Negocios (asignar planes) ---
   console.log("🏪 Creando negocios y asignando planes...");
-  const negocios: Business[] = [];
+  const negocios: BusinessSeed[] = [];
   const usuariosDisponibles = await prisma.user.findMany({
     where: {
       AND: [
@@ -271,36 +318,6 @@ async function main() {
     },
   });
 
-  const pickPlanForBusiness = (): {
-    plan: PlanType;
-    planStatus: PlanStatus;
-    expiresAt?: Date;
-  } => {
-    const roll = Math.random();
-    if (roll < 0.55) {
-      // mayoría FREE
-      return {
-        plan: PlanType.FREE,
-        planStatus: PlanStatus.ACTIVE,
-        expiresAt: undefined,
-      };
-    } else if (roll < 0.85) {
-      // básico
-      return {
-        plan: PlanType.BASIC,
-        planStatus: PlanStatus.ACTIVE,
-        expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
-      };
-    } else {
-      // premium
-      return {
-        plan: PlanType.PREMIUM,
-        planStatus: PlanStatus.ACTIVE,
-        expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 12 })),
-      };
-    }
-  };
-
   if (
     usuariosDisponibles.length > 0 &&
     createdCategories.length > 0 &&
@@ -310,7 +327,7 @@ async function main() {
       const index = Math.floor(Math.random() * usuariosDisponibles.length);
       const owner = usuariosDisponibles.splice(index, 1)[0];
       const category = faker.helpers.arrayElement(createdCategories);
-      const planPick = pickPlanForBusiness();
+      const { plan, planStatus, expiresAt } = await pickPlanForBusiness();
 
       const business = await prisma.business.create({
         data: {
@@ -328,13 +345,29 @@ async function main() {
           tags: faker.lorem.words(3).split(" "),
           website: faker.internet.url(),
           whatsapp: faker.phone.number(),
-          plan: planPick.plan,
-          planStatus: planPick.planStatus,
-          planExpiresAt: planPick.expiresAt ?? null,
+          currentPlan: {
+            create: {
+              planType: plan.type,
+              planStatus,
+              expiresAt,
+              activatedAt: new Date(),
+              isActive: true,
+              isTrial: false,
+              imagesUsed: faker.number.int({ min: 0, max: plan.maxImages }),
+              productsUsed: faker.number.int({ min: 0, max: plan.maxProducts }),
+            },
+          },
+        },
+        include: {
+          currentPlan: {
+            include: {
+              plan: true,
+            },
+          },
         },
       });
 
-      negocios.push(business);
+      negocios.push(business as BusinessSeed);
     }
   } else {
     const userBusinessesToCreate = faker.number.int({ min: 10, max: 20 });
@@ -346,7 +379,7 @@ async function main() {
         PASSWORD,
       );
 
-      const planPick = pickPlanForBusiness();
+      const planPick = await pickPlanForBusiness();
       const business = await prisma.business.create({
         data: {
           userId: owner.id,
@@ -363,12 +396,34 @@ async function main() {
           tags: faker.lorem.words(3).split(" "),
           website: faker.internet.url(),
           whatsapp: faker.phone.number(),
-          plan: planPick.plan,
-          planStatus: planPick.planStatus,
-          planExpiresAt: planPick.expiresAt ?? null,
+          currentPlan: {
+            create: {
+              activatedAt: new Date(),
+              planType: planPick.plan.type,
+              planStatus: planPick.planStatus,
+              expiresAt: planPick.expiresAt,
+              isActive: true,
+              isTrial: false,
+              imagesUsed: faker.number.int({
+                min: 0,
+                max: planPick.plan.maxImages,
+              }),
+              productsUsed: faker.number.int({
+                min: 0,
+                max: planPick.plan.maxProducts,
+              }),
+            },
+          },
+        },
+        include: {
+          currentPlan: {
+            include: {
+              plan: true,
+            },
+          },
         },
       });
-      negocios.push(business);
+      negocios.push(business as BusinessSeed);
     }
   }
 
@@ -394,7 +449,10 @@ async function main() {
   );
   const productos: Product[] = [];
   for (const negocio of negocios) {
-    const cantidad = faker.number.int({ min: 5, max: 15 });
+    const cantidad = faker.number.int({
+      min: 1,
+      max: negocio.currentPlan?.plan.maxProducts,
+    });
     for (let i = 0; i < cantidad; i++) {
       const category = faker.helpers.arrayElement(createdCategories);
       const product = await prisma.product.create({
@@ -408,7 +466,7 @@ async function main() {
           createdAt: faker.datatype.boolean()
             ? faker.date.past({ refDate: new Date(subMonths(new Date(), 1)) })
             : new Date(),
-          featured: negocio.plan === PlanType.PREMIUM,
+          featured: negocio.currentPlan?.planType === PlanType.PREMIUM,
           brand: getRandomBrandName(),
           condition: faker.helpers.arrayElement([
             ProductCondition.NEW,
@@ -418,9 +476,13 @@ async function main() {
           tags: faker.lorem.words(3).split(" "),
         },
       });
+
       productos.push(product);
 
-      const imgCount = faker.number.int({ min: 2, max: 5 });
+      const imgCount = faker.number.int({
+        min: 1,
+        max: negocio.currentPlan?.plan.maxImages,
+      });
       const imagenes: Prisma.ImageCreateManyProductInput[] = Array.from(
         { length: imgCount },
         (_, idx) => ({
@@ -433,6 +495,23 @@ async function main() {
         }),
       );
       await prisma.image.createMany({ data: imagenes });
+
+      // actualizamos el uso del comercio
+      await prisma.business.update({
+        where: { id: negocio.id },
+        data: {
+          currentPlan: {
+            update: {
+              imagesUsed: {
+                set: negocio.currentPlan?.imagesUsed + imgCount,
+              },
+              productsUsed: {
+                set: negocio.currentPlan?.productsUsed + 1,
+              },
+            },
+          },
+        },
+      });
     }
   }
 
@@ -558,14 +637,27 @@ async function main() {
         isActive: expiresAt > new Date(),
       },
     });
-    // si trial expirado, actualizar plan/status
+    const currentPlan = await prisma.currentPlan.create({
+      data: {
+        id: trial.id,
+        businessId: negocio.id,
+        planType: PlanType.FREE,
+        isTrial: true,
+        expiresAt,
+        activatedAt,
+        isActive: expiresAt > new Date(),
+      },
+    });
+
+    // si trial expirado, actualizar plan actual
     if (trial.isActive === false) {
-      await prisma.business.update({
-        where: { id: negocio.id },
+      await prisma.currentPlan.update({
+        where: { id: currentPlan.id },
         data: {
-          plan: PlanType.FREE,
-          planStatus: PlanStatus.EXPIRED,
-          planExpiresAt: trial.expiresAt,
+          planType: PlanType.FREE,
+          isActive: false,
+          planStatus: "EXPIRED",
+          expiresAt: new Date(),
         },
       });
     }
@@ -711,8 +803,12 @@ async function main() {
     await prisma.business.update({
       where: { id: negocio.id },
       data: {
-        planStatus: PlanStatus.CANCELLED,
-        planExpiresAt: addDays(new Date(), -1),
+        currentPlan: {
+          update: {
+            planStatus: PlanStatus.CANCELLED,
+            expiresAt: addDays(new Date(), -1),
+          },
+        },
       },
     });
     // notificar dueño
@@ -736,9 +832,12 @@ async function main() {
     await prisma.business.update({
       where: { id: negocio.id },
       data: {
-        planStatus: PlanStatus.EXPIRED,
-        planExpiresAt: addDays(new Date(), -10),
-        plan: PlanType.FREE,
+        currentPlan: {
+          update: {
+            planStatus: PlanStatus.EXPIRED,
+            expiresAt: addDays(new Date(), -10),
+          },
+        },
       },
     });
   }
@@ -755,7 +854,9 @@ async function main() {
   }
 
   // Si negocio PREMIUM: garantizar algunos productos featured
-  for (const negocio of negocios.filter((b) => b.plan === PlanType.PREMIUM)) {
+  for (const negocio of negocios.filter(
+    (b) => b.currentPlan.planType === PlanType.PREMIUM,
+  )) {
     const itsProducts = await prisma.product.findMany({
       where: { businessId: negocio.id },
       take: 4,

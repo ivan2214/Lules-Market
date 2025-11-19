@@ -123,5 +123,11 @@ export function useAction<
     [execute, formSchema?.safeParse],
   );
 
-  return { state, execute: form.handleSubmit(executeForm), pending, form };
+  return {
+    state,
+    executeRaw: executeForm,
+    execute: form.handleSubmit(executeForm),
+    pending,
+    form,
+  };
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
@@ -107,6 +108,16 @@ export function SignInForm() {
             </Field>
           )}
         />
+        <div className="flex items-center justify-between">
+          <div className="text-sm">
+            <Link
+              href="/auth/forgot-password"
+              className="font-medium text-primary hover:text-primary/50"
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
+        </div>
       </FieldGroup>
 
       {/* Botones */}

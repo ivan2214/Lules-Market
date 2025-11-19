@@ -4,14 +4,15 @@ import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
+import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prisma";
+import { generateEmailVerificationToken } from "@/lib/tokens";
 import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
-
 import {
-  type BusinessCreateInput,
-  BusinessCreateInputSchema,
   type BusinessDTO,
+  type BusinessSetupInput,
+  BusinessSetupInputSchema,
   type BusinessUpdateInput,
   BusinessUpdateInputSchema,
 } from "./business.dto";
@@ -221,10 +222,10 @@ export async function getMyBusiness(): Promise<BusinessDTO> {
   return business;
 }
 
-export async function createBusiness(
-  data: BusinessCreateInput,
+export async function businessSetup(
+  data: BusinessSetupInput,
 ): Promise<ActionResult> {
-  const validated = BusinessCreateInputSchema.safeParse(data);
+  const validated = BusinessSetupInputSchema.safeParse(data);
   if (!validated.success) {
     return {
       errorMessage: validated.error.issues
@@ -232,21 +233,6 @@ export async function createBusiness(
         .join(", "),
     };
   }
-
-  const { userId, email, name } = await requireBusiness();
-
-  // Check if user already has a business
-  const existing = await prisma.business.findUnique({
-    where: { userId },
-  });
-  if (existing) return { errorMessage: "Ya tienes un negocio registrado" };
-
-  const alreadyEmailBusiness = await prisma.business.findUnique({
-    where: { email: email },
-  });
-
-  if (alreadyEmailBusiness)
-    return { errorMessage: "Ya tienes un negocio registrado con este email" };
 
   try {
     const {
@@ -259,9 +245,55 @@ export async function createBusiness(
       address,
       logo,
       coverImage,
-    } = data as BusinessCreateInput;
+      category,
+    } = data as BusinessSetupInput;
 
-    const created = await prisma.business.create({
+    const { userId, email, name } = await requireBusiness();
+
+    const alreadyEmailBusiness = await prisma.business.findUnique({
+      where: { email: email },
+    });
+
+    if (alreadyEmailBusiness)
+      return { errorMessage: "Ya tienes un negocio registrado con este email" };
+
+    const emailVerified = await prisma.user.findUnique({
+      where: { email: email, AND: { emailVerified: true } },
+    });
+
+    // Generate verification token
+    const verificationToken = generateEmailVerificationToken();
+    const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    if (!emailVerified) {
+      await prisma.emailVerificationToken.create({
+        data: {
+          userId,
+          token: verificationToken,
+          expiresAt: tokenExpiresAt,
+        },
+      });
+      // Send verification email
+      await sendEmail({
+        to: email,
+        subject: "Verificá tu cuenta en LulesMarket",
+        title: "Verificación de cuenta",
+        description:
+          "Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo.",
+        buttonText: "Verificar Email",
+        buttonUrl: `${process.env.APP_URL}/auth/verify?token=${verificationToken}`,
+        userFirstname: name,
+      });
+      return {
+        errorMessage:
+          "El email no ha sido verificado, por favor verifica tu email para continuar",
+      };
+    }
+
+    const business = await prisma.business.update({
+      where: {
+        userId,
+      },
       data: {
         name,
         description,
@@ -272,21 +304,55 @@ export async function createBusiness(
         facebook,
         instagram,
         address,
-        user: { connect: { id: userId } },
+        userId,
         logo: logo ? { create: logo as Prisma.ImageCreateInput } : undefined,
         coverImage: coverImage
           ? { create: coverImage as Prisma.ImageCreateInput }
           : undefined,
+        status: "ACTIVE",
       },
     });
+
+    const categoryDB = await prisma.category.findUnique({
+      where: { value: category.toLowerCase() },
+    });
+
+    if (categoryDB) {
+      await prisma.business.update({
+        where: {
+          id: business.id,
+        },
+        data: {
+          category: {
+            connect: {
+              id: categoryDB.id,
+            },
+          },
+        },
+      });
+    } else {
+      await prisma.business.update({
+        where: {
+          id: business.id,
+        },
+        data: {
+          category: {
+            create: {
+              value: category.toLowerCase(),
+              label: category,
+            },
+          },
+        },
+      });
+    }
 
     // Invalidar caché
     updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
     updateTag(CACHE_TAGS.BUSINESSES);
 
     return {
-      successMessage: "Negocio creado exitosamente",
-      data: created,
+      successMessage: "Negocio configurado exitosamente",
+      data: business,
     };
   } catch (error) {
     return {

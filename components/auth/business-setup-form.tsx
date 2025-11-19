@@ -4,8 +4,8 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { createBusinessAction } from "@/app/actions/business-actions";
-import { BusinessCreateInputSchema } from "@/app/data/business/business.dto";
+import { businessSetupAction } from "@/app/actions/business-actions";
+import { BusinessSetupInputSchema } from "@/app/data/business/business.dto";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -64,8 +64,8 @@ export function BusinessSetupForm({
   };
 
   const { execute, pending, form } = useAction({
-    action: createBusinessAction,
-    formSchema: BusinessCreateInputSchema,
+    action: businessSetupAction,
+    formSchema: BusinessSetupInputSchema,
     defaultValues,
     options: {
       showToasts: true,
@@ -108,7 +108,7 @@ export function BusinessSetupForm({
                     <SelectValue placeholder="Seleccionar categoría" />
                   </SelectTrigger>
                   <SelectContent position="item-aligned">
-                    <SelectItem value="">Seleccionar categoría</SelectItem>
+                    <SelectItem value="none">Seleccionar categoría</SelectItem>
                     <SelectSeparator />
                     {categories.map(({ label, value }) => (
                       <SelectItem key={value} value={value.toLowerCase()}>
