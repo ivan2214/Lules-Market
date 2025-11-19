@@ -46,7 +46,7 @@ model User {
 
 model EmailVerificationToken {
   id        String   @id @default(cuid())
-  userId    String
+  userId    String   @unique
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -258,7 +258,7 @@ model CurrentPlan {
   id           String     @id @default(cuid())
   businessId   String     @unique
   business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  planType     PlanType   
+  planType     PlanType
   plan         Plan       @relation(fields: [planType], references: [type], onDelete: Cascade)
   planStatus   PlanStatus @default(INACTIVE)
   isTrial      Boolean    @default(false)

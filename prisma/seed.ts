@@ -268,7 +268,7 @@ async function main() {
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { userRole: "USER" },
+      data: { userRole: "USER", emailVerified: faker.datatype.boolean() },
     });
   }
 
@@ -291,7 +291,7 @@ async function main() {
 
     await prisma.user.update({
       where: { id },
-      data: { userRole: "ADMIN" },
+      data: { userRole: "ADMIN", emailVerified: true },
     });
     await prisma.admin.create({
       data: {
@@ -366,7 +366,10 @@ async function main() {
           },
         },
       });
-
+      await prisma.user.update({
+        where: { id: owner.id },
+        data: { emailVerified: faker.datatype.boolean(), userRole: "BUSINESS" },
+      });
       negocios.push(business as BusinessSeed);
     }
   } else {
@@ -423,6 +426,10 @@ async function main() {
           },
         },
       });
+      await prisma.user.update({
+        where: { id: owner.id },
+        data: { emailVerified: faker.datatype.boolean(), userRole: "BUSINESS" },
+      });
       negocios.push(business as BusinessSeed);
     }
   }
@@ -476,7 +483,6 @@ async function main() {
           tags: faker.lorem.words(3).split(" "),
           active: faker.datatype.boolean(),
           model: faker.vehicle.model(),
-
         },
       });
 
@@ -621,8 +627,6 @@ async function main() {
       data: { usedCount: { increment: 1 } },
     });
   }
-
- 
 
   // --- 11) Pagos: crear pagos para muchas tiendas en distintos estados ---
   console.log(

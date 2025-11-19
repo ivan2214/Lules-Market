@@ -2,16 +2,14 @@
 
 import { CheckCircle, Loader2, Mail, Store, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
-import {
-  resendVerificationEmail,
-  verifyEmail,
-} from "@/app/actions/auth-actions";
+import { toast } from "sonner";
 import { AuthHeader } from "@/components/auth/auth-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { sendVerificationEmail, verifyEmail } from "@/lib/auth-client";
 
 export default function VerifyEmailPage() {
   const [status, setStatus] = useState<
@@ -21,6 +19,7 @@ export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const hasVerified = useRef(false); // evitar re-verificación
+  const router = useRouter();
 
   const [pending, startTransition] = useTransition();
 
@@ -30,24 +29,37 @@ export default function VerifyEmailPage() {
 
       hasVerified.current = true;
       startTransition(() => {
-        verifyEmail({ token }).then((res) => {
-          if (res.errorMessage) {
+        verifyEmail({
+          query: {
+            token,
+          },
+        }).then((res) => {
+          if (res.error) {
             setStatus("error");
+            toast.error("Error al verificar el email");
           } else {
             setStatus("success");
+            toast.success(
+              "Email verificado exitosamente, redirigiendo a la pantalla de dashboard",
+            );
+            setTimeout(() => {
+              router.push("/dashboard");
+            }, 2000);
           }
         });
       });
     };
 
     verifyToken();
-  }, [token]);
+  }, [token, router]);
 
   const handleResendEmail = () => {
     if (email) {
       startTransition(() => {
-        resendVerificationEmail({ email }).then((res) => {
-          if (res.errorMessage) {
+        sendVerificationEmail({
+          email,
+        }).then((res) => {
+          if (res.error) {
             setStatus("error");
           } else {
             setStatus("resend");

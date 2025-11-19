@@ -39107,15 +39107,15 @@ export namespace Prisma {
 
   export type EmailVerificationTokenWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     token?: string
     AND?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
     OR?: EmailVerificationTokenWhereInput[]
     NOT?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
-    userId?: StringFilter<"EmailVerificationToken"> | string
     expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
     createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "token">
+  }, "id" | "userId" | "token">
 
   export type EmailVerificationTokenOrderByWithAggregationInput = {
     id?: SortOrder

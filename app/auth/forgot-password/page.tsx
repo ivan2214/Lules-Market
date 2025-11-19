@@ -10,7 +10,7 @@ import { AuthHeader } from "@/components/auth/auth-header";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -53,6 +53,7 @@ export default function ForgotPasswordPage() {
       if (error || !data.status) {
         console.error("send reset password email has not worked", error);
         setMessage("Something went wrong. Please try again.");
+        setIsSuccess(false);
       } else if (data.status) {
         setMessage("Check your email for the reset link.");
         setIsSuccess(true);
@@ -103,14 +104,18 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="flex flex-col gap-2">
                 <Link href="/auth/signin">
                   <Button className="w-full">Volver al Login</Button>
                 </Link>
                 <Button
                   variant="outline"
                   className="w-full bg-transparent"
-                  onClick={() => setIsSuccess(false)}
+                  onClick={() => {
+                    setMessage("");
+                    setIsSuccess(false);
+                    form.reset();
+                  }}
                 >
                   Enviar otro email
                 </Button>
@@ -132,9 +137,6 @@ export default function ForgotPasswordPage() {
 
       {/* Form */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-center">Restablecer Contraseña</CardTitle>
-        </CardHeader>
         <CardContent>
           <Form {...form}>
             <form
@@ -175,20 +177,11 @@ export default function ForgotPasswordPage() {
                 {isPending ? "Enviando..." : "Enviar Enlace de Recuperación"}
               </Button>
 
-              {message && (
-                <div className="flex items-center gap-2">
-                  {isSuccess ? (
-                    <Badge variant="success">
-                      <AlertCircle className="mr-2 h-4 w-4" />
-                      {message}
-                    </Badge>
-                  ) : (
-                    <Badge variant="destructive">
-                      <AlertCircle className="mr-2 h-4 w-4" />
-                      {message}
-                    </Badge>
-                  )}
-                </div>
+              {message && !isSuccess && (
+                <Badge variant="destructive">
+                  <AlertCircle className="mr-2 h-4 w-4" />
+                  {message}
+                </Badge>
               )}
             </form>
           </Form>

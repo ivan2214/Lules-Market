@@ -10,198 +10,9 @@ import {
 } from "@/app/schemas/auth";
 import type { ActionResult } from "@/hooks/use-action";
 import { auth } from "@/lib/auth";
-import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prisma";
-import { generateEmailVerificationToken } from "@/lib/tokens";
 import { daysFromNow } from "@/utils";
 import { getUserByEmail } from "../data/user/utils";
-import { BusinessStatus } from "../generated/prisma";
-
-export const businessSignUpAction = async (
-  _prevState: ActionResult,
-  data: BusinessSignUpInput,
-): Promise<
-  ActionResult & {
-    isAdmin?: boolean;
-    hasBusiness?: boolean;
-  }
-> => {
-  try {
-    const result = BusinessSignUpInputSchema.safeParse(data);
-    if (!result.success) {
-      const message = result.error.issues
-        .map((i) => `${i.path.join(".")}: ${i.message}`)
-        .join(", ");
-
-      return {
-        errorMessage: message,
-      };
-    }
-    const validatedData = result.data;
-
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email },
-    });
-
-    if (existingUser) {
-      return {
-        errorMessage: "Ya existe un usuario con este email",
-      };
-    }
-
-    // Hash password
-    // Generate verification token
-    const verificationToken = generateEmailVerificationToken();
-    const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-    // Create user and business in transaction
-    const res = await prisma.$transaction(async (tx) => {
-      const res = await auth.api.signUpEmail({
-        body: {
-          email: validatedData.email,
-          password: validatedData.password,
-          name: validatedData.name,
-        },
-      });
-
-      const user = await tx.user.findUnique({
-        where: {
-          id: res.user.id,
-        },
-      });
-
-      if (!user) {
-        return {
-          errorMessage: "Error al crear el usuario",
-        };
-      }
-
-      const currentPlanType = await tx.plan
-        .findUnique({
-          where: {
-            type: "FREE",
-          },
-          select: {
-            type: true,
-          },
-        })
-        .then((plan) => plan?.type);
-
-      if (!currentPlanType) {
-        return {
-          errorMessage: "Error al obtener el plan",
-        };
-      }
-
-      // create email verification token
-
-      await tx.emailVerificationToken.create({
-        data: {
-          userId: user.id,
-          token: verificationToken,
-          expiresAt: tokenExpiresAt,
-        },
-      });
-
-      // Create business
-      const business = await tx.business.create({
-        data: {
-          name: validatedData.name,
-          email: validatedData.email,
-          userId: user.id,
-          status: "ACTIVE",
-        },
-      });
-
-      // asignamos el plan gratuito
-
-      await tx.trial.create({
-        data: {
-          businessId: business.id,
-          plan: currentPlanType,
-          expiresAt: daysFromNow(30), // Expire in 30 days
-          activatedAt: new Date(),
-          isActive: true,
-        },
-      });
-
-      await tx.currentPlan.create({
-        data: {
-          businessId: business.id,
-          planType: currentPlanType,
-          expiresAt: daysFromNow(30), // Expire in 30 days
-          activatedAt: new Date(),
-          isActive: true,
-          isTrial: true,
-        },
-      });
-
-      return { user, business };
-    });
-
-    if (!res) {
-      return {
-        errorMessage: "Error al crear el negocio",
-      };
-    }
-
-    // Send verification email
-    await sendEmail({
-      to: validatedData.email,
-      subject: "Verificá tu cuenta en LulesMarket",
-      title: "Verificación de cuenta",
-      description:
-        "Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo.",
-      buttonText: "Verificar Email",
-      buttonUrl: `${process.env.APP_URL}/auth/verify?token=${verificationToken}`,
-      userFirstname: validatedData.name,
-    });
-
-    const isAdmin = await prisma.admin.findUnique({
-      where: {
-        userId: res.user?.id,
-      },
-    });
-
-    const hasBusiness = await prisma.business.findUnique({
-      where: {
-        userId: res.business?.id,
-      },
-    });
-
-    return {
-      successMessage:
-        "Por favor, verifica tu email para completar el registro. Seras redirigido en unos segundos.",
-      isAdmin: !!isAdmin,
-      hasBusiness: !!hasBusiness,
-    };
-  } catch (error) {
-    if (error instanceof APIError) {
-      switch (error.status as APIError["status"]) {
-        case "INTERNAL_SERVER_ERROR":
-          return { errorMessage: "Algo salio mal." };
-        case "CONFLICT":
-          return { errorMessage: "Email ya registrado." };
-        case "UNPROCESSABLE_ENTITY":
-          return { errorMessage: "Email o contraseña incorrectos." };
-        case "FORBIDDEN":
-          return {
-            errorMessage: "Confirmar tu cuenta antes de ingresar.",
-          };
-        case "UNAUTHORIZED":
-          return { errorMessage: "Email o contraseña incorrectos." };
-        case "BAD_REQUEST":
-          return { errorMessage: "Email invalido." };
-        default:
-          return { errorMessage: "Algo salio mal." };
-      }
-    }
-    return {
-      errorMessage: "Error al iniciar sesión",
-    };
-  }
-};
 
 export async function businessSignInAction(
   _prevState: ActionResult,
@@ -229,7 +40,7 @@ export async function businessSignInAction(
     }
 
     if (!existingUser.emailVerified) {
-      // Delete existing verification tokens
+      /*       // Delete existing verification tokens
       await prisma.emailVerificationToken.deleteMany({
         where: { userId: existingUser.id },
       });
@@ -255,7 +66,7 @@ export async function businessSignInAction(
         buttonText: "Verificar Email",
         buttonUrl: `${process.env.APP_URL}/auth/verify?token=${verificationToken}`,
         userFirstname: existingUser.name.split(" ")[0],
-      });
+      }); */
       return { errorMessage: "Confirmar tu cuenta antes de ingresar." };
     }
 
@@ -321,7 +132,166 @@ export async function businessSignInAction(
   }
 }
 
-export async function verifyEmail(input: {
+export const businessSignUpAction = async (
+  _prevState: ActionResult,
+  data: BusinessSignUpInput,
+): Promise<
+  ActionResult & {
+    isAdmin?: boolean;
+    hasBusiness?: boolean;
+  }
+> => {
+  try {
+    const result = BusinessSignUpInputSchema.safeParse(data);
+    if (!result.success) {
+      const message = result.error.issues
+        .map((i) => `${i.path.join(".")}: ${i.message}`)
+        .join(", ");
+
+      return {
+        errorMessage: message,
+      };
+    }
+    const validatedData = result.data;
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: validatedData.email },
+    });
+
+    if (existingUser) {
+      return {
+        errorMessage: "Ya existe un usuario con este email",
+      };
+    }
+
+    // Create user and business in transaction
+    const res = await prisma.$transaction(async (tx) => {
+      const res = await auth.api.signUpEmail({
+        body: {
+          email: validatedData.email,
+          password: validatedData.password,
+          name: validatedData.name,
+        },
+      });
+
+      const user = await tx.user.findUnique({
+        where: {
+          id: res.user.id,
+        },
+      });
+
+      if (!user) {
+        return {
+          errorMessage: "Error al crear el usuario",
+        };
+      }
+
+      const currentPlanType = await tx.plan
+        .findUnique({
+          where: {
+            type: "FREE",
+          },
+          select: {
+            type: true,
+          },
+        })
+        .then((plan) => plan?.type);
+
+      if (!currentPlanType) {
+        return {
+          errorMessage: "Error al obtener el plan",
+        };
+      }
+
+      // Create business
+      const business = await tx.business.create({
+        data: {
+          name: validatedData.name,
+          email: validatedData.email,
+          userId: user.id,
+          status: "ACTIVE",
+        },
+      });
+
+      // asignamos el plan gratuito
+
+      await tx.trial.create({
+        data: {
+          businessId: business.id,
+          plan: currentPlanType,
+          expiresAt: daysFromNow(30), // Expire in 30 days
+          activatedAt: new Date(),
+          isActive: true,
+        },
+      });
+
+      await tx.currentPlan.create({
+        data: {
+          businessId: business.id,
+          planType: currentPlanType,
+          expiresAt: daysFromNow(30), // Expire in 30 days
+          activatedAt: new Date(),
+          isActive: true,
+          isTrial: true,
+        },
+      });
+
+      return { user, business };
+    });
+
+    if (!res) {
+      return {
+        errorMessage: "Error al crear el negocio",
+      };
+    }
+
+    const isAdmin = await prisma.admin.findUnique({
+      where: {
+        userId: res.user?.id,
+      },
+    });
+
+    const hasBusiness = await prisma.business.findUnique({
+      where: {
+        userId: res.business?.id,
+      },
+    });
+
+    return {
+      successMessage:
+        "Por favor, verifica tu email para completar el registro. Seras redirigido en unos segundos.",
+      isAdmin: !!isAdmin,
+      hasBusiness: !!hasBusiness,
+    };
+  } catch (error) {
+    if (error instanceof APIError) {
+      switch (error.status as APIError["status"]) {
+        case "INTERNAL_SERVER_ERROR":
+          return { errorMessage: "Algo salio mal." };
+        case "CONFLICT":
+          return { errorMessage: "Email ya registrado." };
+        case "UNPROCESSABLE_ENTITY":
+          return { errorMessage: "Email o contraseña incorrectos." };
+        case "FORBIDDEN":
+          return {
+            errorMessage: "Confirmar tu cuenta antes de ingresar.",
+          };
+        case "UNAUTHORIZED":
+          return { errorMessage: "Email o contraseña incorrectos." };
+        case "BAD_REQUEST":
+          return { errorMessage: "Email invalido." };
+        default:
+          return { errorMessage: "Algo salio mal." };
+      }
+    }
+    return {
+      errorMessage: "Error al iniciar sesión",
+    };
+  }
+};
+
+/* export async function verifyEmail(input: {
   token: string;
 }): Promise<ActionResult> {
   try {
@@ -399,8 +369,8 @@ export async function verifyEmail(input: {
     };
   }
 }
-
-export async function resendVerificationEmail(input: {
+ */
+/* export async function resendVerificationEmail(input: {
   email: string;
 }): Promise<ActionResult> {
   try {
@@ -460,3 +430,4 @@ export async function resendVerificationEmail(input: {
     };
   }
 }
+ */

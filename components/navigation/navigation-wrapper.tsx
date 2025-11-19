@@ -62,19 +62,13 @@ const NavigationWrapperContent = async () => {
   });
 
   const avatar = userProfile?.avatar?.url || business?.logo?.url;
-  const email = userProfile?.user.email || business?.email;
-  const name = userProfile?.name || business?.name;
-
-  console.log({
-    session,
-    userProfile,
-    business,
-  });
+  const email = userProfile?.user.email || business?.email || session.email;
+  const name = userProfile?.name || business?.name || session.name;
 
   return (
     <div className="flex items-center gap-2">
       <Notifications notifications={notificationsForUser} />
-      {avatar && email && name && (
+      {email && name && (
         <UserMenu
           avatar={avatar}
           email={email}
