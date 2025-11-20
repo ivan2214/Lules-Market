@@ -1,7 +1,7 @@
 "use server";
 
 import { APIError } from "better-auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import {
   type BusinessSignInInput,
   BusinessSignInInputSchema,
@@ -20,9 +20,11 @@ export async function businessSignInAction(
   ActionResult & {
     isAdmin?: boolean;
     hasBusiness?: boolean;
-    redirectTo?: string;
+    hasVerified?: boolean;
   }
 > {
+  console.log("businessSignInAction");
+
   const validatedFields = BusinessSignInInputSchema.safeParse(data);
 
   if (!validatedFields.success) {
@@ -77,12 +79,9 @@ export async function businessSignInAction(
       },
     });
 
-    const userRole = await prisma.user
-      .findUnique({
-        where: { id: res.user.id },
-        select: { userRole: true },
-      })
-      .then((user) => user?.userRole);
+    const user = await prisma.user.findUnique({
+      where: { id: res.user.id },
+    });
 
     const hasBusiness = await prisma.business.findUnique({
       where: {
@@ -100,12 +99,7 @@ export async function businessSignInAction(
       hasBusiness: !!hasBusiness,
       isAdmin: !!isAdmin,
       successMessage: `Bienvenido de nuevo ${res.user.name}! Has iniciado sesión correctamente`,
-      redirectTo:
-        userRole === "ADMIN"
-          ? "/admin"
-          : userRole === "SUPER_ADMIN"
-            ? "/admin"
-            : "/dashboard",
+      hasVerified: !!user?.emailVerified,
     };
   } catch (error) {
     if (error instanceof APIError) {
@@ -136,12 +130,7 @@ export async function businessSignInAction(
 export const businessSignUpAction = async (
   _prevState: ActionResult,
   data: BusinessSignUpInput,
-): Promise<
-  ActionResult & {
-    isAdmin?: boolean;
-    hasBusiness?: boolean;
-  }
-> => {
+): Promise<ActionResult> => {
   try {
     const result = BusinessSignUpInputSchema.safeParse(data);
     if (!result.success) {
@@ -186,23 +175,9 @@ export const businessSignUpAction = async (
       };
     }
 
-    const isAdmin = await prisma.admin.findUnique({
-      where: {
-        userId: res.user?.id,
-      },
-    });
-
-    const hasBusiness = await prisma.business.findUnique({
-      where: {
-        userId: res.user?.id,
-      },
-    });
-
     return {
       successMessage:
         "Por favor, verifica tu email para completar el registro. Seras redirigido en unos segundos.",
-      isAdmin: !!isAdmin,
-      hasBusiness: !!hasBusiness,
     };
   } catch (error) {
     if (error instanceof APIError) {
@@ -228,6 +203,8 @@ export const businessSignUpAction = async (
     return {
       errorMessage: "Error al iniciar sesión",
     };
+  } finally {
+    updateTag("dev-tools");
   }
 };
 

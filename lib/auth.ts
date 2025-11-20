@@ -2,8 +2,6 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 // If your Prisma file is located elsewhere, you can change the path
 import { BusinessStatus, PrismaClient } from "@/app/generated/prisma";
 import { sendEmail } from "./email";
@@ -91,33 +89,7 @@ export const auth = betterAuth({
           where: { id: verificationToken.id },
         });
       });
-
-      // Send welcome email
-      await sendEmail({
-        to: verificationToken.user.email,
-        subject: "¡Bienvenido a LulesMarket!",
-        title: "Cuenta Verificada",
-        description:
-          "¡Felicitaciones! Tu cuenta ha sido verificada exitosamente. Ya podés comenzar a crear ofertas y hacer crecer tu negocio con LulesMarket.",
-        buttonText: "Ir al Dashboard",
-        buttonUrl: `${process.env.APP_URL}/dashboard`,
-        userFirstname: verificationToken.user.name.split(" ")[0],
-      });
-
-      // si tiene un negocio, redirigir a dashboard
-      const hassBusiness = await prisma.business.findFirst({
-        where: { userId: verificationToken.userId },
-      });
-
-      if (hassBusiness) {
-        revalidatePath("/auth/verify");
-        redirect("/dashboard");
-      } else {
-        revalidatePath("/auth/verify");
-        redirect("/auth/business-setup");
-      }
     },
-
     async sendVerificationEmail({ token, user }) {
       console.log("sendVerificationEmail", token, user);
 
@@ -147,13 +119,37 @@ export const auth = betterAuth({
         to: user.email,
         subject: "Verificá tu cuenta en LulesMarket",
         title: "Verificación de cuenta",
-        description:
-          "Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo.",
+        description: `Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo. Si no funciona el boton, podés verificar tu cuenta manualmente ingresando el token de verificación en la pantalla de verificación`,
+        token,
         buttonText: "Verificar Email",
         buttonUrl: `${process.env.APP_URL}/auth/verify?token=${token}`,
         userFirstname: user.name,
       });
     },
+    async afterEmailVerification({ id }) {
+      const user = await prisma.user.findUnique({ where: { id } });
+
+      if (!user) {
+        return;
+      }
+
+      if (!user.emailVerified) {
+        return;
+      }
+
+      await sendEmail({
+        to: user.email,
+        subject: "¡Bienvenido a LulesMarket!",
+        title: "Cuenta Verificada",
+        description:
+          "¡Felicitaciones! Tu cuenta ha sido verificada exitosamente. Ya podés comenzar a crear ofertas y hacer crecer tu negocio con LulesMarket.",
+        buttonText: "Ir al Dashboard",
+        buttonUrl: `${process.env.APP_URL}/dashboard`,
+        userFirstname: user.name,
+      });
+    },
+    sendOnSignIn: false,
+    sendOnSignUp: false,
   },
   plugins: [nextCookies()], // make sure this is the last plugin in the array
 

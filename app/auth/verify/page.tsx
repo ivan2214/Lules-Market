@@ -1,14 +1,15 @@
 "use client";
 
-import { CheckCircle, Loader2, Mail, Store, XCircle } from "lucide-react";
+import { CheckCircle, Loader2, Mail, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { AuthHeader } from "@/components/auth/auth-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { sendVerificationEmail, verifyEmail } from "@/lib/auth-client";
 
 export default function VerifyEmailPage() {
@@ -20,33 +21,41 @@ export default function VerifyEmailPage() {
   const token = searchParams.get("token");
   const hasVerified = useRef(false); // evitar re-verificación
 
+  const [manualToken, setManualToken] = useState(token || "");
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      if (!token || hasVerified.current) return;
+  const verifyToken = async () => {
+    if ((!token && !manualToken) || hasVerified.current) return;
+    const tokenSend = token || manualToken;
+    hasVerified.current = true;
+    startTransition(() => {
+      verifyEmail({
+        query: {
+          token: tokenSend.trim(),
+        },
+      }).then((res) => {
+        if (res.error) {
+          setStatus("error");
+          console.log(res.error);
 
-      hasVerified.current = true;
-      startTransition(() => {
-        verifyEmail({
-          query: {
-            token,
-          },
-        }).then((res) => {
-          if (res.error) {
-            setStatus("error");
-            toast.error("Error al verificar el email");
-          } else {
-            setStatus("success");
-            toast.success(
-              "Email verificado exitosamente, redirigiendo a la pantalla de dashboard",
-            );
-          }
-        });
+          toast.error("Error al verificar el email");
+        } else {
+          setStatus("success");
+          toast.success(
+            "Email verificado exitosamente, redirigiendo a la pantalla de dashboard",
+          );
+          router.push("/dashboard");
+        }
       });
-    };
+    });
+  };
 
-    verifyToken();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  useEffect(() => {
+    if (token) {
+      verifyToken();
+    }
   }, [token]);
 
   const handleResendEmail = () => {
@@ -59,45 +68,47 @@ export default function VerifyEmailPage() {
             setStatus("error");
           } else {
             setStatus("resend");
+            toast.success("Email reenviado exitosamente");
+            router.push("/auth/verify");
           }
         });
       });
     }
   };
 
-  // si no hay token en la URL, redirigir a la pantalla de login
+  // si no hay token en la URL, mostrar form para poner el token manualmente
   if (!token) {
     return (
-      <div className="w-full max-w-md py-12">
-        <div className="text-center">
-          <Link
-            href="/"
-            className="mb-6 flex items-center justify-center space-x-2"
-          >
-            <Store className="h-8 w-8 text-red-600" />
-            <span className="font-bold text-2xl">LulesMarket</span>
-          </Link>
-          <h2 className="font-bold text-3xl">Verificación de Email</h2>
-        </div>
+      <div className="w-full max-w-md">
+        <AuthHeader
+          title="Verificación de Email"
+          subtitle="Agregar el token de verificación manualmente"
+        />
         <Card>
           <CardContent className="space-y-6 p-8 text-center">
             <div className="flex justify-center">
-              <XCircle className="h-16 w-16 text-red-500" />
+              <Mail className="h-16 w-16 text-blue-500" />
             </div>
             <div>
-              <h3 className="mb-2 font-semibold text-red-700 text-xl">
-                Error de Verificación
+              <h3 className="mb-2 font-semibold text-xl">
+                Verificación de Email
               </h3>
               <p className="text-muted-foreground">
-                El enlace de verificación es inválido o ha expirado.
+                Por favor, ingresa el token de verificación que recibiste en tu
+                email.
               </p>
             </div>
             <div className="space-y-3">
-              <Link href="/auth/signin">
-                <Button variant="outline" className="w-full bg-transparent">
-                  Volver al Login
-                </Button>
-              </Link>
+              <Input
+                type="text"
+                placeholder="Token de verificación"
+                value={manualToken}
+                onChange={(e) => setManualToken(e.target.value)}
+              />
+              <Button onClick={verifyToken} disabled={pending}>
+                {pending && <Spinner className="mr-2 h-4 w-4" />}
+                {pending ? "Enviando..." : "Verificar"}
+              </Button>
             </div>
           </CardContent>
         </Card>

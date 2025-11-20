@@ -29,15 +29,19 @@ export function SignInForm() {
 
   const { execute, form, pending } = useAction({
     action: businessSignInAction,
-
     formSchema: BusinessSignInInputSchema,
     defaultValues,
     options: {
       showToasts: true,
-      onSuccess: ({ isAdmin, hasBusiness }) => {
-        if (isAdmin) router.push("/admin");
-        else if (hasBusiness) router.push("/dashboard");
-        else if (!hasBusiness) router.push("/auth/business-setup");
+      onSuccess: ({ isAdmin, hasBusiness, hasVerified }) => {
+        if (hasVerified) {
+          if (isAdmin) router.push("/admin");
+          else if (hasBusiness) router.push("/dashboard");
+          else if (!hasBusiness) router.push("/auth/business-setup");
+        } else {
+          router.push("/auth/verify");
+        }
+        form.reset();
       },
     },
   });

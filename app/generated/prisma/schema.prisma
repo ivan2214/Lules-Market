@@ -382,16 +382,16 @@ model Image {
   productId String?
 
   logoBusinessId String?   @unique
-  logoBusiness   Business? @relation("Logo", fields: [logoBusinessId], references: [id])
+  logoBusiness   Business? @relation("Logo", fields: [logoBusinessId], references: [id], onDelete: Cascade)
 
   coverBusinessId String?   @unique
-  coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id])
+  coverBusiness   Business? @relation("CoverImage", fields: [coverBusinessId], references: [id], onDelete: Cascade)
 
-  post   Post?   @relation(fields: [postId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId String?
 
   avatarId String?  @unique
-  avatar   Profile? @relation("Avatar", fields: [avatarId], references: [userId])
+  avatar   Profile? @relation("Avatar", fields: [avatarId], references: [userId], onDelete: Cascade)
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -413,7 +413,7 @@ model Image {
 model productView {
   id        String  @id @default(cuid())
   productId String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   referrer  String?
@@ -424,7 +424,7 @@ model productView {
 model businessView {
   id         String   @id @default(cuid())
   businessId String
-  business   Business @relation(fields: [businessId], references: [id])
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   referrer   String?
 

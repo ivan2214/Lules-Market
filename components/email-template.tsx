@@ -5,7 +5,6 @@ import {
   Head,
   Html,
   Img,
-  Link,
   Preview,
   Section,
   Text,
@@ -20,7 +19,8 @@ interface EmailTemplateProps {
   buttonText: string;
   buttonUrl: string;
   footerText?: string;
-  moreInfoUrl?: string;
+  _moreInfoUrl?: string;
+  token?: string;
 }
 
 const baseUrl = process.env.APP_URL;
@@ -33,8 +33,9 @@ export const EmailTemplate = ({
   description,
   buttonText,
   buttonUrl,
-  footerText = "Feliz día!",
-  moreInfoUrl = `${baseUrl}/legal`,
+  footerText = "Gracias!",
+  _moreInfoUrl = `${baseUrl}/legal`,
+  token,
 }: EmailTemplateProps) => {
   return (
     <Html>
@@ -60,13 +61,23 @@ export const EmailTemplate = ({
                 {buttonText}
               </Button>
             )}
+            {token && (
+              <Text style={text}>
+                Token de verificación:{" "}
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: "#e92932",
+                    textDecoration: "underline",
+                    fontSize: "16px",
+                  }}
+                >
+                  {token}
+                </span>
+              </Text>
+            )}
             <Text style={text}>
               Para proteger tu cuenta, no reenvíes este correo electrónico.
-              Consultá nuestro centro de ayuda para obtener más{" "}
-              <Link style={anchor} href={moreInfoUrl}>
-                consejos de seguridad
-              </Link>
-              .
             </Text>
             <Text style={text}>{footerText}</Text>
           </Section>
@@ -121,7 +132,8 @@ const button = {
   padding: "14px 7px",
 };
 
-const anchor = {
+/* const anchor = {
   textDecoration: "underline",
   color: "#e92932",
 };
+ */
