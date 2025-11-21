@@ -1,7 +1,7 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getMyBusiness } from "@/app/data/business/business.dal";
+import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import { getProductsByBusinessId } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
@@ -10,16 +10,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 async function ProductsContent() {
-  const business = await getMyBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
   const products = await getProductsByBusinessId();
-  if (!business) {
-    return null;
-  }
 
-  const limits = getSubscriptionLimits(business.currentPlan?.planType || "FREE");
+  const limits = getSubscriptionLimits(
+    currentBusiness.currentPlan?.planType || "FREE",
+  );
   const canAdd =
     limits.maxProducts === -1 ||
-    (business?.products?.length || 0) < limits.maxProducts;
+    (currentBusiness.products?.length || 0) < limits.maxProducts;
 
   return (
     <>
@@ -27,7 +26,7 @@ async function ProductsContent() {
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Productos</h1>
           <p className="text-muted-foreground">
-            {business.products?.length ?? 0} de{" "}
+            {currentBusiness.products?.length ?? 0} de{" "}
             {limits.maxProducts === -1 ? "ilimitados" : limits.maxProducts}{" "}
             productos
           </p>

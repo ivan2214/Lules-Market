@@ -6,21 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
-import {
-  getBusinessProducts,
-  getMyBusiness,
-} from "../data/business/business.dal";
+import { getBusinessProducts } from "../data/business/business.dal";
+import { getCurrentBusiness } from "../data/business/require-busines";
 
 // ✅ Componente separado para contenido con auth
 async function DashboardContent() {
-  const business = await getMyBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   const productsBusiness = await getBusinessProducts({
     limit: 5,
     offset: 0,
   });
-  const limits = getSubscriptionLimits(business.currentPlan?.planType || "FREE");
-  const productCount = business.products?.length || 0;
+  const limits = getSubscriptionLimits(
+    currentBusiness.currentPlan?.planType || "FREE",
+  );
+  const productCount = currentBusiness.products?.length || 0;
   const productLimit =
     limits.maxProducts === -1 ? "Ilimitado" : limits.maxProducts;
 
@@ -46,9 +46,13 @@ async function DashboardContent() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{business.currentPlan?.planType}</div>
+            <div className="font-bold text-2xl">
+              {currentBusiness.currentPlan?.planType}
+            </div>
             <p className="text-muted-foreground text-xs">
-              {business.currentPlan?.planStatus === "ACTIVE" ? "Activo" : "Inactivo"}
+              {currentBusiness.currentPlan?.planStatus === "ACTIVE"
+                ? "Activo"
+                : "Inactivo"}
             </p>
           </CardContent>
         </Card>
@@ -107,21 +111,23 @@ async function DashboardContent() {
           <CardContent className="space-y-2">
             <div>
               <p className="font-medium text-sm">Nombre</p>
-              <p className="text-muted-foreground text-sm">{business.name}</p>
+              <p className="text-muted-foreground text-sm">
+                {currentBusiness.name}
+              </p>
             </div>
-            {business.description && (
+            {currentBusiness.description && (
               <div>
                 <p className="font-medium text-sm">Descripción</p>
                 <p className="line-clamp-2 text-muted-foreground text-sm">
-                  {business.description}
+                  {currentBusiness.description}
                 </p>
               </div>
             )}
-            {business.phone && (
+            {currentBusiness.phone && (
               <div>
                 <p className="font-medium text-sm">Teléfono</p>
                 <p className="text-muted-foreground text-sm">
-                  {business.phone}
+                  {currentBusiness.phone}
                 </p>
               </div>
             )}

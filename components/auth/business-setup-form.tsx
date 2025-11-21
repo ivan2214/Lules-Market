@@ -59,6 +59,9 @@ export function BusinessSetupForm({
         router.push("/dashboard");
         router.refresh();
       },
+      onError(state) {
+        console.log("error:", state);
+      },
     },
   });
 

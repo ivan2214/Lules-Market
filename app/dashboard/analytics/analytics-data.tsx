@@ -1,6 +1,7 @@
 import { getAnalytics } from "@/app/data/analytics/analytics.dal";
 import type { AnalyticsPeriod } from "@/app/data/analytics/analytics.dto";
-import { getMyBusiness } from "@/app/data/business/business.dal";
+import { getCurrentBusiness } from "@/app/data/business/require-busines";
+
 import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
@@ -25,9 +26,9 @@ const DEFAULT_ANALYTICS: AnalyticsData = {
 export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
   try {
     // Get business and subscription info
-    const business = await getMyBusiness();
+    const { currentBusiness } = await getCurrentBusiness();
 
-    if (!business) {
+    if (!currentBusiness) {
       console.error("Business not found");
       return (
         <AnalyticsContent
@@ -38,7 +39,9 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
       );
     }
 
-    const limits = getSubscriptionLimits(business.currentPlan?.planType || "FREE");
+    const limits = getSubscriptionLimits(
+      currentBusiness.currentPlan?.planType || "FREE",
+    );
 
     // If no stats available, return early with default data
     if (!limits.hasStatistics) {
@@ -54,7 +57,7 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
     // Fetch analytics data
     let data: AnalyticsData;
     try {
-      const analytics = await getAnalytics(period, business.id);
+      const analytics = await getAnalytics(period, currentBusiness.id);
       data = {
         totalViews: analytics?.totalViews ?? 0,
         productViews: analytics?.productViews ?? 0,

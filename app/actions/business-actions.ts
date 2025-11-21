@@ -21,18 +21,10 @@ export async function businessSetupAction(
   try {
     const result: ActionResult = await businessSetup(data);
 
-    if (result.successMessage) {
-      // Revalidate cache tags when business is created
-      revalidateTag(CACHE_TAGS.BUSINESSES, "max");
-      revalidateTag(CACHE_TAGS.PUBLIC_BUSINESSES, "max");
-    }
-
     return result;
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return { errorMessage: message };
-  } finally {
-    revalidatePath("/dashboard");
   }
 }
 

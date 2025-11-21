@@ -1,16 +1,13 @@
-import "server-only";
+"use server";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
-import { connection } from "next/server";
 import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
-import { auth } from "@/lib/auth";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
 import { daysFromNow } from "@/utils";
 import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
-import { requireUser } from "../user/require-user";
 import {
   type BusinessDTO,
   type BusinessSetupInput,
@@ -218,40 +215,6 @@ export async function getBusinessById(
   return business;
 }
 
-// ========================================
-// FUNCIONES PRIVADAS (NO CACHEABLES)
-// ========================================
-
-export async function getMyBusiness(): Promise<BusinessDTO> {
-  await connection();
-
-  const session = await requireUser();
-
-  const business = await prisma.business.findUnique({
-    where: { userId: session.userId },
-    include: {
-      logo: true,
-      coverImage: true,
-      user: {
-        include: {
-          admin: true,
-
-          business: true,
-        },
-      },
-      products: {
-        include: {
-          images: true,
-        },
-        where: { active: true },
-        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-      },
-    },
-  });
-
-  return business as BusinessDTO;
-}
-
 export async function businessSetup(
   data: BusinessSetupInput,
 ): Promise<ActionResult> {
@@ -287,18 +250,6 @@ export async function businessSetup(
 
     if (alreadyEmailBusiness)
       return { errorMessage: "Ya tienes un negocio registrado con este email" };
-
-    const emailVerified = await prisma.user.findUnique({
-      where: { email: currentBusiness.email, AND: { emailVerified: true } },
-    });
-
-    if (!emailVerified) {
-      auth.api.sendVerificationEmail({
-        body: {
-          email: currentBusiness.email,
-        },
-      });
-    }
 
     const currentPlanType = await prisma.plan
       .findUnique({
@@ -392,20 +343,22 @@ export async function businessSetup(
       });
     }
 
-    // Invalidar caché
-    updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-    updateTag(CACHE_TAGS.BUSINESSES);
-
     return {
       successMessage: "Negocio configurado exitosamente",
       data: business,
     };
   } catch (error) {
+    console.log("Error en BusinessSetup:");
     console.error(error);
+
     return {
       errorMessage:
         error instanceof Error ? error.message : "Error al crear negocio",
     };
+  } finally {
+    // Invalidar caché
+    updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
+    updateTag(CACHE_TAGS.BUSINESSES);
   }
 }
 

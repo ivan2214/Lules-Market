@@ -1,5 +1,5 @@
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
-import { getMyBusiness } from "@/app/data/business/business.dal";
+import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import type { PlanType } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -72,7 +72,7 @@ const plans: {
 ];
 
 export default async function SubscriptionPage() {
-  const business = await getMyBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   const payments = await getSubscriptionHistory();
 
@@ -91,40 +91,41 @@ export default async function SubscriptionPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-bold text-2xl">
-                {business.currentPlan?.planType}
+                {currentBusiness.currentPlan?.planType}
               </p>
               <p className="text-muted-foreground text-sm">
                 Estado:{" "}
                 <Badge
                   variant={
-                    business.currentPlan?.planStatus === "ACTIVE"
+                    currentBusiness.currentPlan?.planStatus === "ACTIVE"
                       ? "default"
                       : "secondary"
                   }
                 >
-                  {business.currentPlan?.planStatus === "ACTIVE"
+                  {currentBusiness.currentPlan?.planStatus === "ACTIVE"
                     ? "Activo"
-                    : business.currentPlan?.planStatus}
+                    : currentBusiness.currentPlan?.planStatus}
                 </Badge>
               </p>
-              {business.currentPlan?.expiresAt && (
+              {currentBusiness.currentPlan?.expiresAt && (
                 <p className="mt-1 text-muted-foreground text-sm">
                   Vence:{" "}
-                  {new Date(business.currentPlan.expiresAt).toLocaleDateString(
-                    "es-AR",
-                  )}
+                  {new Date(
+                    currentBusiness.currentPlan.expiresAt,
+                  ).toLocaleDateString("es-AR")}
                 </p>
               )}
             </div>
             <div className="text-right">
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
-                {business.products?.length ?? 0} /{" "}
-                {SUBSCRIPTION_LIMITS[business.currentPlan?.planType || "FREE"]
-                  .maxProducts === -1
+                {currentBusiness.products?.length ?? 0} /{" "}
+                {SUBSCRIPTION_LIMITS[
+                  currentBusiness.currentPlan?.planType || "FREE"
+                ].maxProducts === -1
                   ? "∞"
                   : SUBSCRIPTION_LIMITS[
-                      business.currentPlan?.planType || "FREE"
+                      currentBusiness.currentPlan?.planType || "FREE"
                     ].maxProducts}
               </p>
             </div>
@@ -139,8 +140,8 @@ export default async function SubscriptionPage() {
             <PlanCard
               key={plan.name}
               plan={plan}
-              currentPlan={business.currentPlan?.planType}
-              planStatus={business.currentPlan?.planStatus}
+              currentPlan={currentBusiness.currentPlan?.planType}
+              planStatus={currentBusiness.currentPlan?.planStatus}
             />
           ))}
         </div>
