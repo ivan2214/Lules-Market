@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import { daysFromNow } from "@/utils";
 import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
+import { requireUser } from "../user/require-user";
 import {
   type BusinessDTO,
   type BusinessSetupInput,
@@ -242,10 +243,10 @@ export async function businessSetup(
       tags,
     } = data as BusinessSetupInput;
 
-    const { currentBusiness } = await getCurrentBusiness();
+    const user = await requireUser();
 
     const alreadyEmailBusiness = await prisma.business.findUnique({
-      where: { email: currentBusiness.email },
+      where: { email: user.email },
     });
 
     if (alreadyEmailBusiness)
@@ -270,16 +271,16 @@ export async function businessSetup(
 
     const business = await prisma.business.create({
       data: {
-        name: currentBusiness.name,
+        name: user.name,
         description,
         phone,
         whatsapp,
-        email: currentBusiness.email,
+        email: user.email,
         website,
         facebook,
         instagram,
         address,
-        userId: currentBusiness.userId,
+        userId: user.userId,
         logo: logo ? { create: logo as Prisma.ImageCreateInput } : undefined,
         coverImage: coverImage
           ? { create: coverImage as Prisma.ImageCreateInput }
