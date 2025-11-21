@@ -2,8 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { getCurrentAdmin } from "@/app/data/admin/admin.dal";
-import { requireAdmin } from "@/app/data/admin/admin.require";
+import { getCurrentAdmin, requireAdmin } from "@/app/data/admin/admin.require";
 import { AdminHeader } from "./admin-header";
 
 // ✅ Componente separado para el header con auth

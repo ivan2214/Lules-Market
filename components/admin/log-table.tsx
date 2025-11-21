@@ -76,6 +76,7 @@ export function LogTable({
     },
   );
 
+  // biome-ignore lint/suspicious/noExplicitAny: <>
   const [selectedLogDetails, setSelectedLogDetails] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

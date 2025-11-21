@@ -2,6 +2,7 @@ import "server-only";
 
 import { updateTag } from "next/cache";
 import type { PlanType } from "@/app/generated/prisma";
+import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
@@ -14,7 +15,7 @@ import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 // ========================================
 
 export async function createPaymentPreference(
-  plan: PlanType
+  plan: PlanType,
 ): Promise<PaymentPreferenceResult> {
   const { business } = await requireBusiness();
 
@@ -57,12 +58,12 @@ export async function createPaymentPreference(
         paymentId: payment.id,
       },
       back_urls: {
-        success: `${process.env.APP_URL}/dashboard/subscription/success`,
-        failure: `${process.env.APP_URL}/dashboard/subscription/failure`,
-        pending: `${process.env.APP_URL}/dashboard/subscription/pending`,
+        success: `${env.APP_URL}/dashboard/subscription/success`,
+        failure: `${env.APP_URL}/dashboard/subscription/failure`,
+        pending: `${env.APP_URL}/dashboard/subscription/pending`,
       },
       external_reference: payment.id,
-      notification_url: `${process.env.APP_URL}/api/webhooks/mercadopago`,
+      notification_url: `${env.APP_URL}/api/webhooks/mercadopago`,
       statement_descriptor: "COMERCIOS LOCALES",
       expiration_date_from: undefined,
     },
@@ -119,7 +120,6 @@ export async function cancelSubscription() {
     data: {
       planStatus: "CANCELLED",
       expiresAt: new Date(),
-
     },
   });
 
@@ -336,7 +336,7 @@ export async function redeemCoupon(code: string) {
     throw new Error("El cupón ya alcanzó su límite de usos.");
 
   const expiresAt = new Date(
-    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000
+    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000,
   );
 
   await prisma.couponRedemption.create({

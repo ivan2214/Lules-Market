@@ -1,12 +1,13 @@
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import { EmailTemplate } from "@/components/email-template";
+import { env } from "@/env";
 
 export const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: env.EMAIL_USER,
+    pass: env.EMAIL_PASS,
   },
   secure: true,
 });
@@ -43,7 +44,7 @@ export async function sendEmail({
   );
 
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+    from: env.EMAIL_FROM,
     to,
     subject,
     html,

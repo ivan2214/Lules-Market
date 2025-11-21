@@ -9,6 +9,7 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import { env } from "@/env";
 
 interface EmailTemplateProps {
   userFirstname: string;
@@ -23,7 +24,7 @@ interface EmailTemplateProps {
   token?: string;
 }
 
-const baseUrl = process.env.APP_URL;
+const baseUrl = env.APP_URL;
 
 export const EmailTemplate = ({
   userFirstname,

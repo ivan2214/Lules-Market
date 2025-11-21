@@ -2,11 +2,11 @@
 
 import { updateTag } from "next/cache";
 import { checkAdminPermission } from "@/app/actions/check-admin-permission";
-import { getCurrentAdmin } from "@/app/data/admin/admin.dal";
+import { getCurrentAdmin } from "@/app/data/admin/admin.require";
 import prisma from "@/lib/prisma";
 
 export const bannedBusiness = async (
-  businessId: string
+  businessId: string,
 ): Promise<{
   ok: boolean;
   error?: string;
@@ -100,7 +100,7 @@ export const bannedBusiness = async (
 };
 
 export const unbannedBusiness = async (
-  businessId: string
+  businessId: string,
 ): Promise<{
   ok: boolean;
   error?: string;

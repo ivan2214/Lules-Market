@@ -1,7 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { requireUser } from "@/app/data/user/require-user";
+import { getCurrentUser, requireUser } from "@/app/data/user/require-user";
 import prisma from "@/lib/prisma";
 
 export const requireAdmin = cache(async () => {
@@ -17,3 +17,21 @@ export const requireAdmin = cache(async () => {
 
   return { session, admin };
 });
+
+export const getCurrentAdmin = async () => {
+  try {
+    const user = await getCurrentUser();
+    const admin = await prisma.admin.findUnique({
+      where: {
+        userId: user?.id,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return admin;
+  } catch {
+    return null;
+  }
+};

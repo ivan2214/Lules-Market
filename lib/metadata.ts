@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { env } from "@/env";
 
 interface CreateMetadataOptions {
   title: string | { default: string; template: string };
@@ -27,7 +28,7 @@ export function createMetadata(options: CreateMetadataOptions): Metadata {
   } = options;
 
   const baseUrl =
-    metadataBase?.toString() || process.env.APP_URL || "http://localhost:3000";
+    metadataBase?.toString() || env.APP_URL || "http://localhost:3000";
   const titleString = typeof title === "string" ? title : title.default;
 
   // Keywords por defecto para LulesMarket
@@ -66,9 +67,6 @@ export function createMetadata(options: CreateMetadataOptions): Metadata {
         "max-image-preview": "large",
         "max-snippet": -1,
       },
-    },
-    verification: {
-      google: process.env.GOOGLE_VERIFICATION_ID,
     },
     openGraph: {
       title: titleString,

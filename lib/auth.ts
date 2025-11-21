@@ -4,6 +4,7 @@ import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 // If your Prisma file is located elsewhere, you can change the path
 import { BusinessStatus, PrismaClient } from "@/app/generated/prisma";
+import { env } from "@/env";
 import { sendEmail } from "./email";
 
 const prisma = new PrismaClient();
@@ -38,8 +39,8 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: [
-    process.env.APP_URL as string,
-    process.env.BETTER_AUTH_URL as string,
+    env.APP_URL as string,
+    env.BETTER_AUTH_URL as string,
     "http://localhost:3000",
     "http://192.168.1.103:3000",
   ],
@@ -122,7 +123,7 @@ export const auth = betterAuth({
         description: `Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo. Si no funciona el boton, podés verificar tu cuenta manualmente ingresando el token de verificación en la pantalla de verificación`,
         token,
         buttonText: "Verificar Email",
-        buttonUrl: `${process.env.APP_URL}/auth/verify?token=${token}`,
+        buttonUrl: `${env.APP_URL}/auth/verify?token=${token}`,
         userFirstname: user.name,
       });
     },
@@ -144,7 +145,7 @@ export const auth = betterAuth({
         description:
           "¡Felicitaciones! Tu cuenta ha sido verificada exitosamente. Ya podés comenzar a crear ofertas y hacer crecer tu negocio con LulesMarket.",
         buttonText: "Ir al Dashboard",
-        buttonUrl: `${process.env.APP_URL}/dashboard`,
+        buttonUrl: `${env.APP_URL}/dashboard`,
         userFirstname: user.name,
       });
     },
@@ -160,7 +161,7 @@ export const auth = betterAuth({
 
       const { user } = newSession || {};
 
-      if (user && user?.email === process.env.ADMIN_EMAIL) {
+      if (user && user?.email === env.ADMIN_EMAIL) {
         await prisma.user?.update({
           where: { id: user?.id },
           data: { userRole: "ADMIN", emailVerified: true },
@@ -177,7 +178,7 @@ export const auth = betterAuth({
           });
         }
       }
-      if (user && user?.email === process.env.SUPER_ADMIN_EMAIL) {
+      if (user && user?.email === env.SUPER_ADMIN_EMAIL) {
         await prisma.user?.update({
           where: { id: user?.id },
           data: { userRole: "SUPER_ADMIN", emailVerified: true },

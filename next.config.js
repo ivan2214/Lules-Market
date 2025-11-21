@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+import { fileURLToPath } from "node:url";
+import { createJiti } from "jiti";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const jiti = createJiti(fileURLToPath(import.meta.url));
+
+// Validar environment variables en build
+await jiti.import("./env.ts");
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: [

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createLog } from "@/app/data/admin/admin.dal";
+import { env } from "@/env";
 import { sendEmail } from "@/lib/email";
 import prisma from "@/lib/prisma";
 
@@ -10,7 +11,7 @@ import prisma from "@/lib/prisma";
 export async function GET(req: NextRequest) {
   // 🔐 Seguridad: validamos el header Authorization
   const authHeader = req.headers.get("Authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
@@ -60,7 +61,7 @@ export async function GET(req: NextRequest) {
         subject: "Tu plan expiró en LulesMarket",
         description: `Tu plan "${plan.plan.name}" ha expirado el ${plan.expiresAt.toLocaleString()}.`,
         buttonText: "Actualizar plan",
-        buttonUrl: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/dashboard/plan`,
+        buttonUrl: `${env.APP_URL}/dashboard/plan`,
         title: "Plan expirado",
         userFirstname: plan.business.name,
       });

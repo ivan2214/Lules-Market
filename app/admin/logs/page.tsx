@@ -1,9 +1,57 @@
 import type { Metadata } from "next";
+import { cacheTag } from "next/cache";
 import { Suspense } from "react";
-import { getLogs } from "@/app/data/admin/admin.dal";
+import type { Log, Prisma } from "@/app/generated/prisma";
 import { LogTable } from "@/components/admin/log-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createMetadata } from "@/lib/metadata";
+import prisma from "@/lib/prisma";
+
+export async function getLogs(
+  page = 1,
+  limit = 10,
+  filters: { search?: string; entityType?: string; action?: string } = {},
+): Promise<{
+  logs: Log[];
+  totalPages: number;
+  currentPage: number;
+}> {
+  "use cache";
+  cacheTag("admin-logs");
+
+  const skip = (page - 1) * limit;
+  const where: Prisma.LogWhereInput = {};
+
+  if (filters.search) {
+    where.OR = [
+      { action: { contains: filters.search, mode: "insensitive" } },
+      { entityType: { contains: filters.search, mode: "insensitive" } },
+      { adminId: { contains: filters.search, mode: "insensitive" } },
+    ];
+  }
+  // ✅ Ignora "all" como valor válido
+  if (filters.entityType && filters.entityType !== "all") {
+    where.entityType = filters.entityType;
+  }
+
+  if (filters.action && filters.action !== "all") {
+    where.action = filters.action;
+  }
+
+  const totalLogs = await prisma.log.count({ where });
+  const logs = await prisma.log.findMany({
+    where,
+    orderBy: { timestamp: "desc" },
+    skip,
+    take: limit,
+  });
+
+  return {
+    logs,
+    totalPages: Math.ceil(totalLogs / limit),
+    currentPage: page,
+  };
+}
 
 export const metadata: Metadata = createMetadata({
   title: "Logs del Sistema",
