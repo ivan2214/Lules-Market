@@ -35,35 +35,7 @@ export default async function BusinessPage() {
         </CardHeader>
         <CardContent>
           <BusinessProfileForm
-            business={{
-              ...currentBusiness,
-              coverImage: currentBusiness.coverImage
-                ? {
-                    ...currentBusiness.coverImage,
-                    name: currentBusiness.coverImage.name ?? "",
-                    size: currentBusiness.coverImage.size ?? 0,
-                  }
-                : {
-                    url: "",
-                    key: "",
-                    name: "",
-                    isMainImage: false,
-                    size: 0,
-                  },
-              logo: currentBusiness.logo
-                ? {
-                    ...currentBusiness.logo,
-                    name: currentBusiness.logo.name ?? "",
-                    size: currentBusiness.logo.size ?? 0,
-                  }
-                : {
-                    url: "",
-                    key: "",
-                    name: "",
-                    isMainImage: false,
-                    size: 0,
-                  },
-            }}
+            business={currentBusiness}
             categories={categories}
           />
         </CardContent>

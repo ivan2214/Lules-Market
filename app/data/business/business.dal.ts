@@ -1,5 +1,6 @@
 "use server";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
@@ -346,12 +347,8 @@ export async function businessSetup(
 
     return {
       successMessage: "Negocio configurado exitosamente",
-      data: business,
     };
   } catch (error) {
-    console.log("Error en BusinessSetup:");
-    console.error(error);
-
     return {
       errorMessage:
         error instanceof Error ? error.message : "Error al crear negocio",
@@ -360,6 +357,7 @@ export async function businessSetup(
     // Invalidar caché
     updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
     updateTag(CACHE_TAGS.BUSINESSES);
+    redirect("/dashboard");
   }
 }
 

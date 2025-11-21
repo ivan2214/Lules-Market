@@ -1,8 +1,6 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { businessSetupAction } from "@/app/actions/business-actions";
 import { BusinessSetupInputSchema } from "@/app/data/business/business.dto";
 import { BusinessBasicInfo } from "@/components/auth/business-setup/business-basic-info";
@@ -19,8 +17,6 @@ export function BusinessSetupForm({
 }: {
   categories: { label: string; value: string }[];
 }) {
-  const router = useRouter();
-
   const defaultValues = {
     name: "",
     category: "",
@@ -54,14 +50,6 @@ export function BusinessSetupForm({
     defaultValues,
     options: {
       showToasts: true,
-      onSuccess: () => {
-        toast.success("Negocio creado con éxito");
-        router.push("/dashboard");
-        router.refresh();
-      },
-      onError(state) {
-        console.log("error:", state);
-      },
     },
   });
 

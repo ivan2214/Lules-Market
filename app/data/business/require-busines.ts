@@ -16,6 +16,7 @@ export const requireBusiness = cache(async () => {
     include: {
       logo: true,
       coverImage: true,
+      category: true,
       user: {
         include: {
           admin: true,
