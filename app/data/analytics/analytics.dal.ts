@@ -2,7 +2,7 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import prisma from "@/lib/prisma";
-import { requireBusiness } from "../business/require-busines";
+import { getCurrentBusiness } from "../business/require-busines";
 import type { AnalyticsPeriod } from "./analytics.dto";
 
 // ========================================
@@ -117,13 +117,13 @@ export async function getProductAnalytics(
   productId: string,
   period: AnalyticsPeriod = "30d",
 ) {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   // Verify product belongs to business
   const product = await prisma.product.findFirst({
     where: {
       id: productId,
-      businessId: business?.id,
+      businessId: currentBusiness.id,
     },
   });
 

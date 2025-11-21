@@ -5,7 +5,6 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { DevTools } from "@/components/dev-tools";
 import { Toaster } from "@/components/ui/sonner";
-import { env } from "@/env";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,7 +45,7 @@ export default function RootLayout({
     >
       <body className="mx-auto font-sans antialiased">
         {children}
-        {env.NODE_ENV === "development" && <DevTools />}
+        {process.env.NODE_ENV === "development" && <DevTools />}
         <Toaster />
         <Analytics />
       </body>

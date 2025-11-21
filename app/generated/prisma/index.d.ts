@@ -16493,7 +16493,7 @@ export namespace Prisma {
     description: string | null
     phone: string | null
     whatsapp: string | null
-    email: string | null
+    email: string
     website: string | null
     facebook: string | null
     instagram: string | null
@@ -16685,7 +16685,7 @@ export namespace Prisma {
       description: string | null
       phone: string | null
       whatsapp: string | null
-      email: string | null
+      email: string
       website: string | null
       facebook: string | null
       instagram: string | null
@@ -39738,7 +39738,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Business"> | string | null
     phone?: StringNullableFilter<"Business"> | string | null
     whatsapp?: StringNullableFilter<"Business"> | string | null
-    email?: StringNullableFilter<"Business"> | string | null
+    email?: StringFilter<"Business"> | string
     website?: StringNullableFilter<"Business"> | string | null
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
@@ -39773,7 +39773,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     whatsapp?: SortOrderInput | SortOrder
-    email?: SortOrderInput | SortOrder
+    email?: SortOrder
     website?: SortOrderInput | SortOrder
     facebook?: SortOrderInput | SortOrder
     instagram?: SortOrderInput | SortOrder
@@ -39846,7 +39846,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
     whatsapp?: SortOrderInput | SortOrder
-    email?: SortOrderInput | SortOrder
+    email?: SortOrder
     website?: SortOrderInput | SortOrder
     facebook?: SortOrderInput | SortOrder
     instagram?: SortOrderInput | SortOrder
@@ -39877,7 +39877,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Business"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Business"> | string | null
     whatsapp?: StringNullableWithAggregatesFilter<"Business"> | string | null
-    email?: StringNullableWithAggregatesFilter<"Business"> | string | null
+    email?: StringWithAggregatesFilter<"Business"> | string
     website?: StringNullableWithAggregatesFilter<"Business"> | string | null
     facebook?: StringNullableWithAggregatesFilter<"Business"> | string | null
     instagram?: StringNullableWithAggregatesFilter<"Business"> | string | null
@@ -42069,7 +42069,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -42102,7 +42102,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -42135,7 +42135,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42168,7 +42168,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42201,7 +42201,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -42224,7 +42224,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42245,7 +42245,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48148,7 +48148,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -48180,7 +48180,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -48428,7 +48428,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48460,7 +48460,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49454,7 +49454,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -49486,7 +49486,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -49563,7 +49563,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49595,7 +49595,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50892,7 +50892,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -50924,7 +50924,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51003,7 +51003,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51035,7 +51035,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51158,7 +51158,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51190,7 +51190,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51267,7 +51267,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Business"> | string | null
     phone?: StringNullableFilter<"Business"> | string | null
     whatsapp?: StringNullableFilter<"Business"> | string | null
-    email?: StringNullableFilter<"Business"> | string | null
+    email?: StringFilter<"Business"> | string
     website?: StringNullableFilter<"Business"> | string | null
     facebook?: StringNullableFilter<"Business"> | string | null
     instagram?: StringNullableFilter<"Business"> | string | null
@@ -51362,7 +51362,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51394,7 +51394,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51582,7 +51582,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51614,7 +51614,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51778,7 +51778,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51810,7 +51810,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -51858,7 +51858,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51890,7 +51890,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51971,7 +51971,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52003,7 +52003,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52040,7 +52040,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52072,7 +52072,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52250,7 +52250,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52282,7 +52282,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52325,7 +52325,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52357,7 +52357,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52586,7 +52586,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52618,7 +52618,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52666,7 +52666,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52698,7 +52698,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52730,7 +52730,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52762,7 +52762,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52810,7 +52810,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52842,7 +52842,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52945,7 +52945,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -52977,7 +52977,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -53064,7 +53064,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53096,7 +53096,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53206,7 +53206,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -53238,7 +53238,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -53376,7 +53376,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53408,7 +53408,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54484,7 +54484,7 @@ export namespace Prisma {
     description?: string | null
     phone?: string | null
     whatsapp?: string | null
-    email?: string | null
+    email: string
     website?: string | null
     facebook?: string | null
     instagram?: string | null
@@ -54568,7 +54568,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54600,7 +54600,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54632,7 +54632,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
     website?: NullableStringFieldUpdateOperationsInput | string | null
     facebook?: NullableStringFieldUpdateOperationsInput | string | null
     instagram?: NullableStringFieldUpdateOperationsInput | string | null

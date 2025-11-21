@@ -215,7 +215,7 @@ model Business {
   coverImage  Image?         @relation("CoverImage")
   phone       String?
   whatsapp    String?
-  email       String?        @unique
+  email       String         @unique
   website     String?
   facebook    String?
   instagram   String?

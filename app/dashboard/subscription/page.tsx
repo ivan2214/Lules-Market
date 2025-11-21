@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getMyBusiness } from "@/app/data/business/business.dal";
 import type { PlanType } from "@/app/generated/prisma";
@@ -75,10 +74,6 @@ const plans: {
 export default async function SubscriptionPage() {
   const business = await getMyBusiness();
 
-  if (!business) {
-    redirect("/auth/business-setup");
-  }
-
   const payments = await getSubscriptionHistory();
 
   return (
@@ -95,12 +90,16 @@ export default async function SubscriptionPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-2xl">{business.currentPlan?.planType}</p>
+              <p className="font-bold text-2xl">
+                {business.currentPlan?.planType}
+              </p>
               <p className="text-muted-foreground text-sm">
                 Estado:{" "}
                 <Badge
                   variant={
-                    business.currentPlan?.planStatus === "ACTIVE" ? "default" : "secondary"
+                    business.currentPlan?.planStatus === "ACTIVE"
+                      ? "default"
+                      : "secondary"
                   }
                 >
                   {business.currentPlan?.planStatus === "ACTIVE"
@@ -111,7 +110,9 @@ export default async function SubscriptionPage() {
               {business.currentPlan?.expiresAt && (
                 <p className="mt-1 text-muted-foreground text-sm">
                   Vence:{" "}
-                  {new Date(business.currentPlan.expiresAt).toLocaleDateString("es-AR")}
+                  {new Date(business.currentPlan.expiresAt).toLocaleDateString(
+                    "es-AR",
+                  )}
                 </p>
               )}
             </div>
@@ -119,9 +120,12 @@ export default async function SubscriptionPage() {
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
                 {business.products?.length ?? 0} /{" "}
-                {SUBSCRIPTION_LIMITS[business.currentPlan?.planType || "FREE"].maxProducts === -1
+                {SUBSCRIPTION_LIMITS[business.currentPlan?.planType || "FREE"]
+                  .maxProducts === -1
                   ? "∞"
-                  : SUBSCRIPTION_LIMITS[business.currentPlan?.planType || "FREE"].maxProducts}
+                  : SUBSCRIPTION_LIMITS[
+                      business.currentPlan?.planType || "FREE"
+                    ].maxProducts}
               </p>
             </div>
           </div>
