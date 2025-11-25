@@ -1,6 +1,7 @@
 "use client";
 
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
@@ -28,15 +29,19 @@ export function SignInForm() {
 
   const { execute, form, pending } = useAction({
     action: businessSignInAction,
-
     formSchema: BusinessSignInInputSchema,
     defaultValues,
     options: {
       showToasts: true,
-      onSuccess: ({ isAdmin, hasBusiness }) => {
-        if (isAdmin) router.push("/admin");
-        else if (hasBusiness) router.push("/dashboard");
-        else router.push("/auth/business-setup");
+      onSuccess: ({ isAdmin, hasBusiness, hasVerified }) => {
+        if (hasVerified) {
+          if (isAdmin) router.push("/admin");
+          else if (hasBusiness) router.push("/dashboard");
+          else if (!hasBusiness) router.push("/auth/business-setup");
+        } else {
+          router.push("/auth/verify");
+        }
+        form.reset();
       },
     },
   });
@@ -107,6 +112,16 @@ export function SignInForm() {
             </Field>
           )}
         />
+        <div className="flex items-center justify-between">
+          <div className="text-sm">
+            <Link
+              href="/auth/forgot-password"
+              className="font-medium text-primary hover:text-primary/50"
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
+        </div>
       </FieldGroup>
 
       {/* Botones */}

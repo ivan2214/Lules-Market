@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Image" ALTER COLUMN "categoryId" DROP NOT NULL,
-ALTER COLUMN "subCategoryId" DROP NOT NULL;

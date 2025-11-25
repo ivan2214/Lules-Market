@@ -1,4 +1,6 @@
+import { connection } from "next/server";
 import { getCategories } from "@/app/actions/public-actions";
+import { requireUser } from "@/app/data/user/require-user";
 import { BusinessSetupForm } from "@/components/auth/business-setup-form";
 import {
   Card,
@@ -9,9 +11,11 @@ import {
 } from "@/components/ui/card";
 
 export default async function BusinessSetup() {
+  await connection();
+  await requireUser();
   const categories = await getCategories();
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+    <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Configura tu Negocio</CardTitle>

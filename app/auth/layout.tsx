@@ -10,7 +10,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
     <main className="mx-auto flex min-h-screen flex-col">
       <Navigation />
-      {children}
+      <section className="flex min-h-screen items-center justify-center py-8">
+        {children}
+      </section>
       <PublicFooter />
     </main>
   );

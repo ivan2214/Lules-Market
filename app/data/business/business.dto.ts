@@ -2,6 +2,8 @@ import { z } from "zod";
 import type {
   BannedBusiness,
   Business as BusinessPrisma,
+  CurrentPlan,
+  Plan,
 } from "@/app/generated/prisma";
 import type { AnswerDTO } from "../answer/answer.dto";
 import type { CategoryDTO } from "../category/category.dto";
@@ -10,7 +12,7 @@ import type { ProductDTO } from "../product/product.dto";
 import type { ReviewDTO } from "../review/review.dto";
 import type { UserDTO } from "../user/user.dto";
 
-export const BusinessCreateInputSchema = z.object({
+export const BusinessSetupInputSchema = z.object({
   category: z.string().min(1, "La categoría es requerida"),
   description: z.string().min(1, "La descripción es requerida"),
   address: z.string().min(1, "La dirección es requerida"),
@@ -21,10 +23,11 @@ export const BusinessCreateInputSchema = z.object({
   instagram: z.string().optional(),
   logo: ImageCreateInputSchema,
   coverImage: ImageCreateInputSchema,
+  tags: z.array(z.string()).optional(),
 });
-export type BusinessCreateInput = z.infer<typeof BusinessCreateInputSchema>;
+export type BusinessSetupInput = z.infer<typeof BusinessSetupInputSchema>;
 
-export const BusinessUpdateInputSchema = BusinessCreateInputSchema.extend({
+export const BusinessUpdateInputSchema = BusinessSetupInputSchema.extend({
   name: z.string().min(1, "El nombre es requerido"),
   email: z.email("El email es requerido"),
 });
@@ -40,4 +43,14 @@ export interface BusinessDTO extends BusinessPrisma {
   category?: CategoryDTO | null;
   reviews?: ReviewDTO[] | null;
   answers?: AnswerDTO[] | null;
+  currentPlan?: CurrentPlanDTO | null;
+}
+
+export interface CurrentPlanDTO extends CurrentPlan {
+  business: BusinessDTO;
+  plan: PlanDTO;
+}
+
+export interface PlanDTO extends Plan {
+  currentPlans: CurrentPlanDTO[];
 }

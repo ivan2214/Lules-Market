@@ -2,11 +2,12 @@ import "server-only";
 
 import { updateTag } from "next/cache";
 import type { PlanType } from "@/app/generated/prisma";
+import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
 import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
-import { requireBusiness } from "../business/require-busines";
+import { getCurrentBusiness } from "../business/require-busines";
 import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 
 // ========================================
@@ -14,9 +15,9 @@ import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 // ========================================
 
 export async function createPaymentPreference(
-  plan: PlanType
+  plan: PlanType,
 ): Promise<PaymentPreferenceResult> {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   if (plan === "FREE") {
     return {
@@ -35,7 +36,7 @@ export async function createPaymentPreference(
       currency: "ARS",
       status: "pending",
       plan,
-      businessId: business.id,
+      businessId: currentBusiness.id,
     },
   });
 
@@ -53,16 +54,16 @@ export async function createPaymentPreference(
         },
       ],
       metadata: {
-        businessId: business.id,
+        businessId: currentBusiness.id,
         paymentId: payment.id,
       },
       back_urls: {
-        success: `${process.env.APP_URL}/dashboard/subscription/success`,
-        failure: `${process.env.APP_URL}/dashboard/subscription/failure`,
-        pending: `${process.env.APP_URL}/dashboard/subscription/pending`,
+        success: `${env.APP_URL}/dashboard/subscription/success`,
+        failure: `${env.APP_URL}/dashboard/subscription/failure`,
+        pending: `${env.APP_URL}/dashboard/subscription/pending`,
       },
       external_reference: payment.id,
-      notification_url: `${process.env.APP_URL}/api/webhooks/mercadopago`,
+      notification_url: `${env.APP_URL}/api/webhooks/mercadopago`,
       statement_descriptor: "COMERCIOS LOCALES",
       expiration_date_from: undefined,
     },
@@ -84,56 +85,57 @@ export async function createPaymentPreference(
 }
 
 export async function upgradePlan(plan: PlanType) {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
-  if (business.plan === plan) {
+  if (currentBusiness?.currentPlan?.planType === plan) {
     throw new Error("Ya tienes este plan activo");
   }
 
-  const updated = await prisma.business.update({
-    where: { id: business.id },
+  const updated = await prisma.currentPlan.update({
+    where: { id: currentBusiness.id },
     data: {
-      plan,
+      planType: plan,
       planStatus: "ACTIVE",
-      planExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     },
   });
 
   // Invalidar caché de business
   updateTag(CACHE_TAGS.BUSINESSES);
   updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-  updateTag(`business-${business.id}`);
+  updateTag(`business-${currentBusiness.id}`);
 
   return updated;
 }
 
 export async function cancelSubscription() {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
-  if (business.plan === "FREE") {
+  if (currentBusiness?.currentPlan?.planType === "FREE") {
     throw new Error("No tienes una suscripción activa");
   }
 
-  const updated = await prisma.business.update({
-    where: { id: business.id },
+  const updated = await prisma.currentPlan.update({
+    where: { id: currentBusiness.id },
     data: {
       planStatus: "CANCELLED",
+      expiresAt: new Date(),
     },
   });
 
   // Invalidar caché de business
   updateTag(CACHE_TAGS.BUSINESSES);
   updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-  updateTag(`business-${business.id}`);
+  updateTag(`business-${currentBusiness.id}`);
 
   return updated;
 }
 
 export async function getSubscriptionHistory() {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   const payments = await prisma.payment.findMany({
-    where: { businessId: business.id },
+    where: { businessId: currentBusiness.id },
     orderBy: { createdAt: "desc" },
   });
 
@@ -191,12 +193,12 @@ export async function processPaymentSuccess({
     });
 
     // Update business plan
-    await prisma.business.update({
+    await prisma.currentPlan.update({
       where: { id: payment.businessId },
       data: {
-        plan: payment.plan,
+        planType: payment.plan,
         planStatus: "ACTIVE",
-        planExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       },
     });
 
@@ -270,11 +272,11 @@ export async function getPayment({
 }
 
 export async function startTrial(plan: PlanType = "PREMIUM") {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   // Verifica si ya tiene un trial activo
   const existingTrial = await prisma.trial.findUnique({
-    where: { businessId: business.id },
+    where: { businessId: currentBusiness.id },
   });
 
   if (existingTrial?.isActive) throw new Error("Ya tenés un trial activo.");
@@ -283,18 +285,18 @@ export async function startTrial(plan: PlanType = "PREMIUM") {
 
   await prisma.trial.create({
     data: {
-      businessId: business.id,
+      businessId: currentBusiness.id,
       plan,
       expiresAt,
     },
   });
 
-  await prisma.business.update({
-    where: { id: business.id },
+  await prisma.currentPlan.update({
+    where: { id: currentBusiness.id },
     data: {
-      plan,
+      planType: plan,
       planStatus: "ACTIVE",
-      planExpiresAt: expiresAt,
+      expiresAt: expiresAt,
     },
   });
 
@@ -316,13 +318,13 @@ export async function startTrial(plan: PlanType = "PREMIUM") {
   // Invalidar caché de business
   updateTag(CACHE_TAGS.BUSINESSES);
   updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-  updateTag(`business-${business.id}`);
+  updateTag(`business-${currentBusiness.id}`);
 
   return { message: "Trial iniciado con éxito", expiresAt };
 }
 
 export async function redeemCoupon(code: string) {
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   const coupon = await prisma.coupon.findUnique({ where: { code } });
   if (!coupon || !coupon.active) throw new Error("Cupón inválido o expirado.");
@@ -334,11 +336,11 @@ export async function redeemCoupon(code: string) {
     throw new Error("El cupón ya alcanzó su límite de usos.");
 
   const expiresAt = new Date(
-    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000
+    Date.now() + coupon.durationDays * 24 * 60 * 60 * 1000,
   );
 
   await prisma.couponRedemption.create({
-    data: { couponId: coupon.id, businessId: business.id },
+    data: { couponId: coupon.id, businessId: currentBusiness.id },
   });
 
   await prisma.coupon.update({
@@ -346,12 +348,12 @@ export async function redeemCoupon(code: string) {
     data: { usedCount: { increment: 1 } },
   });
 
-  await prisma.business.update({
-    where: { id: business.id },
+  await prisma.currentPlan.update({
+    where: { id: currentBusiness.id },
     data: {
-      plan: coupon.plan,
+      planType: coupon.plan,
       planStatus: "ACTIVE",
-      planExpiresAt: expiresAt,
+      expiresAt: expiresAt,
     },
   });
 
@@ -371,7 +373,7 @@ export async function redeemCoupon(code: string) {
   // Invalidar caché de business
   updateTag(CACHE_TAGS.BUSINESSES);
   updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-  updateTag(`business-${business.id}`);
+  updateTag(`business-${currentBusiness.id}`);
 
   return { message: "Cupón aplicado correctamente", expiresAt };
 }

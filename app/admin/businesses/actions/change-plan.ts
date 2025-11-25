@@ -33,7 +33,7 @@ export const changePlan = async ({
     // Buscamos el negocio
     const business = await prisma.business.findUnique({
       where: { id: businessId },
-      include: { trial: true },
+      include: { currentPlan: true, trial: true },
     });
     if (!business) return { ok: false, message: "Comercio no encontrado" };
 
@@ -41,7 +41,7 @@ export const changePlan = async ({
 
     if (isTrial) {
       // Solo se permite trial si el plan actual está activo
-      if (business.planStatus !== "ACTIVE") {
+      if (business.currentPlan?.planStatus !== "ACTIVE") {
         return {
           ok: false,
           message:
@@ -71,12 +71,12 @@ export const changePlan = async ({
       });
 
       // Actualizar el negocio
-      await prisma.business.update({
-        where: { id: businessId },
+      await prisma.currentPlan.update({
+        where: { businessId },
         data: {
-          plan: planType,
+          planType,
           planStatus: "ACTIVE",
-          planExpiresAt: expiresAt,
+          expiresAt,
         },
       });
 
@@ -86,12 +86,12 @@ export const changePlan = async ({
     // Caso plan pagado / cambio normal de plan
     const expiresAt = addDays(now, planDurationDays);
 
-    await prisma.business.update({
-      where: { id: businessId },
+    await prisma.currentPlan.update({
+      where: { businessId },
       data: {
-        plan: planType,
+        planType,
         planStatus: "ACTIVE",
-        planExpiresAt: expiresAt,
+        expiresAt,
       },
     });
 

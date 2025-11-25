@@ -6,52 +6,52 @@ import prisma from "@/lib/prisma";
 import { requireUser } from "../user/require-user";
 import type { BusinessDTO } from "./business.dto";
 
-export const requireBusiness = cache(
-  async (): Promise<{
-    userId: string;
-    email: string;
-    business: BusinessDTO;
-    name: string;
-  }> => {
-    await connection();
+export const requireBusiness = cache(async () => {
+  await connection();
 
-    const session = await requireUser();
+  const session = await requireUser();
 
-    const business = await prisma.business.findUnique({
-      where: { userId: session.userId },
-      include: {
-        logo: true,
-        coverImage: true,
-        user: {
-          include: {
-            admin: true,
+  const business = await prisma.business.findUnique({
+    where: { userId: session.userId },
+    include: {
+      logo: true,
+      coverImage: true,
+      category: true,
+      user: {
+        include: {
+          admin: true,
 
-            business: true,
-          },
-        },
-        products: {
-          include: {
-            images: true,
-          },
-          where: { active: true },
-          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+          business: true,
         },
       },
-    });
+      products: {
+        include: {
+          images: true,
+        },
+        where: { active: true },
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+      },
+    },
+  });
 
-    if (!business) {
-      redirect("/auth/business-setup");
-    }
+  if (!business) {
+    redirect("/auth/business-setup");
+  }
 
-    if (!business) {
-      redirect("/auth/business-setup");
-    }
+  return {
+    userId: session.userId,
+    business,
+  };
+});
+
+export const getCurrentBusiness = cache(
+  async (): Promise<{
+    currentBusiness: BusinessDTO;
+  }> => {
+    const { business } = await requireBusiness();
 
     return {
-      userId: session.userId,
-      email: session.email,
-      business,
-      name: session.name,
+      currentBusiness: business,
     };
-  }
+  },
 );

@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { env } from "@/env";
 import { paymentClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
 
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
     const headersList = request.headers;
     const signature = headersList.get("x-signature") || "";
     const requestId = headersList.get("x-request-id") || "";
-    const secret = process.env.MP_WEBHOOK_SECRET || "";
+    const secret = env.MP_WEBHOOK_SECRET || "";
     if (
       !verifyWebhookSignature({
         signature,
@@ -139,12 +140,17 @@ export async function POST(request: Request) {
                   currency: mpPayment?.currency_id ?? paymentRecord.currency,
                 },
               }),
-              prisma.business.update({
-                where: { id: paymentRecord.businessId },
+              prisma.currentPlan.update({
+                where: { businessId: paymentRecord.businessId },
                 data: {
-                  plan: paymentRecord.plan,
+                  planType: paymentRecord.plan,
                   planStatus: "ACTIVE",
-                  planExpiresAt: expireAt,
+                  expiresAt: expireAt,
+                  activatedAt: new Date(),
+                  imagesUsed: 0,
+                  productsUsed: 0,
+                  isActive: true,
+                  isTrial: false,
                 },
               }),
               prisma.webhookEvent.update({

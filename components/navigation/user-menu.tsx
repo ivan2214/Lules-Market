@@ -2,7 +2,7 @@
 import { LayoutDashboard, LogOut, Settings, Store } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
@@ -17,7 +17,7 @@ import {
 
 interface UserMenuProps {
   name: string;
-  avatar: string;
+  avatar?: string | null;
   email: string;
   isBusiness: boolean;
   businessId?: string;
@@ -30,9 +30,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   isBusiness,
   businessId,
 }) => {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const handleSignOut = async () => {
     await signOut();
+    setOpen(false);
     router.push("/");
     router.refresh();
   };
@@ -43,8 +45,12 @@ export const UserMenu: React.FC<UserMenuProps> = ({
     .join("")
     .toUpperCase();
 
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -73,21 +79,33 @@ export const UserMenu: React.FC<UserMenuProps> = ({
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard" className="cursor-pointer">
+          <Link
+            onClick={() => setOpen(false)}
+            href="/dashboard"
+            className="cursor-pointer"
+          >
             <LayoutDashboard className="mr-2 h-4 w-4" />
             Mi panel
           </Link>
         </DropdownMenuItem>
         {isBusiness && (
           <DropdownMenuItem asChild>
-            <Link href={`/comercios/${businessId}`} className="cursor-pointer">
+            <Link
+              onClick={() => setOpen(false)}
+              href={`/comercios/${businessId}`}
+              className="cursor-pointer"
+            >
               <Store className="mr-2 h-4 w-4" />
               Perfil publico
             </Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings" className="cursor-pointer">
+          <Link
+            onClick={() => setOpen(false)}
+            href="/dashboard/settings"
+            className="cursor-pointer"
+          >
             <Settings className="mr-2 h-4 w-4" />
             Configuración
           </Link>

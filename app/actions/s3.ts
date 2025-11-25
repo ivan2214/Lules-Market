@@ -8,17 +8,18 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
+import { env } from "@/env";
 import prisma from "@/lib/prisma";
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION || "",
+  region: env.AWS_REGION || "",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    accessKeyId: env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY || "",
   },
 });
 
-const BUCKET_NAME = process.env.S3_BUCKET_NAME || "";
+const BUCKET_NAME = env.S3_BUCKET_NAME || "";
 
 export async function generatePresignedUploadUrl({
   filename,

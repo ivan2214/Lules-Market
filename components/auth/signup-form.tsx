@@ -1,7 +1,6 @@
 "use client";
 
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
 import { businessSignUpAction } from "@/app/actions/auth-actions";
@@ -18,7 +17,6 @@ import { InputGroup } from "@/components/ui/input-group";
 import { useAction } from "@/hooks/use-action";
 
 export function SignUpForm() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
@@ -33,16 +31,11 @@ export function SignUpForm() {
 
   const { execute, form, pending } = useAction({
     action: businessSignUpAction,
-
     formSchema: BusinessSignUpInputSchema,
     defaultValues,
     options: {
       showToasts: true,
-      onSuccess: ({ isAdmin, hasBusiness }) => {
-        if (isAdmin) router.push("/admin");
-        else if (hasBusiness) router.push("/dashboard");
-        else router.push("/auth/business-setup");
-      },
+      redirectTo: "/auth/verify",
     },
   });
 

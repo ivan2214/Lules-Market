@@ -1,22 +1,24 @@
-import "server-only";
+"use server";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { deleteS3Object } from "@/app/actions/s3";
 import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
+import { daysFromNow } from "@/utils";
 import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
-
+import { requireUser } from "../user/require-user";
 import {
-  type BusinessCreateInput,
-  BusinessCreateInputSchema,
   type BusinessDTO,
+  type BusinessSetupInput,
+  BusinessSetupInputSchema,
   type BusinessUpdateInput,
   BusinessUpdateInputSchema,
 } from "./business.dto";
 import { canEditBusiness } from "./business.policy";
-import { requireBusiness } from "./require-busines";
+import { getCurrentBusiness } from "./require-busines";
 
 // ========================================
 // FUNCIONES PÚBLICAS (CACHEABLES)
@@ -90,7 +92,9 @@ export async function listAllBusinesses({
       },
       orderBy: [
         {
-          plan: "asc" as const,
+          currentPlan: {
+            expiresAt: "desc",
+          },
         },
         { createdAt: "desc" },
         ...(sortBy
@@ -152,7 +156,9 @@ export async function listAllBusinessesByCategories({
     },
     orderBy: [
       {
-        plan: "asc" as const,
+        currentPlan: {
+          expiresAt: "desc",
+        },
       },
       { createdAt: "desc" },
     ],
@@ -211,20 +217,10 @@ export async function getBusinessById(
   return business;
 }
 
-// ========================================
-// FUNCIONES PRIVADAS (NO CACHEABLES)
-// ========================================
-
-export async function getMyBusiness(): Promise<BusinessDTO> {
-  const { business } = await requireBusiness();
-
-  return business;
-}
-
-export async function createBusiness(
-  data: BusinessCreateInput,
+export async function businessSetup(
+  data: BusinessSetupInput,
 ): Promise<ActionResult> {
-  const validated = BusinessCreateInputSchema.safeParse(data);
+  const validated = BusinessSetupInputSchema.safeParse(data);
   if (!validated.success) {
     return {
       errorMessage: validated.error.issues
@@ -232,21 +228,6 @@ export async function createBusiness(
         .join(", "),
     };
   }
-
-  const { userId, email, name } = await requireBusiness();
-
-  // Check if user already has a business
-  const existing = await prisma.business.findUnique({
-    where: { userId },
-  });
-  if (existing) return { errorMessage: "Ya tienes un negocio registrado" };
-
-  const alreadyEmailBusiness = await prisma.business.findUnique({
-    where: { email: email },
-  });
-
-  if (alreadyEmailBusiness)
-    return { errorMessage: "Ya tienes un negocio registrado con este email" };
 
   try {
     const {
@@ -259,40 +240,124 @@ export async function createBusiness(
       address,
       logo,
       coverImage,
-    } = data as BusinessCreateInput;
+      category,
+      tags,
+    } = data as BusinessSetupInput;
 
-    const created = await prisma.business.create({
+    const user = await requireUser();
+
+    const alreadyEmailBusiness = await prisma.business.findUnique({
+      where: { email: user.email },
+    });
+
+    if (alreadyEmailBusiness)
+      return { errorMessage: "Ya tienes un negocio registrado con este email" };
+
+    const currentPlanType = await prisma.plan
+      .findUnique({
+        where: {
+          type: "FREE",
+        },
+        select: {
+          type: true,
+        },
+      })
+      .then((plan) => plan?.type);
+
+    if (!currentPlanType) {
+      return {
+        errorMessage: "Error al obtener el plan",
+      };
+    }
+
+    const business = await prisma.business.create({
       data: {
-        name,
+        name: user.name,
         description,
         phone,
         whatsapp,
-        email,
+        email: user.email,
         website,
         facebook,
         instagram,
         address,
-        user: { connect: { id: userId } },
+        userId: user.userId,
         logo: logo ? { create: logo as Prisma.ImageCreateInput } : undefined,
         coverImage: coverImage
           ? { create: coverImage as Prisma.ImageCreateInput }
           : undefined,
+        status: "ACTIVE",
+        tags,
       },
     });
 
-    // Invalidar caché
-    updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-    updateTag(CACHE_TAGS.BUSINESSES);
+    await prisma.trial.create({
+      data: {
+        businessId: business.id,
+        plan: currentPlanType,
+        expiresAt: daysFromNow(30), // Expire in 30 days
+        activatedAt: new Date(),
+        isActive: true,
+      },
+    });
+
+    await prisma.currentPlan.create({
+      data: {
+        businessId: business.id,
+        planType: currentPlanType,
+        expiresAt: daysFromNow(30), // Expire in 30 days
+        activatedAt: new Date(),
+        isActive: true,
+        isTrial: true,
+      },
+    });
+
+    const categoryDB = await prisma.category.findUnique({
+      where: { value: category.toLowerCase() },
+    });
+
+    if (categoryDB) {
+      await prisma.business.update({
+        where: {
+          id: business.id,
+        },
+        data: {
+          category: {
+            connect: {
+              id: categoryDB.id,
+            },
+          },
+        },
+      });
+    } else {
+      await prisma.business.update({
+        where: {
+          id: business.id,
+        },
+        data: {
+          category: {
+            create: {
+              value: category.toLowerCase(),
+              label: category,
+            },
+          },
+        },
+      });
+    }
 
     return {
-      successMessage: "Negocio creado exitosamente",
-      data: created,
+      successMessage: "Negocio configurado exitosamente",
     };
   } catch (error) {
     return {
       errorMessage:
         error instanceof Error ? error.message : "Error al crear negocio",
     };
+  } finally {
+    // Invalidar caché
+    updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
+    updateTag(CACHE_TAGS.BUSINESSES);
+    redirect("/dashboard");
   }
 }
 
@@ -308,18 +373,19 @@ export async function updateBusiness(
     };
   }
 
-  const { business, email, userId } = await requireBusiness();
-
-  if (!business) return { errorMessage: "No tienes un negocio registrado" };
+  const { currentBusiness } = await getCurrentBusiness();
 
   const userPolicy = {
-    userId,
-    email,
-    activePlan: business.plan,
+    userId: currentBusiness.userId,
+    email: currentBusiness.email,
+    activePlan: currentBusiness.currentPlan?.planType || "FREE",
   };
 
   if (
-    !canEditBusiness(userPolicy, { id: business.id, userId: business.userId })
+    !canEditBusiness(userPolicy, {
+      id: currentBusiness.id,
+      userId: currentBusiness.userId,
+    })
   ) {
     return { errorMessage: "No tienes permisos para editar este negocio" };
   }
@@ -343,26 +409,26 @@ export async function updateBusiness(
     // eliminar logo previo si está siendo reemplazado
     if (logo) {
       await prisma.image.deleteMany({
-        where: { logoBusinessId: business.id },
+        where: { logoBusinessId: currentBusiness.id },
       });
-      if (business.logo?.key) {
-        await deleteS3Object({ key: business.logo?.key });
+      if (currentBusiness.logo?.key) {
+        await deleteS3Object({ key: currentBusiness.logo?.key });
       }
     }
     if (coverImage) {
       await prisma.image.deleteMany({
-        where: { coverBusinessId: business.id },
+        where: { coverBusinessId: currentBusiness.id },
       });
-      if (business.coverImage?.key) {
-        await deleteS3Object({ key: business.coverImage?.key });
+      if (currentBusiness.coverImage?.key) {
+        await deleteS3Object({ key: currentBusiness.coverImage?.key });
       }
     }
 
     // categorias a quitar para ese negocio
-    const categoryToDisconnect = business.category?.value;
+    const categoryToDisconnect = currentBusiness.category?.value;
     // conectamos categorias nuevas al negocio
     await prisma.business.update({
-      where: { id: business.id },
+      where: { id: currentBusiness.id },
       data: {
         category: {
           connect: {
@@ -374,7 +440,7 @@ export async function updateBusiness(
 
     // desconectamos categorias antiguas del negocio
     await prisma.business.update({
-      where: { id: business.id },
+      where: { id: currentBusiness.id },
       data: {
         category: {
           disconnect: {
@@ -385,7 +451,7 @@ export async function updateBusiness(
     });
 
     const updated = await prisma.business.update({
-      where: { id: business.id },
+      where: { id: currentBusiness.id },
       data: {
         name,
         description,
@@ -406,7 +472,7 @@ export async function updateBusiness(
     // Invalidar caché
     updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
     updateTag(CACHE_TAGS.BUSINESSES);
-    updateTag(`business-${business.id}`);
+    updateTag(`business-${currentBusiness.id}`);
 
     return {
       successMessage: "Negocio actualizado exitosamente",
@@ -428,12 +494,10 @@ export async function getBusinessProducts({
   offset: number;
 }): Promise<ProductDTO[]> {
   // NO usar "use cache" - requiere autenticación
-  const { business } = await requireBusiness();
-
-  if (!business) return [];
+  const { currentBusiness } = await getCurrentBusiness();
 
   const products = await prisma.product.findMany({
-    where: { businessId: business.id },
+    where: { businessId: currentBusiness.id },
     take: limit,
     skip: offset,
     orderBy: { createdAt: "desc" },
@@ -445,18 +509,21 @@ export async function getBusinessProducts({
   return products;
 }
 export async function deleteBusiness(): Promise<ActionResult> {
-  const { business } = await requireBusiness();
-  if (!business) return { errorMessage: "No tienes un negocio registrado" };
+  const { currentBusiness } = await getCurrentBusiness();
 
   try {
     // Buscar todo lo necesario en paralelo
     const [products, logoBusiness, coverBusiness] = await Promise.all([
       prisma.product.findMany({
-        where: { businessId: business.id },
+        where: { businessId: currentBusiness.id },
         select: { id: true },
       }),
-      prisma.image.findUnique({ where: { logoBusinessId: business.id } }),
-      prisma.image.findUnique({ where: { coverBusinessId: business.id } }),
+      prisma.image.findUnique({
+        where: { logoBusinessId: currentBusiness.id },
+      }),
+      prisma.image.findUnique({
+        where: { coverBusinessId: currentBusiness.id },
+      }),
     ]);
 
     // Obtener imágenes de productos
@@ -489,18 +556,18 @@ export async function deleteBusiness(): Promise<ActionResult> {
 
     // Borrar productos, usuario y relaciones en paralelo
     await Promise.all([
-      prisma.product.deleteMany({ where: { businessId: business.id } }),
-      prisma.session.deleteMany({ where: { userId: business.userId } }),
-      prisma.account.deleteMany({ where: { userId: business.userId } }),
-      prisma.business.delete({ where: { id: business.id } }),
-      prisma.user.delete({ where: { id: business.userId } }),
+      prisma.product.deleteMany({ where: { businessId: currentBusiness.id } }),
+      prisma.session.deleteMany({ where: { userId: currentBusiness.userId } }),
+      prisma.account.deleteMany({ where: { userId: currentBusiness.userId } }),
+      prisma.business.delete({ where: { id: currentBusiness.id } }),
+      prisma.user.delete({ where: { id: currentBusiness.userId } }),
     ]);
 
     // Invalidar caché
     [
       CACHE_TAGS.PUBLIC_BUSINESSES,
       CACHE_TAGS.BUSINESSES,
-      CACHE_TAGS.businessById(business.id),
+      CACHE_TAGS.businessById(currentBusiness.id),
       CACHE_TAGS.PUBLIC_PRODUCTS,
       CACHE_TAGS.PRODUCTS,
     ].forEach(updateTag);

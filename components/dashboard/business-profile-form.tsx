@@ -31,10 +31,7 @@ import { useAction } from "@/hooks/use-action";
 import { Uploader } from "../uploader/uploader";
 
 interface BusinessProfileFormProps {
-  business: BusinessDTO & {
-    coverImage: ImageCreateInput;
-    logo: ImageCreateInput;
-  };
+  business: BusinessDTO;
   categories: { label: string; value: string }[];
 }
 
@@ -56,20 +53,32 @@ export function BusinessProfileForm({
         instagram: business.instagram ?? "",
 
         category: business.category?.value ?? "",
-        coverImage: business.coverImage ?? {
-          url: "",
-          key: "",
-          name: "",
-          isMainImage: false,
-          size: 0,
-        },
-        logo: business.logo ?? {
-          url: "",
-          key: "",
-          name: "",
-          isMainImage: false,
-          size: 0,
-        },
+        coverImage: business.coverImage
+          ? {
+              ...business.coverImage,
+              name: business.coverImage.name ?? "",
+              size: business.coverImage.size ?? 0,
+            }
+          : {
+              url: "",
+              key: "",
+              name: "",
+              isMainImage: false,
+              size: 0,
+            },
+        logo: business.logo
+          ? {
+              ...business.logo,
+              name: business.logo.name ?? "",
+              size: business.logo.size ?? 0,
+            }
+          : {
+              url: "",
+              key: "",
+              name: "",
+              isMainImage: false,
+              size: 0,
+            },
       }
     : {
         name: "",
@@ -156,7 +165,7 @@ export function BusinessProfileForm({
               </FieldContent>
 
               <Select
-                value={field.value || ""}
+                value={field.value.toLocaleLowerCase() || ""}
                 onValueChange={(val) => field.onChange(val)}
                 disabled={pending}
                 aria-invalid={fieldState.invalid}
@@ -165,7 +174,7 @@ export function BusinessProfileForm({
                   <SelectValue placeholder="Seleccionar categoría" />
                 </SelectTrigger>
                 <SelectContent position="item-aligned">
-                  <SelectItem value="">Seleccionar categoría</SelectItem>
+                  <SelectItem value="none">Seleccionar categoría</SelectItem>
                   <SelectSeparator />
                   {categories.map(({ label, value }) => (
                     <SelectItem key={value} value={value.toLowerCase()}>

@@ -132,6 +132,22 @@ exports.Prisma.UserScalarFieldEnum = {
   isBanned: 'isBanned'
 };
 
+exports.Prisma.EmailVerificationTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProfileScalarFieldEnum = {
   userId: 'userId',
   name: 'name',
@@ -222,14 +238,27 @@ exports.Prisma.BusinessScalarFieldEnum = {
   instagram: 'instagram',
   address: 'address',
   verified: 'verified',
-  plan: 'plan',
-  planStatus: 'planStatus',
-  planExpiresAt: 'planExpiresAt',
+  status: 'status',
   userId: 'userId',
   isBanned: 'isBanned',
   categoryId: 'categoryId',
   tags: 'tags',
   rating: 'rating',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CurrentPlanScalarFieldEnum = {
+  id: 'id',
+  businessId: 'businessId',
+  planType: 'planType',
+  planStatus: 'planStatus',
+  isTrial: 'isTrial',
+  productsUsed: 'productsUsed',
+  imagesUsed: 'imagesUsed',
+  expiresAt: 'expiresAt',
+  activatedAt: 'activatedAt',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -243,7 +272,6 @@ exports.Prisma.CategoryScalarFieldEnum = {
 };
 
 exports.Prisma.PlanScalarFieldEnum = {
-  id: 'id',
   type: 'type',
   name: 'name',
   description: 'description',
@@ -420,6 +448,17 @@ exports.Prisma.NotificationScalarFieldEnum = {
   readAt: 'readAt'
 };
 
+exports.Prisma.LogScalarFieldEnum = {
+  id: 'id',
+  timestamp: 'timestamp',
+  businessId: 'businessId',
+  adminId: 'adminId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  details: 'details'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -465,6 +504,13 @@ exports.Permission = exports.$Enums.Permission = {
   VIEW_ANALYTIICS: 'VIEW_ANALYTIICS'
 };
 
+exports.BusinessStatus = exports.$Enums.BusinessStatus = {
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  INACTIVE: 'INACTIVE'
+};
+
 exports.PlanType = exports.$Enums.PlanType = {
   FREE: 'FREE',
   BASIC: 'BASIC',
@@ -500,6 +546,8 @@ exports.NotificationType = exports.$Enums.NotificationType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  EmailVerificationToken: 'EmailVerificationToken',
+  PasswordResetToken: 'PasswordResetToken',
   Profile: 'Profile',
   Admin: 'Admin',
   BannedBusiness: 'BannedBusiness',
@@ -509,6 +557,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Business: 'Business',
+  CurrentPlan: 'CurrentPlan',
   Category: 'Category',
   Plan: 'Plan',
   Product: 'Product',
@@ -524,7 +573,8 @@ exports.Prisma.ModelName = {
   Review: 'Review',
   Post: 'Post',
   Answer: 'Answer',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  Log: 'Log'
 };
 
 /**

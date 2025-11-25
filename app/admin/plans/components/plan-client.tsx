@@ -52,7 +52,7 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
   const [toggleAlertOpen, setToggleAlertOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
-  const handleToggleActive = (planId: string) => {
+  const handleToggleActive = (_planId: string) => {
     setToggleAlertOpen(false);
   };
 
@@ -301,7 +301,7 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={() =>
-                selectedPlan && handleToggleActive(selectedPlan.id)
+                selectedPlan && handleToggleActive(selectedPlan.type)
               }
             >
               Confirmar

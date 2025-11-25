@@ -1,7 +1,8 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <necesario> */
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   startTransition,
   useActionState,
@@ -32,7 +33,7 @@ export interface ActionOptions<TState extends ActionResult> {
   showToasts?: boolean;
 }
 
-const ESTADO_INICIAL_POR_DEFECTO = {
+const EMPTY_STATE = {
   errorMessage: undefined,
   successMessage: undefined,
   data: undefined,
@@ -43,20 +44,20 @@ export function useAction<
   TState extends ActionResult,
 >({
   action,
-  initialState = ESTADO_INICIAL_POR_DEFECTO as Awaited<TState>,
+  initialState = EMPTY_STATE as Awaited<TState>,
   options = {},
   defaultValues,
   formSchema,
 }: {
   action: (prevState: TState, input: TInput) => Promise<TState>;
   initialState?: Awaited<TState>;
-  // accept a ZodType parametrizado
   formSchema?: ZodType<TInput, any, any>;
-  // defaultValues tipado adecuadamente
   defaultValues?: DefaultValues<TInput>;
-  options: ActionOptions<TState>;
+  options?: ActionOptions<TState>;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [state, execute, pending] = useActionState<TState, TInput>(
     action,
     initialState,
@@ -64,18 +65,46 @@ export function useAction<
 
   const optionsRef = useRef(options);
   const routerRef = useRef(router);
-  const isFirstRender = useRef(true);
+  const lastStateRef = useRef<TState>(state);
+  const firstRender = useRef(true);
+  const prevPathRef = useRef(pathname);
 
+  /* ---------------------------------------------------------
+   * Sync mutable refs (router + options)
+   * --------------------------------------------------------- */
   useEffect(() => {
     optionsRef.current = options;
     routerRef.current = router;
   });
 
+  /* ---------------------------------------------------------
+   * Reset state when navigating to another page
+   * (evita toasts duplicados + estado sucio)
+   * --------------------------------------------------------- */
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    if (prevPathRef.current !== pathname) {
+      prevPathRef.current = pathname;
+
+      // reset state al volver a la página
+      startTransition(() => {
+        execute(initialState as TInput);
+      });
+    }
+  }, [pathname, initialState, execute]);
+
+  /* ---------------------------------------------------------
+   * Handle side effects only when state changes *realmente*
+   * --------------------------------------------------------- */
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      lastStateRef.current = state;
       return;
     }
+
+    // evitar dobles disparos por renders fantasma
+    if (JSON.stringify(lastStateRef.current) === JSON.stringify(state)) return;
+    lastStateRef.current = state;
 
     const {
       onSuccess,
@@ -83,7 +112,6 @@ export function useAction<
       redirectTo,
       showToasts = true,
     } = optionsRef.current;
-    const currentRouter = routerRef.current;
 
     if (showToasts) {
       if (state.errorMessage) toast.error(state.errorMessage);
@@ -91,7 +119,7 @@ export function useAction<
     }
 
     if (state.successMessage) {
-      if (redirectTo) currentRouter.push(redirectTo);
+      if (redirectTo) routerRef.current.push(redirectTo);
       onSuccess?.(state);
     }
 
@@ -100,8 +128,9 @@ export function useAction<
     }
   }, [state]);
 
-  // zodResolver tiene firmas que a veces no encajan exactamente con los genéricos de RHF,
-  // así que creamos el resolver y casteamos al Resolver<TInput>.
+  /* ---------------------------------------------------------
+   * Resolver de Zod
+   * --------------------------------------------------------- */
   const resolver = formSchema
     ? (zodResolver(formSchema as any) as Resolver<TInput>)
     : undefined;
@@ -109,19 +138,30 @@ export function useAction<
   const form = useForm<TInput>({
     resolver,
     defaultValues,
-  }) as UseFormReturn<TInput>; // opcional, ayuda al inference en el return
+  }) as UseFormReturn<TInput>;
 
+  /* ---------------------------------------------------------
+   * Ejecutar action con validación Zod
+   * --------------------------------------------------------- */
   const executeForm = useCallback(
     (input: TInput) => {
-      const isValid = formSchema?.safeParse(input);
-      if (!isValid?.success) {
-        toast.error(isValid?.error.message);
+      const parsed = formSchema?.safeParse(input);
+
+      if (parsed && !parsed.success) {
+        toast.error(parsed.error.message);
         return;
       }
+
       startTransition(() => execute(input));
     },
-    [execute, formSchema?.safeParse],
+    [execute, formSchema],
   );
 
-  return { state, execute: form.handleSubmit(executeForm), pending, form };
+  return {
+    state,
+    pending,
+    form,
+    executeRaw: executeForm,
+    execute: form.handleSubmit(executeForm),
+  };
 }

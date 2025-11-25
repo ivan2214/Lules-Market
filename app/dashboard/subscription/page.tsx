@@ -1,6 +1,5 @@
-import { redirect } from "next/navigation";
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
-import { getMyBusiness } from "@/app/data/business/business.dal";
+import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import type { PlanType } from "@/app/generated/prisma";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -73,11 +72,7 @@ const plans: {
 ];
 
 export default async function SubscriptionPage() {
-  const business = await getMyBusiness();
-
-  if (!business) {
-    redirect("/auth/business-setup");
-  }
+  const { currentBusiness } = await getCurrentBusiness();
 
   const payments = await getSubscriptionHistory();
 
@@ -95,33 +90,43 @@ export default async function SubscriptionPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-2xl">{business.plan}</p>
+              <p className="font-bold text-2xl">
+                {currentBusiness.currentPlan?.planType}
+              </p>
               <p className="text-muted-foreground text-sm">
                 Estado:{" "}
                 <Badge
                   variant={
-                    business.planStatus === "ACTIVE" ? "default" : "secondary"
+                    currentBusiness.currentPlan?.planStatus === "ACTIVE"
+                      ? "default"
+                      : "secondary"
                   }
                 >
-                  {business.planStatus === "ACTIVE"
+                  {currentBusiness.currentPlan?.planStatus === "ACTIVE"
                     ? "Activo"
-                    : business.planStatus}
+                    : currentBusiness.currentPlan?.planStatus}
                 </Badge>
               </p>
-              {business.planExpiresAt && (
+              {currentBusiness.currentPlan?.expiresAt && (
                 <p className="mt-1 text-muted-foreground text-sm">
                   Vence:{" "}
-                  {new Date(business.planExpiresAt).toLocaleDateString("es-AR")}
+                  {new Date(
+                    currentBusiness.currentPlan.expiresAt,
+                  ).toLocaleDateString("es-AR")}
                 </p>
               )}
             </div>
             <div className="text-right">
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
-                {business.products?.length ?? 0} /{" "}
-                {SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts === -1
+                {currentBusiness.products?.length ?? 0} /{" "}
+                {SUBSCRIPTION_LIMITS[
+                  currentBusiness.currentPlan?.planType || "FREE"
+                ].maxProducts === -1
                   ? "∞"
-                  : SUBSCRIPTION_LIMITS[business.plan || "FREE"].maxProducts}
+                  : SUBSCRIPTION_LIMITS[
+                      currentBusiness.currentPlan?.planType || "FREE"
+                    ].maxProducts}
               </p>
             </div>
           </div>
@@ -135,8 +140,8 @@ export default async function SubscriptionPage() {
             <PlanCard
               key={plan.name}
               plan={plan}
-              currentPlan={business.plan}
-              planStatus={business.planStatus}
+              currentPlan={currentBusiness.currentPlan?.planType}
+              planStatus={currentBusiness.currentPlan?.planStatus}
             />
           ))}
         </div>

@@ -1,5 +1,6 @@
 import { getCategories } from "@/app/actions/public-actions";
-import { getMyBusiness } from "@/app/data/business/business.dal";
+import { getCurrentBusiness } from "@/app/data/business/require-busines";
+
 import { BusinessProfileForm } from "@/components/dashboard/business-profile-form";
 import {
   Card,
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/card";
 
 export default async function BusinessPage() {
-  const business = await getMyBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
   const categories = await getCategories();
 
   return (
@@ -34,35 +35,7 @@ export default async function BusinessPage() {
         </CardHeader>
         <CardContent>
           <BusinessProfileForm
-            business={{
-              ...business,
-              coverImage: business.coverImage
-                ? {
-                    ...business.coverImage,
-                    name: business.coverImage.name ?? "",
-                    size: business.coverImage.size ?? 0,
-                  }
-                : {
-                    url: "",
-                    key: "",
-                    name: "",
-                    isMainImage: false,
-                    size: 0,
-                  },
-              logo: business.logo
-                ? {
-                    ...business.logo,
-                    name: business.logo.name ?? "",
-                    size: business.logo.size ?? 0,
-                  }
-                : {
-                    url: "",
-                    key: "",
-                    name: "",
-                    isMainImage: false,
-                    size: 0,
-                  },
-            }}
+            business={currentBusiness}
             categories={categories}
           />
         </CardContent>

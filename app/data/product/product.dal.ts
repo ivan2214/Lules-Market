@@ -5,7 +5,7 @@ import type { Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
-import { requireBusiness } from "../business/require-busines";
+import { getCurrentBusiness } from "../business/require-busines";
 import { requireUser } from "../user/require-user";
 import {
   type ProductCreateInput,
@@ -72,7 +72,7 @@ export async function listAllProducts({
 
   const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
     { featured: "desc" },
-    { business: { plan: "asc" as const } },
+    { business: { currentPlan: { planType: "asc" as const } } },
     { createdAt: "desc" },
   ];
 
@@ -187,11 +187,10 @@ export async function getProductById(
 // ========================================
 
 export async function getProductsByBusinessId(): Promise<ProductDTO[]> {
-  // NO usar "use cache" aquí porque usa requireBusiness que usa headers()
-  const { business } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   const products = await prisma.product.findMany({
-    where: { businessId: business.id },
+    where: { businessId: currentBusiness.id },
     orderBy: { createdAt: "desc" },
     include: {
       images: true,
@@ -216,21 +215,29 @@ export async function createProduct(
       };
     }
 
-    const { business } = await requireBusiness();
+    const { currentBusiness } = await getCurrentBusiness();
 
     // Check product limit
     const productCount = await prisma.product.count({
-      where: { businessId: business.id },
+      where: { businessId: currentBusiness.id },
     });
 
-    if (!canAddProduct(productCount, business.plan)) {
+    if (
+      !canAddProduct(
+        productCount,
+        currentBusiness.currentPlan?.planType || "FREE",
+      )
+    ) {
       return {
         errorMessage: "Has alcanzado el límite de productos para tu plan",
       };
     }
 
     // Check if can feature products
-    if (data.featured && !canFeatureProduct(business.plan)) {
+    if (
+      data.featured &&
+      !canFeatureProduct(currentBusiness.currentPlan?.planType || "FREE")
+    ) {
       return {
         errorMessage: "Tu plan no permite destacar productos",
       };
@@ -278,7 +285,7 @@ export async function createProduct(
           connect: imagesDB.map((image) => ({ key: image.key })),
         },
         featured,
-        businessId: business.id,
+        businessId: currentBusiness.id,
       },
     });
 
@@ -348,12 +355,12 @@ export async function updateProduct(
     }
 
     const { productId, ...rest } = data;
-    const { business } = await requireBusiness();
+    const { currentBusiness } = await getCurrentBusiness();
 
     const product = await prisma.product.findFirst({
       where: {
         id: productId,
-        businessId: business.id,
+        businessId: currentBusiness.id,
       },
     });
 
@@ -364,7 +371,10 @@ export async function updateProduct(
     }
 
     // Check if can feature products
-    if (data.featured && !canFeatureProduct(business.plan)) {
+    if (
+      data.featured &&
+      !canFeatureProduct(currentBusiness.currentPlan?.planType || "FREE")
+    ) {
       return {
         errorMessage: "Tu plan no permite destacar productos",
       };
@@ -460,23 +470,23 @@ export async function updateProduct(
 export async function deleteProduct(productId: string) {
   try {
     const { userId, email } = await requireUser();
-    const { business } = await requireBusiness();
+    const { currentBusiness } = await getCurrentBusiness();
 
     const policyUser = {
       userId: userId,
       email: email,
-      activePlan: business.plan,
+      activePlan: currentBusiness.currentPlan?.planType || "FREE",
     };
 
     canDeleteProduct(policyUser, {
       id: productId,
-      businesId: business.id,
+      businesId: currentBusiness.id,
     });
 
     const product = await prisma.product.findFirst({
       where: {
         id: productId,
-        businessId: business.id,
+        businessId: currentBusiness.id,
       },
       include: {
         images: true,
