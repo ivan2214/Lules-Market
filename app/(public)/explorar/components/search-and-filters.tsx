@@ -1,7 +1,8 @@
 "use client";
 import { Search, SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -42,19 +43,44 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 }) => {
   const { minRating, search, sortBy } = params || {};
   const [showOpenOnly, setShowOpenOnly] = useState(false);
+  const [searchValue, setSearchValue] = useState(search || "");
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("handleSubmit");
+
+    e.preventDefault();
+    const url = createSearchUrl({
+      currentParams: params,
+      updates: { search: searchValue },
+      typeExplorer,
+    });
+    console.log("url", url);
+    router.push(url);
+  };
 
   return (
     <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
-      <div className="relative flex-1">
-        <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+      <form onSubmit={handleSubmit} className="relative flex-1">
+        <Link
+          href={createSearchUrl({
+            currentParams: params,
+            updates: { search: searchValue },
+            typeExplorer,
+          })}
+          className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground"
+        >
+          <Search className="h-4 w-4" />
+        </Link>
+
         <Input
           type="search"
           placeholder="Buscar comercios, ubicaciones..."
           className="pl-10"
-          value={search}
-          onChange={() => {}}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
-      </div>
+      </form>
 
       <Select
         value={sortBy}

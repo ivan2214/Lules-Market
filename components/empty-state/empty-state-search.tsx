@@ -6,9 +6,11 @@ import { EmptyState } from "./empty-state";
 export default function EmptyStateSearch({
   title,
   description,
+  typeExplorer,
 }: {
   title: string;
   description: string;
+  typeExplorer: "productos" | "comercios" | "posts";
 }) {
   const router = useRouter();
   return (
@@ -19,7 +21,7 @@ export default function EmptyStateSearch({
       action={{
         label: "Limpiar filtros",
         onClick: () => {
-          router.push("/explorar");
+          router.push(`/explorar/${typeExplorer}`);
         },
       }}
     />

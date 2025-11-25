@@ -1,12 +1,12 @@
-import { Store } from "lucide-react";
+import { Suspense } from "react";
 import {
   getCategories,
   getPublicBusinesses,
 } from "@/app/actions/public-actions";
-import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
+import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { CategoryPills } from "../components/category-pills";
 import { SearchAndFilters } from "../components/search-and-filters";
-import { BusinessGrid } from "./components/business-grid";
+import { BusinessGrid, BusinessGridSkeleton } from "./components/business-grid";
 
 type SearchParams = {
   search?: string;
@@ -57,13 +57,14 @@ export default async function ComerciosPage({
 
       {/* Businesses Grid */}
       {businesses.length > 0 ? (
-        <BusinessGrid businesses={businesses} />
+        <Suspense fallback={<BusinessGridSkeleton />}>
+          <BusinessGrid businesses={businesses} />
+        </Suspense>
       ) : (
-        <EmptyStateCustomMessage
+        <EmptyStateSearch
           title="No se encontraron comercios"
           description="Por favor, intenta con otros filtros."
-          icons={[Store]}
-          className="mx-auto w-full flex-1"
+          typeExplorer="comercios"
         />
       )}
     </main>

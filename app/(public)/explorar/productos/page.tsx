@@ -1,10 +1,9 @@
-import { Box, Package, ShoppingCart } from "lucide-react";
 import {
   getCategories,
   getPublicBusinesses,
   getPublicProducts,
 } from "@/app/actions/public-actions";
-import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
+import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { ActiveFilters } from "../components/active-filters";
 import { BusinessesPills } from "../components/businesses-pills";
 import { CategoryPills } from "../components/category-pills";
@@ -98,11 +97,10 @@ export default async function ProductosPage({
       {products.length > 0 ? (
         <ProductsGrid products={products} />
       ) : (
-        <EmptyStateCustomMessage
+        <EmptyStateSearch
           title="No se encontraron productos"
           description="Por favor, intenta con otros filtros."
-          icons={[Package, Box, ShoppingCart]}
-          className="mx-auto w-full flex-1"
+          typeExplorer="productos"
         />
       )}
     </main>
