@@ -1,8 +1,10 @@
-import type { Business, Product, Review } from "@/app/generated/prisma";
+import type { Review } from "@/app/generated/prisma";
+import type { BusinessDTO } from "../business/business.dto";
+import type { ProductDTO } from "../product/product.dto";
 import type { ProfileDTO } from "../profile/profile.dto";
 
 export interface ReviewDTO extends Review {
-  product?: Product | null;
-  business?: Business | null;
+  product?: ProductDTO | null;
+  business?: BusinessDTO | null;
   author: ProfileDTO;
 }

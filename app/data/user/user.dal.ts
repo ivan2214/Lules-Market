@@ -2,21 +2,11 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
-import type { PostDTO } from "../post/post.dto";
-
-export interface PublicProfileDTO {
-  userId: string;
-  name: string;
-  avatar: {
-    url: string;
-  } | null;
-  createdAt: Date;
-  posts: PostDTO[];
-}
+import type { ProfileDTO } from "../profile/profile.dto";
 
 export async function getPublicProfile(
   userId: string,
-): Promise<PublicProfileDTO | null> {
+): Promise<ProfileDTO | null> {
   "use cache";
   cacheLife("minutes");
   cacheTag(`profile-${userId}`, CACHE_TAGS.PUBLIC_POSTS);
@@ -55,6 +45,33 @@ export async function getPublicProfile(
               },
             },
           },
+          reviews: {
+            where: {
+              isHidden: false,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            include: {
+              product: {
+                include: {
+                  images: {
+                    take: 1,
+                  },
+                },
+              },
+              business: {
+                include: {
+                  logo: true,
+                },
+              },
+              author: {
+                include: {
+                  avatar: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -64,11 +81,5 @@ export async function getPublicProfile(
     return null;
   }
 
-  return {
-    userId: user.id,
-    name: user.profile.name,
-    avatar: user.profile.avatar ? { url: user.profile.avatar.url } : null,
-    createdAt: user.createdAt,
-    posts: user.profile.posts as PostDTO[],
-  };
+  return user.profile;
 }
