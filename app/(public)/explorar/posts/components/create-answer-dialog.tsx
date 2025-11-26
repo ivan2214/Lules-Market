@@ -61,7 +61,7 @@ export function CreateAnswerDialog({ postId }: CreateAnswerDialogProps) {
         setOpen(false);
         form.reset();
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Ocurrió un error inesperado");
     } finally {
       setIsPending(false);

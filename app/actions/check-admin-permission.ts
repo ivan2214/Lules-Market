@@ -5,7 +5,7 @@ import type { Permission } from "../generated/prisma";
 
 export async function checkAdminPermission(
   adminId: string,
-  permission: Permission
+  permission: Permission,
 ): Promise<boolean> {
   try {
     const adminPermissions = await prisma.admin.findUnique({

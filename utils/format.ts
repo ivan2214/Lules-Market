@@ -3,7 +3,7 @@
  */
 export function formatCurrency(
   amount: number,
-  currency: Intl.NumberFormatOptions["currency"]
+  currency: Intl.NumberFormatOptions["currency"],
 ): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -78,7 +78,7 @@ export function formatDateLong(date: Date): string {
  */
 export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + "...";
+  return `${text.slice(0, maxLength)}...`;
 }
 
 /**

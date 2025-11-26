@@ -94,6 +94,7 @@ export function LogTable({
   };
 
   const onPageChange = (newPage: number) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <temp>
     const params = new URLSearchParams(searchParams as any);
     params.set("page", newPage.toString());
     window.location.search = params.toString();
@@ -106,6 +107,7 @@ export function LogTable({
     new Set(logs.map((log) => log.action).filter(Boolean)),
   ) as string[];
 
+  // biome-ignore lint/suspicious/noExplicitAny: <temp>
   const handleViewDetails = (details: any) => {
     setSelectedLogDetails(details);
     setIsModalOpen(true);

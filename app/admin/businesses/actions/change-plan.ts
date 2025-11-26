@@ -23,8 +23,6 @@ export const changePlan = async ({
   try {
     // Buscamos el plan
 
-    const plans = await prisma.plan.findMany();
-
     const plan = await prisma.plan.findUnique({
       where: { type: planType },
     });
@@ -52,7 +50,7 @@ export const changePlan = async ({
       const expiresAt = addDays(now, trialDays);
 
       // Desactivar cualquier trial activo
-      if (business.trial && business.trial.isActive) {
+      if (business.trial?.isActive) {
         await prisma.trial.update({
           where: { businessId },
           data: { isActive: false },

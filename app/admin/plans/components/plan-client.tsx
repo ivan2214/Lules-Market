@@ -237,7 +237,7 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
                     onChange={(e) =>
                       setSelectedPlan({
                         ...selectedPlan,
-                        price: Number.parseInt(e.target.value),
+                        price: Number.parseInt(e.target.value, 10),
                       })
                     }
                   />
@@ -251,7 +251,7 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
                     onChange={(e) =>
                       setSelectedPlan({
                         ...selectedPlan,
-                        maxProducts: Number.parseInt(e.target.value),
+                        maxProducts: Number.parseInt(e.target.value, 10),
                       })
                     }
                   />
@@ -265,7 +265,7 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
                     onChange={(e) =>
                       setSelectedPlan({
                         ...selectedPlan,
-                        maxImages: Number.parseInt(e.target.value),
+                        maxImages: Number.parseInt(e.target.value, 10),
                       })
                     }
                   />

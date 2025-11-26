@@ -15,7 +15,7 @@ export function canCreateBusiness(user: PolicyUser | null) {
 
 export function canEditBusiness(
   user: PolicyUser | null,
-  business: { id: string; userId?: string }
+  business: { id: string; userId?: string },
 ) {
   if (!user) return false;
   if (business.userId && business.userId === user.userId) return true;
@@ -24,7 +24,7 @@ export function canEditBusiness(
 
 export function canDeleteBusiness(
   user: PolicyUser | null,
-  business: { id: string; userId?: string }
+  business: { id: string; userId?: string },
 ) {
   return canEditBusiness(user, business);
 }

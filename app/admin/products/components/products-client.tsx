@@ -33,11 +33,11 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
     null,
   );
 
-  const handleBan = (productId: string) => {};
+  const handleBan = (_productId: string) => {};
 
-  const handleUnban = (productId: string) => {};
+  const handleUnban = (_productId: string) => {};
 
-  const handleToggleActive = (productId: string) => {};
+  const handleToggleActive = (_productId: string) => {};
 
   const handleViewDetails = (productId: string) => {
     const product = products.find((p) => p.id === productId);

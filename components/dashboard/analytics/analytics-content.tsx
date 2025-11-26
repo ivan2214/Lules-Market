@@ -27,7 +27,11 @@ type AnalyticsContentProps = {
   hasStatistics: boolean;
 };
 
-export function AnalyticsContent({ period, data, hasStatistics }: AnalyticsContentProps) {
+export function AnalyticsContent({
+  period,
+  data,
+  hasStatistics,
+}: AnalyticsContentProps) {
   if (!hasStatistics) {
     return (
       <Card>
@@ -61,7 +65,8 @@ export function AnalyticsContent({ period, data, hasStatistics }: AnalyticsConte
           <CardContent>
             <div className="font-bold text-2xl">{data.totalViews}</div>
             <p className="text-muted-foreground text-xs">
-              Últimos {period === "7d" ? "7" : period === "30d" ? "30" : "90"} días
+              Últimos {period === "7d" ? "7" : period === "30d" ? "30" : "90"}{" "}
+              días
             </p>
           </CardContent>
         </Card>
@@ -76,10 +81,8 @@ export function AnalyticsContent({ period, data, hasStatistics }: AnalyticsConte
           <CardContent>
             <div className="font-bold text-2xl">{data.productViews}</div>
             <p className="text-muted-foreground text-xs">
-              {(
-                (data.productViews / data.totalViews) * 100 || 0
-              ).toFixed(1)}
-              % del total
+              {((data.productViews / data.totalViews) * 100 || 0).toFixed(1)}%
+              del total
             </p>
           </CardContent>
         </Card>
@@ -94,10 +97,8 @@ export function AnalyticsContent({ period, data, hasStatistics }: AnalyticsConte
           <CardContent>
             <div className="font-bold text-2xl">{data.businessViews}</div>
             <p className="text-muted-foreground text-xs">
-              {(
-                (data.businessViews / data.totalViews) * 100 || 0
-              ).toFixed(1)}
-              % del total
+              {((data.businessViews / data.totalViews) * 100 || 0).toFixed(1)}%
+              del total
             </p>
           </CardContent>
         </Card>

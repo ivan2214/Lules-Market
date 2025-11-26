@@ -1,0 +1,11 @@
+# Run Type Check
+echo "Running Type Check..."
+pnpm type-check
+
+# Run Biome Check (CI Mode)
+echo "Running Biome Check..."
+pnpm check
+
+# Run Build
+echo "Running Build..."
+pnpm build
