@@ -39,8 +39,6 @@ export function LimitSelector({
     }
   }
 
-  console.log(options);
-
   return (
     <div className="flex items-center space-x-2">
       <p className="font-medium text-sm">Mostrar</p>

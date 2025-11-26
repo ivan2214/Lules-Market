@@ -50,7 +50,7 @@ export default async function ProductosPage({
   const { businesses } = await getPublicBusinesses();
 
   return (
-    <main className="container px-4 py-8">
+    <>
       {/* Header */}
       <div className="mb-8">
         <h1 className="mb-2 font-bold text-4xl">Explorar Productos</h1>
@@ -130,6 +130,6 @@ export default async function ProductosPage({
           typeExplorer="productos"
         />
       )}
-    </main>
+    </>
   );
 }

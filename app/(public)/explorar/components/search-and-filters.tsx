@@ -47,15 +47,13 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("handleSubmit");
-
     e.preventDefault();
     const url = createSearchUrl({
       currentParams: params,
       updates: { search: searchValue },
       typeExplorer,
     });
-    console.log("url", url);
+
     router.push(url);
   };
 

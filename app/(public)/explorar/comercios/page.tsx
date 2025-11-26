@@ -43,7 +43,7 @@ export default async function ComerciosPage({
   const categories = await getCategories();
 
   return (
-    <main className="container mx-auto w-full px-4 py-8">
+    <>
       {/* Header */}
       <div className="mb-8">
         <h1 className="mb-2 font-bold text-4xl">Explorar Comercios</h1>
@@ -92,6 +92,6 @@ export default async function ComerciosPage({
           typeExplorer="comercios"
         />
       )}
-    </main>
+    </>
   );
 }

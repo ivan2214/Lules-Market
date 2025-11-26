@@ -32,23 +32,8 @@ export default async function PostsPage({
 
   const totalPages = Math.ceil(total / currentLimit);
 
-  const options: number[] = [];
-
-  for (let i = 1; i <= total; i++) {
-    console.log({
-      i,
-      total,
-    });
-
-    if (total % i === 0 && total / i !== currentPage) {
-      options.push(total / i);
-    }
-  }
-
-  console.log(options);
-
   return (
-    <main className="container mx-auto w-full px-4 py-8">
+    <>
       {/* Header */}
       <div className="mb-8">
         <h1 className="mb-2 font-bold text-4xl">Explorar Publicaciones</h1>
@@ -95,6 +80,6 @@ export default async function PostsPage({
           typeExplorer="posts"
         />
       )}
-    </main>
+    </>
   );
 }
