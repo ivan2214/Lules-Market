@@ -154,7 +154,7 @@ function PostAnswersDialog({ post }: { post: PostDTO }) {
       } else {
         toast.success(result.successMessage);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Error al actualizar");
     }
   };

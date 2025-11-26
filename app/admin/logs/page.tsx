@@ -68,7 +68,7 @@ interface LogsPageProps {
 }
 
 export default async function LogsPage({ searchParams }: LogsPageProps) {
-  const page = Number.parseInt((await searchParams).page || "1");
+  const page = Number.parseInt((await searchParams).page || "1", 10);
   const filters = {
     search: (await searchParams).search,
     entityType: (await searchParams).entityType,

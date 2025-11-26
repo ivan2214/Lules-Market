@@ -145,7 +145,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      freePlanMaxProducts: Number.parseInt(e.target.value),
+                      freePlanMaxProducts: Number.parseInt(e.target.value, 10),
                     })
                   }
                 />
@@ -161,7 +161,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      freePlanMaxImages: Number.parseInt(e.target.value),
+                      freePlanMaxImages: Number.parseInt(e.target.value, 10),
                     })
                   }
                 />
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      maxLoginAttempts: Number.parseInt(e.target.value),
+                      maxLoginAttempts: Number.parseInt(e.target.value, 10),
                     })
                   }
                 />
@@ -326,7 +326,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      sessionTimeout: Number.parseInt(e.target.value),
+                      sessionTimeout: Number.parseInt(e.target.value, 10),
                     })
                   }
                 />

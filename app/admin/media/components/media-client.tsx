@@ -26,11 +26,11 @@ export const MediaClient: React.FC<MediaClientProps> = ({ images }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<Image | null>(null);
 
-  const handleDelete = (imageId: string) => {
+  const handleDelete = (_imageId: string) => {
     setDeleteDialogOpen(false);
   };
 
-  const handleMarkSafe = (imageId: string) => {};
+  const handleMarkSafe = (_imageId: string) => {};
 
   return (
     <>

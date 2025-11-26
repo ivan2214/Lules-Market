@@ -34,6 +34,14 @@ export const requireBusiness = cache(async () => {
     },
   });
 
+  const isAdmin = await prisma.admin.findUnique({
+    where: { userId: session.userId },
+  });
+
+  if (isAdmin) {
+    redirect("/admin");
+  }
+
   if (!business) {
     redirect("/auth/business-setup");
   }

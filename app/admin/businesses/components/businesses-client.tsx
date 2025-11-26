@@ -75,7 +75,9 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
             : row.original.currentPlan?.planType === "BASIC"
               ? "secondary"
               : "outline";
-        return <Badge variant={variant}>{row.original.currentPlan?.planType}</Badge>;
+        return (
+          <Badge variant={variant}>{row.original.currentPlan?.planType}</Badge>
+        );
       },
     },
     {

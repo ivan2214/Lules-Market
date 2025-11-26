@@ -57,11 +57,13 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
         token,
       },
     }).then((res) => {
+      console.log({ res });
+
       if (res.error) {
         setStatus("error");
         console.error(res.error);
         toast.error("Error al verificar el email");
-      } else {
+      } else if (res.data) {
         setStatus("success");
         toast.success(
           "Email verificado exitosamente, redirigiendo a la pantalla de dashboard",
@@ -69,9 +71,13 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
         setTimeout(() => {
           router.push("/dashboard");
         }, 2000);
+      } else {
+        setStatus("error");
+        toast.error("Error al verificar el email");
+        console.error("Error al verificar el email");
       }
     });
-  }, [token, router]);
+  }, [token]);
 
   const onResendSubmit = (data: ResendEmailValues) => {
     startTransition(() => {
@@ -137,7 +143,7 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
                   comenzar a gestionar tu comercio.
                 </p>
               </div>
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <Link href="/auth/signin">
                   <Button className="w-full">Iniciar Sesión</Button>
                 </Link>
@@ -175,7 +181,7 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
                   <li>• Contactanos si el problema persiste</li>
                 </ul>
               </div>
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <Button
                   disabled={pending}
                   className="w-full"

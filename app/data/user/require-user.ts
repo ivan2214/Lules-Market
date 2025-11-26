@@ -40,7 +40,7 @@ export const verifySession = cache(
         name: "",
       };
     }
-  }
+  },
 );
 
 export const getCurrentUser = cache(
@@ -70,7 +70,7 @@ export const getCurrentUser = cache(
       console.error("Error fetching user:", error);
       return null;
     }
-  }
+  },
 );
 
 export const requireUser = cache(
@@ -83,5 +83,5 @@ export const requireUser = cache(
     const session = await verifySession();
     if (!session.isAuth) redirect("/auth/signin");
     return session;
-  }
+  },
 );
