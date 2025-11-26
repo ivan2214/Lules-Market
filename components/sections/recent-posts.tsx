@@ -37,3 +37,25 @@ export async function RecentPosts() {
     </section>
   );
 }
+
+export function RecentPostsSkeleton() {
+  return (
+    <section className="mb-12">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-3xl">Posts Recientes</h2>
+          <p className="text-muted-foreground">
+            La comunidad pregunta y responde
+          </p>
+        </div>
+        <Button variant="ghost" className="gap-2" asChild>
+          <Link href="/explorar/posts">
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+      <PostsGridSkeleton />
+    </section>
+  );
+}

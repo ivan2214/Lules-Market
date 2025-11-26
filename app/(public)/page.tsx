@@ -11,8 +11,8 @@ import {
   FeaturedBusinesses,
 } from "@/components/sections/featured-businesses";
 import {
-  PostsSkeletons,
   RecentPosts,
+  RecentPostsSkeleton,
 } from "@/components/sections/recent-posts";
 import {
   ProductsSkeletons,
@@ -103,7 +103,7 @@ export default function HomePage() {
       </Suspense>
 
       {/* Recent posts - Dynamic, wrapped in Suspense */}
-      <Suspense fallback={<PostsSkeletons />}>
+      <Suspense fallback={<RecentPostsSkeleton />}>
         <RecentPosts />
       </Suspense>
 
