@@ -4,6 +4,7 @@ import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
 import { SearchAndFilters } from "../components/search-and-filters";
+import { CreatePostDialog } from "./components/create-post-dialog";
 import { PostsGrid, PostsGridSkeleton } from "./components/posts-grid";
 
 type SearchParams = {
@@ -35,11 +36,14 @@ export default async function PostsPage({
   return (
     <>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="mb-2 font-bold text-4xl">Explorar Publicaciones</h1>
-        <p className="text-lg text-muted-foreground">
-          Descubre lo que está pasando en tu comunidad
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="mb-2 font-bold text-4xl">Explorar Publicaciones</h1>
+          <p className="text-lg text-muted-foreground">
+            Descubre lo que está pasando en tu comunidad
+          </p>
+        </div>
+        <CreatePostDialog />
       </div>
 
       {/* Search and Filters */}
