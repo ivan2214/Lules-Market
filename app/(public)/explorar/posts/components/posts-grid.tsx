@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { MessageCircle, User } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { togglePublicBestAnswer } from "@/app/actions/post-actions";
@@ -59,16 +60,38 @@ function PostCard({ post }: { post: PostDTO }) {
       )}
     >
       <CardHeader className="flex flex-row items-center gap-4 space-y-0 p-4">
-        <Avatar>
-          <AvatarImage src={authorAvatar} alt={authorName} />
-          <AvatarFallback>
-            <User className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col">
-          <span className="font-medium text-sm">{authorName}</span>
-          <span className="text-muted-foreground text-xs">{timeAgo}</span>
-        </div>
+        {post.isAnon ? (
+          <>
+            <Avatar>
+              <AvatarImage src={authorAvatar} alt={authorName} />
+              <AvatarFallback>
+                <User className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-medium text-sm">{authorName}</span>
+              <span className="text-muted-foreground text-xs">{timeAgo}</span>
+            </div>
+          </>
+        ) : (
+          <Link
+            href={`/perfil/${post.authorId}`}
+            className="flex items-center gap-4 transition-opacity hover:opacity-80"
+          >
+            <Avatar>
+              <AvatarImage src={authorAvatar} alt={authorName} />
+              <AvatarFallback>
+                <User className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-medium text-sm hover:underline">
+                {authorName}
+              </span>
+              <span className="text-muted-foreground text-xs">{timeAgo}</span>
+            </div>
+          </Link>
+        )}
       </CardHeader>
       <CardContent className="flex-1 p-4 pt-0">
         <p className="line-clamp-4 text-sm">{post.content}</p>
