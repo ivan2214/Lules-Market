@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   // 🔐 Seguridad: validamos el header Authorization
   const authHeader = req.headers.get("Authorization");
   if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
         subject: "Tu plan expiró en LulesMarket",
         description: `Tu plan "${plan.plan.name}" ha expirado el ${plan.expiresAt.toLocaleString()}.`,
         buttonText: "Actualizar plan",
-        buttonUrl: `${env.APP_URL}/dashboard/plan`,
+        buttonUrl: `${env.APP_URL}/dashboard/subscription`,
         title: "Plan expirado",
         userFirstname: plan.business.name,
       });
