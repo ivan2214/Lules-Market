@@ -45,9 +45,26 @@ export function ReviewsList({ reviews }: ReviewsListProps) {
                   )}
                 </div>
                 <div>
-                  <h3 className="line-clamp-1 font-medium text-sm">
-                    {review.product?.name || review.business?.name}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="line-clamp-1 font-medium text-sm">
+                      {review.product?.name || review.business?.name}
+                    </h3>
+                    {review.product ? (
+                      <Badge
+                        variant="secondary"
+                        className="h-5 px-1.5 text-[10px]"
+                      >
+                        Producto
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="outline"
+                        className="h-5 px-1.5 text-[10px]"
+                      >
+                        Comercio
+                      </Badge>
+                    )}
+                  </div>
                   <Link
                     href={
                       review.product

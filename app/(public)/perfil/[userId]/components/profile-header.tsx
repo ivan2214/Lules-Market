@@ -18,7 +18,7 @@ export function ProfileHeader({
   postCount,
 }: ProfileHeaderProps) {
   return (
-    <Card className="mb-8 overflow-hidden">
+    <Card className="mb-8 overflow-hidden p-0">
       <div className="h-32 bg-gradient-to-r from-primary/10 to-primary/5" />
       <CardContent className="relative px-6 pb-6">
         <div className="flex flex-col items-center sm:flex-row sm:items-end sm:gap-6">
