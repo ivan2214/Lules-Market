@@ -92,8 +92,6 @@ export const auth = betterAuth({
       });
     },
     async sendVerificationEmail({ token, user }) {
-      console.log("sendVerificationEmail", token, user);
-
       // create email verification token
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 

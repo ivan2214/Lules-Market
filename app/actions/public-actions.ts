@@ -2,6 +2,7 @@
 
 import { cacheLife, cacheTag } from "next/cache";
 import * as BusinessDAL from "@/app/data/business/business.dal";
+import * as PostDAL from "@/app/data/post/post.dal";
 import * as ProductDAL from "@/app/data/product/product.dal";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
@@ -73,6 +74,22 @@ export async function getPublicProducts(params?: {
     limit,
     sort: sortBy,
     minRating,
+  });
+}
+
+export async function getPublicPosts(params?: {
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "date_asc" | "date_desc";
+}) {
+  const { search, page = 1, limit = 12, sortBy } = params || {};
+
+  return PostDAL.listAllPosts({
+    search,
+    page,
+    limit,
+    sort: sortBy,
   });
 }
 

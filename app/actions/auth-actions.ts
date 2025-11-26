@@ -23,8 +23,6 @@ export async function businessSignInAction(
     hasVerified?: boolean;
   }
 > {
-  console.log("businessSignInAction");
-
   const validatedFields = BusinessSignInInputSchema.safeParse(data);
 
   if (!validatedFields.success) {

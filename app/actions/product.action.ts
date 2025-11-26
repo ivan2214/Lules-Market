@@ -38,7 +38,7 @@ export async function createProductAction(
     return { errorMessage: message };
   } finally {
     revalidatePath("/dashboard/products");
-    revalidatePath("/explorar");
+    revalidatePath("/explorar/productos");
   }
 }
 
@@ -70,7 +70,7 @@ export async function updateProductAction(
     return { errorMessage: message };
   } finally {
     revalidatePath("/dashboard/products");
-    revalidatePath("/explorar");
+    revalidatePath("/explorar/productos");
   }
 }
 
@@ -92,6 +92,6 @@ export async function deleteProductAction(
     return { errorMessage: message };
   } finally {
     revalidatePath("/dashboard/products");
-    revalidatePath("/explorar");
+    revalidatePath("/explorar/productos");
   }
 }

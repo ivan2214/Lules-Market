@@ -165,7 +165,7 @@ export default async function BusinessPage({
         url={`https://lules-market.vercel.app/comercios/${id}`}
       />
       <Button asChild variant="ghost">
-        <Link href="/explorar" className="flex items-center">
+        <Link href="/explorar/comercios" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver
         </Link>
       </Button>

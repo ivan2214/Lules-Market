@@ -22,4 +22,8 @@ export const CACHE_TAGS = {
   // Analytics tags
   ANALYTICS: "analytics",
   analyticsById: (id: string) => `analytics-${id}`,
+
+  // Post tags
+  POSTS: "posts",
+  PUBLIC_POSTS: "public-posts",
 } as const;
