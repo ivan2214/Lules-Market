@@ -12,7 +12,7 @@ import type {
 import type { ActionResult } from "@/hooks/use-action";
 
 export async function createPublicPost(
-  data: PostCreateInput & { images?: string[] },
+  data: PostCreateInput,
 ): Promise<ActionResult> {
   return await createPost(data);
 }

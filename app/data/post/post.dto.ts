@@ -6,6 +6,7 @@ import type {
   Profile,
   User,
 } from "@/app/generated/prisma";
+import { ImageCreateInputSchema } from "../image/image.dto";
 
 export interface PostDTO extends Post {
   author: AuthorDTO;
@@ -31,7 +32,7 @@ export const PostCreateSchema = z.object({
     .string()
     .min(10, "El contenido debe tener al menos 10 caracteres")
     .max(1000, "El contenido no puede exceder los 1000 caracteres"),
-  images: z.array(z.any()).optional(), // We'll handle image upload separately or as files
+  images: z.array(ImageCreateInputSchema).optional(),
   isAnon: z.boolean().default(false),
   isQuestion: z.boolean().default(false),
 });
@@ -45,6 +46,7 @@ export const AnswerCreateSchema = z.object({
     .max(500, "La respuesta no puede exceder los 500 caracteres"),
   postId: z.string(),
   isAnon: z.boolean().default(false),
+  images: z.array(ImageCreateInputSchema).optional(),
 });
 
 export type AnswerCreateInput = z.infer<typeof AnswerCreateSchema>;

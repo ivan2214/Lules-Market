@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { createPublicPost } from "@/app/actions/post-actions";
+import type { ImageCreateInput } from "@/app/data/image/image.dto";
 import {
   type PostCreateInput,
   PostCreateSchema,
@@ -32,10 +33,12 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Uploader } from "@/components/uploader/uploader";
 
 export function CreatePostDialog() {
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
+  const [files, setFiles] = useState<ImageCreateInput[]>([]);
 
   const form = useForm({
     resolver: zodResolver(PostCreateSchema),
@@ -43,22 +46,24 @@ export function CreatePostDialog() {
       content: "",
       isAnon: false,
       isQuestion: false,
+      images: [] as ImageCreateInput[],
     },
   });
 
   async function onSubmit(data: PostCreateInput) {
     setIsPending(true);
     try {
-      const result = await createPublicPost(data);
+      const result = await createPublicPost({ ...data, images: files });
       if (result.errorMessage) {
         toast.error(result.errorMessage);
       } else {
         toast.success(result.successMessage);
         setOpen(false);
         form.reset();
+        setFiles([]);
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      toast.error(error instanceof Error ? error.message : "Error inesperado");
     } finally {
       setIsPending(false);
     }
@@ -72,7 +77,7 @@ export function CreatePostDialog() {
           Publicar
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-h-[500px] overflow-y-scroll sm:max-w-[500px] lg:max-h-[600px]">
         <DialogHeader>
           <DialogTitle>Crear Publicación</DialogTitle>
           <DialogDescription>
@@ -98,6 +103,24 @@ export function CreatePostDialog() {
                 </FormItem>
               )}
             />
+
+            <div>
+              <FormLabel className="mb-2 block">Imágenes</FormLabel>
+              <Uploader
+                folder="posts"
+                maxFiles={4}
+                value={files}
+                onChange={(newFiles) => {
+                  if (Array.isArray(newFiles)) {
+                    setFiles(newFiles);
+                  } else if (newFiles) {
+                    setFiles([newFiles]);
+                  } else {
+                    setFiles([]);
+                  }
+                }}
+              />
+            </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
               <FormField

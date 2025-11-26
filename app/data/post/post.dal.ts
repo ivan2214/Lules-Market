@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
-import type { Prisma } from "@/app/generated/prisma";
+import type { Image, Prisma } from "@/app/generated/prisma";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";
@@ -90,9 +90,7 @@ export async function listAllPosts({
   };
 }
 
-export async function createPost(
-  data: PostCreateInput & { images?: string[] }, // images are keys from S3
-): Promise<ActionResult> {
+export async function createPost(data: PostCreateInput): Promise<ActionResult> {
   const validated = PostCreateSchema.safeParse(data);
   if (!validated.success) {
     return {
@@ -119,6 +117,21 @@ export async function createPost(
       });
     }
 
+    const images: Image[] = [];
+    if (data?.images) {
+      for (const image of data.images) {
+        const newImage = await prisma.image.create({
+          data: {
+            key: image.key,
+            url: image.url,
+            name: image.name,
+            size: image.size,
+          },
+        });
+        images.push(newImage);
+      }
+    }
+
     const post = await prisma.post.create({
       data: {
         content: data.content,
@@ -126,7 +139,7 @@ export async function createPost(
         isQuestion: data.isQuestion,
         authorId: user.userId,
         images: {
-          connect: data.images?.map((key) => ({ key })),
+          connect: images.map((image) => ({ key: image.key })),
         },
       },
     });
