@@ -1,4 +1,4 @@
-import "server-only";
+"use server";
 import { cacheLife, cacheTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";

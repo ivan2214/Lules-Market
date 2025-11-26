@@ -27,7 +27,7 @@ export const SearchForm = () => {
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (search.trim()) {
-      router.push(`/explorar?search=${encodeURIComponent(search)}`);
+      router.push(`/explorar/productos?search=${encodeURIComponent(search)}`);
     }
   }
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,7 @@ export const SearchForm = () => {
           <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Buscar productos o comercios..."
+            placeholder="Buscar productos..."
             className="pl-10"
             value={search}
             onChange={(e) => handleChange(e)}

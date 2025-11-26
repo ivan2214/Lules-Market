@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { navigation } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 export const DesktopMenu = () => {
   const pathname = usePathname();
@@ -19,6 +20,16 @@ export const DesktopMenu = () => {
             {item.name}
           </Button>
         </Link>
+      ))}
+    </nav>
+  );
+};
+
+export const DesktopMenuSkeleton = () => {
+  return (
+    <nav className="hidden items-center gap-1 md:flex">
+      {navigation.map((item) => (
+        <Skeleton key={item.href} className="h-10 w-24" />
       ))}
     </nav>
   );

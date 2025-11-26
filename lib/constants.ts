@@ -65,6 +65,6 @@ export const CONTACT_TYPES = {
 export const navigation = [
   { name: "Inicio", href: "/", icon: Store },
   { name: "Productos", href: "/explorar/productos", icon: ShoppingBag },
-  { name: "Opiniones", href: "/explorar/posts", icon: MessageSquare },
   { name: "Comercios", href: "/explorar/comercios", icon: Store },
+  { name: "Publicaciones", href: "/explorar/posts", icon: MessageSquare },
 ];

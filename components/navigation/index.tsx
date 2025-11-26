@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DesktopMenu } from "./desktop-menu";
+import { Suspense } from "react";
+import { DesktopMenu, DesktopMenuSkeleton } from "./desktop-menu";
 import { NavigationWrapper } from "./navigation-wrapper";
 
 export function Navigation() {
@@ -20,7 +21,9 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <DesktopMenu />
+          <Suspense fallback={<DesktopMenuSkeleton />}>
+            <DesktopMenu />
+          </Suspense>
         </div>
 
         {/* Right Actions */}
