@@ -1,8 +1,8 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Crown, InfinityIcon, Sparkles, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { PlanStatus, PlanType } from "@/app/generated/prisma/client";
+import type { Plan, PlanStatus, PlanType } from "@/app/generated/prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,20 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { IconComponentName } from "@/types";
-import { DynamicIcon } from "../dynamic-icon";
+
+import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/utils/format";
 
 interface PlanCardProps {
-  plan: {
-    name: string;
-    title: string;
-    price: number;
-    icon: IconComponentName;
-    description: string;
-    features: string[];
-    limitations?: string[];
-    popular?: boolean;
-  };
+  plan: Plan;
   currentPlan?: PlanType | null;
   planStatus?: PlanStatus | null;
 }
@@ -42,32 +34,37 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
     if (isCurrent) return;
 
     if (plan.price > 0) {
-      router.push(`/dashboard/subscription/checkout?plan=${plan.name}`);
+      router.push(`/dashboard/subscription/checkout?plan=${plan.type}`);
     } else {
       // For free plan, handle directly
-      router.push(`/dashboard/subscription/downgrade?plan=${plan.name}`);
+      router.push(`/dashboard/subscription/downgrade?plan=${plan.type}`);
     }
   }
 
   return (
-    <Card className={plan.popular ? "relative border-primary shadow-lg" : ""}>
-      {plan.popular && (
+    <Card
+      className={cn(
+        plan.type === "BASIC" && "relative border-primary shadow-lg",
+        currentPlan === plan.type && "cursor-not-allowed opacity-50",
+      )}
+    >
+      {plan.type === "BASIC" && (
         <Badge className="-top-3 -translate-x-1/2 absolute left-1/2">
           Más Popular
         </Badge>
       )}
       <CardHeader>
         <div className="mb-2 flex items-center justify-between">
-          <DynamicIcon name={plan.icon} className="h-8 w-8 text-primary" />
+          {getIcon(plan.type)}
           {isCurrent && <Badge>Actual</Badge>}
         </div>
-        <CardTitle className="text-2xl">{plan.title}</CardTitle>
+        <CardTitle className="text-2xl">{plan.name}</CardTitle>
         <CardDescription>{plan.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <span className="font-bold text-4xl">
-            ${plan.price.toLocaleString()}
+            {formatCurrency(plan.price, "ARS")}
           </span>
           {plan.price > 0 && (
             <span className="text-muted-foreground">/mes</span>
@@ -75,15 +72,46 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
         </div>
 
         <div className="space-y-2">
+          {(plan.maxProducts || plan.type === "PREMIUM") && (
+            <div className="flex items-start gap-2">
+              <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <span
+                className={cn(
+                  "text-sm",
+                  plan.type === "PREMIUM" && "flex items-center gap-2",
+                )}
+              >
+                {plan.type === "PREMIUM"
+                  ? "Productos Ilimitados"
+                  : `${plan.maxProducts} Productos`}
+                {plan.type === "PREMIUM" && (
+                  <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                )}
+              </span>
+            </div>
+          )}
+          {(plan.maxImages || plan.type === "PREMIUM") && (
+            <div className="flex items-start gap-2">
+              <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <span
+                className={cn(
+                  "text-sm",
+                  plan.type === "PREMIUM" && "flex items-center gap-2",
+                )}
+              >
+                {plan.type === "PREMIUM"
+                  ? "Imágenes Ilimitadas"
+                  : `${plan.maxImages} Imágenes`}
+                {plan.type === "PREMIUM" && (
+                  <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                )}
+              </span>
+            </div>
+          )}
           {plan.features.map((feature) => (
             <div key={feature} className="flex items-start gap-2">
               <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <span className="text-sm">{feature}</span>
-            </div>
-          ))}
-          {plan.limitations?.map((limitation) => (
-            <div key={limitation} className="flex items-start gap-2 opacity-50">
-              <span className="text-sm line-through">{limitation}</span>
             </div>
           ))}
         </div>
@@ -91,9 +119,9 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
       <CardFooter>
         <Button
           onClick={handleUpgrade}
-          disabled={isCurrent || isDowngrade}
+          disabled={isCurrent || isDowngrade || currentPlan === plan.type}
           className="w-full"
-          variant={plan.popular ? "default" : "outline"}
+          variant={plan.type === "BASIC" ? "default" : "outline"}
         >
           {isCurrent
             ? "Plan Actual"
@@ -111,4 +139,15 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
 function getPlanLevel(plan?: PlanType | null): number {
   const levels = { FREE: 0, BASIC: 1, PREMIUM: 2 };
   return levels[plan || "FREE"];
+}
+
+function getIcon(plan: PlanType) {
+  switch (plan) {
+    case "FREE":
+      return <Sparkles className="h-8 w-8 text-primary" />;
+    case "BASIC":
+      return <Zap className="h-8 w-8 text-primary" />;
+    case "PREMIUM":
+      return <Crown className="h-8 w-8 text-primary" />;
+  }
 }

@@ -1,4 +1,4 @@
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, InfinityIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -13,40 +13,40 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
+import prisma from "@/lib/prisma";
+import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/utils/format";
+
+async function getPlanLimits(planType: PlanType) {
+  const plan = await prisma.plan.findUnique({
+    where: {
+      type: planType,
+    },
+  });
+
+  if (!plan) {
+    return null;
+  }
+
+  return plan;
+}
 
 async function CheckoutContent({
   searchParams,
 }: {
   searchParams: Promise<{ plan?: string }>;
 }) {
-  const plan = (await searchParams).plan as PlanType;
+  const { plan: planType } = await searchParams;
 
-  if (!plan || plan === "FREE") {
+  if (!planType || planType === "FREE") {
     redirect("/dashboard/subscription");
   }
 
-  const planLimits = SUBSCRIPTION_LIMITS[plan];
+  const plan = await getPlanLimits(planType as PlanType);
 
-  if (!planLimits) {
+  if (!plan) {
     redirect("/dashboard/subscription");
   }
-
-  const features =
-    plan === "BASIC"
-      ? [
-          `Hasta ${planLimits.maxProducts} productos`,
-          "Estadísticas simples",
-          "Prioridad media en búsquedas",
-          "Soporte por email",
-        ]
-      : [
-          "Productos ilimitados",
-          "Destacar productos",
-          "Estadísticas avanzadas",
-          "Máxima prioridad en búsquedas",
-          "Soporte prioritario",
-        ];
 
   return (
     <>
@@ -68,14 +68,14 @@ async function CheckoutContent({
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-4">
               <div>
-                <h3 className="font-bold text-xl">Plan {plan}</h3>
+                <h3 className="font-bold text-xl">Plan {plan.name}</h3>
                 <p className="text-muted-foreground text-sm">
                   Suscripción mensual
                 </p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-3xl">
-                  ${planLimits.price.toLocaleString()}
+                  {formatCurrency(plan.price, "ARS")}
                 </p>
                 <p className="text-muted-foreground text-sm">/mes</p>
               </div>
@@ -84,7 +84,43 @@ async function CheckoutContent({
             <div>
               <h4 className="mb-3 font-semibold">Incluye:</h4>
               <ul className="space-y-2">
-                {features.map((feature) => (
+                {(plan.maxProducts || plan.type === "PREMIUM") && (
+                  <div className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                    <span
+                      className={cn(
+                        "text-sm",
+                        plan.type === "PREMIUM" && "flex items-center gap-2",
+                      )}
+                    >
+                      {plan.type === "PREMIUM"
+                        ? "Productos Ilimitados"
+                        : `${plan.maxProducts} Productos`}
+                      {plan.type === "PREMIUM" && (
+                        <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                      )}
+                    </span>
+                  </div>
+                )}
+                {(plan.maxImages || plan.type === "PREMIUM") && (
+                  <div className="flex items-start gap-2">
+                    <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                    <span
+                      className={cn(
+                        "text-sm",
+                        plan.type === "PREMIUM" && "flex items-center gap-2",
+                      )}
+                    >
+                      {plan.type === "PREMIUM"
+                        ? "Imágenes Ilimitadas"
+                        : `${plan.maxImages} Imágenes`}
+                      {plan.type === "PREMIUM" && (
+                        <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                      )}
+                    </span>
+                  </div>
+                )}
+                {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
                     <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                     <span>{feature}</span>
@@ -96,16 +132,16 @@ async function CheckoutContent({
             <div className="space-y-2 rounded-lg bg-muted p-4">
               <div className="flex justify-between text-sm">
                 <span>Subtotal</span>
-                <span>${planLimits.price.toLocaleString()}</span>
+                <span>{formatCurrency(plan.price, "ARS")}</span>
               </div>
               <div className="flex justify-between border-t pt-2 font-bold text-lg">
                 <span>Total</span>
-                <span>${planLimits.price.toLocaleString()}</span>
+                <span>{formatCurrency(plan.price, "ARS")}</span>
               </div>
             </div>
           </div>
 
-          <CheckoutButton plan={plan} />
+          <CheckoutButton plan={plan.type} />
 
           <p className="text-center text-muted-foreground text-xs">
             Al continuar, aceptas nuestros términos y condiciones. El pago se

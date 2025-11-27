@@ -129,7 +129,7 @@ export function LogTable({
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, search: e.target.value }))
           }
-          className="flex-grow"
+          className="grow"
           type="search"
         />
         <Select
