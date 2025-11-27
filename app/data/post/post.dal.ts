@@ -53,7 +53,7 @@ export async function listAllPosts({
     orderBy.push({ createdAt: "desc" });
   }
 
-  const [posts, total] = await prisma.$transaction([
+  const [posts, total] = await Promise.all([
     prisma.post.findMany({
       where,
       include: {

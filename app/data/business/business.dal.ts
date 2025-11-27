@@ -71,7 +71,7 @@ export async function listAllBusinesses({
     }),
   };
 
-  const [businesses, total] = await prisma.$transaction([
+  const [businesses, total] = await Promise.all([
     prisma.business.findMany({
       where,
       include: {
