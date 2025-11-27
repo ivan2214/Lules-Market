@@ -1,6 +1,6 @@
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
 import {

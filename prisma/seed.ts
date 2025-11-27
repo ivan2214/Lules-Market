@@ -4,6 +4,7 @@
 // Agrega planes, pagos en todos los estados, webhooks, notificaciones, reviews de negocios y escenarios.
 
 import { faker } from "@faker-js/faker";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { addDays, addMonths, subMonths } from "date-fns";
 import { auth } from "@/lib/auth";
 import {
@@ -17,10 +18,15 @@ import {
   PrismaClient,
   type Product,
   ProductCondition,
-} from "../app/generated/prisma";
+} from "../app/generated/prisma/client";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
 
+const prisma = new PrismaClient({
+  adapter,
+});
 interface CurrentPlanSeed extends CurrentPlan {
   plan: Plan;
 }

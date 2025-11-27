@@ -1,15 +1,13 @@
 import { z } from "zod";
-
 import type {
   BannedProduct,
   Image,
-  Product as ProductPrisma,
+  Product,
   productView,
-} from "@/app/generated/prisma";
+} from "@/app/generated/prisma/client";
 import type { BusinessDTO } from "../business/business.dto";
 import type { CategoryDTO } from "../category/category.dto";
 import { ImageCreateInputSchema } from "../image/image.dto";
-
 import type { ReviewDTO } from "../review/review.dto";
 
 export const ProductCreateInputSchema = z.object({
@@ -40,7 +38,7 @@ export const ProductDeleteInputSchema = z.object({
 
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 
-export interface ProductDTO extends ProductPrisma {
+export interface ProductDTO extends Product {
   images: Image[];
   views?: productView[] | null;
   business?: BusinessDTO | null;

@@ -84,17 +84,12 @@ export function BusinessGrowthChart({ data }: BusinessGrowthChartProps) {
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
-            <Bar
-              dataKey="count"
-              layout="vertical"
-              fill="var(--color-count)"
-              radius={4}
-            >
+            <Bar dataKey="count" fill="var(--color-count)" radius={4}>
               <LabelList
                 dataKey="month"
                 position="insideLeft"
                 offset={8}
-                className="fill-[var(--color-label)]"
+                className="fill-(--color-label)"
                 fontSize={12}
               />
               <LabelList

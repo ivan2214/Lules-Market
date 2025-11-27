@@ -2,7 +2,7 @@ import type {
   Coupon,
   CouponRedemption,
   PlanType,
-} from "@/app/generated/prisma";
+} from "@/app/generated/prisma/client";
 import type { BusinessDTO } from "../business/business.dto";
 
 export interface CouponDTO extends Coupon {

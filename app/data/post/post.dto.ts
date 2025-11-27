@@ -5,7 +5,7 @@ import type {
   Post,
   Profile,
   User,
-} from "@/app/generated/prisma";
+} from "@/app/generated/prisma/client";
 import { ImageCreateInputSchema } from "../image/image.dto";
 
 export interface PostDTO extends Post {

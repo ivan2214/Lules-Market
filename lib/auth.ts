@@ -1,13 +1,15 @@
-import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware } from "better-auth/api";
+import { betterAuth } from "better-auth/minimal";
 import { nextCookies } from "better-auth/next-js";
+
 // If your Prisma file is located elsewhere, you can change the path
-import { BusinessStatus, PrismaClient } from "@/app/generated/prisma";
+
+import { BusinessStatus } from "@/app/generated/prisma/enums";
 import { env } from "@/env";
 import { sendEmail } from "./email";
+import prisma from "./prisma";
 
-const prisma = new PrismaClient();
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
@@ -151,7 +153,6 @@ export const auth = betterAuth({
     sendOnSignUp: false,
   },
   plugins: [nextCookies()], // make sure this is the last plugin in the array
-
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
       const { context } = ctx;
@@ -172,6 +173,9 @@ export const auth = betterAuth({
           await prisma.admin.create({
             data: {
               userId: user?.id,
+              permissions: {
+                set: ["ALL"],
+              },
             },
           });
         }
@@ -190,6 +194,9 @@ export const auth = betterAuth({
           await prisma.admin.create({
             data: {
               userId: user?.id,
+              permissions: {
+                set: ["ALL"],
+              },
             },
           });
         }

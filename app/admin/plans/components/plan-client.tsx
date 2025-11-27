@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil, Power } from "lucide-react";
 import { useState } from "react";
-import type { Plan, PlanType } from "@/app/generated/prisma";
+import type { Plan, PlanType } from "@/app/generated/prisma/client";
 import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,

@@ -61,7 +61,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
       ),
     },
     {
-      accessorKey: "businessName",
+      accessorKey: "business.name",
       header: "Negocio",
     },
     {

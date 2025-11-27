@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Eye, Search, Trash2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { startTransition, useState } from "react";
 import { deleteAllLogs } from "@/app/data/admin/admin.dal";
-import type { Log } from "@/app/generated/prisma";
+import type { Log } from "@/app/generated/prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

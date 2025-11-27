@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import type { Notification } from "@/app/generated/prisma";
+import type { Notification } from "@/app/generated/prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,

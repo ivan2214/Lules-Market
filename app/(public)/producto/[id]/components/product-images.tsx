@@ -1,4 +1,4 @@
-import type { Image } from "@/app/generated/prisma";
+import type { Image } from "@/app/generated/prisma/client";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

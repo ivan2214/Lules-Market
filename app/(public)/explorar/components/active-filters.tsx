@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Business } from "@/app/generated/prisma";
+import type { Business } from "@/app/generated/prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createSearchUrl, type TypeExplorer } from "@/lib/utils";

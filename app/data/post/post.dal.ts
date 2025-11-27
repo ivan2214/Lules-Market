@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
-import type { Image, Prisma } from "@/app/generated/prisma";
+import type { Image, Prisma } from "@/app/generated/prisma/client";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";

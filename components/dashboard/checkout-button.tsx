@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { createPaymentPreference } from "@/app/actions/subscription-actions";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 
 interface CheckoutButtonProps {

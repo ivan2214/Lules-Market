@@ -71,14 +71,18 @@ function ChartContainer({
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([, cfg]) => cfg.theme || cfg.color,
+    ([, config]) => config.theme || config.color,
   );
 
-  const cssString = React.useMemo(() => {
-    if (!colorConfig.length) return "";
-    return Object.entries(THEMES)
-      .map(
-        ([theme, prefix]) => `
+  if (!colorConfig.length) {
+    return null;
+  }
+
+  return (
+    <style>
+      {Object.entries(THEMES)
+        .map(
+          ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -90,13 +94,10 @@ ${colorConfig
   .join("\n")}
 }
 `,
-      )
-      .join("\n");
-  }, [id, config]);
-
-  if (!cssString) return null;
-
-  return <style>{cssString}</style>;
+        )
+        .join("\n")}
+    </style>
+  );
 };
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
@@ -170,7 +171,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+        "grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
         className,
       )}
     >

@@ -1,4 +1,4 @@
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { PLAN_PRICES } from "./constants";
 
 export const SUBSCRIPTION_LIMITS: Record<

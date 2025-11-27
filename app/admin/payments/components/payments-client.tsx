@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 import { useState } from "react";
 import type { PaymentDTO } from "@/app/data/payment/payment.dto";
-import type { WebhookEvent } from "@/app/generated/prisma";
+import type { WebhookEvent } from "@/app/generated/prisma/client";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

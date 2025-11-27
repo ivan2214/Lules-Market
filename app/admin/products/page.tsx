@@ -13,6 +13,8 @@ export default async function ProductsPage() {
     },
   });
 
+  console.dir(products[0]);
+
   return (
     <div className="space-y-6">
       <div>

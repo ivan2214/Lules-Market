@@ -89,7 +89,7 @@ export function PlanDistributionChart({ data }: PlanDistributionChartProps) {
                 stroke="none"
                 fontSize={12}
                 formatter={(value: keyof typeof chartConfig) =>
-                  chartConfig[value]?.label
+                  chartConfig[value].label
                 }
               />
             </Pie>

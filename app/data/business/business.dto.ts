@@ -1,10 +1,10 @@
 import { z } from "zod";
 import type {
   BannedBusiness,
-  Business as BusinessPrisma,
+  Business,
   CurrentPlan,
   Plan,
-} from "@/app/generated/prisma";
+} from "@/app/generated/prisma/client";
 import type { AnswerDTO } from "../answer/answer.dto";
 import type { CategoryDTO } from "../category/category.dto";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
@@ -34,7 +34,7 @@ export const BusinessUpdateInputSchema = BusinessSetupInputSchema.extend({
 
 export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
 
-export interface BusinessDTO extends BusinessPrisma {
+export interface BusinessDTO extends Business {
   logo?: CleanImage | null;
   coverImage?: CleanImage | null;
   products?: ProductDTO[] | null;
