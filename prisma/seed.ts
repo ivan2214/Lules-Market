@@ -26,10 +26,6 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({
   adapter,
-  transactionOptions:{
-    maxWait: 60000, // 60 seconds
-    timeout: 60000 // 60 seconds
-  }
 });
 interface CurrentPlanSeed extends CurrentPlan {
   plan: Plan;
@@ -104,58 +100,78 @@ const pickPlanForBusiness = async (): Promise<{
 
 async function main() {
   console.log("🧹 Eliminando datos anteriores");
-  await prisma.$transaction([
-    // Webhooks / Notificaciones / Pagos
-    prisma.webhookEvent.deleteMany(),
-    prisma.notification.deleteMany(),
-    prisma.payment.deleteMany(),
+ // 1️⃣ Webhooks / Notificaciones / Pagos
+await prisma.$transaction([
+  prisma.webhookEvent.deleteMany(),
+  prisma.notification.deleteMany(),
+  prisma.payment.deleteMany(),
+]);
 
-    // Trials / Cupones / Analíticas
-    prisma.trial.deleteMany(),
-    prisma.couponRedemption.deleteMany(),
-    prisma.coupon.deleteMany(),
-    prisma.analytics.deleteMany(),
+// 2️⃣ Trials / Cupones / Analíticas
+await prisma.$transaction([
+  prisma.trial.deleteMany(),
+  prisma.couponRedemption.deleteMany(),
+  prisma.coupon.deleteMany(),
+  prisma.analytics.deleteMany(),
+]);
 
-    // Vistas
-    prisma.businessView.deleteMany(),
-    prisma.productView.deleteMany(),
+// 3️⃣ Vistas
+await prisma.$transaction([
+  prisma.businessView.deleteMany(),
+  prisma.productView.deleteMany(),
+]);
 
-    // Reviews / posts / answers
-    prisma.review.deleteMany(),
-    prisma.answer.deleteMany(),
-    prisma.post.deleteMany(),
+// 4️⃣ Reviews / posts / answers
+await prisma.$transaction([
+  prisma.review.deleteMany(),
+  prisma.answer.deleteMany(),
+  prisma.post.deleteMany(),
+]);
 
-    // Imágenes + baneos
-    prisma.bannedImages.deleteMany(),
-    prisma.image.deleteMany(),
+// 5️⃣ Imágenes + baneos
+await prisma.$transaction([
+  prisma.bannedImages.deleteMany(),
+  prisma.image.deleteMany(),
+]);
 
-    // Productos + baneos
-    prisma.bannedProduct.deleteMany(),
-    prisma.product.deleteMany(),
+// 6️⃣ Productos + baneos
+await prisma.$transaction([
+  prisma.bannedProduct.deleteMany(),
+  prisma.product.deleteMany(),
+]);
 
-    // Negocios + baneos
-    prisma.bannedBusiness.deleteMany(),
-    prisma.business.deleteMany(),
-    prisma.currentPlan.deleteMany(),
+// 7️⃣ Negocios + baneos + planes
+await prisma.$transaction([
+  prisma.bannedBusiness.deleteMany(),
+  prisma.business.deleteMany(),
+  prisma.currentPlan.deleteMany(),
+]);
 
-    // Profile / Admin / Users
-    prisma.profile.deleteMany(),
+// 8️⃣ Profile / Admin / Users
+await prisma.$transaction([
+  prisma.profile.deleteMany(),
+]);
 
-    // Primero limpias permisos (enum-relations)
-    prisma.admin.updateMany({ data: { permissions: { set: [] } } }),
-    prisma.admin.deleteMany(),
+// 9️⃣ Limpieza de permisos y admins
+await prisma.$transaction([
+  prisma.admin.updateMany({ data: { permissions: { set: [] } } }),
+  prisma.admin.deleteMany(),
+]);
 
-    // Auth
-    prisma.session.deleteMany(),
-    prisma.account.deleteMany(),
-    prisma.verification.deleteMany(),
+// 🔟 Auth
+await prisma.$transaction([
+  prisma.session.deleteMany(),
+  prisma.account.deleteMany(),
+  prisma.verification.deleteMany(),
+  prisma.user.deleteMany(),
+]);
 
-    prisma.user.deleteMany(),
+// 1️⃣1️⃣ Categorías / Planes
+await prisma.$transaction([
+  prisma.category.deleteMany(),
+  prisma.plan.deleteMany(),
+]);
 
-    // Categorías / Planes
-    prisma.category.deleteMany(),
-    prisma.plan.deleteMany(),
-  ]);
 
   console.log("🌱 Iniciando seed realista...");
 

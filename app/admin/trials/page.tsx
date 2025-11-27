@@ -19,12 +19,8 @@ async function getTrialsAndActiveCount() {
 
   const now = new Date(); // <-- permitido aquí
 
-  const [trials, activeTrials] = await prisma.$transaction([
-    prisma.trial.findMany({
-      include: {
-        business: true,
-      },
-    }),
+  const [trials, activeTrials] = await Promise.all([
+    prisma.trial.findMany({ include: { business: true } }),
     prisma.trial.findMany({ where: { isActive: true } }),
   ]);
 

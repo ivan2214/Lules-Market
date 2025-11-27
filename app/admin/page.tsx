@@ -102,7 +102,7 @@ export async function getAdminDashboardStats(): Promise<{
     businessesLastMonth,
     productsLastMonth,
     paymentsLastMonthAgg,
-  ] = await prisma.$transaction([
+  ] = await Promise.all([
     prisma.business.count(),
     prisma.business.count({ where: { bannedBusiness: { isNot: null } } }),
     prisma.product.count({ where: { bannedProduct: { isNot: null } } }),
@@ -112,7 +112,6 @@ export async function getAdminDashboardStats(): Promise<{
     prisma.payment.count({ where: { status: "rejected" } }),
     prisma.trial.count({ where: { isActive: true } }),
     prisma.coupon.count({ where: { active: true } }),
-
     prisma.business.count({ where: { createdAt: { gte: startCurrentMonth } } }),
     prisma.product.count({ where: { createdAt: { gte: startCurrentMonth } } }),
     prisma.payment.aggregate({
@@ -122,9 +121,6 @@ export async function getAdminDashboardStats(): Promise<{
         createdAt: { gte: startCurrentMonth, lt: endCurrentMonth },
       },
     }),
-
-    // Mes anterior
-
     prisma.business.count({
       where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
     }),
