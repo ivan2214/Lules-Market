@@ -64,7 +64,7 @@ export default function HomePage() {
   return (
     <main className="container mx-auto px-4 py-8 lg:p-0">
       {/* Hero Section - Completely static */}
-      <section className="mb-12 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 p-8 md:p-12">
+      <section className="mb-12 rounded-2xl bg-linear-to-br from-primary/10 via-accent/10 to-primary/5 p-8 md:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="mb-4 text-balance font-bold text-4xl tracking-tight md:text-5xl lg:text-6xl">
             Conecta con tu comunidad local
