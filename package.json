@@ -11,7 +11,7 @@
     "format": "biome check --write",
     "check": "biome ci .",
     "type-check": "tsc --noEmit",
-    "postinstall": "prisma generate --no-engine",
+    "postinstall": "prisma generate",
     "prepare": "husky"
   },
   "pnpm": {
