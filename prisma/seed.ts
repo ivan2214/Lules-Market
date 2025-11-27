@@ -26,6 +26,10 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({
   adapter,
+  transactionOptions:{
+    maxWait: 60000, // 60 seconds
+    timeout: 60000 // 60 seconds
+  }
 });
 interface CurrentPlanSeed extends CurrentPlan {
   plan: Plan;
@@ -571,9 +575,8 @@ async function main() {
     });
     // avg redondeado para arriba a 1 decimal
     const rating = aggregation._avg.rating;
-    console.log("Rating promedio:", rating);
+
     const avg = rating ? Math.round(rating * 10) / 10 : 0;
-    console.log("Rating promedio redondeado:", avg);
 
     await prisma.business.update({
       where: { id: negocio.id },
@@ -894,7 +897,7 @@ async function main() {
   // --- 16) Posts, answers (ya los tenías) ---
   console.log("📝 Creando posts públicos con imágenes y respuestas...");
   const posts = [];
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 35; i++) {
     const user = randomFrom(usersProfiles);
     const post = await prisma.post.create({
       data: {
