@@ -2,7 +2,7 @@ name: Security Audit
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Run every Monday at midnight
+    - cron: "0 0 * * 1" # Run every Monday at midnight
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -12,20 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 10
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Audit Dependencies
         run: pnpm audit --prod
