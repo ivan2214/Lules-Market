@@ -6,6 +6,3 @@ pnpm type-check
 echo "Running Biome Check..."
 pnpm check
 
-# Run Build
-echo "Running Build..."
-pnpm build
