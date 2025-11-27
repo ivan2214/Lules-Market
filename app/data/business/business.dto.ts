@@ -47,8 +47,8 @@ export interface BusinessDTO extends Business {
 }
 
 export interface CurrentPlanDTO extends CurrentPlan {
-  business: BusinessDTO;
-  plan: PlanDTO;
+  business?: BusinessDTO | null;
+  plan?: PlanDTO | null;
 }
 
 export interface PlanDTO extends Plan {

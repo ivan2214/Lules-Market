@@ -22,7 +22,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PaymentStatusMP } from "@/types";
+
+const getProcessedBadge = (processed: boolean) => {
+  if (processed) {
+    return <Badge variant="success">Procesado</Badge>; // Asume variante 'success'
+  }
+  return <Badge variant="destructive">Pendiente</Badge>; // Asume variante 'destructive'
+};
+
+const getStatusBadge = (status: PaymentStatusMP) => {
+  switch (status) {
+    case "approved":
+      return <Badge className="bg-green-600 text-white">Aprobado</Badge>;
+    case "pending":
+      return <Badge variant="secondary">Pendiente</Badge>;
+    case "rejected":
+      return <Badge variant="destructive">Rechazado</Badge>;
+  }
+};
 
 type PaymentsClientProps = {
   payments: PaymentDTO[];
@@ -36,8 +55,11 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
   const [selectedPayment, setSelectedPayment] = useState<PaymentDTO | null>(
     null,
   );
+  const [selectedWebhookEvent, setSelectedWebhookEvent] =
+    useState<WebhookEvent | null>(null);
 
   const [open, setOpen] = useState(false);
+  const [openWebhookEvent, setOpenWebhookEvent] = useState(false);
 
   const onOpenChange = (open: boolean) => {
     setOpen(open);
@@ -46,14 +68,10 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
     }
   };
 
-  const getStatusBadge = (status: PaymentStatusMP) => {
-    switch (status) {
-      case "approved":
-        return <Badge className="bg-green-600 text-white">Aprobado</Badge>;
-      case "pending":
-        return <Badge variant="secondary">Pendiente</Badge>;
-      case "rejected":
-        return <Badge variant="destructive">Rechazado</Badge>;
+  const onOpenChangeWebhookEvent = (open: boolean) => {
+    setOpenWebhookEvent(open);
+    if (!open) {
+      setSelectedWebhookEvent(null);
     }
   };
 
@@ -119,18 +137,19 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
 
   const webhookColumns: ColumnDef<WebhookEvent>[] = [
     {
+      accessorKey: "createdAt",
+      header: "Fecha",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleString("es-AR"),
+    },
+    {
       accessorKey: "eventType",
       header: "Tipo",
       cell: ({ row }) => (
         <Badge variant="outline">{row.original.eventType}</Badge>
       ),
     },
-    {
-      accessorKey: "createdAt",
-      header: "Fecha",
-      cell: ({ row }) =>
-        new Date(row.original.createdAt).toLocaleString("es-AR"),
-    },
+
     {
       accessorKey: "payload",
       header: "Payload",
@@ -138,6 +157,22 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
         <code className="rounded bg-muted px-2 py-1 text-xs">
           {JSON.stringify(row.original.payload).substring(0, 50)}...
         </code>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setSelectedWebhookEvent(row.original);
+            setOpenWebhookEvent(true);
+          }}
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
       ),
     },
   ];
@@ -148,7 +183,7 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
         <CardHeader>
           <CardTitle>Lista de Pagos</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={payments}
             columns={paymentColumns}
@@ -164,7 +199,7 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
             Auditoría de eventos de Mercado Pago
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={webhookEvents}
             columns={webhookColumns}
@@ -225,6 +260,102 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
                     : "N/A"}
                 </p>
               </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={openWebhookEvent} onOpenChange={onOpenChangeWebhookEvent}>
+        <DialogContent className="sm:max-w-[800px]">
+          {" "}
+          {/* Ajusta el ancho para el JSON */}
+          <DialogHeader>
+            <DialogTitle>🔎 Detalles del Evento Webhook</DialogTitle>
+            <DialogDescription>
+              Información completa del evento recibido y su estado de
+              procesamiento.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6 pt-2">
+            {/* Sección de Datos Principales (Grid) */}
+            <div className="grid grid-cols-1 gap-6 rounded-lg border bg-gray-50/50 p-4 md:grid-cols-2 lg:grid-cols-3">
+              {/* Fila 1: ID y Request ID */}
+              <div>
+                <p className="font-semibold text-gray-600 text-sm">
+                  ID Interno
+                </p>
+                <p className="break-all font-mono text-sm">
+                  {selectedWebhookEvent?.id}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-600 text-sm">
+                  ID de Petición (Request)
+                </p>
+                <p className="break-all font-mono text-sm">
+                  {selectedWebhookEvent?.requestId}
+                </p>
+              </div>
+
+              {/* Fila 2: Tipo de Evento y MP ID */}
+              <div>
+                <p className="font-semibold text-gray-600 text-sm">
+                  Tipo de Evento
+                </p>
+                <p className="font-bold text-base text-blue-700">
+                  {selectedWebhookEvent?.eventType}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-600 text-sm">
+                  ID Externo (Mercado Pago)
+                </p>
+                <p className="text-base">
+                  {selectedWebhookEvent?.mpId ?? "N/A"}
+                </p>
+              </div>
+
+              {/* Fila 3: Creado y Procesado */}
+              <div>
+                <p className="font-semibold text-gray-600 text-sm">
+                  Fecha de Recepción
+                </p>
+                <p className="text-sm">
+                  {selectedWebhookEvent?.createdAt
+                    ? new Date(selectedWebhookEvent.createdAt).toLocaleString(
+                        "es-AR",
+                      )
+                    : "N/A"}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-600 text-sm">
+                  Estado de Procesamiento
+                </p>
+                {getProcessedBadge(selectedWebhookEvent?.processed ?? false)}
+                <p className="mt-1 text-gray-500 text-xs">
+                  {selectedWebhookEvent?.processedAt
+                    ? `Finalizado: ${new Date(selectedWebhookEvent.processedAt).toLocaleString("es-AR")}`
+                    : "Aún no procesado"}
+                </p>
+              </div>
+            </div>
+
+            {/* Sección de Payload (JSON) */}
+            <div className="space-y-2">
+              <p className="font-bold text-gray-700 text-lg">
+                📜 Carga Útil (Payload JSON)
+              </p>
+              <ScrollArea className="h-60 w-full rounded-md border bg-gray-800 p-4 font-mono text-white text-xs">
+                {/* Mostrar el JSON formateado */}
+                <pre className="whitespace-pre-wrap">
+                  {JSON.stringify(selectedWebhookEvent?.payload, null, 2) ??
+                    "Carga útil vacía"}
+                </pre>
+              </ScrollArea>
+              <p className="text-gray-500 text-xs">
+                Este es el contenido completo del evento enviado por el
+                proveedor (ej. Mercado Pago).
+              </p>
             </div>
           </div>
         </DialogContent>

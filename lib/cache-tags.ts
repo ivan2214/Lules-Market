@@ -5,6 +5,8 @@
 
 // Business-related cache tags
 export const CACHE_TAGS = {
+  /* ADMIN */
+  ADMIN_LOGS: "admin-logs",
   // Business tags
   BUSINESSES: "businesses",
   PUBLIC_BUSINESSES: "public-businesses",

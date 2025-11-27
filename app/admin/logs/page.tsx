@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import type { Log, Prisma } from "@/app/generated/prisma/client";
 import { LogTable } from "@/components/admin/log-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { createMetadata } from "@/lib/metadata";
 import prisma from "@/lib/prisma";
 
@@ -17,7 +18,7 @@ export async function getLogs(
   currentPage: number;
 }> {
   "use cache";
-  cacheTag("admin-logs");
+  cacheTag(CACHE_TAGS.ADMIN_LOGS);
 
   const skip = (page - 1) * limit;
   const where: Prisma.LogWhereInput = {};
@@ -78,12 +79,12 @@ export default async function LogsPage({ searchParams }: LogsPageProps) {
   const { logs, totalPages, currentPage } = await getLogs(page, 10, filters);
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <Card>
+    <div className="mx-auto flex w-full flex-col gap-6 p-6">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Logs de Actividad</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <Suspense fallback={<p>Cargando logs...</p>}>
             <LogTable
               filtersParam={filters}

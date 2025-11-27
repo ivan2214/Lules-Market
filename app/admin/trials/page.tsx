@@ -50,7 +50,7 @@ export default async function TrialsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-y-2 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">
             Pruebas Gratuitas
@@ -109,7 +109,7 @@ export default async function TrialsPage() {
           <CardDescription>{trials.length} trials registrados</CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <TrialColumns
             trials={trials.map((trial) => ({
               ...trial,

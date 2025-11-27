@@ -32,7 +32,7 @@ export default async function AdminsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-y-2 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">
             Gestión de Administradores
@@ -76,7 +76,7 @@ export default async function AdminsPage() {
             {admins.length} administradores registrados
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <AdminColumns admins={admins} />
         </CardContent>
       </Card>

@@ -162,7 +162,7 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
           <CardTitle>Lista de Planes</CardTitle>
           <CardDescription>{plans.length} planes configurados</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={plans}
             columns={columns}

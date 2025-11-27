@@ -86,7 +86,7 @@ export default async function PlansPage() {
   const plans = await getPlans();
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-y-2 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">
             Gestión de Planes

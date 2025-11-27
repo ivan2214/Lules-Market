@@ -23,7 +23,7 @@ export default async function PaymentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-2 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">
             Pagos y Facturación
