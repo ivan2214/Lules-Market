@@ -254,15 +254,17 @@ model Business {
 }
 
 model CurrentPlan {
-  id           String     @id @default(cuid())
-  businessId   String     @unique
-  business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  planType     PlanType
-  plan         Plan       @relation(fields: [planType], references: [type], onDelete: Cascade)
-  planStatus   PlanStatus @default(INACTIVE)
-  isTrial      Boolean    @default(false)
-  productsUsed Int        @default(0)
-  imagesUsed   Int        @default(0)
+  id                 String     @id @default(cuid())
+  businessId         String     @unique
+  business           Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  planType           PlanType
+  plan               Plan       @relation(fields: [planType], references: [type], onDelete: Cascade)
+  planStatus         PlanStatus @default(INACTIVE)
+  isTrial            Boolean    @default(false)
+  productsUsed       Int        @default(0)
+  imagesUsed         Int        @default(0)
+  hasStatistics      Boolean    @default(false)
+  canFeatureProducts Boolean    @default(false)
 
   expiresAt   DateTime
   activatedAt DateTime
@@ -286,16 +288,18 @@ model Category {
 }
 
 model Plan {
-  type        PlanType @unique
-  name        String
-  description String
-  price       Float
-  features    String[]
-  maxProducts Int
-  maxImages   Int
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  type               PlanType @unique
+  name               String
+  description        String
+  price              Float
+  features           String[]
+  maxProducts        Int
+  maxImages          Int
+  hasStatistics      Boolean  @default(false)
+  canFeatureProducts Boolean  @default(false)
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   currentPlans CurrentPlan[]
 }

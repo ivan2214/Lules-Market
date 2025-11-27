@@ -3,7 +3,6 @@ import type { AnalyticsPeriod } from "@/app/data/analytics/analytics.dto";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 
 import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
-import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 type AnalyticsData = {
   totalViews: number;
@@ -39,12 +38,10 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
       );
     }
 
-    const limits = getSubscriptionLimits(
-      currentBusiness.currentPlan?.planType || "FREE",
-    );
+    const currentPlan = currentBusiness.currentPlan;
 
     // If no stats available, return early with default data
-    if (!limits.hasStatistics) {
+    if (!currentPlan) {
       return (
         <AnalyticsContent
           period={period}
@@ -76,7 +73,7 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
       <AnalyticsContent
         period={period}
         data={data}
-        hasStatistics={limits.hasStatistics}
+        hasStatistics={currentPlan?.hasStatistics}
       />
     );
   } catch (error) {

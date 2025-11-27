@@ -217,27 +217,14 @@ export async function createProduct(
 
     const { currentBusiness } = await getCurrentBusiness();
 
-    // Check product limit
-    const productCount = await prisma.product.count({
-      where: { businessId: currentBusiness.id },
-    });
-
-    if (
-      !canAddProduct(
-        productCount,
-        currentBusiness.currentPlan?.planType || "FREE",
-      )
-    ) {
+    if (!canAddProduct()) {
       return {
         errorMessage: "Has alcanzado el límite de productos para tu plan",
       };
     }
 
     // Check if can feature products
-    if (
-      data.featured &&
-      !canFeatureProduct(currentBusiness.currentPlan?.planType || "FREE")
-    ) {
+    if (data.featured && !canFeatureProduct()) {
       return {
         errorMessage: "Tu plan no permite destacar productos",
       };
@@ -371,10 +358,7 @@ export async function updateProduct(
     }
 
     // Check if can feature products
-    if (
-      data.featured &&
-      !canFeatureProduct(currentBusiness.currentPlan?.planType || "FREE")
-    ) {
+    if (data.featured && !canFeatureProduct()) {
       return {
         errorMessage: "Tu plan no permite destacar productos",
       };
