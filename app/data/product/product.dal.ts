@@ -84,7 +84,7 @@ export async function listAllProducts({
     orderBy.unshift({ [field]: direction });
   }
 
-  const [products, total] = await prisma.$transaction([
+  const [products, total] = await Promise.all([
     prisma.product.findMany({
       where,
       include: {
