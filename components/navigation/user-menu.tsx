@@ -21,6 +21,7 @@ interface UserMenuProps {
   email: string;
   isBusiness: boolean;
   businessId?: string;
+  isAdmin: boolean;
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({
@@ -29,6 +30,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   email,
   isBusiness,
   businessId,
+  isAdmin,
 }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -78,16 +80,18 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           </DropdownMenuLabel>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link
-            onClick={() => setOpen(false)}
-            href="/dashboard"
-            className="cursor-pointer"
-          >
-            <LayoutDashboard className="mr-2 h-4 w-4" />
-            Mi panel
-          </Link>
-        </DropdownMenuItem>
+        {isBusiness && (
+          <DropdownMenuItem asChild>
+            <Link
+              onClick={() => setOpen(false)}
+              href="/dashboard"
+              className="cursor-pointer"
+            >
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              Mi panel
+            </Link>
+          </DropdownMenuItem>
+        )}
         {isBusiness && (
           <DropdownMenuItem asChild>
             <Link
@@ -97,6 +101,18 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             >
               <Store className="mr-2 h-4 w-4" />
               Perfil publico
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link
+              onClick={() => setOpen(false)}
+              href="/admin"
+              className="cursor-pointer"
+            >
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              Panel de administrador
             </Link>
           </DropdownMenuItem>
         )}

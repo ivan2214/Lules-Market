@@ -62,7 +62,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
 
             <Line
               dataKey="revenue"
-              type="natural"
+              type="bump"
               stroke="var(--color-revenue)"
               strokeWidth={2}
               dot={{ fill: "var(--color-revenue)" }}

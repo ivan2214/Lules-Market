@@ -46,6 +46,18 @@ const NavigationWrapperContent = async () => {
       </>
     );
 
+  const admin = await prisma.admin.findUnique({
+    where: { userId: session?.id },
+    include: {
+      user: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+    },
+  });
+
   const business = await prisma.business.findUnique({
     where: { id: session?.id },
     include: { logo: true, coverImage: true },
@@ -62,8 +74,13 @@ const NavigationWrapperContent = async () => {
   });
 
   const avatar = userProfile?.avatar?.url || business?.logo?.url;
-  const email = userProfile?.user.email || business?.email || session.email;
-  const name = userProfile?.name || business?.name || session.name;
+  const email =
+    userProfile?.user.email || business?.email || admin?.user?.email;
+  const name = userProfile?.name || business?.name || admin?.user?.name;
+
+  const isBusiness = !!business;
+
+  const isAdmin = !!admin;
 
   return (
     <div className="flex items-center gap-2">
@@ -73,7 +90,8 @@ const NavigationWrapperContent = async () => {
           avatar={avatar}
           email={email}
           name={name}
-          isBusiness={!!business}
+          isBusiness={isBusiness}
+          isAdmin={isAdmin}
           businessId={business?.id}
         />
       )}
