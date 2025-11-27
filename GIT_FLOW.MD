@@ -1,4 +1,3 @@
-
 # Gitflow - Flujo de trabajo recomendado
 
 Este documento describe un flujo de trabajo Gitflow simple y efectivo para equipos de desarrollo, ideal para mantener un proyecto limpio, organizado y con producción estable.
@@ -48,7 +47,30 @@ git push -u origin feature/nombre-de-la-feature
 
 ---
 
-## 4️⃣ Pull Requests (PR) y tipo de merge
+## 4️⃣ Mantener la rama de feature sincronizada con `dev`
+
+Antes de subir tu feature o abrir un PR, asegurate de tener los últimos cambios de dev:
+
+* **Opción 1: Merge** (historial con commits de merge)
+
+```bash
+git checkout feature/nombre-de-la-feature
+git merge dev
+```
+
+* **Opción 2: Rebase** (historial lineal, más limpio)
+
+```bash
+git checkout feature/nombre-de-la-feature
+git fetch origin dev
+git rebase origin/dev
+```
+
+> ⚠️ Solo hacé rebase en ramas locales que no hayan sido compartidas o, si ya subiste la rama, recordá usar `git push -f` después del rebase.
+
+---
+
+## 5️⃣ Pull Requests (PR) y tipo de merge
 
 Cuando la feature está lista, se hace **Pull Request hacia `dev`**:
 
@@ -64,21 +86,11 @@ Cuando dev está estable y testeada, se hace **PR de `dev` → `main`**:
   * **Merge recomendado:** `Create a merge commit (--no-ff)` ✅
   * **Por qué:** mantiene histórico de todas las features integradas, reflejando exactamente cuándo dev se pasó a producción.
 
-> 💡 Tip: Antes de abrir un PR, actualizá tu rama:
-
-```bash
-git checkout dev
-git pull origin dev
-
-git checkout feature/nombre-de-la-feature
-git merge dev
-```
-
-Esto evita conflictos grandes y asegura que la rama esté lista para merge.
+> 💡 Tip: Siempre actualizá tu rama antes de abrir un PR, usando merge o rebase según prefieras.
 
 ---
 
-## 5️⃣ Integrar `dev` en `main` (Producción)
+## 6️⃣ Integrar `dev` en `main` (Producción)
 
 Después de aprobar el PR de dev → main:
 
@@ -91,7 +103,7 @@ git push origin main
 
 ---
 
-## 6️⃣ Mantener ramas actualizadas
+## 7️⃣ Mantener ramas actualizadas
 
 Cada vez que trabajes:
 
@@ -100,16 +112,16 @@ Cada vez que trabajes:
 git checkout dev
 git pull origin dev
 
-# Actualizar feature con dev
+# Actualizar feature con dev (merge o rebase)
 git checkout feature/nombre-de-la-feature
-git merge dev
+git merge dev          # o git rebase dev
 ```
 
 Esto evita conflictos grandes y mantiene el código limpio.
 
 ---
 
-## 7️⃣ Resumen de ramas y flujo
+## 8️⃣ Resumen de ramas y flujo
 
 * **main** → Producción, estable.
 * **dev** → Integración, testeos antes de producción.
@@ -119,21 +131,21 @@ Esto evita conflictos grandes y mantiene el código limpio.
 
 1. Crear feature desde dev
 2. Hacer commits en feature
-3. PR de feature → dev (**Squash and merge**)
-4. Testear dev
-5. PR de dev → main (**Merge commit --no-ff**)
-6. Deploy a producción desde main
+3. Mantener feature actualizada con dev (**merge o rebase**)
+4. PR de feature → dev (**Squash and merge**)
+5. Testear dev
+6. PR de dev → main (**Merge commit --no-ff**)
+7. Deploy a producción desde main
 
 ---
 
-## 8️⃣ Consejos adicionales
+## 9️⃣ Consejos adicionales
 
 * Usar nombres claros en las ramas: `feature/login`, `feature/cart`, `hotfix/bug-123`.
 * Hacer commits pequeños y claros.
-* Siempre actualizar tu rama antes de mergear: `git pull origin dev`.
+* Siempre actualizar tu rama antes de mergear: `git pull origin dev` o rebase.
 * Mantener main limpia y estable, solo merges testeados desde dev.
 
 ---
 
 Este flujo mantiene el proyecto organizado, facilita trabajo en equipo y asegura una producción estable.
-
