@@ -6,8 +6,8 @@ import {
   ImageIcon,
   Layers,
   LayoutDashboard,
+  Logs,
   Package,
-  Settings,
   Shield,
   Store,
   Ticket,
@@ -26,7 +26,8 @@ const navigation = [
   { name: "Trials", href: "/admin/trials", icon: Clock },
   { name: "Moderación", href: "/admin/media", icon: ImageIcon },
   { name: "Administradores", href: "/admin/admins", icon: Shield },
-  { name: "Configuración", href: "/admin/settings", icon: Settings },
+
+  { name: "Logs", href: "/admin/logs", icon: Logs },
 ];
 
 export function AdminSidebar({ onClose }: { onClose?: () => void }) {

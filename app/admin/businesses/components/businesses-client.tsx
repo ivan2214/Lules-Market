@@ -66,7 +66,7 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       header: "Propietario",
     },
     {
-      accessorKey: "plan",
+      accessorKey: "currentPlan.planType",
       header: "Plan",
       cell: ({ row }) => {
         const variant =
@@ -125,7 +125,7 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
             {businesses.length} Negocios Encontrados
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={businesses}
             columns={columns}

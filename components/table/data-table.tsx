@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
       </div>
-      <div className="mx-auto max-w-4xl overflow-x-scroll rounded-md border">
+      <div className="mx-auto max-w-md overflow-x-scroll rounded-md border md:max-w-4xl">
         <Table className="table">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

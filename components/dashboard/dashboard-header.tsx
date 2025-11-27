@@ -48,6 +48,7 @@ export function DashboardHeader({ business }: { business: BusinessDTO }) {
       <UserMenu
         avatar={business?.logo?.url as string}
         name={business?.name}
+        isAdmin={false}
         isBusiness
         email={business?.email as string}
         businessId={business?.id}

@@ -22,6 +22,7 @@ export default async function BusinessesPage() {
           business: true,
         },
       },
+      currentPlan: true,
     },
   });
   return (

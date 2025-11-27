@@ -113,7 +113,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
             {products.length} Productos encontrados
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={products}
             columns={columns}

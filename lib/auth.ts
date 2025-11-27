@@ -45,6 +45,8 @@ export const auth = betterAuth({
     env.BETTER_AUTH_URL as string,
     "http://localhost:3000",
     "http://192.168.1.103:3000",
+    "http://192.168.1.102:3000",
+    "http://192.168.1.101:3000",
   ],
   emailVerification: {
     autoSignInAfterVerification: true,

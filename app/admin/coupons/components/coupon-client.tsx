@@ -199,7 +199,7 @@ export const CouponClient: React.FC<CouponClientProps> = ({
             {coupons.length} cupones registrados
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={coupons}
             columns={couponColumns}
@@ -213,7 +213,7 @@ export const CouponClient: React.FC<CouponClientProps> = ({
           <CardTitle>Historial de Canjes</CardTitle>
           <CardDescription>Cupones canjeados por negocios</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
           <DataTable
             data={redemptions}
             columns={redemptionColumns}
