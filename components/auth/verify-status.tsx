@@ -57,8 +57,6 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
         token,
       },
     }).then((res) => {
-      console.log({ res });
-
       if (res.error) {
         setStatus("error");
         console.error(res.error);

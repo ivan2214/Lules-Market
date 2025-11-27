@@ -26,7 +26,6 @@ export const AdminMenu: React.FC<AdminMenuProps> = ({ admin }) => {
     .map((n) => n[0])
     .join("")
     .toUpperCase();
-  console.log("Permisos", admin.permissions);
 
   const handleSignOut = async () => {
     await signOut();
