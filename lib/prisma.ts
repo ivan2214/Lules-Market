@@ -21,6 +21,7 @@ const prisma = new PrismaClient({
         ? secondsInProduction
         : secondsInLocal,
   },
+  log: ["query", "info", "warn", "error"],
 });
 
 const globalForPrisma = global as unknown as { prisma: typeof prisma };
