@@ -1,4 +1,4 @@
-# Flujo de trabajo con Git para este proyecto
+# Flujo de trabajo con Git para Lules Market
 
 Este documento describe el flujo recomendado de trabajo con Git y GitHub para mantener un historial limpio, lineal y fácil de seguir. Usamos **Rebase and Merge** para los PRs.
 
