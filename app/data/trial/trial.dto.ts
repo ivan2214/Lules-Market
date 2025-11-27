@@ -1,4 +1,4 @@
-import type { PlanType, Trial } from "@/app/generated/prisma";
+import type { PlanType, Trial } from "@/app/generated/prisma/client";
 
 export interface TrialDTO extends Trial {
   businessName: string;

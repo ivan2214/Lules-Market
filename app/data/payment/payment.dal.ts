@@ -1,7 +1,7 @@
 import "server-only";
 
 import { updateTag } from "next/cache";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";

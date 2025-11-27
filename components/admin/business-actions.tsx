@@ -15,7 +15,7 @@ import {
 } from "@/app/admin/businesses/actions/banned-business";
 import { changePlan } from "@/app/admin/businesses/actions/change-plan";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import {
   AlertDialog,
   AlertDialogAction,

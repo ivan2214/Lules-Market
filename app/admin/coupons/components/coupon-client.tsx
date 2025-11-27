@@ -7,7 +7,7 @@ import type {
   CouponDTO,
   CouponRedemptionDTO,
 } from "@/app/data/coupon/coupon.dto";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,

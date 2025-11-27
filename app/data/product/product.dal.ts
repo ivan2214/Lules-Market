@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { deleteS3Object } from "@/app/actions/s3";
-import type { Prisma } from "@/app/generated/prisma";
+import type { Prisma } from "@/app/generated/prisma/client";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import prisma from "@/lib/prisma";

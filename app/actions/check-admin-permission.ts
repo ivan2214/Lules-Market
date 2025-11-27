@@ -1,7 +1,7 @@
 "use server";
 
+import type { Permission } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
-import type { Permission } from "../generated/prisma";
 
 export async function checkAdminPermission(
   adminId: string,

@@ -2,7 +2,7 @@
 
 import { addDays } from "date-fns";
 import { updateTag } from "next/cache";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 
 interface ChangePlanParams {

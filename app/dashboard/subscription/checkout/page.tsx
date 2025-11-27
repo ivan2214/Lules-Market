@@ -2,7 +2,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { CheckoutButton } from "@/components/dashboard/checkout-button";
 import { Button } from "@/components/ui/button";
 import {

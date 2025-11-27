@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cacheTag } from "next/cache";
 import { Suspense } from "react";
-import type { Log, Prisma } from "@/app/generated/prisma";
+import type { Log, Prisma } from "@/app/generated/prisma/client";
 import { LogTable } from "@/components/admin/log-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createMetadata } from "@/lib/metadata";

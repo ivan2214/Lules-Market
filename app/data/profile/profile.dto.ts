@@ -1,4 +1,4 @@
-import type { Image, Profile } from "@/app/generated/prisma";
+import type { Image, Profile } from "@/app/generated/prisma/client";
 import type { AnswerDTO } from "../answer/answer.dto";
 import type { PostDTO } from "../post/post.dto";
 import type { ReviewDTO } from "../review/review.dto";

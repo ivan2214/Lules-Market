@@ -1,5 +1,5 @@
 import { MessageSquare, ShoppingBag, Store } from "lucide-react";
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 
 export const PLAN_PRICES: Record<PlanType, number> = {
   FREE: 0,

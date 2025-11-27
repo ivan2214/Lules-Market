@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { Payment } from "@/app/generated/prisma";
+import type { Payment } from "@/app/generated/prisma/client";
 import type { BusinessDTO } from "../business/business.dto";
 
 export const CreatePaymentPreferenceSchema = z.object({

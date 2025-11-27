@@ -1,4 +1,4 @@
-import type { PlanType } from "@/app/generated/prisma";
+import type { PlanType } from "@/app/generated/prisma/client";
 import { getSubscriptionLimits } from "@/lib/subscription-limits";
 import "server-only";
 
