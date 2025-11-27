@@ -1,3 +1,4 @@
+
 # Gitflow - Flujo de trabajo recomendado
 
 Este documento describe un flujo de trabajo Gitflow simple y efectivo para equipos de desarrollo, ideal para mantener un proyecto limpio, organizado y con producción estable.
@@ -45,13 +46,41 @@ git commit -m "feat: descripción del cambio"
 git push -u origin feature/nombre-de-la-feature
 ```
 
-Cuando la feature está lista, se hace **Pull Request hacia `dev`**.
+---
+
+## 4️⃣ Pull Requests (PR) y tipo de merge
+
+Cuando la feature está lista, se hace **Pull Request hacia `dev`**:
+
+* **Feature → Dev:**
+
+  * **Merge recomendado:** `Squash and merge` ✅
+  * **Por qué:** mantiene `dev` limpia, un commit por feature, evita commits intermedios sucios.
+
+Cuando dev está estable y testeada, se hace **PR de `dev` → `main`**:
+
+* **Dev → Main:**
+
+  * **Merge recomendado:** `Create a merge commit (--no-ff)` ✅
+  * **Por qué:** mantiene histórico de todas las features integradas, reflejando exactamente cuándo dev se pasó a producción.
+
+> 💡 Tip: Antes de abrir un PR, actualizá tu rama:
+
+```bash
+git checkout dev
+git pull origin dev
+
+git checkout feature/nombre-de-la-feature
+git merge dev
+```
+
+Esto evita conflictos grandes y asegura que la rama esté lista para merge.
 
 ---
 
-## 4️⃣ Integrar `dev` en `main` (Producción)
+## 5️⃣ Integrar `dev` en `main` (Producción)
 
-Después de probar que todo en `dev` funciona y aprobado el PR:
+Después de aprobar el PR de dev → main:
 
 ```bash
 git checkout main
@@ -60,11 +89,9 @@ git merge --no-ff dev    # Mantener histórico de merges
 git push origin main
 ```
 
-> ⚠️ `--no-ff` asegura que los merges queden visibles en el historial.
-
 ---
 
-## 5️⃣ Mantener ramas actualizadas
+## 6️⃣ Mantener ramas actualizadas
 
 Cada vez que trabajes:
 
@@ -82,7 +109,7 @@ Esto evita conflictos grandes y mantiene el código limpio.
 
 ---
 
-## 6️⃣ Resumen de ramas y flujo
+## 7️⃣ Resumen de ramas y flujo
 
 * **main** → Producción, estable.
 * **dev** → Integración, testeos antes de producción.
@@ -92,14 +119,14 @@ Esto evita conflictos grandes y mantiene el código limpio.
 
 1. Crear feature desde dev
 2. Hacer commits en feature
-3. PR de feature → dev
+3. PR de feature → dev (**Squash and merge**)
 4. Testear dev
-5. PR de dev → main
+5. PR de dev → main (**Merge commit --no-ff**)
 6. Deploy a producción desde main
 
 ---
 
-## 7️⃣ Consejos adicionales
+## 8️⃣ Consejos adicionales
 
 * Usar nombres claros en las ramas: `feature/login`, `feature/cart`, `hotfix/bug-123`.
 * Hacer commits pequeños y claros.
