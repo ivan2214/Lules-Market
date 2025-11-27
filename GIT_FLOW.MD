@@ -1,129 +1,112 @@
-# Flujo de trabajo con Git para Lules Market
+# Gitflow - Flujo de trabajo recomendado
 
-Este documento describe el flujo recomendado de trabajo con Git y GitHub para mantener un historial limpio, lineal y fácil de seguir. Usamos **Rebase and Merge** para los PRs.
+Este documento describe un flujo de trabajo Gitflow simple y efectivo para equipos de desarrollo, ideal para mantener un proyecto limpio, organizado y con producción estable.
 
 ---
 
-## 1️⃣ Configuración inicial
+## 1️⃣ Clonar el repositorio desde cero
 
-Antes de crear cualquier rama de trabajo:
+Si perdiste tu carpeta `.git` o querés empezar limpio:
 
 ```bash
-# Cambiar a main
-git switch main
-
-# Traer los últimos cambios del remoto
-git pull
+# Clonamos solo la última versión de main (sin historial antiguo)
+git clone --depth=1 https://github.com/ivan2214/Lules-Market.git
+cd Lules-Market
 ````
 
-Esto asegura que tu rama principal local esté actualizada.
+---
+
+## 2️⃣ Crear la rama de desarrollo `dev`
+
+* `main` → rama de producción
+* `dev` → rama de integración de cambios antes de pasar a producción
+
+```bash
+git checkout -b dev      # Crear rama dev local
+git push -u origin dev   # Subir al remoto y establecer upstream
+```
 
 ---
 
-## 2️⃣ Crear una rama de feature
+## 3️⃣ Crear ramas de features
 
-Siempre crea ramas nuevas desde `main` actualizado:
-
-```bash
-git switch -c nombre-de-la-rama
-```
-
-**Ejemplo:**
+Para cualquier nueva funcionalidad, creamos una rama a partir de `dev`:
 
 ```bash
-git switch -c ci/add-build-caching
+git checkout dev
+git checkout -b feature/nombre-de-la-feature
 ```
 
-* Usa nombres descriptivos y en formato `tipo/descripcion` (`feature/login`, `fix/button-style`, etc.)
-* Haz commits pequeños y claros con mensajes descriptivos.
-
----
-
-## 3️⃣ Trabajar en la rama de feature
-
-* Haz commits pequeños, significativos y autocontenidos:
+Trabajás en la feature y haces commits normalmente:
 
 ```bash
 git add .
-git commit -m "feat: agregar caching al build"
+git commit -m "feat: descripción del cambio"
+git push -u origin feature/nombre-de-la-feature
 ```
 
-* Actualiza tu rama con cambios recientes de main antes de abrir el PR (opcional pero recomendado):
-
-```bash
-git switch main
-git pull
-git switch nombre-de-la-rama
-git rebase main
-```
-
-* Si hay conflictos:
-
-```bash
-# Resolver conflictos en archivos
-git add archivo-resuelto
-git rebase --continue
-```
-
-* Empuja la rama al remoto:
-
-```bash
-git push origin nombre-de-la-rama --force
-```
-
-> Solo se usa `--force` después de un rebase para sincronizar con remoto.
+Cuando la feature está lista, se hace **Pull Request hacia `dev`**.
 
 ---
 
-## 4️⃣ Abrir un Pull Request (PR)
+## 4️⃣ Integrar `dev` en `main` (Producción)
 
-* Ve a GitHub y abre un PR desde tu rama hacia `main`.
-* Usar la opción **Rebase and Merge**:
+Después de probar que todo en `dev` funciona y aprobado el PR:
 
-  * Mantiene commits individuales.
-  * Deja un historial lineal.
-* No usar “Create a merge commit” para mantener historial limpio.
-* Solo usar **Squash and Merge** si queremos un único commit por feature.
+```bash
+git checkout main
+git pull origin main
+git merge --no-ff dev    # Mantener histórico de merges
+git push origin main
+```
+
+> ⚠️ `--no-ff` asegura que los merges queden visibles en el historial.
 
 ---
 
-## 5️⃣ Después de mergear el PR
+## 5️⃣ Mantener ramas actualizadas
 
-1. Cambiar a `main` local y actualizar:
-
-```bash
-git switch main
-git pull
-```
-
-2. Borrar la rama de feature:
+Cada vez que trabajes:
 
 ```bash
-# Local
-git branch -d nombre-de-la-rama
+# Actualizar dev con cambios remotos
+git checkout dev
+git pull origin dev
 
-# Remoto
-git push origin --delete nombre-de-la-rama
+# Actualizar feature con dev
+git checkout feature/nombre-de-la-feature
+git merge dev
 ```
 
-3. Prepararse para la próxima feature:
-
-```bash
-git switch main
-git pull
-git switch -c nueva-feature
-```
+Esto evita conflictos grandes y mantiene el código limpio.
 
 ---
 
-## 6️⃣ Resumen rápido del flujo
+## 6️⃣ Resumen de ramas y flujo
 
-1. `git switch main && git pull` → asegurarte que main esté actualizado.
-2. `git switch -c rama-feature` → crear y moverse a la rama de trabajo.
-3. Trabajar en commits pequeños.
-4. Opcional: `git rebase main` antes de PR.
-5. Abrir PR → **Rebase and Merge**.
-6. `git switch main && git pull` → actualizar main local.
-7. Borrar rama feature local y remoto.
-8. Crear nueva rama desde main actualizado.
+* **main** → Producción, estable.
+* **dev** → Integración, testeos antes de producción.
+* **feature/** → Desarrollo de nuevas funcionalidades.
+
+**Flujo típico:**
+
+1. Crear feature desde dev
+2. Hacer commits en feature
+3. PR de feature → dev
+4. Testear dev
+5. PR de dev → main
+6. Deploy a producción desde main
+
+---
+
+## 7️⃣ Consejos adicionales
+
+* Usar nombres claros en las ramas: `feature/login`, `feature/cart`, `hotfix/bug-123`.
+* Hacer commits pequeños y claros.
+* Siempre actualizar tu rama antes de mergear: `git pull origin dev`.
+* Mantener main limpia y estable, solo merges testeados desde dev.
+
+---
+
+Este flujo mantiene el proyecto organizado, facilita trabajo en equipo y asegura una producción estable.
 
