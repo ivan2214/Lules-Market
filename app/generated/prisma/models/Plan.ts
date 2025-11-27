@@ -45,6 +45,8 @@ export type PlanMinAggregateOutputType = {
   price: number | null
   maxProducts: number | null
   maxImages: number | null
+  hasStatistics: boolean | null
+  canFeatureProducts: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,6 +59,8 @@ export type PlanMaxAggregateOutputType = {
   price: number | null
   maxProducts: number | null
   maxImages: number | null
+  hasStatistics: boolean | null
+  canFeatureProducts: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -70,6 +74,8 @@ export type PlanCountAggregateOutputType = {
   features: number
   maxProducts: number
   maxImages: number
+  hasStatistics: number
+  canFeatureProducts: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -96,6 +102,8 @@ export type PlanMinAggregateInputType = {
   price?: true
   maxProducts?: true
   maxImages?: true
+  hasStatistics?: true
+  canFeatureProducts?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -108,6 +116,8 @@ export type PlanMaxAggregateInputType = {
   price?: true
   maxProducts?: true
   maxImages?: true
+  hasStatistics?: true
+  canFeatureProducts?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -121,6 +131,8 @@ export type PlanCountAggregateInputType = {
   features?: true
   maxProducts?: true
   maxImages?: true
+  hasStatistics?: true
+  canFeatureProducts?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -221,6 +233,8 @@ export type PlanGroupByOutputType = {
   features: string[]
   maxProducts: number
   maxImages: number
+  hasStatistics: boolean
+  canFeatureProducts: boolean
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -257,6 +271,8 @@ export type PlanWhereInput = {
   features?: Prisma.StringNullableListFilter<"Plan">
   maxProducts?: Prisma.IntFilter<"Plan"> | number
   maxImages?: Prisma.IntFilter<"Plan"> | number
+  hasStatistics?: Prisma.BoolFilter<"Plan"> | boolean
+  canFeatureProducts?: Prisma.BoolFilter<"Plan"> | boolean
   isActive?: Prisma.BoolFilter<"Plan"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
@@ -271,6 +287,8 @@ export type PlanOrderByWithRelationInput = {
   features?: Prisma.SortOrder
   maxProducts?: Prisma.SortOrder
   maxImages?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -288,6 +306,8 @@ export type PlanWhereUniqueInput = Prisma.AtLeast<{
   features?: Prisma.StringNullableListFilter<"Plan">
   maxProducts?: Prisma.IntFilter<"Plan"> | number
   maxImages?: Prisma.IntFilter<"Plan"> | number
+  hasStatistics?: Prisma.BoolFilter<"Plan"> | boolean
+  canFeatureProducts?: Prisma.BoolFilter<"Plan"> | boolean
   isActive?: Prisma.BoolFilter<"Plan"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
@@ -302,6 +322,8 @@ export type PlanOrderByWithAggregationInput = {
   features?: Prisma.SortOrder
   maxProducts?: Prisma.SortOrder
   maxImages?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -323,6 +345,8 @@ export type PlanScalarWhereWithAggregatesInput = {
   features?: Prisma.StringNullableListFilter<"Plan">
   maxProducts?: Prisma.IntWithAggregatesFilter<"Plan"> | number
   maxImages?: Prisma.IntWithAggregatesFilter<"Plan"> | number
+  hasStatistics?: Prisma.BoolWithAggregatesFilter<"Plan"> | boolean
+  canFeatureProducts?: Prisma.BoolWithAggregatesFilter<"Plan"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Plan"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Plan"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Plan"> | Date | string
@@ -336,6 +360,8 @@ export type PlanCreateInput = {
   features?: Prisma.PlanCreatefeaturesInput | string[]
   maxProducts: number
   maxImages: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -350,6 +376,8 @@ export type PlanUncheckedCreateInput = {
   features?: Prisma.PlanCreatefeaturesInput | string[]
   maxProducts: number
   maxImages: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -364,6 +392,8 @@ export type PlanUpdateInput = {
   features?: Prisma.PlanUpdatefeaturesInput | string[]
   maxProducts?: Prisma.IntFieldUpdateOperationsInput | number
   maxImages?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -378,6 +408,8 @@ export type PlanUncheckedUpdateInput = {
   features?: Prisma.PlanUpdatefeaturesInput | string[]
   maxProducts?: Prisma.IntFieldUpdateOperationsInput | number
   maxImages?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +424,8 @@ export type PlanCreateManyInput = {
   features?: Prisma.PlanCreatefeaturesInput | string[]
   maxProducts: number
   maxImages: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -405,6 +439,8 @@ export type PlanUpdateManyMutationInput = {
   features?: Prisma.PlanUpdatefeaturesInput | string[]
   maxProducts?: Prisma.IntFieldUpdateOperationsInput | number
   maxImages?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,6 +454,8 @@ export type PlanUncheckedUpdateManyInput = {
   features?: Prisma.PlanUpdatefeaturesInput | string[]
   maxProducts?: Prisma.IntFieldUpdateOperationsInput | number
   maxImages?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,6 +474,8 @@ export type PlanCountOrderByAggregateInput = {
   features?: Prisma.SortOrder
   maxProducts?: Prisma.SortOrder
   maxImages?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -454,6 +494,8 @@ export type PlanMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxProducts?: Prisma.SortOrder
   maxImages?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -466,6 +508,8 @@ export type PlanMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxProducts?: Prisma.SortOrder
   maxImages?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -516,6 +560,8 @@ export type PlanCreateWithoutCurrentPlansInput = {
   features?: Prisma.PlanCreatefeaturesInput | string[]
   maxProducts: number
   maxImages: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -529,6 +575,8 @@ export type PlanUncheckedCreateWithoutCurrentPlansInput = {
   features?: Prisma.PlanCreatefeaturesInput | string[]
   maxProducts: number
   maxImages: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -558,6 +606,8 @@ export type PlanUpdateWithoutCurrentPlansInput = {
   features?: Prisma.PlanUpdatefeaturesInput | string[]
   maxProducts?: Prisma.IntFieldUpdateOperationsInput | number
   maxImages?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -571,6 +621,8 @@ export type PlanUncheckedUpdateWithoutCurrentPlansInput = {
   features?: Prisma.PlanUpdatefeaturesInput | string[]
   maxProducts?: Prisma.IntFieldUpdateOperationsInput | number
   maxImages?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -615,6 +667,8 @@ export type PlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   features?: boolean
   maxProducts?: boolean
   maxImages?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -630,6 +684,8 @@ export type PlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   features?: boolean
   maxProducts?: boolean
   maxImages?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -643,6 +699,8 @@ export type PlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   features?: boolean
   maxProducts?: boolean
   maxImages?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -656,12 +714,14 @@ export type PlanSelectScalar = {
   features?: boolean
   maxProducts?: boolean
   maxImages?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"type" | "name" | "description" | "price" | "features" | "maxProducts" | "maxImages" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
+export type PlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"type" | "name" | "description" | "price" | "features" | "maxProducts" | "maxImages" | "hasStatistics" | "canFeatureProducts" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
 export type PlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currentPlans?: boolean | Prisma.Plan$currentPlansArgs<ExtArgs>
   _count?: boolean | Prisma.PlanCountOutputTypeDefaultArgs<ExtArgs>
@@ -682,6 +742,8 @@ export type $PlanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     features: string[]
     maxProducts: number
     maxImages: number
+    hasStatistics: boolean
+    canFeatureProducts: boolean
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1116,6 +1178,8 @@ export interface PlanFieldRefs {
   readonly features: Prisma.FieldRef<"Plan", 'String[]'>
   readonly maxProducts: Prisma.FieldRef<"Plan", 'Int'>
   readonly maxImages: Prisma.FieldRef<"Plan", 'Int'>
+  readonly hasStatistics: Prisma.FieldRef<"Plan", 'Boolean'>
+  readonly canFeatureProducts: Prisma.FieldRef<"Plan", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Plan", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Plan", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Plan", 'DateTime'>

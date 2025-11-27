@@ -6,8 +6,8 @@ import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import prisma from "@/lib/prisma";
-import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
 import { getCurrentBusiness } from "../business/require-busines";
+import { getPlan } from "../plan/plan.dal";
 import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 
 // ========================================
@@ -15,11 +15,11 @@ import type { PaymentDTO, PaymentPreferenceResult } from "./payment.dto";
 // ========================================
 
 export async function createPaymentPreference(
-  plan: PlanType,
+  planType: PlanType,
 ): Promise<PaymentPreferenceResult> {
   const { currentBusiness } = await getCurrentBusiness();
 
-  if (plan === "FREE") {
+  if (planType === "FREE") {
     return {
       preferenceId: null,
       initPoint: null,
@@ -27,7 +27,15 @@ export async function createPaymentPreference(
     };
   }
 
-  const planLimits = SUBSCRIPTION_LIMITS[plan];
+  const planLimits = await getPlan(planType);
+
+  if (!planLimits) {
+    return {
+      preferenceId: null,
+      initPoint: null,
+      sandboxInitPoint: null,
+    };
+  }
 
   // Create payment record
   const payment = await prisma.payment.create({
@@ -35,7 +43,7 @@ export async function createPaymentPreference(
       amount: planLimits.price,
       currency: "ARS",
       status: "pending",
-      plan,
+      plan: planType,
       businessId: currentBusiness.id,
     },
   });
@@ -46,8 +54,8 @@ export async function createPaymentPreference(
       items: [
         {
           id: payment.id,
-          title: `Plan ${plan} - Comercios Locales`,
-          description: `Suscripción mensual al plan ${plan}`,
+          title: `Plan ${planType} - Comercios Locales`,
+          description: `Suscripción mensual al plan ${planType}`,
           quantity: 1,
           unit_price: 1 || planLimits.price,
           currency_id: "ARS",

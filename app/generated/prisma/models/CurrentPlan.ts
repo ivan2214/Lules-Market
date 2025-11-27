@@ -44,6 +44,8 @@ export type CurrentPlanMinAggregateOutputType = {
   isTrial: boolean | null
   productsUsed: number | null
   imagesUsed: number | null
+  hasStatistics: boolean | null
+  canFeatureProducts: boolean | null
   expiresAt: Date | null
   activatedAt: Date | null
   isActive: boolean | null
@@ -59,6 +61,8 @@ export type CurrentPlanMaxAggregateOutputType = {
   isTrial: boolean | null
   productsUsed: number | null
   imagesUsed: number | null
+  hasStatistics: boolean | null
+  canFeatureProducts: boolean | null
   expiresAt: Date | null
   activatedAt: Date | null
   isActive: boolean | null
@@ -74,6 +78,8 @@ export type CurrentPlanCountAggregateOutputType = {
   isTrial: number
   productsUsed: number
   imagesUsed: number
+  hasStatistics: number
+  canFeatureProducts: number
   expiresAt: number
   activatedAt: number
   isActive: number
@@ -101,6 +107,8 @@ export type CurrentPlanMinAggregateInputType = {
   isTrial?: true
   productsUsed?: true
   imagesUsed?: true
+  hasStatistics?: true
+  canFeatureProducts?: true
   expiresAt?: true
   activatedAt?: true
   isActive?: true
@@ -116,6 +124,8 @@ export type CurrentPlanMaxAggregateInputType = {
   isTrial?: true
   productsUsed?: true
   imagesUsed?: true
+  hasStatistics?: true
+  canFeatureProducts?: true
   expiresAt?: true
   activatedAt?: true
   isActive?: true
@@ -131,6 +141,8 @@ export type CurrentPlanCountAggregateInputType = {
   isTrial?: true
   productsUsed?: true
   imagesUsed?: true
+  hasStatistics?: true
+  canFeatureProducts?: true
   expiresAt?: true
   activatedAt?: true
   isActive?: true
@@ -233,6 +245,8 @@ export type CurrentPlanGroupByOutputType = {
   isTrial: boolean
   productsUsed: number
   imagesUsed: number
+  hasStatistics: boolean
+  canFeatureProducts: boolean
   expiresAt: Date
   activatedAt: Date
   isActive: boolean
@@ -271,6 +285,8 @@ export type CurrentPlanWhereInput = {
   isTrial?: Prisma.BoolFilter<"CurrentPlan"> | boolean
   productsUsed?: Prisma.IntFilter<"CurrentPlan"> | number
   imagesUsed?: Prisma.IntFilter<"CurrentPlan"> | number
+  hasStatistics?: Prisma.BoolFilter<"CurrentPlan"> | boolean
+  canFeatureProducts?: Prisma.BoolFilter<"CurrentPlan"> | boolean
   expiresAt?: Prisma.DateTimeFilter<"CurrentPlan"> | Date | string
   activatedAt?: Prisma.DateTimeFilter<"CurrentPlan"> | Date | string
   isActive?: Prisma.BoolFilter<"CurrentPlan"> | boolean
@@ -288,6 +304,8 @@ export type CurrentPlanOrderByWithRelationInput = {
   isTrial?: Prisma.SortOrder
   productsUsed?: Prisma.SortOrder
   imagesUsed?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -308,6 +326,8 @@ export type CurrentPlanWhereUniqueInput = Prisma.AtLeast<{
   isTrial?: Prisma.BoolFilter<"CurrentPlan"> | boolean
   productsUsed?: Prisma.IntFilter<"CurrentPlan"> | number
   imagesUsed?: Prisma.IntFilter<"CurrentPlan"> | number
+  hasStatistics?: Prisma.BoolFilter<"CurrentPlan"> | boolean
+  canFeatureProducts?: Prisma.BoolFilter<"CurrentPlan"> | boolean
   expiresAt?: Prisma.DateTimeFilter<"CurrentPlan"> | Date | string
   activatedAt?: Prisma.DateTimeFilter<"CurrentPlan"> | Date | string
   isActive?: Prisma.BoolFilter<"CurrentPlan"> | boolean
@@ -325,6 +345,8 @@ export type CurrentPlanOrderByWithAggregationInput = {
   isTrial?: Prisma.SortOrder
   productsUsed?: Prisma.SortOrder
   imagesUsed?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -348,6 +370,8 @@ export type CurrentPlanScalarWhereWithAggregatesInput = {
   isTrial?: Prisma.BoolWithAggregatesFilter<"CurrentPlan"> | boolean
   productsUsed?: Prisma.IntWithAggregatesFilter<"CurrentPlan"> | number
   imagesUsed?: Prisma.IntWithAggregatesFilter<"CurrentPlan"> | number
+  hasStatistics?: Prisma.BoolWithAggregatesFilter<"CurrentPlan"> | boolean
+  canFeatureProducts?: Prisma.BoolWithAggregatesFilter<"CurrentPlan"> | boolean
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"CurrentPlan"> | Date | string
   activatedAt?: Prisma.DateTimeWithAggregatesFilter<"CurrentPlan"> | Date | string
   isActive?: Prisma.BoolWithAggregatesFilter<"CurrentPlan"> | boolean
@@ -361,6 +385,8 @@ export type CurrentPlanCreateInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -378,6 +404,8 @@ export type CurrentPlanUncheckedCreateInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -391,6 +419,8 @@ export type CurrentPlanUpdateInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -408,6 +438,8 @@ export type CurrentPlanUncheckedUpdateInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -423,6 +455,8 @@ export type CurrentPlanCreateManyInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -436,6 +470,8 @@ export type CurrentPlanUpdateManyMutationInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -451,6 +487,8 @@ export type CurrentPlanUncheckedUpdateManyInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -471,6 +509,8 @@ export type CurrentPlanCountOrderByAggregateInput = {
   isTrial?: Prisma.SortOrder
   productsUsed?: Prisma.SortOrder
   imagesUsed?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -491,6 +531,8 @@ export type CurrentPlanMaxOrderByAggregateInput = {
   isTrial?: Prisma.SortOrder
   productsUsed?: Prisma.SortOrder
   imagesUsed?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -506,6 +548,8 @@ export type CurrentPlanMinOrderByAggregateInput = {
   isTrial?: Prisma.SortOrder
   productsUsed?: Prisma.SortOrder
   imagesUsed?: Prisma.SortOrder
+  hasStatistics?: Prisma.SortOrder
+  canFeatureProducts?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -624,6 +668,8 @@ export type CurrentPlanCreateWithoutBusinessInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -639,6 +685,8 @@ export type CurrentPlanUncheckedCreateWithoutBusinessInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -668,6 +716,8 @@ export type CurrentPlanUpdateWithoutBusinessInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -683,6 +733,8 @@ export type CurrentPlanUncheckedUpdateWithoutBusinessInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -696,6 +748,8 @@ export type CurrentPlanCreateWithoutPlanInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -711,6 +765,8 @@ export type CurrentPlanUncheckedCreateWithoutPlanInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -755,6 +811,8 @@ export type CurrentPlanScalarWhereInput = {
   isTrial?: Prisma.BoolFilter<"CurrentPlan"> | boolean
   productsUsed?: Prisma.IntFilter<"CurrentPlan"> | number
   imagesUsed?: Prisma.IntFilter<"CurrentPlan"> | number
+  hasStatistics?: Prisma.BoolFilter<"CurrentPlan"> | boolean
+  canFeatureProducts?: Prisma.BoolFilter<"CurrentPlan"> | boolean
   expiresAt?: Prisma.DateTimeFilter<"CurrentPlan"> | Date | string
   activatedAt?: Prisma.DateTimeFilter<"CurrentPlan"> | Date | string
   isActive?: Prisma.BoolFilter<"CurrentPlan"> | boolean
@@ -769,6 +827,8 @@ export type CurrentPlanCreateManyPlanInput = {
   isTrial?: boolean
   productsUsed?: number
   imagesUsed?: number
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt: Date | string
   activatedAt: Date | string
   isActive?: boolean
@@ -782,6 +842,8 @@ export type CurrentPlanUpdateWithoutPlanInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -797,6 +859,8 @@ export type CurrentPlanUncheckedUpdateWithoutPlanInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -811,6 +875,8 @@ export type CurrentPlanUncheckedUpdateManyWithoutPlanInput = {
   isTrial?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productsUsed?: Prisma.IntFieldUpdateOperationsInput | number
   imagesUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  hasStatistics?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canFeatureProducts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -828,6 +894,8 @@ export type CurrentPlanSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   isTrial?: boolean
   productsUsed?: boolean
   imagesUsed?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt?: boolean
   activatedAt?: boolean
   isActive?: boolean
@@ -845,6 +913,8 @@ export type CurrentPlanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   isTrial?: boolean
   productsUsed?: boolean
   imagesUsed?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt?: boolean
   activatedAt?: boolean
   isActive?: boolean
@@ -862,6 +932,8 @@ export type CurrentPlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   isTrial?: boolean
   productsUsed?: boolean
   imagesUsed?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt?: boolean
   activatedAt?: boolean
   isActive?: boolean
@@ -879,6 +951,8 @@ export type CurrentPlanSelectScalar = {
   isTrial?: boolean
   productsUsed?: boolean
   imagesUsed?: boolean
+  hasStatistics?: boolean
+  canFeatureProducts?: boolean
   expiresAt?: boolean
   activatedAt?: boolean
   isActive?: boolean
@@ -886,7 +960,7 @@ export type CurrentPlanSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CurrentPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessId" | "planType" | "planStatus" | "isTrial" | "productsUsed" | "imagesUsed" | "expiresAt" | "activatedAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["currentPlan"]>
+export type CurrentPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessId" | "planType" | "planStatus" | "isTrial" | "productsUsed" | "imagesUsed" | "hasStatistics" | "canFeatureProducts" | "expiresAt" | "activatedAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["currentPlan"]>
 export type CurrentPlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   business?: boolean | Prisma.BusinessDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.PlanDefaultArgs<ExtArgs>
@@ -914,6 +988,8 @@ export type $CurrentPlanPayload<ExtArgs extends runtime.Types.Extensions.Interna
     isTrial: boolean
     productsUsed: number
     imagesUsed: number
+    hasStatistics: boolean
+    canFeatureProducts: boolean
     expiresAt: Date
     activatedAt: Date
     isActive: boolean
@@ -1351,6 +1427,8 @@ export interface CurrentPlanFieldRefs {
   readonly isTrial: Prisma.FieldRef<"CurrentPlan", 'Boolean'>
   readonly productsUsed: Prisma.FieldRef<"CurrentPlan", 'Int'>
   readonly imagesUsed: Prisma.FieldRef<"CurrentPlan", 'Int'>
+  readonly hasStatistics: Prisma.FieldRef<"CurrentPlan", 'Boolean'>
+  readonly canFeatureProducts: Prisma.FieldRef<"CurrentPlan", 'Boolean'>
   readonly expiresAt: Prisma.FieldRef<"CurrentPlan", 'DateTime'>
   readonly activatedAt: Prisma.FieldRef<"CurrentPlan", 'DateTime'>
   readonly isActive: Prisma.FieldRef<"CurrentPlan", 'Boolean'>

@@ -7,18 +7,15 @@ import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSubscriptionLimits } from "@/lib/subscription-limits";
 
 async function ProductsContent() {
   const { currentBusiness } = await getCurrentBusiness();
   const products = await getProductsByBusinessId();
 
-  const limits = getSubscriptionLimits(
-    currentBusiness.currentPlan?.planType || "FREE",
-  );
+  const currentPlan = currentBusiness.currentPlan;
+
   const canAdd =
-    limits.maxProducts === -1 ||
-    (currentBusiness.products?.length || 0) < limits.maxProducts;
+    (currentPlan?.productsUsed || 0) < (currentPlan?.plan?.maxProducts || 0);
 
   return (
     <>
@@ -26,12 +23,12 @@ async function ProductsContent() {
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Productos</h1>
           <p className="text-muted-foreground">
-            {currentBusiness.products?.length ?? 0} de{" "}
-            {limits.maxProducts === -1 ? "ilimitados" : limits.maxProducts}{" "}
-            productos
+            {currentPlan?.productsUsed ?? 0} de {currentPlan?.plan?.maxProducts}
           </p>
         </div>
-        <ProductFormDialog canFeature={limits.canFeatureProducts} />
+        <ProductFormDialog
+          canFeature={currentPlan?.canFeatureProducts || false}
+        />
       </div>
 
       {!canAdd && (
@@ -60,7 +57,9 @@ async function ProductsContent() {
               Comienza agregando tu primer producto
             </p>
             <div className="mt-4">
-              <ProductFormDialog canFeature={limits.canFeatureProducts} />
+              <ProductFormDialog
+                canFeature={currentPlan?.canFeatureProducts || false}
+              />
             </div>
           </CardContent>
         </Card>
@@ -70,7 +69,7 @@ async function ProductsContent() {
             <ProductCard
               key={product.id}
               product={product}
-              canFeature={limits.canFeatureProducts}
+              canFeature={currentPlan?.canFeatureProducts || false}
             />
           ))}
         </div>

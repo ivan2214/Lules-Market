@@ -5,7 +5,6 @@ import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { getSubscriptionLimits } from "@/lib/subscription-limits";
 import { getBusinessProducts } from "../data/business/business.dal";
 import { getCurrentBusiness } from "../data/business/require-busines";
 
@@ -17,12 +16,9 @@ async function DashboardContent() {
     limit: 5,
     offset: 0,
   });
-  const limits = getSubscriptionLimits(
-    currentBusiness.currentPlan?.planType || "FREE",
-  );
+
   const productCount = currentBusiness.products?.length || 0;
-  const productLimit =
-    limits.maxProducts === -1 ? "Ilimitado" : limits.maxProducts;
+  const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
 
   return (
     <>
@@ -65,7 +61,9 @@ async function DashboardContent() {
           <CardContent>
             <div className="font-bold text-2xl">-</div>
             <p className="text-muted-foreground text-xs">
-              {limits.hasStatistics ? "Disponible" : "Mejora tu plan"}
+              {currentBusiness.currentPlan?.hasStatistics
+                ? "Disponible"
+                : "Mejora tu plan"}
             </p>
           </CardContent>
         </Card>
@@ -78,7 +76,9 @@ async function DashboardContent() {
           <CardContent>
             <div className="font-bold text-2xl">-</div>
             <p className="text-muted-foreground text-xs">
-              {limits.hasStatistics ? "Disponible" : "Mejora tu plan"}
+              {currentBusiness.currentPlan?.hasStatistics
+                ? "Disponible"
+                : "Mejora tu plan"}
             </p>
           </CardContent>
         </Card>
@@ -91,7 +91,9 @@ async function DashboardContent() {
           </CardHeader>
           <CardContent className="space-y-2">
             <ProductFormDialog
-              canFeature={limits.canFeatureProducts}
+              canFeature={
+                currentBusiness.currentPlan?.canFeatureProducts || false
+              }
               className="w-full"
             />
 
@@ -156,7 +158,9 @@ async function DashboardContent() {
                     </p>
                   </div>
                   <ProductFormDialog
-                    canFeature={limits.canFeatureProducts}
+                    canFeature={
+                      currentBusiness.currentPlan?.canFeatureProducts || false
+                    }
                     product={product}
                     trigger={
                       <Button variant="outline" size="sm">

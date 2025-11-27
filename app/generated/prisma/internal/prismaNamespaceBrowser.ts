@@ -271,6 +271,8 @@ export const CurrentPlanScalarFieldEnum = {
   isTrial: 'isTrial',
   productsUsed: 'productsUsed',
   imagesUsed: 'imagesUsed',
+  hasStatistics: 'hasStatistics',
+  canFeatureProducts: 'canFeatureProducts',
   expiresAt: 'expiresAt',
   activatedAt: 'activatedAt',
   isActive: 'isActive',
@@ -300,6 +302,8 @@ export const PlanScalarFieldEnum = {
   features: 'features',
   maxProducts: 'maxProducts',
   maxImages: 'maxImages',
+  hasStatistics: 'hasStatistics',
+  canFeatureProducts: 'canFeatureProducts',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

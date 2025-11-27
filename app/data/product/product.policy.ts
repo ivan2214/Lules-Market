@@ -1,6 +1,7 @@
 import type { PlanType } from "@/app/generated/prisma/client";
-import { getSubscriptionLimits } from "@/lib/subscription-limits";
+
 import "server-only";
+import { getCurrentBusiness } from "../business/require-busines";
 
 type PolicyUser = {
   userId: string;
@@ -32,12 +33,20 @@ export function canDeleteProduct(
   return canEditProduct(user, product);
 }
 
-export function canAddProduct(currentCount: number, plan: PlanType): boolean {
-  const limits = getSubscriptionLimits(plan);
-  if (limits.maxProducts === -1) return true;
-  return currentCount < limits.maxProducts;
+export async function canAddProduct(): Promise<boolean> {
+  const { currentBusiness } = await getCurrentBusiness();
+
+  const { productsUsed } = currentBusiness?.currentPlan || {};
+  const { maxProducts } = currentBusiness?.currentPlan?.plan || {};
+  if (maxProducts === -1) return true;
+  if (!productsUsed) return false;
+  if (!maxProducts) return false;
+  return productsUsed < maxProducts;
 }
 
-export function canFeatureProduct(plan: PlanType): boolean {
-  return getSubscriptionLimits(plan).canFeatureProducts;
+export async function canFeatureProduct(): Promise<boolean> {
+  const { currentBusiness } = await getCurrentBusiness();
+
+  const { canFeatureProducts } = currentBusiness?.currentPlan || {};
+  return !!canFeatureProducts;
 }
