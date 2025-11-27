@@ -1,6 +1,6 @@
+import { getPlans } from "@/app/actions/plan-actions";
 import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
-import type { PlanType } from "@/app/generated/prisma/client";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,71 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SUBSCRIPTION_LIMITS } from "@/lib/subscription-limits";
-import type { IconComponentName } from "@/types";
-
-const plans: {
-  name: PlanType;
-  title: string;
-  price: number;
-  icon: IconComponentName;
-  description: string;
-  features: string[];
-  limitations?: string[];
-  popular?: boolean;
-}[] = [
-  {
-    name: "FREE",
-    title: "Gratuito",
-    price: SUBSCRIPTION_LIMITS.FREE.price,
-    icon: "Sparkles",
-    description: "Perfecto para comenzar",
-    features: [
-      `Hasta ${SUBSCRIPTION_LIMITS.FREE.maxProducts} productos`,
-      "Perfil de negocio básico",
-      "Contacto directo con clientes",
-      "Búsqueda en catálogo",
-    ],
-    limitations: [
-      "Sin estadísticas",
-      "Sin productos destacados",
-      "Prioridad baja en búsquedas",
-    ],
-  },
-  {
-    name: "BASIC",
-    title: "Básico",
-    price: SUBSCRIPTION_LIMITS.BASIC.price,
-    icon: "Zap",
-    description: "Para negocios en crecimiento",
-    features: [
-      `Hasta ${SUBSCRIPTION_LIMITS.BASIC.maxProducts} productos`,
-      "Estadísticas simples",
-      "Prioridad media en búsquedas",
-      "Soporte por email",
-    ],
-    popular: true,
-  },
-  {
-    name: "PREMIUM",
-    title: "Premium",
-    price: SUBSCRIPTION_LIMITS.PREMIUM.price,
-    icon: "Crown",
-    description: "Para negocios establecidos",
-    features: [
-      "Productos ilimitados",
-      "Destacar productos",
-      "Estadísticas avanzadas",
-      "Máxima prioridad en búsquedas",
-      "Soporte prioritario",
-    ],
-  },
-];
 
 export default async function SubscriptionPage() {
   const { currentBusiness } = await getCurrentBusiness();
 
   const payments = await getSubscriptionHistory();
+
+  const plans = await getPlans();
 
   return (
     <div className="space-y-8">
@@ -119,14 +61,10 @@ export default async function SubscriptionPage() {
             <div className="text-right">
               <p className="text-muted-foreground text-sm">Productos</p>
               <p className="font-bold text-2xl">
-                {currentBusiness.products?.length ?? 0} /{" "}
-                {SUBSCRIPTION_LIMITS[
-                  currentBusiness.currentPlan?.planType || "FREE"
-                ].maxProducts === -1
+                {currentBusiness.currentPlan?.productsUsed ?? 0} /{" "}
+                {currentBusiness.currentPlan?.planType === "PREMIUM"
                   ? "∞"
-                  : SUBSCRIPTION_LIMITS[
-                      currentBusiness.currentPlan?.planType || "FREE"
-                    ].maxProducts}
+                  : currentBusiness.currentPlan?.plan?.maxProducts || 0}
               </p>
             </div>
           </div>

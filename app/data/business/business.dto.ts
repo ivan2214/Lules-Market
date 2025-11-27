@@ -52,5 +52,5 @@ export interface CurrentPlanDTO extends CurrentPlan {
 }
 
 export interface PlanDTO extends Plan {
-  currentPlans: CurrentPlanDTO[];
+  currentPlans?: CurrentPlanDTO[];
 }

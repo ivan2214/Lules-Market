@@ -31,6 +31,11 @@ export const requireBusiness = cache(async () => {
         where: { active: true },
         orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
       },
+      currentPlan: {
+        include: {
+          plan: true,
+        },
+      },
     },
   });
 
