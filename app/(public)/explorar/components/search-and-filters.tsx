@@ -31,8 +31,13 @@ type SearchAndFiltersProps = {
     page?: string;
     businessId?: string;
     limit?: string;
-    sortBy?: string;
-    minRating?: string;
+    sortBy?:
+      | "price_asc"
+      | "price_desc"
+      | "name_asc"
+      | "name_desc"
+      | "newest"
+      | "oldest";
   };
   typeExplorer: TypeExplorer;
 };
@@ -41,7 +46,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   params,
   typeExplorer,
 }) => {
-  const { minRating, search, sortBy } = params || {};
+  const { search, sortBy } = params || {};
   const [showOpenOnly, setShowOpenOnly] = useState(false);
   const [searchValue, setSearchValue] = useState(search || "");
   const router = useRouter();
@@ -80,26 +85,47 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         />
       </form>
 
-      <Select
-        value={sortBy}
-        onValueChange={(value) => {
-          createSearchUrl({
-            currentParams: params,
-            updates: { sortBy: value },
-            typeExplorer,
-          });
-        }}
-      >
-        <SelectTrigger className="w-full md:w-[200px]">
-          <SelectValue placeholder="Ordenar por" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="price_asc">Precio ascendente</SelectItem>
-          <SelectItem value="price_desc">Precio descendente</SelectItem>
-          <SelectItem value="name_asc">Nombre ascendente</SelectItem>
-          <SelectItem value="name_desc">Nombre descendente</SelectItem>
-        </SelectContent>
-      </Select>
+      {typeExplorer === "productos" ? (
+        <Select
+          value={sortBy}
+          onValueChange={(value) => {
+            createSearchUrl({
+              currentParams: params,
+              updates: { sortBy: value },
+              typeExplorer,
+            });
+          }}
+        >
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Ordenar por" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="price_asc">Precio ascendente</SelectItem>
+            <SelectItem value="price_desc">Precio descendente</SelectItem>
+            <SelectItem value="name_asc">Nombre ascendente</SelectItem>
+            <SelectItem value="name_desc">Nombre descendente</SelectItem>
+          </SelectContent>
+        </Select>
+      ) : (
+        <Select
+          value={sortBy}
+          onValueChange={(value) => {
+            createSearchUrl({
+              currentParams: params,
+              updates: { sortBy: value },
+              typeExplorer,
+            });
+          }}
+        >
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Ordenar por" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">Mas recientes</SelectItem>
+            <SelectItem value="oldest">Mas antiguos</SelectItem>
+          </SelectContent>
+        </Select>
+      )}
 
       <Sheet>
         <SheetTrigger asChild>
@@ -124,20 +150,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               />
               <Label htmlFor="open">Solo comercios abiertos</Label>
             </div>
-            <div>
-              <Label>Calificación mínima</Label>
-              <Select value={minRating?.toString()} onValueChange={() => {}}>
-                <SelectTrigger className="mt-2">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">Todas</SelectItem>
-                  <SelectItem value="3">3+ estrellas</SelectItem>
-                  <SelectItem value="4">4+ estrellas</SelectItem>
-                  <SelectItem value="4.5">4.5+ estrellas</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
             <div>
               <Button
                 className="w-full"

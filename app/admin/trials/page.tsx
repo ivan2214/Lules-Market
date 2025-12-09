@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { Suspense } from "react";
 import {
@@ -8,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import { TrialColumns } from "./components/trial-columns";
 import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
 
@@ -17,11 +18,15 @@ async function getTrialsAndActiveCount() {
   cacheLife("hours");
   cacheTag("trials-page");
 
-  const now = new Date(); // <-- permitido aquí
+  const now = new Date();
 
   const [trials, activeTrials] = await Promise.all([
-    prisma.trial.findMany({ include: { business: true } }),
-    prisma.trial.findMany({ where: { isActive: true } }),
+    db.query.trial.findMany({
+      with: { business: true },
+    }),
+    db.query.trial.findMany({
+      where: eq(schema.trial.isActive, true),
+    }),
   ]);
 
   const calculateDaysRemaining = (endDate: Date) => {
@@ -113,7 +118,7 @@ export default async function TrialsPage() {
           <TrialColumns
             trials={trials.map((trial) => ({
               ...trial,
-              businessName: trial.business.name,
+              businessName: trial.business?.name ?? "Sin negocio",
             }))}
           />
         </CardContent>

@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Image } from "@/app/generated/prisma/client";
+import type { Image } from "@/db";
 
 export type CleanImage = Omit<
   Image,

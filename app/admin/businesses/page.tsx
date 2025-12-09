@@ -1,23 +1,23 @@
 import { cacheLife, cacheTag } from "next/cache";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
 import { BusinessesClient } from "./components/businesses-client";
 
 export default async function BusinessesPage() {
   "use cache";
   cacheLife("hours");
   cacheTag("business-page");
-  const businesses = await prisma.business.findMany({
-    include: {
+  const businesses = await db.query.business.findMany({
+    with: {
       bannedBusiness: true,
       coverImage: true,
       logo: true,
       products: {
-        include: {
+        with: {
           images: true,
         },
       },
       user: {
-        include: {
+        with: {
           admin: true,
           business: true,
         },

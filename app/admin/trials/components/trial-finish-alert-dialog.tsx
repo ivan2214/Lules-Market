@@ -30,7 +30,7 @@ export const TrialFinishAlertDialog = ({
           <AlertDialogTitle>¿Finalizar prueba gratuita?</AlertDialogTitle>
           <AlertDialogDescription>
             Estás a punto de finalizar la prueba gratuita de "
-            {selectedTrial?.businessName}". El negocio perderá acceso a las
+            {selectedTrial?.business?.name}". El negocio perderá acceso a las
             funciones del plan {selectedTrial?.plan}.
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -1,7 +1,6 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { Permission } from "@/app/generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -15,14 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { Permission } from "@/db";
 
-const availablePermissions = [
-  Permission.ALL,
-  Permission.BAN_USERS,
-  Permission.MANAGE_COUPONS,
-  Permission.MANAGE_PAYMENTS,
-  Permission.MODERATE_CONTENT,
-  Permission.VIEW_ANALYTIICS,
+const availablePermissions: Permission[] = [
+  "ALL",
+  "BAN_USERS",
+
+  "MANAGE_PAYMENTS",
+  "MODERATE_CONTENT",
+  "VIEW_ANALYTICS",
 ];
 
 export const AdminCreateDialog = () => {

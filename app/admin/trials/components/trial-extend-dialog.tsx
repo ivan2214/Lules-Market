@@ -36,7 +36,7 @@ export const TrialExtendDialog = ({
           <DialogTitle>Extender Prueba Gratuita</DialogTitle>
           <DialogDescription>
             Selecciona la nueva fecha de finalización para "
-            {selectedTrial?.businessName}"
+            {selectedTrial?.business?.name}"
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">

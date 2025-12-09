@@ -11,7 +11,7 @@ Lules Market is a local business platform with three-tier subscriptions (Free/Ba
 * **Next.js 16.0.0** with App Router, React 19.2.0, Turbopack
 * **Cache Components** enabled for performance optimization
 * **Better-Auth** for authentication with 7-day sessions
-* **Prisma ORM** with PostgreSQL and custom output path (`app/generated/prisma`)
+* **Drizzle ORM** with PostgreSQL
 * **shadcn/ui** with Tailwind CSS v4 and Radix UI primitives
 * **TypeScript 5** with strict typing
 * **Biome** for linting/formatting (not ESLint/Prettier)
@@ -38,7 +38,6 @@ Lules Market is a local business platform with three-tier subscriptions (Free/Ba
 * Business setup required after registration
 
 ### Database Patterns
-* Prisma client generated to `app/generated/prisma`
 * Use camelCase for fields, PascalCase for models
 * Implement proper relations and constraints
 

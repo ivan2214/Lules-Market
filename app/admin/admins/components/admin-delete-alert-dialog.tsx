@@ -31,7 +31,7 @@ export const AdminDeleteAlertDialog: React.FC<AdminDeleteAlertDialogProps> = ({
           </AlertDialogTitle>
           <AlertDialogDescription>
             Estás a punto de remover los permisos de administrador de "
-            {selectedAdmin?.user.name}". El usuario perderá acceso al panel de
+            {selectedAdmin?.user?.name}". El usuario perderá acceso al panel de
             administración.
           </AlertDialogDescription>
         </AlertDialogHeader>

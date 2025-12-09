@@ -1,4 +1,3 @@
-import type { Image } from "@/app/generated/prisma/client";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import type { Image } from "@/db";
 
 type Props = {
   images?: Image[] | null;
@@ -42,7 +42,7 @@ export function ProductImages({ images, name }: Props) {
           {images?.map((image, index) => (
             <Button
               key={image.key}
-              className="flex-shrink-0 overflow-hidden rounded-md border-2 border-transparent hover:border-primary"
+              className="shrink-0 overflow-hidden rounded-md border-2 border-transparent hover:border-primary"
             >
               <ImageWithSkeleton
                 src={image.url}

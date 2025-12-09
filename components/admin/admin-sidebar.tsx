@@ -10,7 +10,6 @@ import {
   Package,
   Shield,
   Store,
-  Ticket,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,7 +21,6 @@ const navigation = [
   { name: "Productos", href: "/admin/products", icon: Package },
   { name: "Planes", href: "/admin/plans", icon: Layers },
   { name: "Pagos", href: "/admin/payments", icon: CreditCard },
-  { name: "Cupones", href: "/admin/coupons", icon: Ticket },
   { name: "Trials", href: "/admin/trials", icon: Clock },
   { name: "Moderación", href: "/admin/media", icon: ImageIcon },
   { name: "Administradores", href: "/admin/admins", icon: Shield },

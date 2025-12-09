@@ -1,9 +1,9 @@
 "use server";
 
 import { addDays } from "date-fns";
+import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
-import type { PlanType } from "@/app/generated/prisma/client";
-import prisma from "@/lib/prisma";
+import { db, type PlanType, schema } from "@/db";
 
 interface ChangePlanParams {
   businessId: string;
@@ -22,16 +22,15 @@ export const changePlan = async ({
 }: ChangePlanParams): Promise<{ ok: boolean; message?: string }> => {
   try {
     // Buscamos el plan
-
-    const plan = await prisma.plan.findUnique({
-      where: { type: planType },
+    const plan = await db.query.plan.findFirst({
+      where: eq(schema.plan.type, planType),
     });
     if (!plan) return { ok: false, message: "Plan no encontrado" };
 
     // Buscamos el negocio
-    const business = await prisma.business.findUnique({
-      where: { id: businessId },
-      include: { currentPlan: true, trial: true },
+    const business = await db.query.business.findFirst({
+      where: eq(schema.business.id, businessId),
+      with: { currentPlan: true, trial: true },
     });
     if (!business) return { ok: false, message: "Comercio no encontrado" };
 
@@ -51,32 +50,30 @@ export const changePlan = async ({
 
       // Desactivar cualquier trial activo
       if (business.trial?.isActive) {
-        await prisma.trial.update({
-          where: { businessId },
-          data: { isActive: false },
-        });
+        await db
+          .update(schema.trial)
+          .set({ isActive: false })
+          .where(eq(schema.trial.businessId, businessId));
       }
 
       // Crear nuevo trial
-      await prisma.trial.create({
-        data: {
-          businessId,
-          plan: planType, // el plan actual del trial
-          activatedAt: now,
-          expiresAt,
-          isActive: true,
-        },
+      await db.insert(schema.trial).values({
+        businessId,
+        plan: planType,
+        activatedAt: now,
+        expiresAt,
+        isActive: true,
       });
 
-      // Actualizar el negocio
-      await prisma.currentPlan.update({
-        where: { businessId },
-        data: {
+      // Actualizar el plan actual del negocio
+      await db
+        .update(schema.currentPlan)
+        .set({
           planType,
           planStatus: "ACTIVE",
           expiresAt,
-        },
-      });
+        })
+        .where(eq(schema.currentPlan.businessId, businessId));
 
       return { ok: true, message: "Trial activado correctamente" };
     }
@@ -84,14 +81,14 @@ export const changePlan = async ({
     // Caso plan pagado / cambio normal de plan
     const expiresAt = addDays(now, planDurationDays);
 
-    await prisma.currentPlan.update({
-      where: { businessId },
-      data: {
+    await db
+      .update(schema.currentPlan)
+      .set({
         planType,
         planStatus: "ACTIVE",
         expiresAt,
-      },
-    });
+      })
+      .where(eq(schema.currentPlan.businessId, businessId));
 
     return { ok: true, message: "Plan actualizado correctamente" };
   } catch (error) {

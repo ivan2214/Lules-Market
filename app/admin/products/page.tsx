@@ -1,13 +1,13 @@
 import { cacheLife, cacheTag } from "next/cache";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
 import { ProductsClient } from "./components/products-client";
 
 export default async function ProductsPage() {
   "use cache";
   cacheLife("hours");
   cacheTag("products-page");
-  const products = await prisma.product.findMany({
-    include: {
+  const products = await db.query.product.findMany({
+    with: {
       images: true,
       business: true,
     },

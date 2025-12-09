@@ -2,7 +2,6 @@
 
 import { AlertTriangle, CheckCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { Image } from "@/app/generated/prisma/client";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import {
   AlertDialog,
@@ -17,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Image } from "@/db";
 
 type MediaClientProps = {
   images: Image[];

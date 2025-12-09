@@ -2,9 +2,10 @@
 
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Business } from "@/app/generated/prisma/client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { Business } from "@/db";
 import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
 
 type ActiveFiltersProps = {
@@ -15,7 +16,6 @@ type ActiveFiltersProps = {
     businessId?: string;
     limit?: string;
     sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-    minRating?: string;
   };
   businesses: Business[];
   typeExplorer: TypeExplorer;
@@ -121,7 +121,6 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
         params.category ||
         params.businessId ||
         params.sortBy ||
-        params.minRating ||
         params.limit ||
         params.page) && (
         <Button

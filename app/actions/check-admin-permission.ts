@@ -1,22 +1,22 @@
 "use server";
 
-import type { Permission } from "@/app/generated/prisma/client";
-import prisma from "@/lib/prisma";
+import { eq } from "drizzle-orm";
+import { db, type Permission, schema } from "@/db";
 
 export async function checkAdminPermission(
   adminId: string,
   permission: Permission,
 ): Promise<boolean> {
   try {
-    const adminPermissions = await prisma.admin.findUnique({
-      where: { userId: adminId },
-      select: { permissions: true },
+    const admin = await db.query.admin.findFirst({
+      where: eq(schema.admin.userId, adminId),
+      columns: { permissions: true },
     });
 
     // Asegura que exista el admin y que su lista de permisos incluya el permiso requerido.
     return (
-      adminPermissions?.permissions.includes("ALL") ||
-      adminPermissions?.permissions?.includes(permission) ||
+      admin?.permissions?.includes("ALL") ||
+      admin?.permissions?.includes(permission) ||
       false
     );
   } catch (error) {

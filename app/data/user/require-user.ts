@@ -1,9 +1,10 @@
 import "server-only";
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { db, schema } from "@/db";
 import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
 
 export const verifySession = cache(
   async (): Promise<{
@@ -52,9 +53,9 @@ export const getCurrentUser = cache(
     const session = await verifySession();
     if (!session) return null;
     try {
-      const data = await prisma.user.findUnique({
-        where: { id: session.userId },
-        select: {
+      const data = await db.query.user.findFirst({
+        where: eq(schema.user.id, session.userId),
+        columns: {
           id: true,
           email: true,
           name: true,

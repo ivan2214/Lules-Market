@@ -1,4 +1,4 @@
-import { MapPin, Star } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Link from "next/link";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
@@ -45,15 +45,6 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <MapPin className="h-4 w-4" />
             <span className="line-clamp-1">{business.address}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-semibold">{business.rating}</span>
-            </div>
-            <span className="text-muted-foreground text-sm">
-              ({business.reviews?.length} opiniones)
-            </span>
           </div>
         </CardContent>
       </Card>

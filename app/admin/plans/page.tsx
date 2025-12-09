@@ -8,76 +8,76 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import prisma from "@/lib/prisma";
+import { db, type Plan, schema } from "@/db";
 import { PlanClient } from "./components/plan-client";
 import { PlanCreateFormDialog } from "./components/plan-create-form-dialog";
 
-async function getPlans() {
+async function getPlans(): Promise<Plan[]> {
   "use cache";
   cacheLife("days");
   cacheTag("plans-page");
-  const count = await prisma.plan.count();
 
-  if (count === 0) {
-    await prisma.plan.createMany({
-      data: [
-        {
-          type: "FREE",
-          name: "Plan Gratuito",
-          description: "Perfecto para comenzar tu negocio online",
-          price: 0,
-          features: [
-            "Hasta 10 productos",
-            "3 imágenes por producto",
-            "Catálogo básico",
-            "Soporte por email",
-          ],
-          maxProducts: 10,
-          maxImages: 3,
-          isActive: true,
-          createdAt: new Date("2023-12-01"),
-        },
-        {
-          type: "BASIC",
-          name: "Plan Básico",
-          description: "Para negocios en crecimiento",
-          price: 14999,
-          features: [
-            "Hasta 50 productos",
-            "10 imágenes por producto",
-            "Catálogo personalizado",
-            "Estadísticas básicas",
-            "Soporte prioritario",
-          ],
-          maxProducts: 50,
-          maxImages: 10,
-          isActive: true,
-          createdAt: new Date("2023-12-01"),
-        },
-        {
-          type: "PREMIUM",
-          name: "Plan Premium",
-          description: "Para negocios profesionales",
-          price: 29999,
-          features: [
-            "Productos ilimitados",
-            "Imágenes ilimitadas",
-            "Catálogo premium",
-            "Estadísticas avanzadas",
-            "Soporte 24/7",
-            "Dominio personalizado",
-            "Sin comisiones",
-          ],
-          maxProducts: -1,
-          maxImages: -1,
-          isActive: true,
-          createdAt: new Date("2023-12-01"),
-        },
-      ],
-    });
+  const plans = await db.query.plan.findMany();
+
+  if (plans.length === 0) {
+    // Seed default plans
+    await db.insert(schema.plan).values([
+      {
+        type: "FREE",
+        name: "Plan Gratuito",
+        description: "Perfecto para comenzar tu negocio online",
+        price: 0,
+        features: [
+          "Hasta 10 productos",
+          "3 imágenes por producto",
+          "Catálogo básico",
+          "Soporte por email",
+        ],
+        maxProducts: 10,
+        maxImages: 3,
+        isActive: true,
+        createdAt: new Date("2023-12-01"),
+      },
+      {
+        type: "BASIC",
+        name: "Plan Básico",
+        description: "Para negocios en crecimiento",
+        price: 14999,
+        features: [
+          "Hasta 50 productos",
+          "10 imágenes por producto",
+          "Catálogo personalizado",
+          "Estadísticas básicas",
+          "Soporte prioritario",
+        ],
+        maxProducts: 50,
+        maxImages: 10,
+        isActive: true,
+        createdAt: new Date("2023-12-01"),
+      },
+      {
+        type: "PREMIUM",
+        name: "Plan Premium",
+        description: "Para negocios profesionales",
+        price: 29999,
+        features: [
+          "Productos ilimitados",
+          "Imágenes ilimitadas",
+          "Catálogo premium",
+          "Estadísticas avanzadas",
+          "Soporte 24/7",
+          "Dominio personalizado",
+          "Sin comisiones",
+        ],
+        maxProducts: -1,
+        maxImages: -1,
+        isActive: true,
+        createdAt: new Date("2023-12-01"),
+      },
+    ]);
+
+    return await db.query.plan.findMany();
   }
-
-  const plans = await prisma.plan.findMany();
 
   return plans;
 }

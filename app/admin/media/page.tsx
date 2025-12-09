@@ -1,15 +1,15 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
 import { MediaClient } from "./components/media-client";
 
 const getImages = async (page?: string, limit?: string) => {
   "use cache";
   cacheLife("hours");
   cacheTag("media-page");
-  return await prisma.image.findMany({
-    take: limit ? Number(limit) : 10,
-    skip: page ? Number(page) * (limit ? Number(limit) : 10) : 0,
+  return await db.query.image.findMany({
+    limit: limit ? Number(limit) : 10,
+    offset: page ? Number(page) * (limit ? Number(limit) : 10) : 0,
   });
 };
 

@@ -1,8 +1,8 @@
+import { eq } from "drizzle-orm";
 import { ArrowLeft, Check, InfinityIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import type { PlanType } from "@/app/generated/prisma/client";
 import { CheckoutButton } from "@/components/dashboard/checkout-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,15 +13,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import prisma from "@/lib/prisma";
+import { db, type PlanType, schema } from "@/db";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 
 async function getPlanLimits(planType: PlanType) {
-  const plan = await prisma.plan.findUnique({
-    where: {
-      type: planType,
-    },
+  const plan = await db.query.plan.findFirst({
+    where: eq(schema.plan.type, planType),
   });
 
   if (!plan) {

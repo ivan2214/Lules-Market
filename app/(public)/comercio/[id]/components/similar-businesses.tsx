@@ -1,4 +1,3 @@
-import { Star } from "lucide-react";
 import Link from "next/link";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
@@ -43,19 +42,6 @@ export function SimilarBusinesses({ businesses }: Props) {
                       {business.description}
                     </p>
                   </header>
-                  <article>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 md:h-4 md:w-4" />
-                        <span className="font-semibold text-sm">
-                          {business.rating}
-                        </span>
-                      </div>
-                      <span className="text-muted-foreground text-xs md:text-sm">
-                        ({business.reviews?.length} opiniones)
-                      </span>
-                    </div>
-                  </article>
                 </div>
               </div>
             </div>

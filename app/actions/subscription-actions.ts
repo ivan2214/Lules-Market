@@ -1,6 +1,6 @@
 "use server";
 
-import type { PlanType } from "@/app/generated/prisma/client";
+import type { PlanType } from "@/db";
 import * as SubscriptionDAL from "../data/payment/payment.dal";
 
 export async function createPaymentPreference(plan: PlanType) {
@@ -21,8 +21,4 @@ export async function getSubscriptionHistory() {
 
 export async function startTrial(plan: PlanType = "PREMIUM") {
   return SubscriptionDAL.startTrial(plan);
-}
-
-export async function redeemCoupon(code: string) {
-  return SubscriptionDAL.redeemCoupon(code);
 }
