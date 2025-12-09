@@ -1,11 +1,17 @@
-# Run Type Check
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
 echo "Running Type Check..."
 pnpm type-check
 
-# Run Biome Check (CI Mode)
 echo "Running Biome Check..."
 pnpm check
 
-# Run Build
+echo "Running Security Audit..."
+pnpm audit --audit-level=high || {
+  echo "❌ No se permite pushear con vulnerabilidades altas."
+  exit 1
+}
+
 echo "Running Build..."
 pnpm build
