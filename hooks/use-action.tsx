@@ -103,7 +103,8 @@ export function useAction<
     }
 
     // evitar dobles disparos por renders fantasma
-    if (JSON.stringify(lastStateRef.current) === JSON.stringify(state)) return;
+    // if (JSON.stringify(lastStateRef.current) === JSON.stringify(state)) return;
+    if (lastStateRef.current === state) return;
     lastStateRef.current = state;
 
     const {

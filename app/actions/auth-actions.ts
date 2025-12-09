@@ -11,7 +11,7 @@ import {
 } from "@/app/schemas/auth";
 import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
-import { auth } from "@/lib/auth";
+import { auth, syncUserRole } from "@/lib/auth";
 import { getUserByEmail } from "../data/user/utils";
 
 export async function businessSignInAction(
@@ -39,8 +39,23 @@ export async function businessSignInAction(
       return { errorMessage: "El usuario no existe." };
     }
 
-    if (!existingUser.emailVerified) {
-      return { errorMessage: "Confirmar tu cuenta antes de ingresar." };
+    const syncUserRoleResult = await syncUserRole(existingUser);
+
+    if (syncUserRoleResult.success) {
+      await auth.api.signInEmail({
+        body: {
+          email,
+          password,
+          rememberMe: true,
+        },
+      });
+
+      return {
+        successMessage: `Bienvenido de nuevo ${existingUser.name}! Has iniciado sesión correctamente`,
+        hasVerified: true,
+        isAdmin: true,
+        hasBusiness: false,
+      };
     }
 
     const res = await auth.api.signInEmail({
@@ -130,6 +145,8 @@ export const businessSignUpAction = async (
         name: validatedData.name,
       },
     });
+
+    await syncUserRole(res.user);
 
     const user = await db.query.user.findFirst({
       where: eq(schema.user.id, res.user.id),
