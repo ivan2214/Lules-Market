@@ -302,7 +302,7 @@ async function seedCategories(): Promise<{ id: string; label: string }[]> {
 // SEED NORMAL USERS
 // ===============================================================
 
-async function seedNormalUsers(count: number = 50): Promise<void> {
+async function seedNormalUsers(count: number = 10): Promise<void> {
   console.log(`👤 Creando ${count} usuarios normales...`);
 
   for (let i = 0; i < count; i++) {
@@ -346,7 +346,7 @@ async function seedNormalUsers(count: number = 50): Promise<void> {
 // SEED ADMINS
 // ===============================================================
 
-async function seedAdmins(count: number = 5): Promise<void> {
+async function seedAdmins(count: number = 3): Promise<void> {
   console.log(`👑 Creando ${count} admins...`);
 
   for (let i = 0; i < count; i++) {
@@ -381,7 +381,7 @@ async function seedAdmins(count: number = 5): Promise<void> {
 async function seedBusinesses(
   categories: { id: string; label: string }[],
   plans: CreatedPlan[],
-  count: number = 30,
+  count: number = 20,
 ): Promise<CreatedBusiness[]> {
   console.log(`🏪 Creando ${count} negocios y asignando planes...`);
 
@@ -508,12 +508,12 @@ async function seedProducts(
   const products: CreatedProduct[] = [];
 
   for (const negocio of businesses) {
-    const cantidad = faker.number.int({
+    const productsCount = faker.number.int({
       min: 1,
       max: Math.min(negocio.maxProducts, 20),
     });
 
-    for (let i = 1; i <= cantidad; i++) {
+    for (let i = 1; i <= productsCount; i++) {
       const category = faker.helpers.arrayElement(categories);
 
       const productInsert = await db
@@ -580,7 +580,7 @@ async function seedViews(
   console.log("👁 Registrando vistas de productos y negocios...");
 
   // Product views
-  for (let i = 0; i < 1500; i++) {
+  for (let i = 0; i < 500; i++) {
     const product = randomFrom(products);
     await db.insert(schema.productView).values({
       productId: product.id,
@@ -590,7 +590,7 @@ async function seedViews(
   }
 
   // Business views
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 500; i++) {
     const business = randomFrom(businesses);
     await db.insert(schema.businessView).values({
       businessId: business.id,
@@ -854,13 +854,13 @@ async function main(): Promise<void> {
     const categories = await seedCategories();
 
     // 4. Create normal users
-    await seedNormalUsers(50);
+    await seedNormalUsers();
 
     // 5. Create admins
-    await seedAdmins(5);
+    await seedAdmins();
 
     // 6. Create businesses with plans
-    const businesses = await seedBusinesses(categories, plans, 30);
+    const businesses = await seedBusinesses(categories, plans);
 
     // 7. Add images to businesses
     await addBusinessImages(businesses);
