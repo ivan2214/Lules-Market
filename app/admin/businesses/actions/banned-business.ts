@@ -1,9 +1,10 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { checkAdminPermission } from "@/app/actions/check-admin-permission";
 import { getCurrentAdmin } from "@/app/data/admin/admin.require";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 
 export const bannedBusiness = async (
   businessId: string,
@@ -12,7 +13,7 @@ export const bannedBusiness = async (
   error?: string;
 }> => {
   try {
-    const admin = await getCurrentAdmin(); // Obtiene el administrador actual.
+    const admin = await getCurrentAdmin();
 
     // 1. 🛑 Validación del Administrador
     if (!admin) {
@@ -32,9 +33,9 @@ export const bannedBusiness = async (
       };
     }
 
-    // Busca el comercio y sus relaciones clave para las validaciones.
-    const existBusiness = await prisma.business.findUnique({
-      where: { id: businessId },
+    // Busca el comercio
+    const existBusiness = await db.query.business.findFirst({
+      where: eq(schema.business.id, businessId),
     });
 
     // 3. 🛑 Validación de Existencia de Comercio
@@ -54,7 +55,7 @@ export const bannedBusiness = async (
       };
     }
 
-    // 5. 🛑 Validación de Estado: Evitar trabajo innecesario (Opcional)
+    // 5. 🛑 Validación de Estado: Evitar trabajo innecesario
     if (existBusiness.isBanned) {
       return {
         ok: false,
@@ -63,28 +64,27 @@ export const bannedBusiness = async (
     }
 
     // 6. ✅ Transacción Atómica
-    // Ambas operaciones (registro del baneo y actualización del estado del comercio)
-    // deben tener éxito o ninguna debe ejecutarse.
-    await prisma.$transaction([
+    await db.transaction(async (tx) => {
       // a) Registrar o actualizar el registro de baneo
-      prisma.bannedBusiness.upsert({
-        where: { businessId: existBusiness.id },
-        create: {
+      await tx
+        .insert(schema.bannedBusiness)
+        .values({
           bannedById: admin.userId,
           businessId: existBusiness.id,
-        },
-        update: {
-          bannedById: admin.userId,
-          businessId: existBusiness.id,
-        },
-      }),
+        })
+        .onConflictDoUpdate({
+          target: schema.bannedBusiness.businessId,
+          set: {
+            bannedById: admin.userId,
+          },
+        });
 
       // b) Marcar al comercio como baneado
-      prisma.business.update({
-        where: { id: businessId },
-        data: { isBanned: true },
-      }),
-    ]);
+      await tx
+        .update(schema.business)
+        .set({ isBanned: true })
+        .where(eq(schema.business.id, businessId));
+    });
 
     return {
       ok: true,
@@ -106,7 +106,7 @@ export const unbannedBusiness = async (
   error?: string;
 }> => {
   try {
-    const admin = await getCurrentAdmin(); // Obtiene el administrador actual.
+    const admin = await getCurrentAdmin();
 
     // 1. 🛑 Validación del Administrador
     if (!admin) {
@@ -117,7 +117,6 @@ export const unbannedBusiness = async (
     }
 
     // 2. 🛑 VALIDACIÓN DE PERMISOS
-    // Se utiliza 'BAN_USERS' ya que este permiso suele cubrir ambas acciones (banear y desbanear).
     const hasPermission = await checkAdminPermission(admin.userId, "BAN_USERS");
 
     if (!hasPermission) {
@@ -127,11 +126,11 @@ export const unbannedBusiness = async (
       };
     }
 
-    // Busca el comercio y verifica si está baneado.
-    const existBusiness = await prisma.business.findUnique({
-      where: { id: businessId },
-      include: {
-        bannedBusiness: true, // Incluimos el registro de baneo.
+    // Busca el comercio
+    const existBusiness = await db.query.business.findFirst({
+      where: eq(schema.business.id, businessId),
+      with: {
+        bannedBusiness: true,
       },
     });
 
@@ -152,21 +151,18 @@ export const unbannedBusiness = async (
     }
 
     // 5. ✅ Transacción Atómica
-    // Ambas operaciones (eliminación del registro de baneo y actualización del estado del comercio)
-    await prisma.$transaction([
+    await db.transaction(async (tx) => {
       // a) Eliminar el registro de la tabla BannedBusiness
-      // Usamos deleteMany ya que es más seguro si por alguna razón hubiera varios registros
-      // aunque por el @unique en el schema, solo debería haber uno.
-      prisma.bannedBusiness.deleteMany({
-        where: { businessId: existBusiness.id },
-      }),
+      await tx
+        .delete(schema.bannedBusiness)
+        .where(eq(schema.bannedBusiness.businessId, existBusiness.id));
 
       // b) Marcar al comercio como NO baneado
-      prisma.business.update({
-        where: { id: businessId },
-        data: { isBanned: false },
-      }),
-    ]);
+      await tx
+        .update(schema.business)
+        .set({ isBanned: false })
+        .where(eq(schema.business.id, businessId));
+    });
 
     return {
       ok: true,

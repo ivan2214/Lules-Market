@@ -1,10 +1,20 @@
 import "server-only";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  type SQL,
+} from "drizzle-orm";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { deleteS3Object } from "@/app/actions/s3";
-import type { Prisma } from "@/app/generated/prisma/client";
+import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import prisma from "@/lib/prisma";
 import { getCurrentBusiness } from "../business/require-busines";
 import { requireUser } from "../user/require-user";
 import {
@@ -31,7 +41,6 @@ export async function listAllProducts({
   sort,
   businessId,
   category,
-  minRating,
 }: {
   search?: string;
   category?: string;
@@ -39,7 +48,6 @@ export async function listAllProducts({
   page: number;
   limit: number;
   sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-  minRating?: number;
 }): Promise<{
   products: ProductDTO[];
   total: number;
@@ -50,70 +58,70 @@ export async function listAllProducts({
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, CACHE_TAGS.PRODUCTS);
 
-  const where: Prisma.ProductWhereInput = {
-    active: true,
-    business: {
-      isActive: true,
-    },
-    ...(businessId && { businessId }),
-    ...(category && {
-      category: {
-        label: { contains: category, mode: "insensitive" as const },
-      },
-    }),
-    ...(search && {
-      OR: [
-        { name: { contains: search, mode: "insensitive" as const } },
-        { description: { contains: search, mode: "insensitive" as const } },
-      ],
-    }),
-    ...(minRating && { business: { rating: { gte: minRating } } }),
-  };
+  // Build where conditions
+  const conditions: SQL<unknown>[] = [eq(schema.product.active, true)];
 
-  const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
-    { featured: "desc" },
-    { business: { currentPlan: { planType: "asc" as const } } },
-    { createdAt: "desc" },
-  ];
-
-  if (sort) {
-    const [field, direction] = sort.split("_") as [
-      Prisma.SortOrder,
-      Prisma.SortOrderInput,
-    ];
-    orderBy.unshift({ [field]: direction });
+  if (businessId) {
+    conditions.push(eq(schema.product.businessId, businessId));
   }
 
-  const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: {
+  if (search) {
+    conditions.push(
+      or(
+        ilike(schema.product.name, `%${search}%`),
+        ilike(schema.product.description, `%${search}%`),
+      ) as SQL<string>,
+    );
+  }
+
+  if (category) {
+    conditions.push(eq(schema.product.categoryId, category));
+  }
+
+  const whereClause = and(...conditions);
+
+  // Build order by
+  const orderBy = [];
+
+  if (sort) {
+    const [field, direction] = sort.split("_");
+    if (field === "price") {
+      orderBy.push(
+        direction === "asc"
+          ? asc(schema.product.price)
+          : desc(schema.product.price),
+      );
+    } else if (field === "name") {
+      orderBy.push(
+        direction === "asc"
+          ? asc(schema.product.name)
+          : desc(schema.product.name),
+      );
+    }
+  }
+
+  orderBy.push(desc(schema.product.featured));
+  orderBy.push(desc(schema.product.createdAt));
+
+  const [products, totalResult] = await Promise.all([
+    db.query.product.findMany({
+      where: whereClause,
+      with: {
         business: true,
         images: true,
         category: true,
-        reviews: {
-          include: {
-            author: {
-              include: {
-                avatar: true,
-              },
-            },
-          },
-        },
       },
       orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
+      offset: (page - 1) * limit,
+      limit: limit,
     }),
-    prisma.product.count({
-      where: {
-        active: true,
-      },
-    }),
+    db.select({ count: count() }).from(schema.product).where(whereClause),
   ]);
 
+  const total = totalResult[0]?.count ?? 0;
+
   return {
-    products,
+    products: products as ProductDTO[],
     total,
     pages: Math.ceil(total / limit),
     currentPage: page,
@@ -125,24 +133,22 @@ export async function listFeaturedProducts(): Promise<ProductDTO[]> {
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, "featured");
 
-  return await prisma.product.findMany({
-    where: {
-      active: true,
-    },
-    include: {
+  const products = await db.query.product.findMany({
+    where: eq(schema.product.active, true),
+    with: {
       business: {
-        include: {
+        with: {
           logo: true,
           coverImage: true,
         },
       },
       images: true,
-      productView: true,
+      productViews: true,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: [desc(schema.product.createdAt)],
   });
+
+  return products as ProductDTO[];
 }
 
 export async function getProductById(
@@ -152,34 +158,25 @@ export async function getProductById(
   cacheLife("hours");
   cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, `product-${productId}`);
 
-  const product = await prisma.product.findFirst({
-    where: {
-      id: productId,
-      active: true,
-    },
-    include: {
+  const product = await db.query.product.findFirst({
+    where: and(
+      eq(schema.product.id, productId),
+      eq(schema.product.active, true),
+    ),
+    with: {
       category: true,
       business: {
-        include: {
+        with: {
           logo: true,
           coverImage: true,
           category: true,
-          reviews: {
-            include: {
-              author: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          },
         },
       },
       images: true,
     },
   });
 
-  return product;
+  return product as ProductDTO | null;
 }
 
 // ========================================
@@ -189,15 +186,15 @@ export async function getProductById(
 export async function getProductsByBusinessId(): Promise<ProductDTO[]> {
   const { currentBusiness } = await getCurrentBusiness();
 
-  const products = await prisma.product.findMany({
-    where: { businessId: currentBusiness.id },
-    orderBy: { createdAt: "desc" },
-    include: {
+  const products = await db.query.product.findMany({
+    where: eq(schema.product.businessId, currentBusiness.id),
+    orderBy: [desc(schema.product.createdAt)],
+    with: {
       images: true,
     },
   });
 
-  return products;
+  return products as ProductDTO[];
 }
 
 export async function createProduct(
@@ -232,49 +229,46 @@ export async function createProduct(
 
     const { name, description, price, images, category, featured } = data;
 
-    // fijatse si existe cada imagen en la db y sino crearrla
-    let imagesDB = await prisma.image.findMany({
-      where: {
-        url: {
-          in: images.map((image) => image.url),
-        },
-      },
+    // Buscar imágenes existentes
+    const imageUrls = images.map((image) => image.url);
+    let imagesDB = await db.query.image.findMany({
+      where: inArray(schema.image.url, imageUrls),
     });
 
     // Crear imágenes que no existan
+    const existingUrls = new Set(imagesDB.map((img) => img.url));
     const imagesToCreate = images.filter(
-      (image) => !imagesDB.some((dbImage) => dbImage.url === image.url),
+      (image) => !existingUrls.has(image.url),
     );
 
-    // Crear imágenes en la base de datos
     if (imagesToCreate.length > 0) {
-      await prisma.image.createMany({
-        data: imagesToCreate,
-      });
+      await db.insert(schema.image).values(
+        imagesToCreate.map((img) => ({
+          key: img.key,
+          url: img.url,
+          name: img.name,
+          size: img.size,
+          isMainImage: img.isMainImage,
+        })),
+      );
 
-      // Actualizar imagesDB con las nuevas imágenes
-      imagesDB = await prisma.image.findMany({
-        where: {
-          url: {
-            in: imagesToCreate.map((image) => image.url),
-          },
-        },
+      // Re-fetch images
+      imagesDB = await db.query.image.findMany({
+        where: inArray(schema.image.url, imageUrls),
       });
     }
 
-    const product = await prisma.product.create({
-      data: {
+    // Create product
+    const [product] = await db
+      .insert(schema.product)
+      .values({
         name,
         description,
         price: Number(price),
-        // Asociar imágenes existentes
-        images: {
-          connect: imagesDB.map((image) => ({ key: image.key })),
-        },
         featured,
         businessId: currentBusiness.id,
-      },
-    });
+      })
+      .returning();
 
     if (!product) {
       return {
@@ -282,33 +276,39 @@ export async function createProduct(
       };
     }
 
-    const existingCategory = await prisma.category.findUnique({
-      where: { value: category },
+    // Update images to link to product
+    if (imagesDB.length > 0) {
+      for (const img of imagesDB) {
+        await db
+          .update(schema.image)
+          .set({ productId: product.id })
+          .where(eq(schema.image.key, img.key));
+      }
+    }
+
+    // Handle category
+    const existingCategory = await db.query.category.findFirst({
+      where: eq(schema.category.value, category),
     });
 
     if (existingCategory) {
-      await prisma.category.update({
-        where: { id: existingCategory.id },
-        data: {
-          products: {
-            connect: {
-              id: product.id,
-            },
-          },
-        },
-      });
+      await db
+        .update(schema.product)
+        .set({ categoryId: existingCategory.id })
+        .where(eq(schema.product.id, product.id));
     } else {
-      await prisma.category.create({
-        data: {
+      const [newCategory] = await db
+        .insert(schema.category)
+        .values({
           label: category,
           value: category,
-          products: {
-            connect: {
-              id: product.id,
-            },
-          },
-        },
-      });
+        })
+        .returning();
+
+      await db
+        .update(schema.product)
+        .set({ categoryId: newCategory.id })
+        .where(eq(schema.product.id, product.id));
     }
 
     // Invalidar caché
@@ -344,11 +344,11 @@ export async function updateProduct(
     const { productId, ...rest } = data;
     const { currentBusiness } = await getCurrentBusiness();
 
-    const product = await prisma.product.findFirst({
-      where: {
-        id: productId,
-        businessId: currentBusiness.id,
-      },
+    const product = await db.query.product.findFirst({
+      where: and(
+        eq(schema.product.id, productId || ""),
+        eq(schema.product.businessId, currentBusiness.id),
+      ),
     });
 
     if (!product) {
@@ -368,8 +368,8 @@ export async function updateProduct(
       rest;
 
     // Obtenemos las imágenes existentes del producto
-    const existingImages = await prisma.image.findMany({
-      where: { productId },
+    const existingImages = await db.query.image.findMany({
+      where: eq(schema.image.productId, productId || ""),
     });
 
     // Map de keys para fácil comparación
@@ -385,17 +385,20 @@ export async function updateProduct(
     );
 
     if (imagesToDelete.length) {
-      await prisma.image.deleteMany({
-        where: { key: { in: imagesToDelete.map((img) => img.key) } },
-      });
+      const keysToDelete = imagesToDelete.map((img) => img.key);
+      await db
+        .delete(schema.image)
+        .where(inArray(schema.image.key, keysToDelete));
     }
 
     for (const img of imagesToCreate) {
-      await prisma.image.create({
-        data: {
-          ...img,
-          productId,
-        },
+      await db.insert(schema.image).values({
+        key: img.key,
+        url: img.url,
+        name: img.name,
+        size: img.size,
+        isMainImage: img.isMainImage,
+        productId,
       });
     }
 
@@ -403,29 +406,44 @@ export async function updateProduct(
     for (const img of images) {
       const existing = existingImages.find((e) => e.key === img.key);
       if (existing && existing.isMainImage !== img.isMainImage) {
-        await prisma.image.update({
-          where: { key: img.key },
-          data: { isMainImage: img.isMainImage },
-        });
+        await db
+          .update(schema.image)
+          .set({ isMainImage: img.isMainImage })
+          .where(eq(schema.image.key, img.key));
       }
     }
 
-    const updated = await prisma.product.update({
-      where: { id: productId },
-      data: {
+    // Handle category
+    let categoryId = product.categoryId;
+    const existingCategory = await db.query.category.findFirst({
+      where: eq(schema.category.value, category),
+    });
+
+    if (existingCategory) {
+      categoryId = existingCategory.id;
+    } else {
+      const [newCategory] = await db
+        .insert(schema.category)
+        .values({
+          label: category,
+          value: category,
+        })
+        .returning();
+      categoryId = newCategory.id;
+    }
+
+    const [updated] = await db
+      .update(schema.product)
+      .set({
         name,
         description,
         price,
-        category: {
-          connectOrCreate: {
-            where: { value: category },
-            create: { label: category, value: category },
-          },
-        },
+        categoryId,
         featured,
         active,
-      },
-    });
+      })
+      .where(eq(schema.product.id, productId || ""))
+      .returning();
 
     if (!updated) {
       return {
@@ -467,12 +485,12 @@ export async function deleteProduct(productId: string) {
       businesId: currentBusiness.id,
     });
 
-    const product = await prisma.product.findFirst({
-      where: {
-        id: productId,
-        businessId: currentBusiness.id,
-      },
-      include: {
+    const product = await db.query.product.findFirst({
+      where: and(
+        eq(schema.product.id, productId),
+        eq(schema.product.businessId, currentBusiness.id),
+      ),
+      with: {
         images: true,
       },
     });
@@ -481,26 +499,19 @@ export async function deleteProduct(productId: string) {
       return false;
     }
 
-    await prisma.product.delete({
-      where: { id: productId },
-    });
+    // Delete product views
+    await db
+      .delete(schema.productView)
+      .where(eq(schema.productView.productId, productId));
 
-    await prisma.productView.deleteMany({
-      where: {
-        productId,
-      },
-    });
-
+    // Delete images
     for (const image of product.images) {
-      await prisma.image.delete({
-        where: {
-          key: image.key,
-        },
-      });
-      await deleteS3Object({
-        key: image.key,
-      });
+      await db.delete(schema.image).where(eq(schema.image.key, image.key));
+      await deleteS3Object({ key: image.key });
     }
+
+    // Delete product
+    await db.delete(schema.product).where(eq(schema.product.id, productId));
 
     // Invalidar caché
     updateTag(CACHE_TAGS.PUBLIC_PRODUCTS);

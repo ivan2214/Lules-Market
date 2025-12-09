@@ -2,7 +2,7 @@ import { Download } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
 import { PaymentsClient } from "./components/payments-client";
 
 export default async function PaymentsPage() {
@@ -10,12 +10,12 @@ export default async function PaymentsPage() {
   cacheLife("hours");
   cacheTag("payments-page");
 
-  const payments = await prisma.payment.findMany({
-    include: {
+  const payments = await db.query.payment.findMany({
+    with: {
       business: true,
     },
   });
-  const webhookEvents = await prisma.webhookEvent.findMany();
+  const webhookEvents = await db.query.webhookEvent.findMany();
 
   const totalRevenue = payments
     .filter((p) => p.status === "approved")

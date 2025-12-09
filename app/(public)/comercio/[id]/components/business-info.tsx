@@ -8,12 +8,10 @@ import {
   MessageSquare,
   Phone,
   Share2,
-  Star,
 } from "lucide-react";
 import Link from "next/link";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +22,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { SimilarBusinesses } from "./similar-businesses";
@@ -39,56 +36,7 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
   similarBusinesses,
 }) => {
   const products: BusinessDTO["products"] = business?.products;
-  const ratingDistribution: {
-    stars: number;
-    count: number;
-    percentage: number;
-  }[] =
-    business?.reviews?.reduce(
-      (acc, { rating }) => {
-        const existing = acc.find((r) => r.stars === rating);
 
-        if (existing) {
-          existing.count += 1;
-        } else {
-          acc.push({ stars: rating, count: 1, percentage: 0 });
-        }
-        const totalReviews = business.reviews?.length;
-        acc.forEach((r) => {
-          r.percentage = totalReviews
-            ? Math.round((r.count / totalReviews) * 100)
-            : 0;
-        });
-
-        return acc.toSorted((a, b) => b.stars - a.stars);
-      },
-      [] as {
-        stars: number;
-        count: number;
-        percentage: number;
-      }[],
-    ) ?? [];
-
-  const customerReviews: {
-    authorId: string;
-    author: string;
-    avatar: string;
-    rating: number;
-    date: string;
-    comment: string;
-  }[] =
-    business?.reviews?.map((review) => ({
-      authorId: review.authorId,
-      author: review.author.name,
-      avatar: review.author.avatar?.url || "/placeholder.svg",
-      rating: review.rating,
-      date: review.createdAt.toLocaleDateString("es-ES", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      comment: review.comment,
-    })) || [];
   return (
     <main className="container px-4 py-4 md:py-8">
       {/* Hero Section with Image Carousel */}
@@ -126,11 +74,11 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
             <CardContent className="space-y-4">
               <CardDescription>{business?.description}</CardDescription>
             </CardContent>
-            {business.tags.length > 0 && (
+            {business.tags && business.tags.length > 0 && (
               <CardFooter className="flex flex-col items-start gap-4">
                 <CardTitle>Características destacadas:</CardTitle>
                 <div className="flex flex-wrap gap-2">
-                  {business?.tags?.map((feature: string) => (
+                  {business.tags.map((feature: string) => (
                     <Badge
                       key={feature}
                       variant="secondary"
@@ -143,114 +91,6 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
               </CardFooter>
             )}
           </Card>
-
-          <div className="flex flex-col gap-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg md:text-xl">
-                  Calificaciones y opiniones
-                </CardTitle>
-                <CardDescription className="text-xs md:text-sm">
-                  {business?.reviews?.length} opiniones de clientes
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="flex flex-col items-center justify-center space-y-2 pb-4 md:border-border md:border-r md:pb-0">
-                    <div className="font-bold text-5xl md:text-6xl">
-                      {business?.rating}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className="h-4 w-4 fill-yellow-400 text-yellow-400 md:h-5 md:w-5"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-center text-muted-foreground text-xs md:text-sm">
-                      Basado en {business?.reviews?.length} opiniones
-                    </p>
-                  </div>
-                  <div className="space-y-2 md:space-y-3">
-                    {ratingDistribution?.map((rating) => (
-                      <div
-                        key={rating.stars}
-                        className="flex items-center gap-2 md:gap-3"
-                      >
-                        <div className="flex w-10 items-center gap-1 md:w-12">
-                          <span className="font-medium text-xs md:text-sm">
-                            {rating.stars}
-                          </span>
-                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        </div>
-                        <Progress
-                          value={rating.percentage}
-                          className="flex-1"
-                        />
-                        <span className="w-8 text-right text-muted-foreground text-xs md:w-12 md:text-sm">
-                          {rating.count}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full text-sm md:text-base">
-                  Escribir una opinión
-                </Button>
-              </CardFooter>
-            </Card>
-
-            {/* Individual Reviews */}
-            <div className="space-y-3 md:space-y-4">
-              {customerReviews.slice(0, 5).map((review) => (
-                <Card key={review.authorId}>
-                  <CardHeader className="pb-3 md:pb-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-2 md:gap-3">
-                        <Avatar className="h-10 w-10 md:h-12 md:w-12">
-                          <AvatarImage
-                            src={review.avatar || "/placeholder.svg"}
-                            alt={review.author}
-                          />
-                          <AvatarFallback>{review.author[0]}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-semibold text-sm md:text-base">
-                            {review.author}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <Star
-                                  key={star}
-                                  className={`h-3 w-3 ${
-                                    star <= review.rating
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-muted-foreground text-xs">
-                              {review.date}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-muted-foreground text-xs leading-relaxed md:text-sm">
-                      {review.comment}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">

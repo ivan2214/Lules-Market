@@ -1,9 +1,10 @@
+import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { getCurrentUser } from "@/app/data/user/require-user";
 import { SearchForm } from "@/components/search-form";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { MobileMenu } from "./mobile-menu";
@@ -46,11 +47,11 @@ const NavigationWrapperContent = async () => {
       </>
     );
 
-  const admin = await prisma.admin.findUnique({
-    where: { userId: session?.id },
-    include: {
+  const admin = await db.query.admin.findFirst({
+    where: eq(schema.admin.userId, session.id),
+    with: {
       user: {
-        select: {
+        columns: {
           email: true,
           name: true,
         },
@@ -58,24 +59,24 @@ const NavigationWrapperContent = async () => {
     },
   });
 
-  const business = await prisma.business.findUnique({
-    where: { id: session?.id },
-    include: { logo: true, coverImage: true },
+  const business = await db.query.business.findFirst({
+    where: eq(schema.business.id, session.id),
+    with: { logo: true, coverImage: true },
   });
 
-  const userProfile = await prisma.profile.findUnique({
-    where: { userId: session?.id },
-    include: { avatar: true, user: true },
+  const userProfile = await db.query.profile.findFirst({
+    where: eq(schema.profile.userId, session.id),
+    with: { avatar: true, user: true },
   });
 
-  const notificationsForUser = await prisma.notification.findMany({
-    where: { userId: session?.id },
-    orderBy: { createdAt: "desc" },
+  const notificationsForUser = await db.query.notification.findMany({
+    where: eq(schema.notification.userId, session.id),
+    orderBy: [desc(schema.notification.createdAt)],
   });
 
   const avatar = userProfile?.avatar?.url || business?.logo?.url;
   const email =
-    userProfile?.user.email || business?.email || admin?.user?.email;
+    userProfile?.user?.email || business?.email || admin?.user?.email;
   const name = userProfile?.name || business?.name || admin?.user?.name;
 
   const isBusiness = !!business;

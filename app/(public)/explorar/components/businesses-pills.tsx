@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { Business } from "@/app/generated/prisma/client";
+
 import { Badge } from "@/components/ui/badge";
+import type { Business } from "@/db";
 import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
 
 type BusinessessProps = {
@@ -24,7 +25,6 @@ export const BusinessesPills: React.FC<BusinessessProps> = ({
     businessId?: string;
     limit?: string;
     sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-    minRating?: string;
   } = {
     search: params.get("search") ?? undefined,
     business: params.get("business") ?? undefined,

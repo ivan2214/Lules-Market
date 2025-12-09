@@ -1,7 +1,8 @@
 import "server-only";
 
+import { and, eq, gte } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import { getCurrentBusiness } from "../business/require-busines";
 import type { AnalyticsPeriod } from "./analytics.dto";
 
@@ -22,43 +23,43 @@ export async function getAnalytics(
   startDate.setDate(startDate.getDate() - days);
 
   // Get product views
-  const productViews = await prisma.productView.findMany({
-    where: {
+  const productViews = await db.query.productView.findMany({
+    where: gte(schema.productView.createdAt, startDate),
+    with: {
       product: {
-        businessId: businessId,
-      },
-      createdAt: {
-        gte: startDate,
-      },
-    },
-    include: {
-      product: {
-        select: {
+        columns: {
           id: true,
           name: true,
+          businessId: true,
         },
       },
     },
   });
 
+  // Filter by businessId (done in memory since we need to join)
+  const filteredProductViews = productViews.filter(
+    (view) => view.product?.businessId === businessId,
+  );
+
   // Get business views
-  const businessViews = await prisma.businessView.findMany({
-    where: {
-      businessId: businessId,
-      createdAt: {
-        gte: startDate,
-      },
-    },
+  const businessViews = await db.query.businessView.findMany({
+    where: and(
+      eq(schema.businessView.businessId, businessId),
+      gte(schema.businessView.createdAt, startDate),
+    ),
   });
 
   // Calculate daily views
   const dailyViews: Record<string, number> = {};
-  const allViews = [...productViews, ...businessViews];
+  const allViews = [
+    ...filteredProductViews.map((v) => ({ ...v, type: "product" as const })),
+    ...businessViews.map((v) => ({ ...v, type: "business" as const })),
+  ];
 
-  allViews.forEach((view) => {
+  for (const view of allViews) {
     const date = view.createdAt.toISOString().split("T")[0];
     dailyViews[date] = (dailyViews[date] || 0) + 1;
-  });
+  }
 
   // Fill missing dates with 0
   for (let i = 0; i < days; i++) {
@@ -77,15 +78,17 @@ export async function getAnalytics(
 
   // Top products
   const productViewCounts: Record<string, { name: string; count: number }> = {};
-  productViews.forEach((view) => {
-    if (!productViewCounts[view.product.id]) {
-      productViewCounts[view.product.id] = {
-        name: view.product.name,
-        count: 0,
-      };
+  for (const view of filteredProductViews) {
+    if (view.product) {
+      if (!productViewCounts[view.product.id]) {
+        productViewCounts[view.product.id] = {
+          name: view.product.name,
+          count: 0,
+        };
+      }
+      productViewCounts[view.product.id].count++;
     }
-    productViewCounts[view.product.id].count++;
-  });
+  }
 
   const topProducts = Object.entries(productViewCounts)
     .map(([id, data]) => ({ id, ...data }))
@@ -93,10 +96,10 @@ export async function getAnalytics(
 
   // Referrer stats
   const referrerCounts: Record<string, number> = {};
-  allViews.forEach((view) => {
+  for (const view of allViews) {
     const referrer = view.referrer || "Directo";
     referrerCounts[referrer] = (referrerCounts[referrer] || 0) + 1;
-  });
+  }
 
   const topReferrers = Object.entries(referrerCounts)
     .map(([referrer, count]) => ({ referrer, count }))
@@ -105,7 +108,7 @@ export async function getAnalytics(
 
   return {
     totalViews: allViews.length,
-    productViews: productViews.length,
+    productViews: filteredProductViews.length,
     businessViews: businessViews.length,
     dailyViews: sortedDailyViews,
     topProducts,
@@ -120,11 +123,11 @@ export async function getProductAnalytics(
   const { currentBusiness } = await getCurrentBusiness();
 
   // Verify product belongs to business
-  const product = await prisma.product.findFirst({
-    where: {
-      id: productId,
-      businessId: currentBusiness.id,
-    },
+  const product = await db.query.product.findFirst({
+    where: and(
+      eq(schema.product.id, productId),
+      eq(schema.product.businessId, currentBusiness.id),
+    ),
   });
 
   if (!product) {
@@ -135,22 +138,20 @@ export async function getProductAnalytics(
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
 
-  const views = await prisma.productView.findMany({
-    where: {
-      productId,
-      createdAt: {
-        gte: startDate,
-      },
-    },
+  const views = await db.query.productView.findMany({
+    where: and(
+      eq(schema.productView.productId, productId),
+      gte(schema.productView.createdAt, startDate),
+    ),
   });
 
   // Calculate daily views
   const dailyViews: Record<string, number> = {};
 
-  views.forEach((view) => {
+  for (const view of views) {
     const date = view.createdAt.toISOString().split("T")[0];
     dailyViews[date] = (dailyViews[date] || 0) + 1;
-  });
+  }
 
   // Fill missing dates
   for (let i = 0; i < days; i++) {

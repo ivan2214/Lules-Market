@@ -1,14 +1,6 @@
 import { z } from "zod";
-import type {
-  BannedProduct,
-  Image,
-  Product,
-  productView,
-} from "@/app/generated/prisma/client";
-import type { BusinessDTO } from "../business/business.dto";
-import type { CategoryDTO } from "../category/category.dto";
+import type { ProductWithRelations } from "@/db/types";
 import { ImageCreateInputSchema } from "../image/image.dto";
-import type { ReviewDTO } from "../review/review.dto";
 
 export const ProductCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -38,11 +30,4 @@ export const ProductDeleteInputSchema = z.object({
 
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 
-export interface ProductDTO extends Product {
-  images: Image[];
-  views?: productView[] | null;
-  business?: BusinessDTO | null;
-  bannedProduct?: BannedProduct | null;
-  category?: CategoryDTO | null;
-  reviews?: ReviewDTO[] | null;
-}
+export type ProductDTO = ProductWithRelations;

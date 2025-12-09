@@ -1,14 +1,15 @@
 import "server-only";
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { getCurrentUser, requireUser } from "@/app/data/user/require-user";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 
 export const requireAdmin = cache(async () => {
   const session = await requireUser();
 
-  const admin = await prisma.admin.findUnique({
-    where: { userId: session.userId },
+  const admin = await db.query.admin.findFirst({
+    where: eq(schema.admin.userId, session.userId),
   });
 
   if (!admin) {
@@ -21,16 +22,16 @@ export const requireAdmin = cache(async () => {
 export const getCurrentAdmin = async () => {
   try {
     const user = await getCurrentUser();
-    const admin = await prisma.admin.findUnique({
-      where: {
-        userId: user?.id,
-      },
-      include: {
+    if (!user?.id) return null;
+
+    const admin = await db.query.admin.findFirst({
+      where: eq(schema.admin.userId, user.id),
+      with: {
         user: true,
       },
     });
 
-    return admin;
+    return admin ?? null;
   } catch {
     return null;
   }

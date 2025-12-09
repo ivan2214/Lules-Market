@@ -21,7 +21,7 @@ type AdminMenuProps = {
 
 export const AdminMenu: React.FC<AdminMenuProps> = ({ admin }) => {
   const router = useRouter();
-  const initials = admin.user.name
+  const initials = admin.user?.name
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -42,14 +42,14 @@ export const AdminMenu: React.FC<AdminMenuProps> = ({ admin }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>{admin.user.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>{admin.user?.name}</DropdownMenuLabel>
         <DropdownMenuLabel className="font-extralight text-xs">
-          {admin.user.email}
+          {admin.user?.email}
         </DropdownMenuLabel>
         <DropdownMenuLabel className="flex flex-col items-start gap-2">
           Permisos:
           <span className="font-extralight text-xs">
-            {admin.permissions.map((permission) => permission).join(", ")}
+            {admin.permissions?.map((permission) => permission).join(", ")}
           </span>
         </DropdownMenuLabel>
 

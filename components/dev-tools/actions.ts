@@ -1,17 +1,18 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 
 export const clearUsersCache = async () => {
   try {
-    await prisma.user.deleteMany();
-    await prisma.business.deleteMany();
-    await prisma.admin.deleteMany();
-    await prisma.session.deleteMany();
-    await prisma.emailVerificationToken.deleteMany();
-    await prisma.passwordResetToken.deleteMany();
-    await prisma.account.deleteMany();
+    // Delete in proper order due to foreign key constraints
+    await db.delete(schema.session);
+    await db.delete(schema.emailVerificationToken);
+    await db.delete(schema.passwordResetToken);
+    await db.delete(schema.account);
+    await db.delete(schema.admin);
+    await db.delete(schema.business);
+    await db.delete(schema.user);
     updateTag("dev-tools");
   } catch (error) {
     console.error("Error al borrar usuarios", error);

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
 import { AdminColumns } from "./components/admin-columns";
 import { AdminCreateDialog } from "./components/admin-create-dialog";
 
@@ -14,10 +14,10 @@ async function getAdmins() {
   "use cache";
   cacheLife("hours");
   cacheTag("admins-page");
-  const admins = await prisma.admin.findMany({
-    include: {
+  const admins = await db.query.admin.findMany({
+    with: {
       user: {
-        include: {
+        with: {
           admin: true,
           business: true,
         },
@@ -63,7 +63,7 @@ export default async function AdminsPage() {
           </CardHeader>
           <CardContent>
             <div className="font-bold text-2xl">
-              {admins.filter((a) => a.permissions.includes("ALL")).length}
+              {admins.filter((a) => a.permissions?.includes("ALL")).length}
             </div>
           </CardContent>
         </Card>

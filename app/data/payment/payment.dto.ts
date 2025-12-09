@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-import type { Payment } from "@/app/generated/prisma/client";
-import type { BusinessDTO } from "../business/business.dto";
+import type { PaymentWithRelations } from "@/db/types";
 
 export const CreatePaymentPreferenceSchema = z.object({
   plan: z.string().min(1, "El plan es requerido"),
@@ -11,10 +10,7 @@ export type CreatePaymentPreferenceInput = z.infer<
   typeof CreatePaymentPreferenceSchema
 >;
 
-export type PaymentDTO = Payment & {
-  // incluir relaciones si se necesitan
-  business?: BusinessDTO | null;
-};
+export type PaymentDTO = PaymentWithRelations;
 
 export interface PaymentPreferenceResult {
   preferenceId: string | null | undefined;

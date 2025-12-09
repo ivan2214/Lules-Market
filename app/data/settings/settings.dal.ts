@@ -1,6 +1,7 @@
 import "server-only";
 
-import prisma from "@/lib/prisma";
+import { eq } from "drizzle-orm";
+import { db, schema } from "@/db";
 import { requireUser } from "../user/require-user";
 import type { AccountUpdateInput } from "./settings.dto";
 
@@ -16,18 +17,19 @@ export class SettingsDAL {
   async updateAccount(data: AccountUpdateInput) {
     const session = await requireUser();
     // Only allow updating name for now
-    const updated = await prisma.user.update({
-      where: { id: session.userId },
-      data: { name: data.name },
-    });
+    const [updated] = await db
+      .update(schema.user)
+      .set({ name: data.name })
+      .where(eq(schema.user.id, session.userId))
+      .returning();
 
     return updated;
   }
 
   async deleteAccount() {
     const session = await requireUser();
-    // Soft-delete pattern could be used; for now, remove user and cascade via prisma
-    await prisma.user.delete({ where: { id: session.userId } });
+    // Soft-delete pattern could be used; for now, remove user and cascade
+    await db.delete(schema.user).where(eq(schema.user.id, session.userId));
     return true;
   }
 }

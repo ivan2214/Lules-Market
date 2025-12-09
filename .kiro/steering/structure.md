@@ -9,7 +9,7 @@
 ├── hooks/                  # Custom React hooks
 ├── utils/                  # Pure utility functions
 ├── types/                  # TypeScript type definitions
-├── prisma/                 # Database schema and migrations
+├── db/schema               # Database schema
 ├── public/                 # Static assets
 └── .kiro/                  # Kiro IDE configuration
 ```
@@ -38,7 +38,6 @@ app/
 ├── actions/               # Server Actions
 ├── data/                  # Data fetching functions
 ├── schemas/               # Zod validation schemas
-└── generated/             # Generated files (Prisma client)
 ```
 
 ## Component Organization
@@ -70,11 +69,7 @@ components/
 - Co-locate related types in same file
 - Use `tsx` extension for components with JSX
 
-### Database Patterns
-- Prisma schema uses **PascalCase** for models
-- **camelCase** for fields
-- Custom output path: `app/generated/prisma`
-- Relation mode set to "prisma" for compatibility
+
 
 ### Authentication Flow
 - Better-Auth handles session management

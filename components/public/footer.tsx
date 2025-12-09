@@ -44,14 +44,7 @@ export async function PublicFooter() {
                 Explorar
               </Link>
             </li>
-            <li>
-              <Link
-                href="/explorar/posts"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Explorar
-              </Link>
-            </li>
+
             <li>
               <Link
                 href="/planes"

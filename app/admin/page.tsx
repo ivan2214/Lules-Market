@@ -1,9 +1,9 @@
 import { addMonths, format, startOfMonth, subMonths } from "date-fns";
+import { and, count, eq, gte, lt, sum } from "drizzle-orm";
 import {
   AlertCircle,
   CheckCircle,
   CreditCard,
-  DiscIcon,
   Package,
   Store,
   TrendingUp,
@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import type { Analytics } from "@/types";
 
 // ====================== 📘 Tipos auxiliares ======================
@@ -55,7 +55,6 @@ interface DashboardStats {
   products: StatGroup;
   payments: PaymentStats;
   trials: { actives: number };
-  coupons: { actives: number };
 }
 
 // ====================== ⚙️ Helpers ======================
@@ -87,57 +86,116 @@ export async function getAdminDashboardStats(): Promise<{
   const endLastMonth = startCurrentMonth;
 
   const [
-    totalBusinesses,
-    bannedBusinesses,
-    bannedProducts,
-    totalProducts,
-    totalApprovedPayments,
-    totalPendingPayments,
-    totalRejectedPayments,
-    trialsActives,
-    couponsActives,
-    businessesCurrentMonth,
-    productsCurrentMonth,
-    paymentsCurrentMonthAgg,
-    businessesLastMonth,
-    productsLastMonth,
-    paymentsLastMonthAgg,
+    totalBusinessesResult,
+    bannedBusinessesResult,
+    bannedProductsResult,
+    totalProductsResult,
+    totalApprovedPaymentsResult,
+    totalPendingPaymentsResult,
+    totalRejectedPaymentsResult,
+    trialsActivesResult,
+    businessesCurrentMonthResult,
+    productsCurrentMonthResult,
+    paymentsCurrentMonthResult,
+    businessesLastMonthResult,
+    productsLastMonthResult,
+    paymentsLastMonthResult,
   ] = await Promise.all([
-    prisma.business.count(),
-    prisma.business.count({ where: { bannedBusiness: { isNot: null } } }),
-    prisma.product.count({ where: { bannedProduct: { isNot: null } } }),
-    prisma.product.count(),
-    prisma.payment.count({ where: { status: "approved" } }),
-    prisma.payment.count({ where: { status: "pending" } }),
-    prisma.payment.count({ where: { status: "rejected" } }),
-    prisma.trial.count({ where: { isActive: true } }),
-    prisma.coupon.count({ where: { active: true } }),
-    prisma.business.count({ where: { createdAt: { gte: startCurrentMonth } } }),
-    prisma.product.count({ where: { createdAt: { gte: startCurrentMonth } } }),
-    prisma.payment.aggregate({
-      _sum: { amount: true },
-      where: {
-        status: "approved",
-        createdAt: { gte: startCurrentMonth, lt: endCurrentMonth },
-      },
-    }),
-    prisma.business.count({
-      where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
-    }),
-    prisma.product.count({
-      where: { createdAt: { gte: startLastMonth, lt: endLastMonth } },
-    }),
-    prisma.payment.aggregate({
-      _sum: { amount: true },
-      where: {
-        status: "approved",
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
+    db.select({ count: count() }).from(schema.business),
+    db
+      .select({ count: count() })
+      .from(schema.business)
+      .innerJoin(
+        schema.bannedBusiness,
+        eq(schema.business.id, schema.bannedBusiness.businessId),
+      ),
+    db
+      .select({ count: count() })
+      .from(schema.product)
+      .innerJoin(
+        schema.bannedProduct,
+        eq(schema.product.id, schema.bannedProduct.productId),
+      ),
+    db.select({ count: count() }).from(schema.product),
+    db
+      .select({ count: count() })
+      .from(schema.payment)
+      .where(eq(schema.payment.status, "approved")),
+    db
+      .select({ count: count() })
+      .from(schema.payment)
+      .where(eq(schema.payment.status, "pending")),
+    db
+      .select({ count: count() })
+      .from(schema.payment)
+      .where(eq(schema.payment.status, "rejected")),
+    db
+      .select({ count: count() })
+      .from(schema.trial)
+      .where(eq(schema.trial.isActive, true)),
+    db
+      .select({ count: count() })
+      .from(schema.business)
+      .where(gte(schema.business.createdAt, startCurrentMonth)),
+    db
+      .select({ count: count() })
+      .from(schema.product)
+      .where(gte(schema.product.createdAt, startCurrentMonth)),
+    db
+      .select({ total: sum(schema.payment.amount) })
+      .from(schema.payment)
+      .where(
+        and(
+          eq(schema.payment.status, "approved"),
+          gte(schema.payment.createdAt, startCurrentMonth),
+          lt(schema.payment.createdAt, endCurrentMonth),
+        ),
+      ),
+    db
+      .select({ count: count() })
+      .from(schema.business)
+      .where(
+        and(
+          gte(schema.business.createdAt, startLastMonth),
+          lt(schema.business.createdAt, endLastMonth),
+        ),
+      ),
+    db
+      .select({ count: count() })
+      .from(schema.product)
+      .where(
+        and(
+          gte(schema.product.createdAt, startLastMonth),
+          lt(schema.product.createdAt, endLastMonth),
+        ),
+      ),
+    db
+      .select({ total: sum(schema.payment.amount) })
+      .from(schema.payment)
+      .where(
+        and(
+          eq(schema.payment.status, "approved"),
+          gte(schema.payment.createdAt, startLastMonth),
+          lt(schema.payment.createdAt, endLastMonth),
+        ),
+      ),
   ]);
 
-  const currentRevenue = paymentsCurrentMonthAgg._sum.amount ?? 0;
-  const lastRevenue = paymentsLastMonthAgg._sum.amount ?? 0;
+  const totalBusinesses = totalBusinessesResult[0]?.count ?? 0;
+  const bannedBusinesses = bannedBusinessesResult[0]?.count ?? 0;
+  const bannedProducts = bannedProductsResult[0]?.count ?? 0;
+  const totalProducts = totalProductsResult[0]?.count ?? 0;
+  const totalApprovedPayments = totalApprovedPaymentsResult[0]?.count ?? 0;
+  const totalPendingPayments = totalPendingPaymentsResult[0]?.count ?? 0;
+  const totalRejectedPayments = totalRejectedPaymentsResult[0]?.count ?? 0;
+  const trialsActives = trialsActivesResult[0]?.count ?? 0;
+  const businessesCurrentMonth = businessesCurrentMonthResult[0]?.count ?? 0;
+  const productsCurrentMonth = productsCurrentMonthResult[0]?.count ?? 0;
+  const businessesLastMonth = businessesLastMonthResult[0]?.count ?? 0;
+  const productsLastMonth = productsLastMonthResult[0]?.count ?? 0;
+
+  const currentRevenue = Number(paymentsCurrentMonthResult[0]?.total) || 0;
+  const lastRevenue = Number(paymentsLastMonthResult[0]?.total) || 0;
 
   const stats: DashboardStats = {
     businesses: {
@@ -162,7 +220,6 @@ export async function getAdminDashboardStats(): Promise<{
       },
     },
     trials: { actives: trialsActives },
-    coupons: { actives: couponsActives },
   };
 
   return { stats };
@@ -175,11 +232,37 @@ async function getAnalyticsData(): Promise<{
   monthlyData: Analytics["monthlyRevenue"];
   businessGrowthData: Analytics["businessGrowth"];
 }> {
-  const [free, basic, premium] = await prisma.$transaction([
-    prisma.business.count({ where: { currentPlan: { planType: "FREE" } } }),
-    prisma.business.count({ where: { currentPlan: { planType: "BASIC" } } }),
-    prisma.business.count({ where: { currentPlan: { planType: "PREMIUM" } } }),
+  // Count businesses by plan type
+  const [freeResult, basicResult, premiumResult] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(schema.business)
+      .innerJoin(
+        schema.currentPlan,
+        eq(schema.business.id, schema.currentPlan.businessId),
+      )
+      .where(eq(schema.currentPlan.planType, "FREE")),
+    db
+      .select({ count: count() })
+      .from(schema.business)
+      .innerJoin(
+        schema.currentPlan,
+        eq(schema.business.id, schema.currentPlan.businessId),
+      )
+      .where(eq(schema.currentPlan.planType, "BASIC")),
+    db
+      .select({ count: count() })
+      .from(schema.business)
+      .innerJoin(
+        schema.currentPlan,
+        eq(schema.business.id, schema.currentPlan.businessId),
+      )
+      .where(eq(schema.currentPlan.planType, "PREMIUM")),
   ]);
+
+  const free = freeResult[0]?.count ?? 0;
+  const basic = basicResult[0]?.count ?? 0;
+  const premium = premiumResult[0]?.count ?? 0;
 
   const totalPlans = free + basic + premium || 1;
   const planDistribution: Analytics["planDistribution"] = {
@@ -193,38 +276,37 @@ async function getAnalyticsData(): Promise<{
 
   const sixMonthsAgo = startOfMonth(subMonths(new Date(), 5));
 
-  const [monthlyPayments, businessByMonth] = await prisma.$transaction([
-    prisma.payment.groupBy({
-      by: ["createdAt"],
-      where: { createdAt: { gte: sixMonthsAgo }, status: "approved" },
-      _sum: { amount: true }, // ¡CORRECCIÓN AQUÍ!
-      orderBy: {
-        createdAt: "asc", // o 'desc', según necesites ordenar los grupos por fecha
-      },
-    }),
-    prisma.business.groupBy({
-      by: ["createdAt"],
-      where: { createdAt: { gte: sixMonthsAgo } },
-      _count: { _all: true },
-      // ¡CORRECCIÓN AQUÍ!
-      orderBy: {
-        createdAt: "asc", // o 'desc', según necesites ordenar los grupos por fecha
-      },
-    }),
-  ]);
+  // Get payments for the last 6 months
+  const monthlyPayments = await db
+    .select({
+      createdAt: schema.payment.createdAt,
+      amount: schema.payment.amount,
+    })
+    .from(schema.payment)
+    .where(
+      and(
+        gte(schema.payment.createdAt, sixMonthsAgo),
+        eq(schema.payment.status, "approved"),
+      ),
+    );
+
+  // Get businesses created in the last 6 months
+  const businessByMonth = await db
+    .select({
+      createdAt: schema.business.createdAt,
+    })
+    .from(schema.business)
+    .where(gte(schema.business.createdAt, sixMonthsAgo));
 
   // 🔹 Revenue mensual
   const monthlyRevenue = Array.from({ length: 6 }).map((_, i) => {
     const date = startOfMonth(subMonths(new Date(), 5 - i));
     const month = format(date, "MMM");
-    const revenue =
-      monthlyPayments
-        .filter(
-          (p) =>
-            format(startOfMonth(p.createdAt), "MMM") === month &&
-            p._sum?.amount,
-        )
-        .reduce((acc, p) => acc + (p._sum?.amount || 0), 0) || 0;
+    const nextMonth = addMonths(date, 1);
+
+    const revenue = monthlyPayments
+      .filter((p) => p.createdAt >= date && p.createdAt < nextMonth && p.amount)
+      .reduce((acc, p) => acc + Number(p.amount || 0), 0);
 
     return { month, revenue };
   });
@@ -243,19 +325,11 @@ async function getAnalyticsData(): Promise<{
   const businessGrowth = Array.from({ length: 6 }).map((_, i) => {
     const date = startOfMonth(subMonths(new Date(), 5 - i));
     const month = format(date, "MMM");
-    const count =
-      businessByMonth
-        .filter(
-          (b) => format(startOfMonth(b.createdAt), "MMM") === month && b._count,
-        )
-        .reduce(
-          (acc, b) =>
-            acc +
-            (typeof b._count === "object" && b._count?._all
-              ? b._count._all
-              : 0),
-          0,
-        ) || 0;
+    const nextMonth = addMonths(date, 1);
+
+    const count = businessByMonth.filter(
+      (b) => b.createdAt >= date && b.createdAt < nextMonth,
+    ).length;
 
     return { month, count };
   });
@@ -356,19 +430,13 @@ export default async function AdminDashboard() {
         <PlanDistributionChart data={planDistribution} />
       </div>
 
-      {/* Trials y Cupones */}
+      {/* Trials */}
       <div className="grid gap-4 md:grid-cols-2">
         <StatCard
           title="Trials Activos"
           value={stats.trials.actives}
           icon={TrendingUp}
           className="border-blue-200 dark:border-blue-900"
-        />
-        <StatCard
-          title="Cupones Activos"
-          value={stats.coupons.actives}
-          icon={DiscIcon}
-          className="border-purple-200 dark:border-purple-900"
         />
       </div>
 

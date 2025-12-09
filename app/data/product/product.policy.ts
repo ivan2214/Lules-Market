@@ -1,4 +1,4 @@
-import type { PlanType } from "@/app/generated/prisma/client";
+import type { PlanType } from "@/db";
 
 import "server-only";
 import { getCurrentBusiness } from "../business/require-busines";

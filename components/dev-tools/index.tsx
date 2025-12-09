@@ -1,6 +1,7 @@
+import { count } from "drizzle-orm";
 import { cacheTag } from "next/cache";
 import { Suspense } from "react";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import { Skeleton } from "../ui/skeleton";
 import { ClearCacheDb } from "./clear-db";
 
@@ -17,25 +18,36 @@ export const DevTools = () => {
 async function ClearCacheWrapper() {
   "use cache";
   cacheTag("dev-tools");
-  const users = await prisma.user.count();
-  const sessions = await prisma.session.count();
-  const accounts = await prisma.account.count();
-  const businesses = await prisma.business.count();
-  const admin = await prisma.admin.count();
-  const emailVerificationToken = await prisma.emailVerificationToken.count();
-  const passwordResetToken = await prisma.passwordResetToken.count();
-  const account = await prisma.account.count();
+
+  const [
+    usersResult,
+    sessionsResult,
+    accountsResult,
+    businessesResult,
+    adminResult,
+    emailVerificationTokenResult,
+    passwordResetTokenResult,
+  ] = await Promise.all([
+    db.select({ count: count() }).from(schema.user),
+    db.select({ count: count() }).from(schema.session),
+    db.select({ count: count() }).from(schema.account),
+    db.select({ count: count() }).from(schema.business),
+    db.select({ count: count() }).from(schema.admin),
+    db.select({ count: count() }).from(schema.emailVerificationToken),
+    db.select({ count: count() }).from(schema.passwordResetToken),
+  ]);
+
   return (
     <ClearCacheDb
       data={{
-        users,
-        sessions,
-        accounts,
-        businesses,
-        admin,
-        emailVerificationToken,
-        passwordResetToken,
-        account,
+        users: usersResult[0]?.count ?? 0,
+        sessions: sessionsResult[0]?.count ?? 0,
+        accounts: accountsResult[0]?.count ?? 0,
+        businesses: businessesResult[0]?.count ?? 0,
+        admin: adminResult[0]?.count ?? 0,
+        emailVerificationToken: emailVerificationTokenResult[0]?.count ?? 0,
+        passwordResetToken: passwordResetTokenResult[0]?.count ?? 0,
+        account: accountsResult[0]?.count ?? 0,
       }}
     />
   );

@@ -1,6 +1,7 @@
 "use server";
 
 import { APIError } from "better-auth";
+import { eq } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
 import {
   type BusinessSignInInput,
@@ -8,9 +9,9 @@ import {
   type BusinessSignUpInput,
   BusinessSignUpInputSchema,
 } from "@/app/schemas/auth";
+import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
 import { getUserByEmail } from "../data/user/utils";
 
 export async function businessSignInAction(
@@ -39,33 +40,6 @@ export async function businessSignInAction(
     }
 
     if (!existingUser.emailVerified) {
-      /*       // Delete existing verification tokens
-      await prisma.emailVerificationToken.deleteMany({
-        where: { userId: existingUser.id },
-      });
-
-      // Generate new verification token
-      const verificationToken = generateEmailVerificationToken();
-      const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-      await prisma.emailVerificationToken.create({
-        data: {
-          userId: existingUser.id,
-          token: verificationToken,
-          expiresAt: tokenExpiresAt,
-        },
-      });
-
-      await sendEmail({
-        to: email,
-        subject: "Verificá tu cuenta en LulesMarket",
-        title: "Verificación de cuenta",
-        description:
-          "Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo.",
-        buttonText: "Verificar Email",
-        buttonUrl: `${process.env.APP_URL}/auth/verify?token=${verificationToken}`,
-        userFirstname: existingUser.name.split(" ")[0],
-      }); */
       return { errorMessage: "Confirmar tu cuenta antes de ingresar." };
     }
 
@@ -77,20 +51,16 @@ export async function businessSignInAction(
       },
     });
 
-    const user = await prisma.user.findUnique({
-      where: { id: res.user.id },
+    const user = await db.query.user.findFirst({
+      where: eq(schema.user.id, res.user.id),
     });
 
-    const hasBusiness = await prisma.business.findUnique({
-      where: {
-        userId: res.user.id,
-      },
+    const hasBusiness = await db.query.business.findFirst({
+      where: eq(schema.business.userId, res.user.id),
     });
 
-    const isAdmin = await prisma.admin.findUnique({
-      where: {
-        userId: res.user.id,
-      },
+    const isAdmin = await db.query.admin.findFirst({
+      where: eq(schema.admin.userId, res.user.id),
     });
 
     return {
@@ -103,13 +73,13 @@ export async function businessSignInAction(
     if (error instanceof APIError) {
       switch (error.status) {
         case "UNPROCESSABLE_ENTITY":
-          return { errorMessage: "Email o contraseña incorrectos." };
+          return { errorMessage: "Email o contraseña incorrectos." };
         case "FORBIDDEN":
           return {
             errorMessage: "Confirmar tu cuenta antes de ingresar.",
           };
         case "UNAUTHORIZED":
-          return { errorMessage: "Email o contraseña incorrectos." };
+          return { errorMessage: "Email o contraseña incorrectos." };
         case "BAD_REQUEST":
           return { errorMessage: "Email invalido." };
         default:
@@ -143,8 +113,8 @@ export const businessSignUpAction = async (
     const validatedData = result.data;
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email },
+    const existingUser = await db.query.user.findFirst({
+      where: eq(schema.user.email, validatedData.email),
     });
 
     if (existingUser) {
@@ -161,10 +131,8 @@ export const businessSignUpAction = async (
       },
     });
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: res.user.id,
-      },
+    const user = await db.query.user.findFirst({
+      where: eq(schema.user.id, res.user.id),
     });
 
     if (!user) {
@@ -185,13 +153,13 @@ export const businessSignUpAction = async (
         case "CONFLICT":
           return { errorMessage: "Email ya registrado." };
         case "UNPROCESSABLE_ENTITY":
-          return { errorMessage: "Email o contraseña incorrectos." };
+          return { errorMessage: "Email o contraseña incorrectos." };
         case "FORBIDDEN":
           return {
             errorMessage: "Confirmar tu cuenta antes de ingresar.",
           };
         case "UNAUTHORIZED":
-          return { errorMessage: "Email o contraseña incorrectos." };
+          return { errorMessage: "Email o contraseña incorrectos." };
         case "BAD_REQUEST":
           return { errorMessage: "Email invalido." };
         default:
@@ -209,140 +177,12 @@ export const businessSignUpAction = async (
 /* export async function verifyEmail(input: {
   token: string;
 }): Promise<ActionResult> {
-  try {
-    if (!input.token) {
-      return {
-        errorMessage: "Token de verificación requerido",
-      };
-    }
-
-    // Find the verification token
-    const verificationToken = await prisma.emailVerificationToken.findUnique({
-      where: { token: input.token },
-      include: { user: true },
-    });
-
-    if (!verificationToken) {
-      return {
-        errorMessage: "Token de verificación inválido o expirado",
-      };
-    }
-
-    // Check if token is expired
-    if (verificationToken.expiresAt < new Date()) {
-      // Delete expired token
-      await prisma.emailVerificationToken.delete({
-        where: { id: verificationToken.id },
-      });
-
-      return {
-        errorMessage:
-          "El enlace de verificación ha expirado. Solicitá un nuevo enlace.",
-      };
-    }
-
-    // Verify the user and update business status
-    await prisma.$transaction(async (tx) => {
-      // Update user as verified
-      await tx.user.update({
-        where: { id: verificationToken.userId },
-        data: { emailVerified: true },
-      });
-
-      // Update business status to active
-      await tx.business.updateMany({
-        where: { userId: verificationToken.userId },
-        data: { status: BusinessStatus.ACTIVE },
-      });
-
-      // Delete the verification token
-      await tx.emailVerificationToken.delete({
-        where: { id: verificationToken.id },
-      });
-    });
-
-    // Send welcome email
-    await sendEmail({
-      to: verificationToken.user.email,
-      subject: "¡Bienvenido a LulesMarket!",
-      title: "Cuenta Verificada",
-      description:
-        "¡Felicitaciones! Tu cuenta ha sido verificada exitosamente. Ya podés comenzar a crear ofertas y hacer crecer tu negocio con LulesMarket.",
-      buttonText: "Ir al Dashboard",
-      buttonUrl: `${process.env.APP_URL}/dashboard`,
-      userFirstname: verificationToken.user.name.split(" ")[0],
-    });
-
-    return {
-      successMessage:
-        "Email verificado exitosamente. ¡Bienvenido a LulesMarket!",
-    };
-  } catch (error) {
-    console.error("Error verifying email:", error);
-    return {
-      errorMessage: "Error al verificar el email. Intentá nuevamente.",
-    };
-  }
+  // TODO: Implement with Drizzle when needed
 }
  */
 /* export async function resendVerificationEmail(input: {
   email: string;
 }): Promise<ActionResult> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: input.email },
-    });
-
-    if (!user) {
-      return {
-        errorMessage: "Usuario no encontrado",
-      };
-    }
-
-    if (user.emailVerified) {
-      return {
-        errorMessage: "El email ya está verificado",
-      };
-    }
-
-    // Delete existing verification tokens
-    await prisma.emailVerificationToken.deleteMany({
-      where: { userId: user.id },
-    });
-
-    // Generate new verification token
-    const verificationToken = generateEmailVerificationToken();
-    const tokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-    await prisma.emailVerificationToken.create({
-      data: {
-        userId: user.id,
-        token: verificationToken,
-        expiresAt: tokenExpiresAt,
-      },
-    });
-
-    // Send verification email
-    await sendEmail({
-      to: user.email,
-      subject: "Verificá tu cuenta en LulesMarket",
-      title: "Verificación de cuenta",
-      description:
-        "Recibimos una solicitud para reenviar el enlace de verificación. Hacé click en el botón para verificar tu cuenta.",
-      buttonText: "Verificar Email",
-      buttonUrl: `${process.env.APP_URL}/auth/verify?token=${verificationToken}`,
-      userFirstname: user.name.split(" ")[0],
-    });
-
-    return {
-      successMessage:
-        "Email de verificación reenviado. Revisá tu bandeja de entrada.",
-    };
-  } catch (error) {
-    console.error("Error resending verification email:", error);
-    return {
-      errorMessage: "Error al reenviar el email. Intentá nuevamente.",
-    };
-  }
+  // TODO: Implement with Drizzle when needed
 }
  */

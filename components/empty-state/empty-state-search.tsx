@@ -10,7 +10,7 @@ export default function EmptyStateSearch({
 }: {
   title: string;
   description: string;
-  typeExplorer: "productos" | "comercios" | "posts";
+  typeExplorer: "productos" | "comercios";
 }) {
   const router = useRouter();
   return (

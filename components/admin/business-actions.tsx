@@ -15,7 +15,6 @@ import {
 } from "@/app/admin/businesses/actions/banned-business";
 import { changePlan } from "@/app/admin/businesses/actions/change-plan";
 import type { BusinessDTO } from "@/app/data/business/business.dto";
-import type { PlanType } from "@/app/generated/prisma/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,6 +51,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import type { PlanType } from "@/db";
 import { Field, FieldContent, FieldDescription, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 

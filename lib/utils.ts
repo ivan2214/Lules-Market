@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export type TypeExplorer = "productos" | "comercios" | "posts";
+export type TypeExplorer = "productos" | "comercios";
 
 /**
  * Crea una URL con los parámetros de búsqueda actualizados

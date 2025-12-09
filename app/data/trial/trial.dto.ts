@@ -1,7 +1,3 @@
-import type { PlanType, Trial } from "@/app/generated/prisma/client";
+import type { TrialWithRelations } from "@/db";
 
-export interface TrialDTO extends Trial {
-  businessName: string;
-  plan: PlanType;
-  isActive: boolean;
-}
+export type TrialDTO = TrialWithRelations;

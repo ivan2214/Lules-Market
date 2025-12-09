@@ -20,7 +20,6 @@ type SearchParams = {
   page?: string;
   limit?: string;
   sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-  minRating?: string;
 };
 
 export default async function ProductosPage({
@@ -28,7 +27,7 @@ export default async function ProductosPage({
 }: {
   searchParams?: Promise<SearchParams>;
 }) {
-  const { limit, page, search, sortBy, minRating, category, businessId } =
+  const { limit, page, search, sortBy, category, businessId } =
     (await searchParams) || {};
 
   const currentPage = page ? parseInt(page, 10) : 1;
@@ -40,7 +39,7 @@ export default async function ProductosPage({
     sortBy,
     limit: currentLimit,
     page: currentPage,
-    minRating: minRating ? parseInt(minRating, 10) : undefined,
+
     businessId,
   });
 
@@ -89,7 +88,6 @@ export default async function ProductosPage({
             businessId,
             limit,
             sortBy,
-            minRating,
           }}
           businesses={businesses}
         />

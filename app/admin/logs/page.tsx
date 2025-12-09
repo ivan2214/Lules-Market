@@ -1,12 +1,12 @@
+import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import type { Metadata } from "next";
 import { cacheTag } from "next/cache";
 import { Suspense } from "react";
-import type { Log, Prisma } from "@/app/generated/prisma/client";
 import { LogTable } from "@/components/admin/log-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { db, type Log, schema } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { createMetadata } from "@/lib/metadata";
-import prisma from "@/lib/prisma";
 
 export async function getLogs(
   page = 1,
@@ -21,31 +21,41 @@ export async function getLogs(
   cacheTag(CACHE_TAGS.ADMIN_LOGS);
 
   const skip = (page - 1) * limit;
-  const where: Prisma.LogWhereInput = {};
+
+  // Build where conditions
+  const conditions = [];
 
   if (filters.search) {
-    where.OR = [
-      { action: { contains: filters.search, mode: "insensitive" } },
-      { entityType: { contains: filters.search, mode: "insensitive" } },
-      { adminId: { contains: filters.search, mode: "insensitive" } },
-    ];
+    conditions.push(
+      or(
+        ilike(schema.log.action, `%${filters.search}%`),
+        ilike(schema.log.entityType, `%${filters.search}%`),
+        ilike(schema.log.adminId, `%${filters.search}%`),
+      ),
+    );
   }
-  // ✅ Ignora "all" como valor válido
+
   if (filters.entityType && filters.entityType !== "all") {
-    where.entityType = filters.entityType;
+    conditions.push(eq(schema.log.entityType, filters.entityType));
   }
 
   if (filters.action && filters.action !== "all") {
-    where.action = filters.action;
+    conditions.push(eq(schema.log.action, filters.action));
   }
 
-  const totalLogs = await prisma.log.count({ where });
-  const logs = await prisma.log.findMany({
-    where,
-    orderBy: { timestamp: "desc" },
-    skip,
-    take: limit,
-  });
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const [totalLogsResult, logs] = await Promise.all([
+    db.select({ count: count() }).from(schema.log).where(whereClause),
+    db.query.log.findMany({
+      where: whereClause,
+      orderBy: [desc(schema.log.timestamp)],
+      offset: skip,
+      limit: limit,
+    }),
+  ]);
+
+  const totalLogs = totalLogsResult[0]?.count ?? 0;
 
   return {
     logs,

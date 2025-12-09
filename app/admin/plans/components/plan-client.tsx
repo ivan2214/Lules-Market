@@ -3,7 +3,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil, Power } from "lucide-react";
 import { useState } from "react";
-import type { Plan, PlanType } from "@/app/generated/prisma/client";
 import { DataTable } from "@/components/table/data-table";
 import {
   AlertDialog,
@@ -42,6 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { Plan, PlanType } from "@/db";
 
 type PlanClientProps = {
   plans: Plan[];

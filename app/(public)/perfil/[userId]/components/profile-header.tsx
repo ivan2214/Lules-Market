@@ -8,18 +8,16 @@ interface ProfileHeaderProps {
   name: string;
   avatarUrl?: string | null;
   createdAt: Date;
-  postCount: number;
 }
 
 export function ProfileHeader({
   name,
   avatarUrl,
   createdAt,
-  postCount,
 }: ProfileHeaderProps) {
   return (
     <Card className="mb-8 overflow-hidden p-0">
-      <div className="h-32 bg-gradient-to-r from-primary/40 to-primary/20" />
+      <div className="h-32 bg-linear-to-r from-primary/40 to-primary/20" />
       <CardContent className="relative px-6 pb-6">
         <div className="flex flex-col items-center sm:flex-row sm:items-end sm:gap-6">
           <div className="-mt-12 relative">
@@ -40,10 +38,6 @@ export function ProfileHeader({
                   Se unió en{" "}
                   {format(createdAt, "MMMM 'de' yyyy", { locale: es })}
                 </span>
-              </div>
-              <div>
-                <span className="font-medium text-foreground">{postCount}</span>{" "}
-                publicaciones
               </div>
             </div>
           </div>
