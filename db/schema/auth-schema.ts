@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { userRoleEnum } from "./enums";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -7,6 +8,8 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
+  userRole: userRoleEnum("user_role").default("USER").notNull(),
+  isBanned: boolean("is_banned").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -73,10 +76,33 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
+  business: one(business, {
+    fields: [user.id],
+    references: [business.userId],
+  }),
+  admin: one(admin, {
+    fields: [user.id],
+    references: [admin.userId],
+  }),
+  profile: one(profile, {
+    fields: [user.id],
+    references: [profile.userId],
+  }),
+  emailVerificationTokens: many(emailVerificationToken),
+  passwordResetTokens: many(passwordResetToken),
 }));
+
+// Forward imports for circular references
+import { business } from "./business-schema";
+import {
+  admin,
+  emailVerificationToken,
+  passwordResetToken,
+  profile,
+} from "./user-schema";
 
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
