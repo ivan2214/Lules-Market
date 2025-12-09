@@ -24,6 +24,7 @@
  * ```
  */
 
+import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { env } from "@/env";
@@ -41,7 +42,10 @@ const pool = new Pool({
  * Instancia de Drizzle ORM configurada con el schema completo.
  * Usar para queries directas o en repositorios personalizados.
  */
-export const db = drizzle({ client: pool, schema });
+export const db =
+  process.env.NODE_ENV === "production"
+    ? drizzleNeon({ connection: env.DATABASE_URL, schema })
+    : drizzle({ client: pool, schema });
 
 // ===============================================================
 // RE-EXPORTS
