@@ -7,7 +7,7 @@ import type {
   FieldError as RHFError,
 } from "react-hook-form";
 import type { z } from "zod";
-import type { planCreateFormSchema } from "@/app/admin/plans/components/plan-form";
+import type { planFormSchema } from "@/app/admin/plans/components/plan-form";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -23,10 +23,7 @@ import {
 } from "@/components/ui/input-group";
 
 type TagsFieldProps = {
-  field: ControllerRenderProps<
-    z.infer<typeof planCreateFormSchema>,
-    "features"
-  >;
+  field: ControllerRenderProps<z.infer<typeof planFormSchema>, "features">;
   label?: string;
   placeholder?: string;
   description?: string;
