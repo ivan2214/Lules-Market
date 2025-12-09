@@ -11,7 +11,7 @@ import {
 } from "@/app/schemas/auth";
 import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
-import { auth } from "@/lib/auth";
+import { auth, syncUserRole } from "@/lib/auth";
 import { getUserByEmail } from "../data/user/utils";
 
 export async function businessSignInAction(
@@ -39,8 +39,23 @@ export async function businessSignInAction(
       return { errorMessage: "El usuario no existe." };
     }
 
-    if (!existingUser.emailVerified) {
-      return { errorMessage: "Confirmar tu cuenta antes de ingresar." };
+    const syncUserRoleResult = await syncUserRole(existingUser);
+
+    if (syncUserRoleResult.success) {
+      await auth.api.signInEmail({
+        body: {
+          email,
+          password,
+          rememberMe: true,
+        },
+      });
+
+      return {
+        successMessage: `Bienvenido de nuevo ${existingUser.name}! Has iniciado sesión correctamente`,
+        hasVerified: true,
+        isAdmin: true,
+        hasBusiness: false,
+      };
     }
 
     const res = await auth.api.signInEmail({
@@ -98,7 +113,12 @@ export async function businessSignInAction(
 export const businessSignUpAction = async (
   _prevState: ActionResult,
   data: BusinessSignUpInput,
-): Promise<ActionResult> => {
+): Promise<
+  ActionResult & {
+    isAdmin?: boolean;
+    hasVerified?: boolean;
+  }
+> => {
   try {
     const result = BusinessSignUpInputSchema.safeParse(data);
     if (!result.success) {
@@ -131,6 +151,16 @@ export const businessSignUpAction = async (
       },
     });
 
+    const syncUserRoleResult = await syncUserRole(res.user);
+
+    if (syncUserRoleResult.success) {
+      return {
+        successMessage: `Bienvenido de nuevo ${res.user.name}! Has iniciado sesión correctamente`,
+        isAdmin: true,
+        hasVerified: true,
+      };
+    }
+
     const user = await db.query.user.findFirst({
       where: eq(schema.user.id, res.user.id),
     });
@@ -144,6 +174,8 @@ export const businessSignUpAction = async (
     return {
       successMessage:
         "Por favor, verifica tu email para completar el registro. Seras redirigido en unos segundos.",
+      hasVerified: true,
+      isAdmin: false,
     };
   } catch (error) {
     if (error instanceof APIError) {

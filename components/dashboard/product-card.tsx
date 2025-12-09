@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { deleteProductAction } from "@/app/actions/product.action";
+import type { CategoryDTO } from "@/app/data/category/category.dto";
 import type { ProductDTO } from "@/app/data/product/product.dto";
 import {
   AlertDialog,
@@ -27,9 +28,14 @@ import { ProductFormDialog } from "./product-form-dialog";
 interface ProductCardProps {
   product: ProductDTO;
   canFeature: boolean;
+  categories: CategoryDTO[];
 }
 
-export function ProductCard({ product, canFeature = false }: ProductCardProps) {
+export function ProductCard({
+  product,
+  canFeature = false,
+  categories,
+}: ProductCardProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -103,6 +109,7 @@ export function ProductCard({ product, canFeature = false }: ProductCardProps) {
         <ProductFormDialog
           canFeature={canFeature}
           product={product}
+          categories={categories}
           trigger={
             <Button
               variant="outline"

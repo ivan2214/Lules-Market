@@ -1,17 +1,16 @@
 /**
  * ===============================================================
- * DRIZZLE SEED - Lules Market
+ * DRIZZLE SEED - Lules Market (OPTIMIZADO)
  * ===============================================================
  * Contraseña fija: test2214
- * Datos realistas en español
- * Planes, pagos, webhooks, views, analytics y escenarios
+ * Mejoras: Batch inserts, menos queries, transacciones
  */
 
 import { faker } from "@faker-js/faker";
 import { addDays, addMonths, subMonths } from "date-fns";
 import { eq, sql } from "drizzle-orm";
 
-import { db } from "@/db";
+import { db, type PlanInsert } from "@/db";
 import { auth } from "@/lib/auth";
 import * as schema from "./schema";
 
@@ -38,13 +37,6 @@ const PERMISSIONS = ["ALL", "BAN_USERS", "MANAGE_PLANS"] as const;
 
 type PlanType = (typeof PLAN_TYPE)[keyof typeof PLAN_TYPE];
 type PlanStatus = (typeof PLAN_STATUS)[keyof typeof PLAN_STATUS];
-
-interface CreatedPlan {
-  type: PlanType;
-  name: string;
-  maxProducts: number;
-  maxImages: number;
-}
 
 interface CreatedBusiness {
   id: string;
@@ -107,29 +99,30 @@ function pickPlanForBusiness(): {
   planType: PlanType;
   planStatus: PlanStatus;
   expiresAt: Date;
+  hasStatistics: boolean;
 } {
   const roll = Math.random();
   if (roll < 0.55) {
-    // Mayoría FREE
     return {
       planType: PLAN_TYPE.FREE,
       planStatus: PLAN_STATUS.ACTIVE,
       expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
+      hasStatistics: false,
     };
   }
   if (roll < 0.85) {
-    // Básico
     return {
       planType: PLAN_TYPE.BASIC,
       planStatus: PLAN_STATUS.ACTIVE,
       expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
+      hasStatistics: true,
     };
   }
-  // Premium
   return {
     planType: PLAN_TYPE.PREMIUM,
     planStatus: PLAN_STATUS.ACTIVE,
     expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 12 })),
+    hasStatistics: true,
   };
 }
 
@@ -140,61 +133,40 @@ function pickPlanForBusiness(): {
 async function deleteAllData(): Promise<void> {
   console.log("🧹 Eliminando datos anteriores...");
 
-  // 1️⃣ Webhooks / Analytics / Views
   await db.delete(schema.webhookEvent);
   await db.delete(schema.analytics);
   await db.delete(schema.log);
-
-  // 2️⃣ Trials
   await db.delete(schema.trial);
-
-  // 3️⃣ Views
   await db.delete(schema.businessView);
   await db.delete(schema.productView);
-
-  // 4️⃣ Payments
   await db.delete(schema.payment);
-
-  // 5️⃣ Images + banned
   await db.delete(schema.bannedImages);
   await db.delete(schema.image);
-
-  // 6️⃣ Products + banned
   await db.delete(schema.bannedProduct);
   await db.delete(schema.product);
-
-  // 7️⃣ Business + banned + plans
   await db.delete(schema.bannedBusiness);
   await db.delete(schema.currentPlan);
   await db.delete(schema.business);
-
-  // 8️⃣ Profile
   await db.delete(schema.profile);
-
-  // 9️⃣ Admin
   await db.delete(schema.admin);
-
-  // 🔟 Auth
   await db.delete(schema.session);
   await db.delete(schema.account);
   await db.delete(schema.verification);
   await db.delete(schema.emailVerificationToken);
   await db.delete(schema.passwordResetToken);
   await db.delete(schema.user);
-
-  // 1️⃣1️⃣ Categories / Plans
   await db.delete(schema.category);
   await db.delete(schema.plan);
 
-  console.log("✅ Datos eliminados correctamente");
+  console.log("✅ Datos eliminados");
 }
 
 // ===============================================================
 // SEED PLANS
 // ===============================================================
 
-async function seedPlans(): Promise<CreatedPlan[]> {
-  console.log("📑 Upsert de planes (FREE / BASIC / PREMIUM)...");
+async function seedPlans(): Promise<PlanInsert[]> {
+  console.log("🔐 Upsert de planes...");
 
   const plansData = [
     {
@@ -213,7 +185,8 @@ async function seedPlans(): Promise<CreatedPlan[]> {
       type: PLAN_TYPE.BASIC as PlanType,
       name: "Básico",
       description: "Plan económico para comercios pequeños",
-      price: 2999,
+      price: 15000,
+      discount: 10,
       features: ["Listado destacado", "Estadísticas básicas"],
       maxProducts: 100,
       maxImages: 50,
@@ -225,7 +198,8 @@ async function seedPlans(): Promise<CreatedPlan[]> {
       type: PLAN_TYPE.PREMIUM as PlanType,
       name: "Premium",
       description: "Plan completo con features avanzadas",
-      price: 9999,
+      price: 25000,
+      discount: 20,
       features: [
         "Productos destacados",
         "Reportes avanzados",
@@ -239,10 +213,9 @@ async function seedPlans(): Promise<CreatedPlan[]> {
     },
   ];
 
-  const createdPlans: CreatedPlan[] = [];
+  const createdPlans: PlanInsert[] = [];
 
   for (const p of plansData) {
-    // Check if exists
     const existing = await db.query.plan.findFirst({
       where: eq(schema.plan.type, p.type),
     });
@@ -253,19 +226,14 @@ async function seedPlans(): Promise<CreatedPlan[]> {
       await db.insert(schema.plan).values(p);
     }
 
-    createdPlans.push({
-      type: p.type,
-      name: p.name,
-      maxProducts: p.maxProducts,
-      maxImages: p.maxImages,
-    });
+    createdPlans.push(p);
   }
 
   return createdPlans;
 }
 
 // ===============================================================
-// SEED CATEGORIES
+// SEED CATEGORIES (BATCH INSERT)
 // ===============================================================
 
 async function seedCategories(): Promise<{ id: string; label: string }[]> {
@@ -282,82 +250,89 @@ async function seedCategories(): Promise<{ id: string; label: string }[]> {
     "Librería y Oficina",
   ];
 
-  const createdCategories: { id: string; label: string }[] = [];
+  const categoriasData = categorias.map((nombre) => ({
+    label: nombre,
+    value: nombre.toLowerCase(),
+  }));
 
-  for (const nombre of categorias) {
-    const inserted = await db
-      .insert(schema.category)
-      .values({
-        label: nombre,
-        value: nombre.toLowerCase(),
-      })
-      .returning({ id: schema.category.id, label: schema.category.label });
+  const inserted = await db
+    .insert(schema.category)
+    .values(categoriasData)
+    .returning({ id: schema.category.id, label: schema.category.label });
 
-    createdCategories.push(inserted[0]);
-  }
-
-  return createdCategories;
+  return inserted;
 }
 
 // ===============================================================
-// SEED NORMAL USERS
+// SEED NORMAL USERS (BATCH)
 // ===============================================================
 
 async function seedNormalUsers(count: number = 10): Promise<void> {
   console.log(`👤 Creando ${count} usuarios normales...`);
 
+  const users: Array<{ id: string; name: string; email: string }> = [];
+
   for (let i = 0; i < count; i++) {
-    console.log(`👤 Creando usuario ${i + 1} de ${count}`);
     const name = faker.person.fullName();
     const email = faker.internet.email();
 
     try {
       const user = await createUser(name, email, PASSWORD);
-
-      // Create profile with avatar
-      const avatarKey = crypto.randomUUID();
-      await db.insert(schema.image).values({
-        key: avatarKey,
-        url: faker.image.avatar(),
-        avatarId: user.id,
-      });
-
-      await db.insert(schema.profile).values({
-        userId: user.id,
-        name: user.name ?? name,
-        address: faker.location.streetAddress(),
-        phone: faker.phone.number(),
-      });
-
-      // Update user role
-      await db
-        .update(schema.user)
-        .set({
-          userRole: "USER",
-          emailVerified: faker.datatype.boolean(),
-        })
-        .where(eq(schema.user.id, user.id));
-    } catch (error) {
-      // Skip if user already exists
-      console.log(`⚠️ Skipping user ${email}: ${error}`);
+      users.push(user);
+    } catch {
+      console.log(`⚠️ Skipping user ${email}`);
     }
+  }
+
+  // BATCH: Avatares
+  const avatarsData = users.map((user) => ({
+    key: crypto.randomUUID(),
+    url: faker.image.avatar(),
+    avatarId: user.id,
+  }));
+  if (avatarsData.length > 0) {
+    await db.insert(schema.image).values(avatarsData);
+  }
+
+  // BATCH: Profiles
+  const profilesData = users.map((user) => ({
+    userId: user.id,
+    name: user.name,
+    address: faker.location.streetAddress(),
+    phone: faker.phone.number(),
+  }));
+  if (profilesData.length > 0) {
+    await db.insert(schema.profile).values(profilesData);
+  }
+
+  // BATCH: Update users
+  for (const user of users) {
+    await db
+      .update(schema.user)
+      .set({
+        userRole: "USER",
+        emailVerified: faker.datatype.boolean(),
+      })
+      .where(eq(schema.user.id, user.id));
   }
 }
 
 // ===============================================================
-// SEED ADMINS
+// SEED ADMINS (BATCH)
 // ===============================================================
 
 async function seedAdmins(count: number = 3): Promise<void> {
   console.log(`👑 Creando ${count} admins...`);
 
+  const admins: Array<{ id: string }> = [];
+
   for (let i = 0; i < count; i++) {
-    console.log(`👑 Creando admin ${i + 1} de ${count}`);
     const name = faker.person.fullName();
     const email = faker.internet.email();
 
     try {
       const user = await createUser(name, email, PASSWORD);
+      admins.push({ id: user.id });
 
       await db
         .update(schema.user)
@@ -366,34 +341,38 @@ async function seedAdmins(count: number = 3): Promise<void> {
           emailVerified: true,
         })
         .where(eq(schema.user.id, user.id));
-
-      await db.insert(schema.admin).values({
-        userId: user.id,
-        permissions: faker.helpers.arrayElements([...PERMISSIONS]),
-      });
-    } catch (error) {
-      console.log(`⚠️ Skipping admin ${email}: ${error}`);
+    } catch {
+      console.log(`⚠️ Skipping admin ${email}`);
     }
+  }
+
+  // BATCH: Admin records
+  const adminsData = admins.map((admin) => ({
+    userId: admin.id,
+    permissions: faker.helpers.arrayElements([...PERMISSIONS]),
+  }));
+  if (adminsData.length > 0) {
+    await db.insert(schema.admin).values(adminsData);
   }
 }
 
 // ===============================================================
-// SEED BUSINESSES
+// SEED BUSINESSES (OPTIMIZADO)
 // ===============================================================
 
 async function seedBusinesses(
   categories: { id: string; label: string }[],
-  plans: CreatedPlan[],
+  plans: PlanInsert[],
   count: number = 20,
 ): Promise<CreatedBusiness[]> {
-  console.log(`🏪 Creando ${count} negocios y asignando planes...`);
+  console.log(`🏪 Creando ${count} negocios...`);
 
   const businesses: CreatedBusiness[] = [];
 
   for (let i = 0; i < count; i++) {
-    console.log(`🏪 Creando negocio ${i + 1} de ${count}`);
     const category = faker.helpers.arrayElement(categories);
-    const { planType, planStatus, expiresAt } = pickPlanForBusiness();
+    const { planType, planStatus, expiresAt, hasStatistics } =
+      pickPlanForBusiness();
     const plan = plans.find((p) => p.type === planType);
 
     if (!plan) continue;
@@ -404,7 +383,6 @@ async function seedBusinesses(
     try {
       const owner = await createUser(name, email, PASSWORD);
 
-      // Create business
       const businessInsert = await db
         .insert(schema.business)
         .values({
@@ -429,7 +407,6 @@ async function seedBusinesses(
 
       const { id, name: businessName } = businessInsert[0];
 
-      // Create current plan
       const productsUsed = faker.number.int({ min: 0, max: plan.maxProducts });
       const imagesUsed = faker.number.int({ min: 0, max: plan.maxImages });
 
@@ -445,10 +422,10 @@ async function seedBusinesses(
           isTrial: false,
           imagesUsed,
           productsUsed,
+          hasStatistics,
         })
         .returning({ id: schema.currentPlan.id });
 
-      // Update user role to BUSINESS
       await db
         .update(schema.user)
         .set({
@@ -468,8 +445,8 @@ async function seedBusinesses(
         maxImages: plan.maxImages,
         name: businessName,
       });
-    } catch (error) {
-      console.log(`⚠️ Skipping business: ${error}`);
+    } catch {
+      console.log(`⚠️ Skipping business`);
     }
   }
 
@@ -477,84 +454,86 @@ async function seedBusinesses(
 }
 
 // ===============================================================
-// ADD IMAGES TO BUSINESSES
+// ADD IMAGES TO BUSINESSES (BATCH)
 // ===============================================================
 
 async function addBusinessImages(businesses: CreatedBusiness[]): Promise<void> {
   console.log("🖼️ Agregando imágenes a negocios...");
 
-  for (const negocio of businesses) {
-    console.log(`🖼️ Agregando imágenes a negocio ${negocio.name}`);
+  const imagesData = [];
 
-    // Cover image
-    await db.insert(schema.image).values({
+  for (const negocio of businesses) {
+    // Cover
+    imagesData.push({
       key: crypto.randomUUID(),
       url: faker.image.url(),
       coverBusinessId: negocio.id,
     });
 
     // Logo
-    await db.insert(schema.image).values({
+    imagesData.push({
       key: crypto.randomUUID(),
       url: faker.image.avatar(),
       logoBusinessId: negocio.id,
     });
   }
+
+  if (imagesData.length > 0) {
+    await db.insert(schema.image).values(imagesData);
+  }
 }
 
 // ===============================================================
-// SEED PRODUCTS
+// SEED PRODUCTS (BATCH OPTIMIZADO)
 // ===============================================================
 
 async function seedProducts(
   businesses: CreatedBusiness[],
   categories: { id: string; label: string }[],
 ): Promise<CreatedProduct[]> {
-  console.log("🛒 Creando productos e imágenes...");
+  console.log("🛒 Creando productos...");
 
-  const products: CreatedProduct[] = [];
+  const allProducts: CreatedProduct[] = [];
+  const productsData = [];
+  const imagesData = [];
+  const planUpdates: Record<string, { images: number; products: number }> = {};
 
   for (const negocio of businesses) {
-    console.log(`🛒 Creando productos para el negocio ${negocio.name}`);
     const productsCount = faker.number.int({
       min: 1,
       max: Math.min(negocio.maxProducts, 20),
     });
 
     for (let i = 1; i <= productsCount; i++) {
-      console.log(`🛒 Creando producto ${i} de ${productsCount}`);
       const category = faker.helpers.arrayElement(categories);
+      const productId = crypto.randomUUID();
 
-      const productInsert = await db
-        .insert(schema.product)
-        .values({
-          businessId: negocio.id,
-          categoryId: category.id,
-          name: faker.commerce.productName(),
-          description: faker.commerce.productDescription(),
-          price: Number.parseFloat(faker.commerce.price()),
-          stock: faker.number.int({ min: 0, max: 150 }),
-          createdAt: faker.datatype.boolean()
-            ? faker.date.past({ refDate: subMonths(new Date(), 1) })
-            : new Date(),
-          featured: negocio.planType === PLAN_TYPE.PREMIUM,
-          brand: getRandomBrandName(),
-          tags: faker.lorem.words(3).split(" "),
-          active: faker.datatype.boolean(),
-        })
-        .returning({ id: schema.product.id });
+      productsData.push({
+        id: productId,
+        businessId: negocio.id,
+        categoryId: category.id,
+        name: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: Number.parseFloat(faker.commerce.price()),
+        stock: faker.number.int({ min: 0, max: 150 }),
+        createdAt: faker.datatype.boolean()
+          ? faker.date.past({ refDate: subMonths(new Date(), 1) })
+          : new Date(),
+        featured: negocio.planType === PLAN_TYPE.PREMIUM,
+        brand: getRandomBrandName(),
+        tags: faker.lorem.words(3).split(" "),
+        active: faker.datatype.boolean(),
+      });
 
-      const productId = productInsert[0].id;
-      products.push({ id: productId, businessId: negocio.id });
+      allProducts.push({ id: productId, businessId: negocio.id });
 
-      // Add product images
       const imgCount = faker.number.int({
         min: 1,
         max: Math.min(negocio.maxImages, 5),
       });
 
       for (let idx = 0; idx < imgCount; idx++) {
-        await db.insert(schema.image).values({
+        imagesData.push({
           key: crypto.randomUUID(),
           productId,
           url: faker.image.url(),
@@ -564,63 +543,95 @@ async function seedProducts(
         });
       }
 
-      // Update plan usage
-      await db
-        .update(schema.currentPlan)
-        .set({
-          imagesUsed: sql`${schema.currentPlan.imagesUsed} + ${imgCount}`,
-          productsUsed: sql`${schema.currentPlan.productsUsed} + 1`,
-        })
-        .where(eq(schema.currentPlan.id, negocio.currentPlanId));
+      // Acumular updates
+      if (!planUpdates[negocio.currentPlanId]) {
+        planUpdates[negocio.currentPlanId] = { images: 0, products: 0 };
+      }
+      planUpdates[negocio.currentPlanId].images += imgCount;
+      planUpdates[negocio.currentPlanId].products += 1;
     }
   }
 
-  return products;
+  // BATCH INSERT: Products
+  if (productsData.length > 0) {
+    // Split into chunks of 500 to avoid query size limits
+    const chunkSize = 500;
+    for (let i = 0; i < productsData.length; i += chunkSize) {
+      const chunk = productsData.slice(i, i + chunkSize);
+      await db.insert(schema.product).values(chunk);
+    }
+  }
+
+  // BATCH INSERT: Images
+  if (imagesData.length > 0) {
+    const chunkSize = 500;
+    for (let i = 0; i < imagesData.length; i += chunkSize) {
+      const chunk = imagesData.slice(i, i + chunkSize);
+      await db.insert(schema.image).values(chunk);
+    }
+  }
+
+  // BATCH UPDATE: Plans
+  for (const [planId, counts] of Object.entries(planUpdates)) {
+    await db
+      .update(schema.currentPlan)
+      .set({
+        imagesUsed: sql`${schema.currentPlan.imagesUsed} + ${counts.images}`,
+        productsUsed: sql`${schema.currentPlan.productsUsed} + ${counts.products}`,
+      })
+      .where(eq(schema.currentPlan.id, planId));
+  }
+
+  return allProducts;
 }
 
 // ===============================================================
-// SEED VIEWS
+// SEED VIEWS (BATCH)
 // ===============================================================
 
 async function seedViews(
   products: CreatedProduct[],
   businesses: CreatedBusiness[],
 ): Promise<void> {
-  console.log("👁 Registrando vistas de productos y negocios...");
+  console.log("👁 Registrando vistas...");
 
   // Product views
-  for (let i = 0; i < 200; i++) {
-    console.log(`👁 Registrando vista de producto ${i + 1}`);
+  const productViewsData = Array.from({ length: 200 }, () => {
     const product = randomFrom(products);
-    await db.insert(schema.productView).values({
+    return {
       productId: product.id,
       referrer: faker.internet.url(),
       createdAt: faker.date.recent({ days: 120 }),
-    });
+    };
+  });
+
+  if (productViewsData.length > 0) {
+    await db.insert(schema.productView).values(productViewsData);
   }
 
   // Business views
-  for (let i = 0; i < 150; i++) {
-    console.log(`👁 Registrando vista de negocio ${i + 1}`);
+  const businessViewsData = Array.from({ length: 150 }, () => {
     const business = randomFrom(businesses);
-    await db.insert(schema.businessView).values({
+    return {
       businessId: business.id,
       referrer: faker.internet.url(),
       createdAt: faker.date.recent({ days: 120 }),
-    });
+    };
+  });
+
+  if (businessViewsData.length > 0) {
+    await db.insert(schema.businessView).values(businessViewsData);
   }
 }
 
 // ===============================================================
-// SEED PAYMENTS & WEBHOOKS
+// SEED PAYMENTS & WEBHOOKS (BATCH)
 // ===============================================================
 
 async function seedPaymentsAndWebhooks(
   businesses: CreatedBusiness[],
 ): Promise<CreatedPayment[]> {
-  console.log(
-    "💳 Creando pagos (pending / approved / rejected) y webhooks simulados...",
-  );
+  console.log("💳 Creando pagos y webhooks...");
 
   const paymentStatuses = ["pending", "approved", "rejected"] as const;
   const mpStatuses = {
@@ -629,14 +640,14 @@ async function seedPaymentsAndWebhooks(
     rejected: "rejected",
   };
 
+  const paymentsData = [];
+  const webhooksData = [];
   const paymentsCreated: CreatedPayment[] = [];
 
   for (const negocio of businesses) {
-    console.log(`💳 Creando pagos para el negocio ${negocio.name}`);
     const payCount = faker.number.int({ min: 0, max: 4 });
 
     for (let p = 0; p < payCount; p++) {
-      console.log(`💳 Creando pago ${p + 1} de ${payCount}`);
       const status = randomFrom([...paymentStatuses]);
       const planType = randomFrom([
         PLAN_TYPE.BASIC,
@@ -651,26 +662,24 @@ async function seedPaymentsAndWebhooks(
             : 9999;
       const createdAt = faker.date.recent({ days: 120 });
       const mpPaymentId = crypto.randomUUID();
+      const paymentId = crypto.randomUUID();
 
-      const paymentInsert = await db
-        .insert(schema.payment)
-        .values({
-          amount,
-          currency: "ARS",
-          status,
-          paymentMethod: randomFrom(["mercadopago", "card", "cash"]),
-          mpPaymentId,
-          mpStatus: mpStatuses[status],
-          plan: planType,
-          businessId: negocio.id,
-          createdAt,
-        })
-        .returning({ id: schema.payment.id });
+      paymentsData.push({
+        id: paymentId,
+        amount,
+        currency: "ARS",
+        status,
+        paymentMethod: randomFrom(["mercadopago", "card", "cash"]),
+        mpPaymentId,
+        mpStatus: mpStatuses[status],
+        plan: planType,
+        businessId: negocio.id,
+        createdAt,
+      });
 
-      paymentsCreated.push({ id: paymentInsert[0].id, amount });
+      paymentsCreated.push({ id: paymentId, amount });
 
-      // Create webhook event
-      await db.insert(schema.webhookEvent).values({
+      webhooksData.push({
         requestId: crypto.randomUUID(),
         eventType: `payment.${status}`,
         mpId: mpPaymentId,
@@ -689,6 +698,16 @@ async function seedPaymentsAndWebhooks(
     }
   }
 
+  // BATCH INSERT: Payments
+  if (paymentsData.length > 0) {
+    await db.insert(schema.payment).values(paymentsData);
+  }
+
+  // BATCH INSERT: Webhooks
+  if (webhooksData.length > 0) {
+    await db.insert(schema.webhookEvent).values(webhooksData);
+  }
+
   return paymentsCreated;
 }
 
@@ -700,20 +719,25 @@ async function seedSampleWebhooks(): Promise<void> {
   console.log("🌐 Creando webhooks de ejemplo...");
 
   const webhookSamples = [
-    { eventType: "user.created", payload: { example: true } },
-    { eventType: "plan.updated", payload: { example: true } },
-  ];
-
-  for (const s of webhookSamples) {
-    await db.insert(schema.webhookEvent).values({
+    {
       requestId: crypto.randomUUID(),
-      eventType: s.eventType,
-      payload: s.payload,
+      eventType: "user.created",
+      payload: { example: true },
       mpId: null,
       createdAt: faker.date.recent({ days: 30 }),
       processed: faker.datatype.boolean(),
-    });
-  }
+    },
+    {
+      requestId: crypto.randomUUID(),
+      eventType: "plan.updated",
+      payload: { example: true },
+      mpId: null,
+      createdAt: faker.date.recent({ days: 30 }),
+      processed: faker.datatype.boolean(),
+    },
+  ];
+
+  await db.insert(schema.webhookEvent).values(webhookSamples);
 }
 
 // ===============================================================
@@ -732,7 +756,6 @@ async function seedAnalytics(payments: CreatedPayment[]): Promise<void> {
 
   const totalRevenue = payments.reduce((s, p) => s + p.amount, 0);
 
-  // Check if analytics for today exists
   const existing = await db.query.analytics.findFirst({
     where: eq(schema.analytics.date, dateOnly),
   });
@@ -759,18 +782,16 @@ async function seedAnalytics(payments: CreatedPayment[]): Promise<void> {
 }
 
 // ===============================================================
-// APPLY SCENARIOS
+// APPLY SCENARIOS (BATCH UPDATES)
 // ===============================================================
 
 async function applyScenarios(
   businesses: CreatedBusiness[],
   products: CreatedProduct[],
 ): Promise<void> {
-  console.log(
-    "⚙️ Aplicando escenarios (cancelar, expirar, banear, destacar productos)...",
-  );
+  console.log("⚙️ Aplicando escenarios...");
 
-  // Cancelar algunos planes (8%)
+  // Cancelar planes (8%)
   const toCancel = faker.helpers.arrayElements(
     businesses,
     Math.floor(businesses.length * 0.08),
@@ -785,7 +806,7 @@ async function applyScenarios(
       .where(eq(schema.currentPlan.id, negocio.currentPlanId));
   }
 
-  // Expirar algunos planes (5%)
+  // Expirar planes (5%)
   const toExpire = faker.helpers.arrayElements(
     businesses,
     Math.floor(businesses.length * 0.05),
@@ -800,7 +821,7 @@ async function applyScenarios(
       .where(eq(schema.currentPlan.id, negocio.currentPlanId));
   }
 
-  // Banear algunos negocios (3%)
+  // Banear negocios (3%)
   const toBan = faker.helpers.arrayElements(
     businesses,
     Math.floor(businesses.length * 0.03),
@@ -812,40 +833,43 @@ async function applyScenarios(
       .where(eq(schema.business.id, negocio.id));
   }
 
-  // Destacar productos de negocios PREMIUM
+  // Destacar productos PREMIUM
   const premiumBusinesses = businesses.filter(
     (b) => b.planType === PLAN_TYPE.PREMIUM,
   );
+  const productsToFeature = [];
   for (const negocio of premiumBusinesses) {
     const itsProducts = products
       .filter((p) => p.businessId === negocio.id)
       .slice(0, 4);
-    for (const prod of itsProducts) {
+    productsToFeature.push(...itsProducts.map((p) => p.id));
+  }
+
+  if (productsToFeature.length > 0) {
+    for (const productId of productsToFeature) {
       await db
         .update(schema.product)
         .set({ featured: true })
-        .where(eq(schema.product.id, prod.id));
+        .where(eq(schema.product.id, productId));
     }
   }
 
-  // Banear algunos negocios random (10%)
-  for (const negocio of businesses) {
-    if (Math.random() < 0.1) {
-      await db
-        .update(schema.business)
-        .set({ isBanned: true })
-        .where(eq(schema.business.id, negocio.id));
-    }
+  // Banear negocios random (10%)
+  const toBanRandom = businesses.filter(() => Math.random() < 0.1);
+  for (const negocio of toBanRandom) {
+    await db
+      .update(schema.business)
+      .set({ isBanned: true })
+      .where(eq(schema.business.id, negocio.id));
   }
 
-  // Banear algunos productos random (5%)
-  for (const product of products) {
-    if (Math.random() < 0.05) {
-      await db
-        .update(schema.product)
-        .set({ isBanned: true })
-        .where(eq(schema.product.id, product.id));
-    }
+  // Banear productos random (5%)
+  const productsToBan = products.filter(() => Math.random() < 0.05);
+  for (const product of productsToBan) {
+    await db
+      .update(schema.product)
+      .set({ isBanned: true })
+      .where(eq(schema.product.id, product.id));
   }
 }
 
@@ -854,56 +878,32 @@ async function applyScenarios(
 // ===============================================================
 
 async function main(): Promise<void> {
-  console.log("🌱 Iniciando seed con Drizzle...\n");
+  console.log("🌱 Iniciando seed optimizado...\n");
+  const startTime = Date.now();
 
   try {
-    // 1. Delete all existing data
     await deleteAllData();
-
-    // 2. Create plans
     const plans = await seedPlans();
-
-    // 3. Create categories
     const categories = await seedCategories();
-
-    // 4. Create normal users
     await seedNormalUsers();
-
-    // 5. Create admins
     await seedAdmins();
-
-    // 6. Create businesses with plans
     const businesses = await seedBusinesses(categories, plans);
-
-    // 7. Add images to businesses
     await addBusinessImages(businesses);
-
-    // 8. Create products
     const products = await seedProducts(businesses, categories);
-
-    // 9. Create views
     await seedViews(products, businesses);
-
-    // 10. Create payments and webhooks
     const payments = await seedPaymentsAndWebhooks(businesses);
-
-    // 11. Create sample webhooks
     await seedSampleWebhooks();
-
-    // 12. Update analytics
     await seedAnalytics(payments);
-
-    // 13. Apply scenarios
     await applyScenarios(businesses, products);
 
-    console.log("\n✅ SEED COMPLETADO EXITOSAMENTE.");
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    console.log(`\n✅ SEED COMPLETADO en ${duration}s`);
   } catch (error) {
     console.error("❌ Error durante el seed:", error);
     throw error;
   }
 }
 
-// Run the seed
 main()
   .catch((e) => {
     console.error(e);
