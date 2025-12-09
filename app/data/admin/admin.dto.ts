@@ -1,6 +1,3 @@
-import type { Admin } from "@/db";
-import type { UserDTO } from "../user/user.dto";
+import type { AdminWithRelations } from "@/db/types";
 
-export interface AdminDTO extends Admin {
-  user: UserDTO;
-}
+export type AdminDTO = AdminWithRelations;

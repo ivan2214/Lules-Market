@@ -1,9 +1,6 @@
 import { z } from "zod";
-import type { BannedBusiness, Business, CurrentPlan, Plan } from "@/db";
-import type { CategoryDTO } from "../category/category.dto";
-import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
-import type { ProductDTO } from "../product/product.dto";
-import type { UserDTO } from "../user/user.dto";
+import type { BusinessWithRelations } from "@/db/types";
+import { ImageCreateInputSchema } from "../image/image.dto";
 
 export const BusinessSetupInputSchema = z.object({
   category: z.string().min(1, "La categoría es requerida"),
@@ -27,21 +24,4 @@ export const BusinessUpdateInputSchema = BusinessSetupInputSchema.extend({
 
 export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
 
-export interface BusinessDTO extends Business {
-  logo?: CleanImage | null;
-  coverImage?: CleanImage | null;
-  products?: ProductDTO[] | null;
-  user?: UserDTO | null;
-  bannedBusiness?: BannedBusiness | null;
-  category?: CategoryDTO | null;
-  currentPlan?: CurrentPlanDTO | null;
-}
-
-export interface CurrentPlanDTO extends CurrentPlan {
-  business?: BusinessDTO | null;
-  plan?: PlanDTO | null;
-}
-
-export interface PlanDTO extends Plan {
-  currentPlans?: CurrentPlanDTO[];
-}
+export type BusinessDTO = BusinessWithRelations;

@@ -23,9 +23,9 @@ function AdminColumnsInner({ admins }: { admins: AdminDTO[] }) {
       header: "Nombre",
       cell: ({ row }) => (
         <div>
-          <div className="font-medium">{row.original.user.name}</div>
+          <div className="font-medium">{row.original.user?.name}</div>
           <div className="text-muted-foreground text-sm">
-            {row.original.user.email}
+            {row.original.user?.email}
           </div>
         </div>
       ),

@@ -131,7 +131,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
           </DialogHeader>
           {selectedProduct && (
             <div className="space-y-6">
-              {selectedProduct.images.length && (
+              {selectedProduct.images?.length && (
                 <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
                   <Image
                     src={

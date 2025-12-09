@@ -24,13 +24,7 @@ import {
 import { ProductSchema } from "@/components/structured-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mainImage } from "@/utils/main-image";
 import { ProductImages } from "./components/product-images";
 import { ProductViewTracker } from "./components/product-view-tracker";
@@ -223,15 +217,6 @@ export default async function ProductPage({ params }: Props) {
                 </div>
               </div>
               <CardTitle className="text-2xl">{product.name}</CardTitle>
-              <CardDescription className="flex items-center gap-2">
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">6.9</span>
-                </div>
-
-                <span>·</span>
-                <span>{product.views?.length} vistas</span>
-              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Price */}

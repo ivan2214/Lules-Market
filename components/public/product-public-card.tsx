@@ -24,7 +24,7 @@ export function ProductPublicCard({ product }: ProductPublicCardProps) {
       <Card className="overflow-hidden p-0 transition-all hover:shadow-lg">
         <div className="aspect-square overflow-hidden">
           <ImageWithSkeleton
-            src={mainImage(product.images) || "/placeholder.svg"}
+            src={mainImage(product.images)}
             alt={product.name}
             className="h-full w-full object-cover transition-transform hover:scale-105"
           />

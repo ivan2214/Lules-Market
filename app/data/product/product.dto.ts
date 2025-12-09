@@ -1,7 +1,5 @@
 import { z } from "zod";
-import type { BannedProduct, Image, Product, ProductView } from "@/db";
-import type { BusinessDTO } from "../business/business.dto";
-import type { CategoryDTO } from "../category/category.dto";
+import type { ProductWithRelations } from "@/db/types";
 import { ImageCreateInputSchema } from "../image/image.dto";
 
 export const ProductCreateInputSchema = z.object({
@@ -32,10 +30,4 @@ export const ProductDeleteInputSchema = z.object({
 
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 
-export interface ProductDTO extends Product {
-  images: Image[];
-  views?: ProductView[] | null;
-  business?: BusinessDTO | null;
-  bannedProduct?: BannedProduct | null;
-  category?: CategoryDTO | null;
-}
+export type ProductDTO = ProductWithRelations;
