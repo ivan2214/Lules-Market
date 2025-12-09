@@ -16,7 +16,6 @@ type ActiveFiltersProps = {
     businessId?: string;
     limit?: string;
     sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-    minRating?: string;
   };
   businesses: Business[];
   typeExplorer: TypeExplorer;
@@ -122,7 +121,6 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
         params.category ||
         params.businessId ||
         params.sortBy ||
-        params.minRating ||
         params.limit ||
         params.page) && (
         <Button

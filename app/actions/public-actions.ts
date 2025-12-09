@@ -12,15 +12,14 @@ export async function getPublicBusinesses(params?: {
   category?: string;
   page?: number;
   limit?: number;
-  sortBy?: string;
-  minRating?: number;
+  sortBy?: "newest" | "oldest";
 }) {
   const {
     search,
     category,
     page = 1,
     limit = 12,
-    minRating,
+
     sortBy,
   } = params || {};
 
@@ -30,7 +29,7 @@ export async function getPublicBusinesses(params?: {
     category,
     page,
     limit,
-    minRating,
+
     sortBy,
   });
 }
@@ -52,7 +51,6 @@ export async function getPublicProducts(params?: {
   page?: number;
   limit?: number;
   sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-  minRating?: number;
 }) {
   const {
     search,
@@ -61,7 +59,6 @@ export async function getPublicProducts(params?: {
     page = 1,
     limit = 25,
     sortBy,
-    minRating,
   } = params || {};
 
   // Llamar directamente a la función del DAL
@@ -72,7 +69,6 @@ export async function getPublicProducts(params?: {
     page,
     limit,
     sort: sortBy,
-    minRating,
   });
 }
 

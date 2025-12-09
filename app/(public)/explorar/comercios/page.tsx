@@ -12,8 +12,7 @@ import { BusinessGrid, BusinessGridSkeleton } from "./components/business-grid";
 
 type SearchParams = {
   search?: string;
-  sortBy?: string;
-  minRating?: string;
+  sortBy?: "newest" | "oldest";
   category?: string;
   page?: string;
   limit?: string;
@@ -24,8 +23,7 @@ export default async function ComerciosPage({
 }: {
   searchParams?: Promise<SearchParams>;
 }) {
-  const { limit, page, search, sortBy, minRating, category } =
-    (await searchParams) || {};
+  const { limit, page, search, sortBy, category } = (await searchParams) || {};
 
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
@@ -36,7 +34,6 @@ export default async function ComerciosPage({
     sortBy,
     limit: currentLimit,
     page: currentPage,
-    minRating: minRating ? parseInt(minRating, 10) : undefined,
   });
 
   const totalPages = Math.ceil(total / currentLimit);

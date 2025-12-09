@@ -1,5 +1,15 @@
 import "server-only";
-import { and, asc, count, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  type SQL,
+} from "drizzle-orm";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { deleteS3Object } from "@/app/actions/s3";
 import { db, schema } from "@/db";
@@ -31,7 +41,6 @@ export async function listAllProducts({
   sort,
   businessId,
   category,
-  minRating,
 }: {
   search?: string;
   category?: string;
@@ -39,7 +48,6 @@ export async function listAllProducts({
   page: number;
   limit: number;
   sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-  minRating?: number;
 }): Promise<{
   products: ProductDTO[];
   total: number;
@@ -51,7 +59,7 @@ export async function listAllProducts({
   cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, CACHE_TAGS.PRODUCTS);
 
   // Build where conditions
-  const conditions = [eq(schema.product.active, true)];
+  const conditions: SQL<unknown>[] = [eq(schema.product.active, true)];
 
   if (businessId) {
     conditions.push(eq(schema.product.businessId, businessId));
@@ -62,8 +70,12 @@ export async function listAllProducts({
       or(
         ilike(schema.product.name, `%${search}%`),
         ilike(schema.product.description, `%${search}%`),
-      )!,
+      ) as SQL<string>,
     );
+  }
+
+  if (category) {
+    conditions.push(eq(schema.product.categoryId, category));
   }
 
   const whereClause = and(...conditions);

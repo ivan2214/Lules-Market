@@ -22,7 +22,6 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
     businessId?: string;
     limit?: string;
     sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-    minRating?: string;
   } = {
     search: params.get("search") ?? undefined,
     category: params.get("category") ?? undefined,

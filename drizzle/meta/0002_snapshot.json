@@ -56,9 +56,7 @@
         "analytics_date_unique": {
           "name": "analytics_date_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "date"
-          ]
+          "columns": ["date"]
         }
       },
       "policies": {},
@@ -265,9 +263,7 @@
         "webhook_event_request_id_unique": {
           "name": "webhook_event_request_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "request_id"
-          ]
+          "columns": ["request_id"]
         }
       },
       "policies": {},
@@ -380,12 +376,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -472,12 +464,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -487,9 +475,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -568,9 +554,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -793,16 +777,12 @@
         "business_email_unique": {
           "name": "business_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "business_user_id_unique": {
           "name": "business_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -986,9 +966,7 @@
         "current_plan_business_id_unique": {
           "name": "current_plan_business_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "business_id"
-          ]
+          "columns": ["business_id"]
         }
       },
       "policies": {},
@@ -1085,9 +1063,7 @@
         "plan_type_unique": {
           "name": "plan_type_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "type"
-          ]
+          "columns": ["type"]
         }
       },
       "policies": {},
@@ -1160,9 +1136,7 @@
         "trial_business_id_unique": {
           "name": "trial_business_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "business_id"
-          ]
+          "columns": ["business_id"]
         }
       },
       "policies": {},
@@ -1213,9 +1187,7 @@
         "category_value_unique": {
           "name": "category_value_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "value"
-          ]
+          "columns": ["value"]
         }
       },
       "policies": {},
@@ -1363,30 +1335,22 @@
         "image_key_unique": {
           "name": "image_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "key"
-          ]
+          "columns": ["key"]
         },
         "image_logo_business_id_unique": {
           "name": "image_logo_business_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "logo_business_id"
-          ]
+          "columns": ["logo_business_id"]
         },
         "image_cover_business_id_unique": {
           "name": "image_cover_business_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "cover_business_id"
-          ]
+          "columns": ["cover_business_id"]
         },
         "image_avatar_id_unique": {
           "name": "image_avatar_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "avatar_id"
-          ]
+          "columns": ["avatar_id"]
         }
       },
       "policies": {},
@@ -1628,9 +1592,7 @@
         "payment_mp_payment_id_unique": {
           "name": "payment_mp_payment_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "mp_payment_id"
-          ]
+          "columns": ["mp_payment_id"]
         }
       },
       "policies": {},
@@ -1894,9 +1856,7 @@
         "admin_user_id_unique": {
           "name": "admin_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -1963,9 +1923,7 @@
         "banned_business_business_id_unique": {
           "name": "banned_business_business_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "business_id"
-          ]
+          "columns": ["business_id"]
         }
       },
       "policies": {},
@@ -2032,9 +1990,7 @@
         "banned_images_image_key_unique": {
           "name": "banned_images_image_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "image_key"
-          ]
+          "columns": ["image_key"]
         }
       },
       "policies": {},
@@ -2101,9 +2057,7 @@
         "banned_product_product_id_unique": {
           "name": "banned_product_product_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "product_id"
-          ]
+          "columns": ["product_id"]
         }
       },
       "policies": {},
@@ -2169,16 +2123,12 @@
         "email_verification_token_user_id_unique": {
           "name": "email_verification_token_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         },
         "email_verification_token_token_unique": {
           "name": "email_verification_token_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -2244,9 +2194,7 @@
         "password_reset_token_token_unique": {
           "name": "password_reset_token_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -2303,9 +2251,7 @@
         "profile_user_id_unique": {
           "name": "profile_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -2317,12 +2263,7 @@
     "public.business_status": {
       "name": "business_status",
       "schema": "public",
-      "values": [
-        "PENDING_VERIFICATION",
-        "ACTIVE",
-        "SUSPENDED",
-        "INACTIVE"
-      ]
+      "values": ["PENDING_VERIFICATION", "ACTIVE", "SUSPENDED", "INACTIVE"]
     },
     "public.notification_type": {
       "name": "notification_type",
@@ -2339,40 +2280,22 @@
     "public.permission": {
       "name": "permission",
       "schema": "public",
-      "values": [
-        "ALL",
-        "BAN_USERS",
-        "MANAGE_PLANS"
-      ]
+      "values": ["ALL", "BAN_USERS", "MANAGE_PLANS"]
     },
     "public.plan_status": {
       "name": "plan_status",
       "schema": "public",
-      "values": [
-        "ACTIVE",
-        "INACTIVE",
-        "CANCELLED",
-        "EXPIRED"
-      ]
+      "values": ["ACTIVE", "INACTIVE", "CANCELLED", "EXPIRED"]
     },
     "public.plan_type": {
       "name": "plan_type",
       "schema": "public",
-      "values": [
-        "FREE",
-        "BASIC",
-        "PREMIUM"
-      ]
+      "values": ["FREE", "BASIC", "PREMIUM"]
     },
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "ADMIN",
-        "USER",
-        "BUSINESS",
-        "SUPER_ADMIN"
-      ]
+      "values": ["ADMIN", "USER", "BUSINESS", "SUPER_ADMIN"]
     }
   },
   "schemas": {},

@@ -1,5 +1,14 @@
 "use server";
-import { and, count, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import {
+  and,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  type SQL,
+} from "drizzle-orm";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { deleteS3Object } from "@/app/actions/s3";
@@ -29,15 +38,14 @@ export async function listAllBusinesses({
   category,
   limit,
   page,
-  minRating,
+
   sortBy,
 }: {
   search?: string;
   category?: string;
   page: number;
   limit: number;
-  sortBy?: string;
-  minRating?: number;
+  sortBy?: "newest" | "oldest";
 }) {
   "use cache";
   cacheLife("minutes");
@@ -51,8 +59,16 @@ export async function listAllBusinesses({
       or(
         ilike(schema.business.name, `%${search}%`),
         ilike(schema.business.description, `%${search}%`),
-      )!,
+      ) as SQL<string>,
     );
+  }
+
+  if (category) {
+    conditions.push(eq(schema.business.categoryId, category));
+  }
+
+  if (sortBy === "newest") {
+    conditions.push(desc(schema.business.createdAt));
   }
 
   const whereClause = and(...conditions);
@@ -102,6 +118,7 @@ export async function listAllBusinessesByCategories({
     : undefined;
 
   const businesses = await db.query.business.findMany({
+    where: whereClause,
     with: {
       products: {
         with: {
