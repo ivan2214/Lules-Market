@@ -4,6 +4,7 @@ export * from "./business-schema";
 export * from "./category-schema";
 export * from "./enums";
 export * from "./image-schema";
+export * from "./notification-schema";
 export * from "./payment-schema";
 export * from "./product-schema";
 export * from "./user-schema";

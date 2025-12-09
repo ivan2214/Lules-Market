@@ -36,8 +36,9 @@ model User {
   emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens     PasswordResetToken[]
 
-  userRole UserRole @default(USER) // rol del usuario
-  isBanned Boolean? @default(false)
+  userRole      UserRole       @default(USER) // rol del usuario
+  isBanned      Boolean?       @default(false)
+  notifications Notification[] // Notificaciones del usuario
 
   @@map("user")
 }
@@ -455,6 +456,30 @@ model Trial {
   updatedAt   DateTime @updatedAt
 }
 
+model Notification {
+  id      String           @id @default(cuid())
+  type    NotificationType
+  title   String
+  message String
+  read    Boolean          @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // URLs opcionales para redireccionar
+  actionUrl String?
+
+  // Metadata adicional en JSON
+  metadata Json?
+
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+
+  @@index([userId])
+  @@index([read])
+  @@index([type])
+}
+
 model Log {
   id         String   @id @default(cuid())
   timestamp  DateTime @default(now())
@@ -509,4 +534,18 @@ enum BusinessStatus {
   ACTIVE
   SUSPENDED
   INACTIVE
+}
+
+enum NotificationType {
+  NEW_REVIEW
+  NEW_QUESTION
+  NEW_ANSWER
+  REVIEW_RESPONSE
+  QUESTION_RESPONSE
+  PRODUCT_AVAILABLE
+  PLAN_EXPIRING
+  PLAN_EXPIRED
+  PAYMENT_RECEIVED
+  ACONT_VERIFIED
+  REPORT_RESOLVED
 }

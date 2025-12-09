@@ -14,7 +14,8 @@
     "postinstall": "prisma generate",
     "prepare": "husky",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "pnpm exec tsx db/seed.ts"
   },
   "pnpm": {
     "overrides": {

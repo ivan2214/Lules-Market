@@ -20,18 +20,8 @@ export type BusinessModel = runtime.Types.Result.DefaultSelection<Prisma.$Busine
 
 export type AggregateBusiness = {
   _count: BusinessCountAggregateOutputType | null
-  _avg: BusinessAvgAggregateOutputType | null
-  _sum: BusinessSumAggregateOutputType | null
   _min: BusinessMinAggregateOutputType | null
   _max: BusinessMaxAggregateOutputType | null
-}
-
-export type BusinessAvgAggregateOutputType = {
-  rating: number | null
-}
-
-export type BusinessSumAggregateOutputType = {
-  rating: number | null
 }
 
 export type BusinessMinAggregateOutputType = {
@@ -51,7 +41,6 @@ export type BusinessMinAggregateOutputType = {
   userId: string | null
   isBanned: boolean | null
   categoryId: string | null
-  rating: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -73,7 +62,6 @@ export type BusinessMaxAggregateOutputType = {
   userId: string | null
   isBanned: boolean | null
   categoryId: string | null
-  rating: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -96,20 +84,11 @@ export type BusinessCountAggregateOutputType = {
   isBanned: number
   categoryId: number
   tags: number
-  rating: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
-
-export type BusinessAvgAggregateInputType = {
-  rating?: true
-}
-
-export type BusinessSumAggregateInputType = {
-  rating?: true
-}
 
 export type BusinessMinAggregateInputType = {
   id?: true
@@ -128,7 +107,6 @@ export type BusinessMinAggregateInputType = {
   userId?: true
   isBanned?: true
   categoryId?: true
-  rating?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -150,7 +128,6 @@ export type BusinessMaxAggregateInputType = {
   userId?: true
   isBanned?: true
   categoryId?: true
-  rating?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -173,7 +150,6 @@ export type BusinessCountAggregateInputType = {
   isBanned?: true
   categoryId?: true
   tags?: true
-  rating?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -217,18 +193,6 @@ export type BusinessAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: BusinessAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: BusinessSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: BusinessMinAggregateInputType
@@ -259,8 +223,6 @@ export type BusinessGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: BusinessCountAggregateInputType | true
-  _avg?: BusinessAvgAggregateInputType
-  _sum?: BusinessSumAggregateInputType
   _min?: BusinessMinAggregateInputType
   _max?: BusinessMaxAggregateInputType
 }
@@ -283,12 +245,9 @@ export type BusinessGroupByOutputType = {
   isBanned: boolean | null
   categoryId: string | null
   tags: string[]
-  rating: number | null
   createdAt: Date
   updatedAt: Date
   _count: BusinessCountAggregateOutputType | null
-  _avg: BusinessAvgAggregateOutputType | null
-  _sum: BusinessSumAggregateOutputType | null
   _min: BusinessMinAggregateOutputType | null
   _max: BusinessMaxAggregateOutputType | null
 }
@@ -329,7 +288,6 @@ export type BusinessWhereInput = {
   isBanned?: Prisma.BoolNullableFilter<"Business"> | boolean | null
   categoryId?: Prisma.StringNullableFilter<"Business"> | string | null
   tags?: Prisma.StringNullableListFilter<"Business">
-  rating?: Prisma.FloatNullableFilter<"Business"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   logo?: Prisma.XOR<Prisma.ImageNullableScalarRelationFilter, Prisma.ImageWhereInput> | null
@@ -341,9 +299,7 @@ export type BusinessWhereInput = {
   bannedBusiness?: Prisma.XOR<Prisma.BannedBusinessNullableScalarRelationFilter, Prisma.BannedBusinessWhereInput> | null
   businessView?: Prisma.BusinessViewListRelationFilter
   trial?: Prisma.XOR<Prisma.TrialNullableScalarRelationFilter, Prisma.TrialWhereInput> | null
-  couponRedemption?: Prisma.CouponRedemptionListRelationFilter
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
-  reviews?: Prisma.ReviewListRelationFilter
 }
 
 export type BusinessOrderByWithRelationInput = {
@@ -364,7 +320,6 @@ export type BusinessOrderByWithRelationInput = {
   isBanned?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
-  rating?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   logo?: Prisma.ImageOrderByWithRelationInput
@@ -376,9 +331,7 @@ export type BusinessOrderByWithRelationInput = {
   bannedBusiness?: Prisma.BannedBusinessOrderByWithRelationInput
   businessView?: Prisma.businessViewOrderByRelationAggregateInput
   trial?: Prisma.TrialOrderByWithRelationInput
-  couponRedemption?: Prisma.CouponRedemptionOrderByRelationAggregateInput
   category?: Prisma.CategoryOrderByWithRelationInput
-  reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
 
 export type BusinessWhereUniqueInput = Prisma.AtLeast<{
@@ -402,7 +355,6 @@ export type BusinessWhereUniqueInput = Prisma.AtLeast<{
   isBanned?: Prisma.BoolNullableFilter<"Business"> | boolean | null
   categoryId?: Prisma.StringNullableFilter<"Business"> | string | null
   tags?: Prisma.StringNullableListFilter<"Business">
-  rating?: Prisma.FloatNullableFilter<"Business"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   logo?: Prisma.XOR<Prisma.ImageNullableScalarRelationFilter, Prisma.ImageWhereInput> | null
@@ -414,9 +366,7 @@ export type BusinessWhereUniqueInput = Prisma.AtLeast<{
   bannedBusiness?: Prisma.XOR<Prisma.BannedBusinessNullableScalarRelationFilter, Prisma.BannedBusinessWhereInput> | null
   businessView?: Prisma.BusinessViewListRelationFilter
   trial?: Prisma.XOR<Prisma.TrialNullableScalarRelationFilter, Prisma.TrialWhereInput> | null
-  couponRedemption?: Prisma.CouponRedemptionListRelationFilter
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
-  reviews?: Prisma.ReviewListRelationFilter
 }, "id" | "email" | "userId">
 
 export type BusinessOrderByWithAggregationInput = {
@@ -437,14 +387,11 @@ export type BusinessOrderByWithAggregationInput = {
   isBanned?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   tags?: Prisma.SortOrder
-  rating?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BusinessCountOrderByAggregateInput
-  _avg?: Prisma.BusinessAvgOrderByAggregateInput
   _max?: Prisma.BusinessMaxOrderByAggregateInput
   _min?: Prisma.BusinessMinOrderByAggregateInput
-  _sum?: Prisma.BusinessSumOrderByAggregateInput
 }
 
 export type BusinessScalarWhereWithAggregatesInput = {
@@ -468,7 +415,6 @@ export type BusinessScalarWhereWithAggregatesInput = {
   isBanned?: Prisma.BoolNullableWithAggregatesFilter<"Business"> | boolean | null
   categoryId?: Prisma.StringNullableWithAggregatesFilter<"Business"> | string | null
   tags?: Prisma.StringNullableListFilter<"Business">
-  rating?: Prisma.FloatNullableWithAggregatesFilter<"Business"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Business"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Business"> | Date | string
 }
@@ -489,7 +435,6 @@ export type BusinessCreateInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -501,9 +446,7 @@ export type BusinessCreateInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateInput = {
@@ -524,7 +467,6 @@ export type BusinessUncheckedCreateInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -535,8 +477,6 @@ export type BusinessUncheckedCreateInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUpdateInput = {
@@ -555,7 +495,6 @@ export type BusinessUpdateInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -567,9 +506,7 @@ export type BusinessUpdateInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateInput = {
@@ -590,7 +527,6 @@ export type BusinessUncheckedUpdateInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -601,8 +537,6 @@ export type BusinessUncheckedUpdateInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateManyInput = {
@@ -623,7 +557,6 @@ export type BusinessCreateManyInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -644,7 +577,6 @@ export type BusinessUpdateManyMutationInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -667,7 +599,6 @@ export type BusinessUncheckedUpdateManyInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -708,13 +639,8 @@ export type BusinessCountOrderByAggregateInput = {
   isBanned?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   tags?: Prisma.SortOrder
-  rating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type BusinessAvgOrderByAggregateInput = {
-  rating?: Prisma.SortOrder
 }
 
 export type BusinessMaxOrderByAggregateInput = {
@@ -734,7 +660,6 @@ export type BusinessMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
-  rating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -756,13 +681,8 @@ export type BusinessMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
-  rating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type BusinessSumOrderByAggregateInput = {
-  rating?: Prisma.SortOrder
 }
 
 export type BusinessListRelationFilter = {
@@ -832,14 +752,6 @@ export type EnumBusinessStatusFieldUpdateOperationsInput = {
 export type BusinessUpdatetagsInput = {
   set?: string[]
   push?: string | string[]
-}
-
-export type NullableFloatFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type BusinessCreateNestedOneWithoutCurrentPlanInput = {
@@ -986,36 +898,6 @@ export type BusinessUpdateOneRequiredWithoutTrialNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessUpdateToOneWithWhereWithoutTrialInput, Prisma.BusinessUpdateWithoutTrialInput>, Prisma.BusinessUncheckedUpdateWithoutTrialInput>
 }
 
-export type BusinessCreateNestedOneWithoutCouponRedemptionInput = {
-  create?: Prisma.XOR<Prisma.BusinessCreateWithoutCouponRedemptionInput, Prisma.BusinessUncheckedCreateWithoutCouponRedemptionInput>
-  connectOrCreate?: Prisma.BusinessCreateOrConnectWithoutCouponRedemptionInput
-  connect?: Prisma.BusinessWhereUniqueInput
-}
-
-export type BusinessUpdateOneRequiredWithoutCouponRedemptionNestedInput = {
-  create?: Prisma.XOR<Prisma.BusinessCreateWithoutCouponRedemptionInput, Prisma.BusinessUncheckedCreateWithoutCouponRedemptionInput>
-  connectOrCreate?: Prisma.BusinessCreateOrConnectWithoutCouponRedemptionInput
-  upsert?: Prisma.BusinessUpsertWithoutCouponRedemptionInput
-  connect?: Prisma.BusinessWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessUpdateToOneWithWhereWithoutCouponRedemptionInput, Prisma.BusinessUpdateWithoutCouponRedemptionInput>, Prisma.BusinessUncheckedUpdateWithoutCouponRedemptionInput>
-}
-
-export type BusinessCreateNestedOneWithoutReviewsInput = {
-  create?: Prisma.XOR<Prisma.BusinessCreateWithoutReviewsInput, Prisma.BusinessUncheckedCreateWithoutReviewsInput>
-  connectOrCreate?: Prisma.BusinessCreateOrConnectWithoutReviewsInput
-  connect?: Prisma.BusinessWhereUniqueInput
-}
-
-export type BusinessUpdateOneWithoutReviewsNestedInput = {
-  create?: Prisma.XOR<Prisma.BusinessCreateWithoutReviewsInput, Prisma.BusinessUncheckedCreateWithoutReviewsInput>
-  connectOrCreate?: Prisma.BusinessCreateOrConnectWithoutReviewsInput
-  upsert?: Prisma.BusinessUpsertWithoutReviewsInput
-  disconnect?: Prisma.BusinessWhereInput | boolean
-  delete?: Prisma.BusinessWhereInput | boolean
-  connect?: Prisma.BusinessWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessUpdateToOneWithWhereWithoutReviewsInput, Prisma.BusinessUpdateWithoutReviewsInput>, Prisma.BusinessUncheckedUpdateWithoutReviewsInput>
-}
-
 export type BusinessCreateWithoutUserInput = {
   id?: string
   name: string
@@ -1032,7 +914,6 @@ export type BusinessCreateWithoutUserInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1043,9 +924,7 @@ export type BusinessCreateWithoutUserInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutUserInput = {
@@ -1065,7 +944,6 @@ export type BusinessUncheckedCreateWithoutUserInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1076,8 +954,6 @@ export type BusinessUncheckedCreateWithoutUserInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutUserInput = {
@@ -1112,7 +988,6 @@ export type BusinessUpdateWithoutUserInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -1123,9 +998,7 @@ export type BusinessUpdateWithoutUserInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutUserInput = {
@@ -1145,7 +1018,6 @@ export type BusinessUncheckedUpdateWithoutUserInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -1156,8 +1028,6 @@ export type BusinessUncheckedUpdateWithoutUserInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutBannedBusinessInput = {
@@ -1176,7 +1046,6 @@ export type BusinessCreateWithoutBannedBusinessInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1187,9 +1056,7 @@ export type BusinessCreateWithoutBannedBusinessInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutBannedBusinessInput = {
@@ -1210,7 +1077,6 @@ export type BusinessUncheckedCreateWithoutBannedBusinessInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1220,8 +1086,6 @@ export type BusinessUncheckedCreateWithoutBannedBusinessInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutBannedBusinessInput = {
@@ -1256,7 +1120,6 @@ export type BusinessUpdateWithoutBannedBusinessInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -1267,9 +1130,7 @@ export type BusinessUpdateWithoutBannedBusinessInput = {
   payments?: Prisma.PaymentUpdateManyWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutBannedBusinessInput = {
@@ -1290,7 +1151,6 @@ export type BusinessUncheckedUpdateWithoutBannedBusinessInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -1300,8 +1160,6 @@ export type BusinessUncheckedUpdateWithoutBannedBusinessInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutCurrentPlanInput = {
@@ -1320,7 +1178,6 @@ export type BusinessCreateWithoutCurrentPlanInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1331,9 +1188,7 @@ export type BusinessCreateWithoutCurrentPlanInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutCurrentPlanInput = {
@@ -1354,7 +1209,6 @@ export type BusinessUncheckedCreateWithoutCurrentPlanInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1364,8 +1218,6 @@ export type BusinessUncheckedCreateWithoutCurrentPlanInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutCurrentPlanInput = {
@@ -1400,7 +1252,6 @@ export type BusinessUpdateWithoutCurrentPlanInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -1411,9 +1262,7 @@ export type BusinessUpdateWithoutCurrentPlanInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutCurrentPlanInput = {
@@ -1434,7 +1283,6 @@ export type BusinessUncheckedUpdateWithoutCurrentPlanInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -1444,8 +1292,6 @@ export type BusinessUncheckedUpdateWithoutCurrentPlanInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutCategoryInput = {
@@ -1464,7 +1310,6 @@ export type BusinessCreateWithoutCategoryInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1476,8 +1321,6 @@ export type BusinessCreateWithoutCategoryInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutCategoryInput = {
@@ -1497,7 +1340,6 @@ export type BusinessUncheckedCreateWithoutCategoryInput = {
   userId: string
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1508,8 +1350,6 @@ export type BusinessUncheckedCreateWithoutCategoryInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutCategoryInput = {
@@ -1559,7 +1399,6 @@ export type BusinessScalarWhereInput = {
   isBanned?: Prisma.BoolNullableFilter<"Business"> | boolean | null
   categoryId?: Prisma.StringNullableFilter<"Business"> | string | null
   tags?: Prisma.StringNullableListFilter<"Business">
-  rating?: Prisma.FloatNullableFilter<"Business"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Business"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Business"> | Date | string
 }
@@ -1580,7 +1419,6 @@ export type BusinessCreateWithoutProductsInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1591,9 +1429,7 @@ export type BusinessCreateWithoutProductsInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutProductsInput = {
@@ -1614,7 +1450,6 @@ export type BusinessUncheckedCreateWithoutProductsInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1624,8 +1459,6 @@ export type BusinessUncheckedCreateWithoutProductsInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutProductsInput = {
@@ -1660,7 +1493,6 @@ export type BusinessUpdateWithoutProductsInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -1671,9 +1503,7 @@ export type BusinessUpdateWithoutProductsInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutProductsInput = {
@@ -1694,7 +1524,6 @@ export type BusinessUncheckedUpdateWithoutProductsInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -1704,8 +1533,6 @@ export type BusinessUncheckedUpdateWithoutProductsInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutPaymentsInput = {
@@ -1724,7 +1551,6 @@ export type BusinessCreateWithoutPaymentsInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1735,9 +1561,7 @@ export type BusinessCreateWithoutPaymentsInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutPaymentsInput = {
@@ -1758,7 +1582,6 @@ export type BusinessUncheckedCreateWithoutPaymentsInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1768,8 +1591,6 @@ export type BusinessUncheckedCreateWithoutPaymentsInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutPaymentsInput = {
@@ -1804,7 +1625,6 @@ export type BusinessUpdateWithoutPaymentsInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -1815,9 +1635,7 @@ export type BusinessUpdateWithoutPaymentsInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutPaymentsInput = {
@@ -1838,7 +1656,6 @@ export type BusinessUncheckedUpdateWithoutPaymentsInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -1848,8 +1665,6 @@ export type BusinessUncheckedUpdateWithoutPaymentsInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutLogoInput = {
@@ -1868,7 +1683,6 @@ export type BusinessCreateWithoutLogoInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   coverImage?: Prisma.ImageCreateNestedOneWithoutCoverBusinessInput
@@ -1879,9 +1693,7 @@ export type BusinessCreateWithoutLogoInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutLogoInput = {
@@ -1902,7 +1714,6 @@ export type BusinessUncheckedCreateWithoutLogoInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   coverImage?: Prisma.ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
@@ -1912,8 +1723,6 @@ export type BusinessUncheckedCreateWithoutLogoInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutLogoInput = {
@@ -1937,7 +1746,6 @@ export type BusinessCreateWithoutCoverImageInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -1948,9 +1756,7 @@ export type BusinessCreateWithoutCoverImageInput = {
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutCoverImageInput = {
@@ -1971,7 +1777,6 @@ export type BusinessUncheckedCreateWithoutCoverImageInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -1981,8 +1786,6 @@ export type BusinessUncheckedCreateWithoutCoverImageInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutCoverImageInput = {
@@ -2017,7 +1820,6 @@ export type BusinessUpdateWithoutLogoInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coverImage?: Prisma.ImageUpdateOneWithoutCoverBusinessNestedInput
@@ -2028,9 +1830,7 @@ export type BusinessUpdateWithoutLogoInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutLogoInput = {
@@ -2051,7 +1851,6 @@ export type BusinessUncheckedUpdateWithoutLogoInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coverImage?: Prisma.ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
@@ -2061,8 +1860,6 @@ export type BusinessUncheckedUpdateWithoutLogoInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUpsertWithoutCoverImageInput = {
@@ -2092,7 +1889,6 @@ export type BusinessUpdateWithoutCoverImageInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -2103,9 +1899,7 @@ export type BusinessUpdateWithoutCoverImageInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutCoverImageInput = {
@@ -2126,7 +1920,6 @@ export type BusinessUncheckedUpdateWithoutCoverImageInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -2136,8 +1929,6 @@ export type BusinessUncheckedUpdateWithoutCoverImageInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutBusinessViewInput = {
@@ -2156,7 +1947,6 @@ export type BusinessCreateWithoutBusinessViewInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -2167,9 +1957,7 @@ export type BusinessCreateWithoutBusinessViewInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutBusinessInput
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutBusinessViewInput = {
@@ -2190,7 +1978,6 @@ export type BusinessUncheckedCreateWithoutBusinessViewInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -2200,8 +1987,6 @@ export type BusinessUncheckedCreateWithoutBusinessViewInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutBusinessInput
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutBusinessViewInput = {
@@ -2236,7 +2021,6 @@ export type BusinessUpdateWithoutBusinessViewInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -2247,9 +2031,7 @@ export type BusinessUpdateWithoutBusinessViewInput = {
   payments?: Prisma.PaymentUpdateManyWithoutBusinessNestedInput
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutBusinessViewInput = {
@@ -2270,7 +2052,6 @@ export type BusinessUncheckedUpdateWithoutBusinessViewInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -2280,8 +2061,6 @@ export type BusinessUncheckedUpdateWithoutBusinessViewInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutBusinessNestedInput
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateWithoutTrialInput = {
@@ -2300,7 +2079,6 @@ export type BusinessCreateWithoutTrialInput = {
   status?: $Enums.BusinessStatus
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
@@ -2311,9 +2089,7 @@ export type BusinessCreateWithoutTrialInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutBusinessInput
   bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
   category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessUncheckedCreateWithoutTrialInput = {
@@ -2334,7 +2110,6 @@ export type BusinessUncheckedCreateWithoutTrialInput = {
   isBanned?: boolean | null
   categoryId?: string | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
@@ -2344,8 +2119,6 @@ export type BusinessUncheckedCreateWithoutTrialInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutBusinessInput
   bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
   businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
 }
 
 export type BusinessCreateOrConnectWithoutTrialInput = {
@@ -2380,7 +2153,6 @@ export type BusinessUpdateWithoutTrialInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -2391,9 +2163,7 @@ export type BusinessUpdateWithoutTrialInput = {
   payments?: Prisma.PaymentUpdateManyWithoutBusinessNestedInput
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
   category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutTrialInput = {
@@ -2414,7 +2184,6 @@ export type BusinessUncheckedUpdateWithoutTrialInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -2424,296 +2193,6 @@ export type BusinessUncheckedUpdateWithoutTrialInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutBusinessNestedInput
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
-}
-
-export type BusinessCreateWithoutCouponRedemptionInput = {
-  id?: string
-  name: string
-  isActive?: boolean
-  description?: string | null
-  phone?: string | null
-  whatsapp?: string | null
-  email: string
-  website?: string | null
-  facebook?: string | null
-  instagram?: string | null
-  address?: string | null
-  verified?: boolean
-  status?: $Enums.BusinessStatus
-  isBanned?: boolean | null
-  tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
-  coverImage?: Prisma.ImageCreateNestedOneWithoutCoverBusinessInput
-  currentPlan?: Prisma.CurrentPlanCreateNestedOneWithoutBusinessInput
-  user: Prisma.UserCreateNestedOneWithoutBusinessInput
-  products?: Prisma.ProductCreateNestedManyWithoutBusinessInput
-  payments?: Prisma.PaymentCreateNestedManyWithoutBusinessInput
-  bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
-  businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
-  trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutBusinessInput
-}
-
-export type BusinessUncheckedCreateWithoutCouponRedemptionInput = {
-  id?: string
-  name: string
-  isActive?: boolean
-  description?: string | null
-  phone?: string | null
-  whatsapp?: string | null
-  email: string
-  website?: string | null
-  facebook?: string | null
-  instagram?: string | null
-  address?: string | null
-  verified?: boolean
-  status?: $Enums.BusinessStatus
-  userId: string
-  isBanned?: boolean | null
-  categoryId?: string | null
-  tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
-  coverImage?: Prisma.ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
-  currentPlan?: Prisma.CurrentPlanUncheckedCreateNestedOneWithoutBusinessInput
-  products?: Prisma.ProductUncheckedCreateNestedManyWithoutBusinessInput
-  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutBusinessInput
-  bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
-  businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
-  trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBusinessInput
-}
-
-export type BusinessCreateOrConnectWithoutCouponRedemptionInput = {
-  where: Prisma.BusinessWhereUniqueInput
-  create: Prisma.XOR<Prisma.BusinessCreateWithoutCouponRedemptionInput, Prisma.BusinessUncheckedCreateWithoutCouponRedemptionInput>
-}
-
-export type BusinessUpsertWithoutCouponRedemptionInput = {
-  update: Prisma.XOR<Prisma.BusinessUpdateWithoutCouponRedemptionInput, Prisma.BusinessUncheckedUpdateWithoutCouponRedemptionInput>
-  create: Prisma.XOR<Prisma.BusinessCreateWithoutCouponRedemptionInput, Prisma.BusinessUncheckedCreateWithoutCouponRedemptionInput>
-  where?: Prisma.BusinessWhereInput
-}
-
-export type BusinessUpdateToOneWithWhereWithoutCouponRedemptionInput = {
-  where?: Prisma.BusinessWhereInput
-  data: Prisma.XOR<Prisma.BusinessUpdateWithoutCouponRedemptionInput, Prisma.BusinessUncheckedUpdateWithoutCouponRedemptionInput>
-}
-
-export type BusinessUpdateWithoutCouponRedemptionInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  facebook?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  instagram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
-  coverImage?: Prisma.ImageUpdateOneWithoutCoverBusinessNestedInput
-  currentPlan?: Prisma.CurrentPlanUpdateOneWithoutBusinessNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutBusinessNestedInput
-  products?: Prisma.ProductUpdateManyWithoutBusinessNestedInput
-  payments?: Prisma.PaymentUpdateManyWithoutBusinessNestedInput
-  bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
-  businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
-  trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
-}
-
-export type BusinessUncheckedUpdateWithoutCouponRedemptionInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  facebook?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  instagram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
-  coverImage?: Prisma.ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
-  currentPlan?: Prisma.CurrentPlanUncheckedUpdateOneWithoutBusinessNestedInput
-  products?: Prisma.ProductUncheckedUpdateManyWithoutBusinessNestedInput
-  payments?: Prisma.PaymentUncheckedUpdateManyWithoutBusinessNestedInput
-  bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
-  businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
-  trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
-}
-
-export type BusinessCreateWithoutReviewsInput = {
-  id?: string
-  name: string
-  isActive?: boolean
-  description?: string | null
-  phone?: string | null
-  whatsapp?: string | null
-  email: string
-  website?: string | null
-  facebook?: string | null
-  instagram?: string | null
-  address?: string | null
-  verified?: boolean
-  status?: $Enums.BusinessStatus
-  isBanned?: boolean | null
-  tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  logo?: Prisma.ImageCreateNestedOneWithoutLogoBusinessInput
-  coverImage?: Prisma.ImageCreateNestedOneWithoutCoverBusinessInput
-  currentPlan?: Prisma.CurrentPlanCreateNestedOneWithoutBusinessInput
-  user: Prisma.UserCreateNestedOneWithoutBusinessInput
-  products?: Prisma.ProductCreateNestedManyWithoutBusinessInput
-  payments?: Prisma.PaymentCreateNestedManyWithoutBusinessInput
-  bannedBusiness?: Prisma.BannedBusinessCreateNestedOneWithoutBusinessInput
-  businessView?: Prisma.businessViewCreateNestedManyWithoutBusinessInput
-  trial?: Prisma.TrialCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionCreateNestedManyWithoutBusinessInput
-  category?: Prisma.CategoryCreateNestedOneWithoutBusinessesInput
-}
-
-export type BusinessUncheckedCreateWithoutReviewsInput = {
-  id?: string
-  name: string
-  isActive?: boolean
-  description?: string | null
-  phone?: string | null
-  whatsapp?: string | null
-  email: string
-  website?: string | null
-  facebook?: string | null
-  instagram?: string | null
-  address?: string | null
-  verified?: boolean
-  status?: $Enums.BusinessStatus
-  userId: string
-  isBanned?: boolean | null
-  categoryId?: string | null
-  tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  logo?: Prisma.ImageUncheckedCreateNestedOneWithoutLogoBusinessInput
-  coverImage?: Prisma.ImageUncheckedCreateNestedOneWithoutCoverBusinessInput
-  currentPlan?: Prisma.CurrentPlanUncheckedCreateNestedOneWithoutBusinessInput
-  products?: Prisma.ProductUncheckedCreateNestedManyWithoutBusinessInput
-  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutBusinessInput
-  bannedBusiness?: Prisma.BannedBusinessUncheckedCreateNestedOneWithoutBusinessInput
-  businessView?: Prisma.businessViewUncheckedCreateNestedManyWithoutBusinessInput
-  trial?: Prisma.TrialUncheckedCreateNestedOneWithoutBusinessInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedCreateNestedManyWithoutBusinessInput
-}
-
-export type BusinessCreateOrConnectWithoutReviewsInput = {
-  where: Prisma.BusinessWhereUniqueInput
-  create: Prisma.XOR<Prisma.BusinessCreateWithoutReviewsInput, Prisma.BusinessUncheckedCreateWithoutReviewsInput>
-}
-
-export type BusinessUpsertWithoutReviewsInput = {
-  update: Prisma.XOR<Prisma.BusinessUpdateWithoutReviewsInput, Prisma.BusinessUncheckedUpdateWithoutReviewsInput>
-  create: Prisma.XOR<Prisma.BusinessCreateWithoutReviewsInput, Prisma.BusinessUncheckedCreateWithoutReviewsInput>
-  where?: Prisma.BusinessWhereInput
-}
-
-export type BusinessUpdateToOneWithWhereWithoutReviewsInput = {
-  where?: Prisma.BusinessWhereInput
-  data: Prisma.XOR<Prisma.BusinessUpdateWithoutReviewsInput, Prisma.BusinessUncheckedUpdateWithoutReviewsInput>
-}
-
-export type BusinessUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  facebook?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  instagram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
-  coverImage?: Prisma.ImageUpdateOneWithoutCoverBusinessNestedInput
-  currentPlan?: Prisma.CurrentPlanUpdateOneWithoutBusinessNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutBusinessNestedInput
-  products?: Prisma.ProductUpdateManyWithoutBusinessNestedInput
-  payments?: Prisma.PaymentUpdateManyWithoutBusinessNestedInput
-  bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
-  businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
-  trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
-  category?: Prisma.CategoryUpdateOneWithoutBusinessesNestedInput
-}
-
-export type BusinessUncheckedUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  facebook?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  instagram?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
-  coverImage?: Prisma.ImageUncheckedUpdateOneWithoutCoverBusinessNestedInput
-  currentPlan?: Prisma.CurrentPlanUncheckedUpdateOneWithoutBusinessNestedInput
-  products?: Prisma.ProductUncheckedUpdateManyWithoutBusinessNestedInput
-  payments?: Prisma.PaymentUncheckedUpdateManyWithoutBusinessNestedInput
-  bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
-  businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
-  trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessCreateManyCategoryInput = {
@@ -2733,7 +2212,6 @@ export type BusinessCreateManyCategoryInput = {
   userId: string
   isBanned?: boolean | null
   tags?: Prisma.BusinessCreatetagsInput | string[]
-  rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2754,7 +2232,6 @@ export type BusinessUpdateWithoutCategoryInput = {
   status?: Prisma.EnumBusinessStatusFieldUpdateOperationsInput | $Enums.BusinessStatus
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUpdateOneWithoutLogoBusinessNestedInput
@@ -2766,8 +2243,6 @@ export type BusinessUpdateWithoutCategoryInput = {
   bannedBusiness?: Prisma.BannedBusinessUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateWithoutCategoryInput = {
@@ -2787,7 +2262,6 @@ export type BusinessUncheckedUpdateWithoutCategoryInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.ImageUncheckedUpdateOneWithoutLogoBusinessNestedInput
@@ -2798,8 +2272,6 @@ export type BusinessUncheckedUpdateWithoutCategoryInput = {
   bannedBusiness?: Prisma.BannedBusinessUncheckedUpdateOneWithoutBusinessNestedInput
   businessView?: Prisma.businessViewUncheckedUpdateManyWithoutBusinessNestedInput
   trial?: Prisma.TrialUncheckedUpdateOneWithoutBusinessNestedInput
-  couponRedemption?: Prisma.CouponRedemptionUncheckedUpdateManyWithoutBusinessNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBusinessNestedInput
 }
 
 export type BusinessUncheckedUpdateManyWithoutCategoryInput = {
@@ -2819,7 +2291,6 @@ export type BusinessUncheckedUpdateManyWithoutCategoryInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   tags?: Prisma.BusinessUpdatetagsInput | string[]
-  rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2833,16 +2304,12 @@ export type BusinessCountOutputType = {
   products: number
   payments: number
   businessView: number
-  couponRedemption: number
-  reviews: number
 }
 
 export type BusinessCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   products?: boolean | BusinessCountOutputTypeCountProductsArgs
   payments?: boolean | BusinessCountOutputTypeCountPaymentsArgs
   businessView?: boolean | BusinessCountOutputTypeCountBusinessViewArgs
-  couponRedemption?: boolean | BusinessCountOutputTypeCountCouponRedemptionArgs
-  reviews?: boolean | BusinessCountOutputTypeCountReviewsArgs
 }
 
 /**
@@ -2876,20 +2343,6 @@ export type BusinessCountOutputTypeCountBusinessViewArgs<ExtArgs extends runtime
   where?: Prisma.businessViewWhereInput
 }
 
-/**
- * BusinessCountOutputType without action
- */
-export type BusinessCountOutputTypeCountCouponRedemptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CouponRedemptionWhereInput
-}
-
-/**
- * BusinessCountOutputType without action
- */
-export type BusinessCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ReviewWhereInput
-}
-
 
 export type BusinessSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2909,7 +2362,6 @@ export type BusinessSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   isBanned?: boolean
   categoryId?: boolean
   tags?: boolean
-  rating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   logo?: boolean | Prisma.Business$logoArgs<ExtArgs>
@@ -2921,9 +2373,7 @@ export type BusinessSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   bannedBusiness?: boolean | Prisma.Business$bannedBusinessArgs<ExtArgs>
   businessView?: boolean | Prisma.Business$businessViewArgs<ExtArgs>
   trial?: boolean | Prisma.Business$trialArgs<ExtArgs>
-  couponRedemption?: boolean | Prisma.Business$couponRedemptionArgs<ExtArgs>
   category?: boolean | Prisma.Business$categoryArgs<ExtArgs>
-  reviews?: boolean | Prisma.Business$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.BusinessCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["business"]>
 
@@ -2945,7 +2395,6 @@ export type BusinessSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   isBanned?: boolean
   categoryId?: boolean
   tags?: boolean
-  rating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2970,7 +2419,6 @@ export type BusinessSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   isBanned?: boolean
   categoryId?: boolean
   tags?: boolean
-  rating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2995,12 +2443,11 @@ export type BusinessSelectScalar = {
   isBanned?: boolean
   categoryId?: boolean
   tags?: boolean
-  rating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BusinessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "address" | "verified" | "status" | "userId" | "isBanned" | "categoryId" | "tags" | "rating" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
+export type BusinessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "description" | "phone" | "whatsapp" | "email" | "website" | "facebook" | "instagram" | "address" | "verified" | "status" | "userId" | "isBanned" | "categoryId" | "tags" | "createdAt" | "updatedAt", ExtArgs["result"]["business"]>
 export type BusinessInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   logo?: boolean | Prisma.Business$logoArgs<ExtArgs>
   coverImage?: boolean | Prisma.Business$coverImageArgs<ExtArgs>
@@ -3011,9 +2458,7 @@ export type BusinessInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   bannedBusiness?: boolean | Prisma.Business$bannedBusinessArgs<ExtArgs>
   businessView?: boolean | Prisma.Business$businessViewArgs<ExtArgs>
   trial?: boolean | Prisma.Business$trialArgs<ExtArgs>
-  couponRedemption?: boolean | Prisma.Business$couponRedemptionArgs<ExtArgs>
   category?: boolean | Prisma.Business$categoryArgs<ExtArgs>
-  reviews?: boolean | Prisma.Business$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.BusinessCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BusinessIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3037,9 +2482,7 @@ export type $BusinessPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     bannedBusiness: Prisma.$BannedBusinessPayload<ExtArgs> | null
     businessView: Prisma.$businessViewPayload<ExtArgs>[]
     trial: Prisma.$TrialPayload<ExtArgs> | null
-    couponRedemption: Prisma.$CouponRedemptionPayload<ExtArgs>[]
     category: Prisma.$CategoryPayload<ExtArgs> | null
-    reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3059,7 +2502,6 @@ export type $BusinessPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     isBanned: boolean | null
     categoryId: string | null
     tags: string[]
-    rating: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["business"]>
@@ -3465,9 +2907,7 @@ export interface Prisma__BusinessClient<T, Null = never, ExtArgs extends runtime
   bannedBusiness<T extends Prisma.Business$bannedBusinessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$bannedBusinessArgs<ExtArgs>>): Prisma.Prisma__BannedBusinessClient<runtime.Types.Result.GetResult<Prisma.$BannedBusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   businessView<T extends Prisma.Business$businessViewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$businessViewArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$businessViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   trial<T extends Prisma.Business$trialArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$trialArgs<ExtArgs>>): Prisma.Prisma__TrialClient<runtime.Types.Result.GetResult<Prisma.$TrialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  couponRedemption<T extends Prisma.Business$couponRedemptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$couponRedemptionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   category<T extends Prisma.Business$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$categoryArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  reviews<T extends Prisma.Business$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Business$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3514,7 +2954,6 @@ export interface BusinessFieldRefs {
   readonly isBanned: Prisma.FieldRef<"Business", 'Boolean'>
   readonly categoryId: Prisma.FieldRef<"Business", 'String'>
   readonly tags: Prisma.FieldRef<"Business", 'String[]'>
-  readonly rating: Prisma.FieldRef<"Business", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Business", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Business", 'DateTime'>
 }
@@ -4080,30 +3519,6 @@ export type Business$trialArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Business.couponRedemption
- */
-export type Business$couponRedemptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the CouponRedemption
-   */
-  select?: Prisma.CouponRedemptionSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the CouponRedemption
-   */
-  omit?: Prisma.CouponRedemptionOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CouponRedemptionInclude<ExtArgs> | null
-  where?: Prisma.CouponRedemptionWhereInput
-  orderBy?: Prisma.CouponRedemptionOrderByWithRelationInput | Prisma.CouponRedemptionOrderByWithRelationInput[]
-  cursor?: Prisma.CouponRedemptionWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CouponRedemptionScalarFieldEnum | Prisma.CouponRedemptionScalarFieldEnum[]
-}
-
-/**
  * Business.category
  */
 export type Business$categoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4120,30 +3535,6 @@ export type Business$categoryArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   include?: Prisma.CategoryInclude<ExtArgs> | null
   where?: Prisma.CategoryWhereInput
-}
-
-/**
- * Business.reviews
- */
-export type Business$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Review
-   */
-  select?: Prisma.ReviewSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Review
-   */
-  omit?: Prisma.ReviewOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ReviewInclude<ExtArgs> | null
-  where?: Prisma.ReviewWhereInput
-  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
-  cursor?: Prisma.ReviewWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
 }
 
 /**

@@ -133,31 +133,6 @@ export type Analytics = Prisma.AnalyticsModel
  */
 export type Trial = Prisma.TrialModel
 /**
- * Model Coupon
- * 
- */
-export type Coupon = Prisma.CouponModel
-/**
- * Model CouponRedemption
- * 
- */
-export type CouponRedemption = Prisma.CouponRedemptionModel
-/**
- * Model Review
- * 
- */
-export type Review = Prisma.ReviewModel
-/**
- * Model Post
- * 
- */
-export type Post = Prisma.PostModel
-/**
- * Model Answer
- * 
- */
-export type Answer = Prisma.AnswerModel
-/**
  * Model Notification
  * 
  */

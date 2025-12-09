@@ -28,3 +28,12 @@ export const businessStatusEnum = pgEnum("business_status", [
   "SUSPENDED",
   "INACTIVE",
 ]);
+
+export const notificationTypeEnum = pgEnum("notification_type", [
+  "PRODUCT_AVAILABLE",
+  "PLAN_EXPIRING",
+  "PLAN_EXPIRED",
+  "PAYMENT_RECEIVED",
+  "ACCOUNT_VERIFIED",
+  "REPORT_RESOLVED",
+]);

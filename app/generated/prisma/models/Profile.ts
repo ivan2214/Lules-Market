@@ -192,9 +192,6 @@ export type ProfileWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   avatar?: Prisma.XOR<Prisma.ImageNullableScalarRelationFilter, Prisma.ImageWhereInput> | null
-  reviews?: Prisma.ReviewListRelationFilter
-  posts?: Prisma.PostListRelationFilter
-  answers?: Prisma.AnswerListRelationFilter
 }
 
 export type ProfileOrderByWithRelationInput = {
@@ -206,9 +203,6 @@ export type ProfileOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   avatar?: Prisma.ImageOrderByWithRelationInput
-  reviews?: Prisma.ReviewOrderByRelationAggregateInput
-  posts?: Prisma.PostOrderByRelationAggregateInput
-  answers?: Prisma.AnswerOrderByRelationAggregateInput
 }
 
 export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -223,9 +217,6 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   avatar?: Prisma.XOR<Prisma.ImageNullableScalarRelationFilter, Prisma.ImageWhereInput> | null
-  reviews?: Prisma.ReviewListRelationFilter
-  posts?: Prisma.PostListRelationFilter
-  answers?: Prisma.AnswerListRelationFilter
 }, "userId">
 
 export type ProfileOrderByWithAggregationInput = {
@@ -260,9 +251,6 @@ export type ProfileCreateInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProfileInput
   avatar?: Prisma.ImageCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateInput = {
@@ -273,9 +261,6 @@ export type ProfileUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   avatar?: Prisma.ImageUncheckedCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUpdateInput = {
@@ -286,9 +271,6 @@ export type ProfileUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   avatar?: Prisma.ImageUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateInput = {
@@ -299,9 +281,6 @@ export type ProfileUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   avatar?: Prisma.ImageUncheckedUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateManyInput = {
@@ -362,11 +341,6 @@ export type ProfileMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ProfileScalarRelationFilter = {
-  is?: Prisma.ProfileWhereInput
-  isNot?: Prisma.ProfileWhereInput
-}
-
 export type ProfileCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutUserInput, Prisma.ProfileUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutUserInput
@@ -415,48 +389,6 @@ export type ProfileUpdateOneWithoutAvatarNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutAvatarInput, Prisma.ProfileUpdateWithoutAvatarInput>, Prisma.ProfileUncheckedUpdateWithoutAvatarInput>
 }
 
-export type ProfileCreateNestedOneWithoutReviewsInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutReviewsInput, Prisma.ProfileUncheckedCreateWithoutReviewsInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutReviewsInput
-  connect?: Prisma.ProfileWhereUniqueInput
-}
-
-export type ProfileUpdateOneRequiredWithoutReviewsNestedInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutReviewsInput, Prisma.ProfileUncheckedCreateWithoutReviewsInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutReviewsInput
-  upsert?: Prisma.ProfileUpsertWithoutReviewsInput
-  connect?: Prisma.ProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutReviewsInput, Prisma.ProfileUpdateWithoutReviewsInput>, Prisma.ProfileUncheckedUpdateWithoutReviewsInput>
-}
-
-export type ProfileCreateNestedOneWithoutPostsInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutPostsInput, Prisma.ProfileUncheckedCreateWithoutPostsInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutPostsInput
-  connect?: Prisma.ProfileWhereUniqueInput
-}
-
-export type ProfileUpdateOneRequiredWithoutPostsNestedInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutPostsInput, Prisma.ProfileUncheckedCreateWithoutPostsInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutPostsInput
-  upsert?: Prisma.ProfileUpsertWithoutPostsInput
-  connect?: Prisma.ProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutPostsInput, Prisma.ProfileUpdateWithoutPostsInput>, Prisma.ProfileUncheckedUpdateWithoutPostsInput>
-}
-
-export type ProfileCreateNestedOneWithoutAnswersInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutAnswersInput, Prisma.ProfileUncheckedCreateWithoutAnswersInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutAnswersInput
-  connect?: Prisma.ProfileWhereUniqueInput
-}
-
-export type ProfileUpdateOneRequiredWithoutAnswersNestedInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutAnswersInput, Prisma.ProfileUncheckedCreateWithoutAnswersInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutAnswersInput
-  upsert?: Prisma.ProfileUpsertWithoutAnswersInput
-  connect?: Prisma.ProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutAnswersInput, Prisma.ProfileUpdateWithoutAnswersInput>, Prisma.ProfileUncheckedUpdateWithoutAnswersInput>
-}
-
 export type ProfileCreateWithoutUserInput = {
   name: string
   phone?: string | null
@@ -464,9 +396,6 @@ export type ProfileCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   avatar?: Prisma.ImageCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutUserInput = {
@@ -476,9 +405,6 @@ export type ProfileUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   avatar?: Prisma.ImageUncheckedCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutUserInput = {
@@ -504,9 +430,6 @@ export type ProfileUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   avatar?: Prisma.ImageUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutUserInput = {
@@ -516,9 +439,6 @@ export type ProfileUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   avatar?: Prisma.ImageUncheckedUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileCreateWithoutAvatarInput = {
@@ -528,9 +448,6 @@ export type ProfileCreateWithoutAvatarInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProfileInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileUncheckedCreateWithoutAvatarInput = {
@@ -540,9 +457,6 @@ export type ProfileUncheckedCreateWithoutAvatarInput = {
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type ProfileCreateOrConnectWithoutAvatarInput = {
@@ -568,9 +482,6 @@ export type ProfileUpdateWithoutAvatarInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUpdateManyWithoutAuthorNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutAvatarInput = {
@@ -580,250 +491,8 @@ export type ProfileUncheckedUpdateWithoutAvatarInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
-export type ProfileCreateWithoutReviewsInput = {
-  name: string
-  phone?: string | null
-  address?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutProfileInput
-  avatar?: Prisma.ImageCreateNestedOneWithoutAvatarInput
-  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerCreateNestedManyWithoutAuthorInput
-}
-
-export type ProfileUncheckedCreateWithoutReviewsInput = {
-  userId: string
-  name: string
-  phone?: string | null
-  address?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  avatar?: Prisma.ImageUncheckedCreateNestedOneWithoutAvatarInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerUncheckedCreateNestedManyWithoutAuthorInput
-}
-
-export type ProfileCreateOrConnectWithoutReviewsInput = {
-  where: Prisma.ProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutReviewsInput, Prisma.ProfileUncheckedCreateWithoutReviewsInput>
-}
-
-export type ProfileUpsertWithoutReviewsInput = {
-  update: Prisma.XOR<Prisma.ProfileUpdateWithoutReviewsInput, Prisma.ProfileUncheckedUpdateWithoutReviewsInput>
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutReviewsInput, Prisma.ProfileUncheckedCreateWithoutReviewsInput>
-  where?: Prisma.ProfileWhereInput
-}
-
-export type ProfileUpdateToOneWithWhereWithoutReviewsInput = {
-  where?: Prisma.ProfileWhereInput
-  data: Prisma.XOR<Prisma.ProfileUpdateWithoutReviewsInput, Prisma.ProfileUncheckedUpdateWithoutReviewsInput>
-}
-
-export type ProfileUpdateWithoutReviewsInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
-  avatar?: Prisma.ImageUpdateOneWithoutAvatarNestedInput
-  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUpdateManyWithoutAuthorNestedInput
-}
-
-export type ProfileUncheckedUpdateWithoutReviewsInput = {
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  avatar?: Prisma.ImageUncheckedUpdateOneWithoutAvatarNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUncheckedUpdateManyWithoutAuthorNestedInput
-}
-
-export type ProfileCreateWithoutPostsInput = {
-  name: string
-  phone?: string | null
-  address?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutProfileInput
-  avatar?: Prisma.ImageCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerCreateNestedManyWithoutAuthorInput
-}
-
-export type ProfileUncheckedCreateWithoutPostsInput = {
-  userId: string
-  name: string
-  phone?: string | null
-  address?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  avatar?: Prisma.ImageUncheckedCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutAuthorInput
-  answers?: Prisma.AnswerUncheckedCreateNestedManyWithoutAuthorInput
-}
-
-export type ProfileCreateOrConnectWithoutPostsInput = {
-  where: Prisma.ProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutPostsInput, Prisma.ProfileUncheckedCreateWithoutPostsInput>
-}
-
-export type ProfileUpsertWithoutPostsInput = {
-  update: Prisma.XOR<Prisma.ProfileUpdateWithoutPostsInput, Prisma.ProfileUncheckedUpdateWithoutPostsInput>
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutPostsInput, Prisma.ProfileUncheckedCreateWithoutPostsInput>
-  where?: Prisma.ProfileWhereInput
-}
-
-export type ProfileUpdateToOneWithWhereWithoutPostsInput = {
-  where?: Prisma.ProfileWhereInput
-  data: Prisma.XOR<Prisma.ProfileUpdateWithoutPostsInput, Prisma.ProfileUncheckedUpdateWithoutPostsInput>
-}
-
-export type ProfileUpdateWithoutPostsInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
-  avatar?: Prisma.ImageUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUpdateManyWithoutAuthorNestedInput
-}
-
-export type ProfileUncheckedUpdateWithoutPostsInput = {
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  avatar?: Prisma.ImageUncheckedUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutAuthorNestedInput
-  answers?: Prisma.AnswerUncheckedUpdateManyWithoutAuthorNestedInput
-}
-
-export type ProfileCreateWithoutAnswersInput = {
-  name: string
-  phone?: string | null
-  address?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutProfileInput
-  avatar?: Prisma.ImageCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
-}
-
-export type ProfileUncheckedCreateWithoutAnswersInput = {
-  userId: string
-  name: string
-  phone?: string | null
-  address?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  avatar?: Prisma.ImageUncheckedCreateNestedOneWithoutAvatarInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutAuthorInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
-}
-
-export type ProfileCreateOrConnectWithoutAnswersInput = {
-  where: Prisma.ProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutAnswersInput, Prisma.ProfileUncheckedCreateWithoutAnswersInput>
-}
-
-export type ProfileUpsertWithoutAnswersInput = {
-  update: Prisma.XOR<Prisma.ProfileUpdateWithoutAnswersInput, Prisma.ProfileUncheckedUpdateWithoutAnswersInput>
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutAnswersInput, Prisma.ProfileUncheckedCreateWithoutAnswersInput>
-  where?: Prisma.ProfileWhereInput
-}
-
-export type ProfileUpdateToOneWithWhereWithoutAnswersInput = {
-  where?: Prisma.ProfileWhereInput
-  data: Prisma.XOR<Prisma.ProfileUpdateWithoutAnswersInput, Prisma.ProfileUncheckedUpdateWithoutAnswersInput>
-}
-
-export type ProfileUpdateWithoutAnswersInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
-  avatar?: Prisma.ImageUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
-}
-
-export type ProfileUncheckedUpdateWithoutAnswersInput = {
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  avatar?: Prisma.ImageUncheckedUpdateOneWithoutAvatarNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutAuthorNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
-}
-
-
-/**
- * Count Type ProfileCountOutputType
- */
-
-export type ProfileCountOutputType = {
-  reviews: number
-  posts: number
-  answers: number
-}
-
-export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  reviews?: boolean | ProfileCountOutputTypeCountReviewsArgs
-  posts?: boolean | ProfileCountOutputTypeCountPostsArgs
-  answers?: boolean | ProfileCountOutputTypeCountAnswersArgs
-}
-
-/**
- * ProfileCountOutputType without action
- */
-export type ProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ProfileCountOutputType
-   */
-  select?: Prisma.ProfileCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * ProfileCountOutputType without action
- */
-export type ProfileCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ReviewWhereInput
-}
-
-/**
- * ProfileCountOutputType without action
- */
-export type ProfileCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PostWhereInput
-}
-
-/**
- * ProfileCountOutputType without action
- */
-export type ProfileCountOutputTypeCountAnswersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AnswerWhereInput
-}
 
 
 export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -835,10 +504,6 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   avatar?: boolean | Prisma.Profile$avatarArgs<ExtArgs>
-  reviews?: boolean | Prisma.Profile$reviewsArgs<ExtArgs>
-  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
-  answers?: boolean | Prisma.Profile$answersArgs<ExtArgs>
-  _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -874,10 +539,6 @@ export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   avatar?: boolean | Prisma.Profile$avatarArgs<ExtArgs>
-  reviews?: boolean | Prisma.Profile$reviewsArgs<ExtArgs>
-  posts?: boolean | Prisma.Profile$postsArgs<ExtArgs>
-  answers?: boolean | Prisma.Profile$answersArgs<ExtArgs>
-  _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -891,9 +552,6 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     avatar: Prisma.$ImagePayload<ExtArgs> | null
-    reviews: Prisma.$ReviewPayload<ExtArgs>[]
-    posts: Prisma.$PostPayload<ExtArgs>[]
-    answers: Prisma.$AnswerPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     userId: string
@@ -1298,9 +956,6 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   avatar<T extends Prisma.Profile$avatarArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$avatarArgs<ExtArgs>>): Prisma.Prisma__ImageClient<runtime.Types.Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  reviews<T extends Prisma.Profile$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  posts<T extends Prisma.Profile$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  answers<T extends Prisma.Profile$answersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$answersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1748,78 +1403,6 @@ export type Profile$avatarArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.ImageInclude<ExtArgs> | null
   where?: Prisma.ImageWhereInput
-}
-
-/**
- * Profile.reviews
- */
-export type Profile$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Review
-   */
-  select?: Prisma.ReviewSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Review
-   */
-  omit?: Prisma.ReviewOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ReviewInclude<ExtArgs> | null
-  where?: Prisma.ReviewWhereInput
-  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
-  cursor?: Prisma.ReviewWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
-}
-
-/**
- * Profile.posts
- */
-export type Profile$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Post
-   */
-  select?: Prisma.PostSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Post
-   */
-  omit?: Prisma.PostOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PostInclude<ExtArgs> | null
-  where?: Prisma.PostWhereInput
-  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
-  cursor?: Prisma.PostWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
-}
-
-/**
- * Profile.answers
- */
-export type Profile$answersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Answer
-   */
-  select?: Prisma.AnswerSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Answer
-   */
-  omit?: Prisma.AnswerOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AnswerInclude<ExtArgs> | null
-  where?: Prisma.AnswerWhereInput
-  orderBy?: Prisma.AnswerOrderByWithRelationInput | Prisma.AnswerOrderByWithRelationInput[]
-  cursor?: Prisma.AnswerWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AnswerScalarFieldEnum | Prisma.AnswerScalarFieldEnum[]
 }
 
 /**

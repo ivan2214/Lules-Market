@@ -29,8 +29,6 @@ export type AggregateAnalytics = {
 export type AnalyticsAvgAggregateOutputType = {
   totalTrials: number | null
   activeTrials: number | null
-  totalCoupons: number | null
-  totalRedemptions: number | null
   totalPayments: number | null
   totalRevenue: number | null
 }
@@ -38,8 +36,6 @@ export type AnalyticsAvgAggregateOutputType = {
 export type AnalyticsSumAggregateOutputType = {
   totalTrials: number | null
   activeTrials: number | null
-  totalCoupons: number | null
-  totalRedemptions: number | null
   totalPayments: number | null
   totalRevenue: number | null
 }
@@ -49,8 +45,6 @@ export type AnalyticsMinAggregateOutputType = {
   date: Date | null
   totalTrials: number | null
   activeTrials: number | null
-  totalCoupons: number | null
-  totalRedemptions: number | null
   totalPayments: number | null
   totalRevenue: number | null
 }
@@ -60,8 +54,6 @@ export type AnalyticsMaxAggregateOutputType = {
   date: Date | null
   totalTrials: number | null
   activeTrials: number | null
-  totalCoupons: number | null
-  totalRedemptions: number | null
   totalPayments: number | null
   totalRevenue: number | null
 }
@@ -71,8 +63,6 @@ export type AnalyticsCountAggregateOutputType = {
   date: number
   totalTrials: number
   activeTrials: number
-  totalCoupons: number
-  totalRedemptions: number
   totalPayments: number
   totalRevenue: number
   _all: number
@@ -82,8 +72,6 @@ export type AnalyticsCountAggregateOutputType = {
 export type AnalyticsAvgAggregateInputType = {
   totalTrials?: true
   activeTrials?: true
-  totalCoupons?: true
-  totalRedemptions?: true
   totalPayments?: true
   totalRevenue?: true
 }
@@ -91,8 +79,6 @@ export type AnalyticsAvgAggregateInputType = {
 export type AnalyticsSumAggregateInputType = {
   totalTrials?: true
   activeTrials?: true
-  totalCoupons?: true
-  totalRedemptions?: true
   totalPayments?: true
   totalRevenue?: true
 }
@@ -102,8 +88,6 @@ export type AnalyticsMinAggregateInputType = {
   date?: true
   totalTrials?: true
   activeTrials?: true
-  totalCoupons?: true
-  totalRedemptions?: true
   totalPayments?: true
   totalRevenue?: true
 }
@@ -113,8 +97,6 @@ export type AnalyticsMaxAggregateInputType = {
   date?: true
   totalTrials?: true
   activeTrials?: true
-  totalCoupons?: true
-  totalRedemptions?: true
   totalPayments?: true
   totalRevenue?: true
 }
@@ -124,8 +106,6 @@ export type AnalyticsCountAggregateInputType = {
   date?: true
   totalTrials?: true
   activeTrials?: true
-  totalCoupons?: true
-  totalRedemptions?: true
   totalPayments?: true
   totalRevenue?: true
   _all?: true
@@ -222,8 +202,6 @@ export type AnalyticsGroupByOutputType = {
   date: Date
   totalTrials: number
   activeTrials: number
-  totalCoupons: number
-  totalRedemptions: number
   totalPayments: number
   totalRevenue: number
   _count: AnalyticsCountAggregateOutputType | null
@@ -256,8 +234,6 @@ export type AnalyticsWhereInput = {
   date?: Prisma.DateTimeFilter<"Analytics"> | Date | string
   totalTrials?: Prisma.IntFilter<"Analytics"> | number
   activeTrials?: Prisma.IntFilter<"Analytics"> | number
-  totalCoupons?: Prisma.IntFilter<"Analytics"> | number
-  totalRedemptions?: Prisma.IntFilter<"Analytics"> | number
   totalPayments?: Prisma.IntFilter<"Analytics"> | number
   totalRevenue?: Prisma.FloatFilter<"Analytics"> | number
 }
@@ -267,8 +243,6 @@ export type AnalyticsOrderByWithRelationInput = {
   date?: Prisma.SortOrder
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
 }
@@ -281,8 +255,6 @@ export type AnalyticsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AnalyticsWhereInput | Prisma.AnalyticsWhereInput[]
   totalTrials?: Prisma.IntFilter<"Analytics"> | number
   activeTrials?: Prisma.IntFilter<"Analytics"> | number
-  totalCoupons?: Prisma.IntFilter<"Analytics"> | number
-  totalRedemptions?: Prisma.IntFilter<"Analytics"> | number
   totalPayments?: Prisma.IntFilter<"Analytics"> | number
   totalRevenue?: Prisma.FloatFilter<"Analytics"> | number
 }, "id" | "date">
@@ -292,8 +264,6 @@ export type AnalyticsOrderByWithAggregationInput = {
   date?: Prisma.SortOrder
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
   _count?: Prisma.AnalyticsCountOrderByAggregateInput
@@ -311,8 +281,6 @@ export type AnalyticsScalarWhereWithAggregatesInput = {
   date?: Prisma.DateTimeWithAggregatesFilter<"Analytics"> | Date | string
   totalTrials?: Prisma.IntWithAggregatesFilter<"Analytics"> | number
   activeTrials?: Prisma.IntWithAggregatesFilter<"Analytics"> | number
-  totalCoupons?: Prisma.IntWithAggregatesFilter<"Analytics"> | number
-  totalRedemptions?: Prisma.IntWithAggregatesFilter<"Analytics"> | number
   totalPayments?: Prisma.IntWithAggregatesFilter<"Analytics"> | number
   totalRevenue?: Prisma.FloatWithAggregatesFilter<"Analytics"> | number
 }
@@ -322,8 +290,6 @@ export type AnalyticsCreateInput = {
   date: Date | string
   totalTrials?: number
   activeTrials?: number
-  totalCoupons?: number
-  totalRedemptions?: number
   totalPayments?: number
   totalRevenue?: number
 }
@@ -333,8 +299,6 @@ export type AnalyticsUncheckedCreateInput = {
   date: Date | string
   totalTrials?: number
   activeTrials?: number
-  totalCoupons?: number
-  totalRedemptions?: number
   totalPayments?: number
   totalRevenue?: number
 }
@@ -344,8 +308,6 @@ export type AnalyticsUpdateInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalTrials?: Prisma.IntFieldUpdateOperationsInput | number
   activeTrials?: Prisma.IntFieldUpdateOperationsInput | number
-  totalCoupons?: Prisma.IntFieldUpdateOperationsInput | number
-  totalRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   totalPayments?: Prisma.IntFieldUpdateOperationsInput | number
   totalRevenue?: Prisma.FloatFieldUpdateOperationsInput | number
 }
@@ -355,8 +317,6 @@ export type AnalyticsUncheckedUpdateInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalTrials?: Prisma.IntFieldUpdateOperationsInput | number
   activeTrials?: Prisma.IntFieldUpdateOperationsInput | number
-  totalCoupons?: Prisma.IntFieldUpdateOperationsInput | number
-  totalRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   totalPayments?: Prisma.IntFieldUpdateOperationsInput | number
   totalRevenue?: Prisma.FloatFieldUpdateOperationsInput | number
 }
@@ -366,8 +326,6 @@ export type AnalyticsCreateManyInput = {
   date: Date | string
   totalTrials?: number
   activeTrials?: number
-  totalCoupons?: number
-  totalRedemptions?: number
   totalPayments?: number
   totalRevenue?: number
 }
@@ -377,8 +335,6 @@ export type AnalyticsUpdateManyMutationInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalTrials?: Prisma.IntFieldUpdateOperationsInput | number
   activeTrials?: Prisma.IntFieldUpdateOperationsInput | number
-  totalCoupons?: Prisma.IntFieldUpdateOperationsInput | number
-  totalRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   totalPayments?: Prisma.IntFieldUpdateOperationsInput | number
   totalRevenue?: Prisma.FloatFieldUpdateOperationsInput | number
 }
@@ -388,8 +344,6 @@ export type AnalyticsUncheckedUpdateManyInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalTrials?: Prisma.IntFieldUpdateOperationsInput | number
   activeTrials?: Prisma.IntFieldUpdateOperationsInput | number
-  totalCoupons?: Prisma.IntFieldUpdateOperationsInput | number
-  totalRedemptions?: Prisma.IntFieldUpdateOperationsInput | number
   totalPayments?: Prisma.IntFieldUpdateOperationsInput | number
   totalRevenue?: Prisma.FloatFieldUpdateOperationsInput | number
 }
@@ -399,8 +353,6 @@ export type AnalyticsCountOrderByAggregateInput = {
   date?: Prisma.SortOrder
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
 }
@@ -408,8 +360,6 @@ export type AnalyticsCountOrderByAggregateInput = {
 export type AnalyticsAvgOrderByAggregateInput = {
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
 }
@@ -419,8 +369,6 @@ export type AnalyticsMaxOrderByAggregateInput = {
   date?: Prisma.SortOrder
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
 }
@@ -430,8 +378,6 @@ export type AnalyticsMinOrderByAggregateInput = {
   date?: Prisma.SortOrder
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
 }
@@ -439,8 +385,6 @@ export type AnalyticsMinOrderByAggregateInput = {
 export type AnalyticsSumOrderByAggregateInput = {
   totalTrials?: Prisma.SortOrder
   activeTrials?: Prisma.SortOrder
-  totalCoupons?: Prisma.SortOrder
-  totalRedemptions?: Prisma.SortOrder
   totalPayments?: Prisma.SortOrder
   totalRevenue?: Prisma.SortOrder
 }
@@ -452,8 +396,6 @@ export type AnalyticsSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   date?: boolean
   totalTrials?: boolean
   activeTrials?: boolean
-  totalCoupons?: boolean
-  totalRedemptions?: boolean
   totalPayments?: boolean
   totalRevenue?: boolean
 }, ExtArgs["result"]["analytics"]>
@@ -463,8 +405,6 @@ export type AnalyticsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   date?: boolean
   totalTrials?: boolean
   activeTrials?: boolean
-  totalCoupons?: boolean
-  totalRedemptions?: boolean
   totalPayments?: boolean
   totalRevenue?: boolean
 }, ExtArgs["result"]["analytics"]>
@@ -474,8 +414,6 @@ export type AnalyticsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   date?: boolean
   totalTrials?: boolean
   activeTrials?: boolean
-  totalCoupons?: boolean
-  totalRedemptions?: boolean
   totalPayments?: boolean
   totalRevenue?: boolean
 }, ExtArgs["result"]["analytics"]>
@@ -485,13 +423,11 @@ export type AnalyticsSelectScalar = {
   date?: boolean
   totalTrials?: boolean
   activeTrials?: boolean
-  totalCoupons?: boolean
-  totalRedemptions?: boolean
   totalPayments?: boolean
   totalRevenue?: boolean
 }
 
-export type AnalyticsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "date" | "totalTrials" | "activeTrials" | "totalCoupons" | "totalRedemptions" | "totalPayments" | "totalRevenue", ExtArgs["result"]["analytics"]>
+export type AnalyticsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "date" | "totalTrials" | "activeTrials" | "totalPayments" | "totalRevenue", ExtArgs["result"]["analytics"]>
 
 export type $AnalyticsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Analytics"
@@ -501,8 +437,6 @@ export type $AnalyticsPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     date: Date
     totalTrials: number
     activeTrials: number
-    totalCoupons: number
-    totalRedemptions: number
     totalPayments: number
     totalRevenue: number
   }, ExtArgs["result"]["analytics"]>
@@ -932,8 +866,6 @@ export interface AnalyticsFieldRefs {
   readonly date: Prisma.FieldRef<"Analytics", 'DateTime'>
   readonly totalTrials: Prisma.FieldRef<"Analytics", 'Int'>
   readonly activeTrials: Prisma.FieldRef<"Analytics", 'Int'>
-  readonly totalCoupons: Prisma.FieldRef<"Analytics", 'Int'>
-  readonly totalRedemptions: Prisma.FieldRef<"Analytics", 'Int'>
   readonly totalPayments: Prisma.FieldRef<"Analytics", 'Int'>
   readonly totalRevenue: Prisma.FieldRef<"Analytics", 'Float'>
 }

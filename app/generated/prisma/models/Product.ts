@@ -44,9 +44,7 @@ export type ProductMinAggregateOutputType = {
   featured: boolean | null
   active: boolean | null
   stock: number | null
-  condition: $Enums.ProductCondition | null
   brand: string | null
-  model: string | null
   businessId: string | null
   isBanned: boolean | null
   createdAt: Date | null
@@ -62,9 +60,7 @@ export type ProductMaxAggregateOutputType = {
   featured: boolean | null
   active: boolean | null
   stock: number | null
-  condition: $Enums.ProductCondition | null
   brand: string | null
-  model: string | null
   businessId: string | null
   isBanned: boolean | null
   createdAt: Date | null
@@ -80,9 +76,7 @@ export type ProductCountAggregateOutputType = {
   featured: number
   active: number
   stock: number
-  condition: number
   brand: number
-  model: number
   businessId: number
   isBanned: number
   createdAt: number
@@ -111,9 +105,7 @@ export type ProductMinAggregateInputType = {
   featured?: true
   active?: true
   stock?: true
-  condition?: true
   brand?: true
-  model?: true
   businessId?: true
   isBanned?: true
   createdAt?: true
@@ -129,9 +121,7 @@ export type ProductMaxAggregateInputType = {
   featured?: true
   active?: true
   stock?: true
-  condition?: true
   brand?: true
-  model?: true
   businessId?: true
   isBanned?: true
   createdAt?: true
@@ -147,9 +137,7 @@ export type ProductCountAggregateInputType = {
   featured?: true
   active?: true
   stock?: true
-  condition?: true
   brand?: true
-  model?: true
   businessId?: true
   isBanned?: true
   createdAt?: true
@@ -253,9 +241,7 @@ export type ProductGroupByOutputType = {
   featured: boolean
   active: boolean
   stock: number | null
-  condition: $Enums.ProductCondition
   brand: string | null
-  model: string | null
   businessId: string
   isBanned: boolean | null
   createdAt: Date
@@ -295,9 +281,7 @@ export type ProductWhereInput = {
   featured?: Prisma.BoolFilter<"Product"> | boolean
   active?: Prisma.BoolFilter<"Product"> | boolean
   stock?: Prisma.IntNullableFilter<"Product"> | number | null
-  condition?: Prisma.EnumProductConditionFilter<"Product"> | $Enums.ProductCondition
   brand?: Prisma.StringNullableFilter<"Product"> | string | null
-  model?: Prisma.StringNullableFilter<"Product"> | string | null
   businessId?: Prisma.StringFilter<"Product"> | string
   isBanned?: Prisma.BoolNullableFilter<"Product"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -309,7 +293,6 @@ export type ProductWhereInput = {
   images?: Prisma.ImageListRelationFilter
   productView?: Prisma.ProductViewListRelationFilter
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
-  reviews?: Prisma.ReviewListRelationFilter
 }
 
 export type ProductOrderByWithRelationInput = {
@@ -320,9 +303,7 @@ export type ProductOrderByWithRelationInput = {
   featured?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stock?: Prisma.SortOrderInput | Prisma.SortOrder
-  condition?: Prisma.SortOrder
   brand?: Prisma.SortOrderInput | Prisma.SortOrder
-  model?: Prisma.SortOrderInput | Prisma.SortOrder
   businessId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -334,7 +315,6 @@ export type ProductOrderByWithRelationInput = {
   images?: Prisma.ImageOrderByRelationAggregateInput
   productView?: Prisma.productViewOrderByRelationAggregateInput
   category?: Prisma.CategoryOrderByWithRelationInput
-  reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
 
 export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -348,9 +328,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   featured?: Prisma.BoolFilter<"Product"> | boolean
   active?: Prisma.BoolFilter<"Product"> | boolean
   stock?: Prisma.IntNullableFilter<"Product"> | number | null
-  condition?: Prisma.EnumProductConditionFilter<"Product"> | $Enums.ProductCondition
   brand?: Prisma.StringNullableFilter<"Product"> | string | null
-  model?: Prisma.StringNullableFilter<"Product"> | string | null
   businessId?: Prisma.StringFilter<"Product"> | string
   isBanned?: Prisma.BoolNullableFilter<"Product"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -362,7 +340,6 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   images?: Prisma.ImageListRelationFilter
   productView?: Prisma.ProductViewListRelationFilter
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
-  reviews?: Prisma.ReviewListRelationFilter
 }, "id">
 
 export type ProductOrderByWithAggregationInput = {
@@ -373,9 +350,7 @@ export type ProductOrderByWithAggregationInput = {
   featured?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stock?: Prisma.SortOrderInput | Prisma.SortOrder
-  condition?: Prisma.SortOrder
   brand?: Prisma.SortOrderInput | Prisma.SortOrder
-  model?: Prisma.SortOrderInput | Prisma.SortOrder
   businessId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -400,9 +375,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   featured?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   active?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   stock?: Prisma.IntNullableWithAggregatesFilter<"Product"> | number | null
-  condition?: Prisma.EnumProductConditionWithAggregatesFilter<"Product"> | $Enums.ProductCondition
   brand?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
-  model?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   businessId?: Prisma.StringWithAggregatesFilter<"Product"> | string
   isBanned?: Prisma.BoolNullableWithAggregatesFilter<"Product"> | boolean | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -419,9 +392,7 @@ export type ProductCreateInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -431,7 +402,6 @@ export type ProductCreateInput = {
   images?: Prisma.ImageCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewCreateNestedManyWithoutProductInput
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateInput = {
@@ -442,9 +412,7 @@ export type ProductUncheckedCreateInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -454,7 +422,6 @@ export type ProductUncheckedCreateInput = {
   bannedProduct?: Prisma.BannedProductUncheckedCreateNestedOneWithoutProductInput
   images?: Prisma.ImageUncheckedCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewUncheckedCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductUpdateInput = {
@@ -465,9 +432,7 @@ export type ProductUpdateInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -477,7 +442,6 @@ export type ProductUpdateInput = {
   images?: Prisma.ImageUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUpdateManyWithoutProductNestedInput
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateInput = {
@@ -488,9 +452,7 @@ export type ProductUncheckedUpdateInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -500,7 +462,6 @@ export type ProductUncheckedUpdateInput = {
   bannedProduct?: Prisma.BannedProductUncheckedUpdateOneWithoutProductNestedInput
   images?: Prisma.ImageUncheckedUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUncheckedUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateManyInput = {
@@ -511,9 +472,7 @@ export type ProductCreateManyInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -530,9 +489,7 @@ export type ProductUpdateManyMutationInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -547,9 +504,7 @@ export type ProductUncheckedUpdateManyInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -581,9 +536,7 @@ export type ProductCountOrderByAggregateInput = {
   featured?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stock?: Prisma.SortOrder
-  condition?: Prisma.SortOrder
   brand?: Prisma.SortOrder
-  model?: Prisma.SortOrder
   businessId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -605,9 +558,7 @@ export type ProductMaxOrderByAggregateInput = {
   featured?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stock?: Prisma.SortOrder
-  condition?: Prisma.SortOrder
   brand?: Prisma.SortOrder
-  model?: Prisma.SortOrder
   businessId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -623,9 +574,7 @@ export type ProductMinOrderByAggregateInput = {
   featured?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stock?: Prisma.SortOrder
-  condition?: Prisma.SortOrder
   brand?: Prisma.SortOrder
-  model?: Prisma.SortOrder
   businessId?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -745,7 +694,7 @@ export type ProductCreatetagsInput = {
   set: string[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
+export type NullableFloatFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
   decrement?: number
@@ -753,8 +702,12 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type EnumProductConditionFieldUpdateOperationsInput = {
-  set?: $Enums.ProductCondition
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type ProductUpdatetagsInput = {
@@ -792,22 +745,6 @@ export type ProductUpdateOneRequiredWithoutProductViewNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutProductViewInput, Prisma.ProductUpdateWithoutProductViewInput>, Prisma.ProductUncheckedUpdateWithoutProductViewInput>
 }
 
-export type ProductCreateNestedOneWithoutReviewsInput = {
-  create?: Prisma.XOR<Prisma.ProductCreateWithoutReviewsInput, Prisma.ProductUncheckedCreateWithoutReviewsInput>
-  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutReviewsInput
-  connect?: Prisma.ProductWhereUniqueInput
-}
-
-export type ProductUpdateOneWithoutReviewsNestedInput = {
-  create?: Prisma.XOR<Prisma.ProductCreateWithoutReviewsInput, Prisma.ProductUncheckedCreateWithoutReviewsInput>
-  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutReviewsInput
-  upsert?: Prisma.ProductUpsertWithoutReviewsInput
-  disconnect?: Prisma.ProductWhereInput | boolean
-  delete?: Prisma.ProductWhereInput | boolean
-  connect?: Prisma.ProductWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutReviewsInput, Prisma.ProductUpdateWithoutReviewsInput>, Prisma.ProductUncheckedUpdateWithoutReviewsInput>
-}
-
 export type ProductCreateWithoutBannedProductInput = {
   id?: string
   name: string
@@ -816,9 +753,7 @@ export type ProductCreateWithoutBannedProductInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -827,7 +762,6 @@ export type ProductCreateWithoutBannedProductInput = {
   images?: Prisma.ImageCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewCreateNestedManyWithoutProductInput
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutBannedProductInput = {
@@ -838,9 +772,7 @@ export type ProductUncheckedCreateWithoutBannedProductInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -849,7 +781,6 @@ export type ProductUncheckedCreateWithoutBannedProductInput = {
   tags?: Prisma.ProductCreatetagsInput | string[]
   images?: Prisma.ImageUncheckedCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewUncheckedCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutBannedProductInput = {
@@ -876,9 +807,7 @@ export type ProductUpdateWithoutBannedProductInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -887,7 +816,6 @@ export type ProductUpdateWithoutBannedProductInput = {
   images?: Prisma.ImageUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUpdateManyWithoutProductNestedInput
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutBannedProductInput = {
@@ -898,9 +826,7 @@ export type ProductUncheckedUpdateWithoutBannedProductInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -909,7 +835,6 @@ export type ProductUncheckedUpdateWithoutBannedProductInput = {
   tags?: Prisma.ProductUpdatetagsInput | string[]
   images?: Prisma.ImageUncheckedUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUncheckedUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateWithoutBusinessInput = {
@@ -920,9 +845,7 @@ export type ProductCreateWithoutBusinessInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -931,7 +854,6 @@ export type ProductCreateWithoutBusinessInput = {
   images?: Prisma.ImageCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewCreateNestedManyWithoutProductInput
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutBusinessInput = {
@@ -942,9 +864,7 @@ export type ProductUncheckedCreateWithoutBusinessInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -953,7 +873,6 @@ export type ProductUncheckedCreateWithoutBusinessInput = {
   bannedProduct?: Prisma.BannedProductUncheckedCreateNestedOneWithoutProductInput
   images?: Prisma.ImageUncheckedCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewUncheckedCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutBusinessInput = {
@@ -993,9 +912,7 @@ export type ProductScalarWhereInput = {
   featured?: Prisma.BoolFilter<"Product"> | boolean
   active?: Prisma.BoolFilter<"Product"> | boolean
   stock?: Prisma.IntNullableFilter<"Product"> | number | null
-  condition?: Prisma.EnumProductConditionFilter<"Product"> | $Enums.ProductCondition
   brand?: Prisma.StringNullableFilter<"Product"> | string | null
-  model?: Prisma.StringNullableFilter<"Product"> | string | null
   businessId?: Prisma.StringFilter<"Product"> | string
   isBanned?: Prisma.BoolNullableFilter<"Product"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -1012,9 +929,7 @@ export type ProductCreateWithoutCategoryInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1023,7 +938,6 @@ export type ProductCreateWithoutCategoryInput = {
   bannedProduct?: Prisma.BannedProductCreateNestedOneWithoutProductInput
   images?: Prisma.ImageCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutCategoryInput = {
@@ -1034,9 +948,7 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -1045,7 +957,6 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   bannedProduct?: Prisma.BannedProductUncheckedCreateNestedOneWithoutProductInput
   images?: Prisma.ImageUncheckedCreateNestedManyWithoutProductInput
   productView?: Prisma.productViewUncheckedCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutCategoryInput = {
@@ -1082,9 +993,7 @@ export type ProductCreateWithoutImagesInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1093,7 +1002,6 @@ export type ProductCreateWithoutImagesInput = {
   bannedProduct?: Prisma.BannedProductCreateNestedOneWithoutProductInput
   productView?: Prisma.productViewCreateNestedManyWithoutProductInput
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutImagesInput = {
@@ -1104,9 +1012,7 @@ export type ProductUncheckedCreateWithoutImagesInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -1115,7 +1021,6 @@ export type ProductUncheckedCreateWithoutImagesInput = {
   tags?: Prisma.ProductCreatetagsInput | string[]
   bannedProduct?: Prisma.BannedProductUncheckedCreateNestedOneWithoutProductInput
   productView?: Prisma.productViewUncheckedCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutImagesInput = {
@@ -1142,9 +1047,7 @@ export type ProductUpdateWithoutImagesInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1153,7 +1056,6 @@ export type ProductUpdateWithoutImagesInput = {
   bannedProduct?: Prisma.BannedProductUpdateOneWithoutProductNestedInput
   productView?: Prisma.productViewUpdateManyWithoutProductNestedInput
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutImagesInput = {
@@ -1164,9 +1066,7 @@ export type ProductUncheckedUpdateWithoutImagesInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1175,7 +1075,6 @@ export type ProductUncheckedUpdateWithoutImagesInput = {
   tags?: Prisma.ProductUpdatetagsInput | string[]
   bannedProduct?: Prisma.BannedProductUncheckedUpdateOneWithoutProductNestedInput
   productView?: Prisma.productViewUncheckedUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateWithoutProductViewInput = {
@@ -1186,9 +1085,7 @@ export type ProductCreateWithoutProductViewInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1197,7 +1094,6 @@ export type ProductCreateWithoutProductViewInput = {
   bannedProduct?: Prisma.BannedProductCreateNestedOneWithoutProductInput
   images?: Prisma.ImageCreateNestedManyWithoutProductInput
   category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
-  reviews?: Prisma.ReviewCreateNestedManyWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutProductViewInput = {
@@ -1208,9 +1104,7 @@ export type ProductUncheckedCreateWithoutProductViewInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -1219,7 +1113,6 @@ export type ProductUncheckedCreateWithoutProductViewInput = {
   tags?: Prisma.ProductCreatetagsInput | string[]
   bannedProduct?: Prisma.BannedProductUncheckedCreateNestedOneWithoutProductInput
   images?: Prisma.ImageUncheckedCreateNestedManyWithoutProductInput
-  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutProductViewInput = {
@@ -1246,9 +1139,7 @@ export type ProductUpdateWithoutProductViewInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1257,7 +1148,6 @@ export type ProductUpdateWithoutProductViewInput = {
   bannedProduct?: Prisma.BannedProductUpdateOneWithoutProductNestedInput
   images?: Prisma.ImageUpdateManyWithoutProductNestedInput
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutProductViewInput = {
@@ -1268,9 +1158,7 @@ export type ProductUncheckedUpdateWithoutProductViewInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1279,111 +1167,6 @@ export type ProductUncheckedUpdateWithoutProductViewInput = {
   tags?: Prisma.ProductUpdatetagsInput | string[]
   bannedProduct?: Prisma.BannedProductUncheckedUpdateOneWithoutProductNestedInput
   images?: Prisma.ImageUncheckedUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProductNestedInput
-}
-
-export type ProductCreateWithoutReviewsInput = {
-  id?: string
-  name: string
-  description?: string | null
-  price?: number | null
-  featured?: boolean
-  active?: boolean
-  stock?: number | null
-  condition?: $Enums.ProductCondition
-  brand?: string | null
-  model?: string | null
-  isBanned?: boolean | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  tags?: Prisma.ProductCreatetagsInput | string[]
-  business: Prisma.BusinessCreateNestedOneWithoutProductsInput
-  bannedProduct?: Prisma.BannedProductCreateNestedOneWithoutProductInput
-  images?: Prisma.ImageCreateNestedManyWithoutProductInput
-  productView?: Prisma.productViewCreateNestedManyWithoutProductInput
-  category?: Prisma.CategoryCreateNestedOneWithoutProductsInput
-}
-
-export type ProductUncheckedCreateWithoutReviewsInput = {
-  id?: string
-  name: string
-  description?: string | null
-  price?: number | null
-  featured?: boolean
-  active?: boolean
-  stock?: number | null
-  condition?: $Enums.ProductCondition
-  brand?: string | null
-  model?: string | null
-  businessId: string
-  isBanned?: boolean | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  categoryId?: string | null
-  tags?: Prisma.ProductCreatetagsInput | string[]
-  bannedProduct?: Prisma.BannedProductUncheckedCreateNestedOneWithoutProductInput
-  images?: Prisma.ImageUncheckedCreateNestedManyWithoutProductInput
-  productView?: Prisma.productViewUncheckedCreateNestedManyWithoutProductInput
-}
-
-export type ProductCreateOrConnectWithoutReviewsInput = {
-  where: Prisma.ProductWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProductCreateWithoutReviewsInput, Prisma.ProductUncheckedCreateWithoutReviewsInput>
-}
-
-export type ProductUpsertWithoutReviewsInput = {
-  update: Prisma.XOR<Prisma.ProductUpdateWithoutReviewsInput, Prisma.ProductUncheckedUpdateWithoutReviewsInput>
-  create: Prisma.XOR<Prisma.ProductCreateWithoutReviewsInput, Prisma.ProductUncheckedCreateWithoutReviewsInput>
-  where?: Prisma.ProductWhereInput
-}
-
-export type ProductUpdateToOneWithWhereWithoutReviewsInput = {
-  where?: Prisma.ProductWhereInput
-  data: Prisma.XOR<Prisma.ProductUpdateWithoutReviewsInput, Prisma.ProductUncheckedUpdateWithoutReviewsInput>
-}
-
-export type ProductUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
-  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tags?: Prisma.ProductUpdatetagsInput | string[]
-  business?: Prisma.BusinessUpdateOneRequiredWithoutProductsNestedInput
-  bannedProduct?: Prisma.BannedProductUpdateOneWithoutProductNestedInput
-  images?: Prisma.ImageUpdateManyWithoutProductNestedInput
-  productView?: Prisma.productViewUpdateManyWithoutProductNestedInput
-  category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
-}
-
-export type ProductUncheckedUpdateWithoutReviewsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
-  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  businessId?: Prisma.StringFieldUpdateOperationsInput | string
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.ProductUpdatetagsInput | string[]
-  bannedProduct?: Prisma.BannedProductUncheckedUpdateOneWithoutProductNestedInput
-  images?: Prisma.ImageUncheckedUpdateManyWithoutProductNestedInput
-  productView?: Prisma.productViewUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateManyBusinessInput = {
@@ -1394,9 +1177,7 @@ export type ProductCreateManyBusinessInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   isBanned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1412,9 +1193,7 @@ export type ProductUpdateWithoutBusinessInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1423,7 +1202,6 @@ export type ProductUpdateWithoutBusinessInput = {
   images?: Prisma.ImageUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUpdateManyWithoutProductNestedInput
   category?: Prisma.CategoryUpdateOneWithoutProductsNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutBusinessInput = {
@@ -1434,9 +1212,7 @@ export type ProductUncheckedUpdateWithoutBusinessInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1445,7 +1221,6 @@ export type ProductUncheckedUpdateWithoutBusinessInput = {
   bannedProduct?: Prisma.BannedProductUncheckedUpdateOneWithoutProductNestedInput
   images?: Prisma.ImageUncheckedUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUncheckedUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateManyWithoutBusinessInput = {
@@ -1456,9 +1231,7 @@ export type ProductUncheckedUpdateManyWithoutBusinessInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1474,9 +1247,7 @@ export type ProductCreateManyCategoryInput = {
   featured?: boolean
   active?: boolean
   stock?: number | null
-  condition?: $Enums.ProductCondition
   brand?: string | null
-  model?: string | null
   businessId: string
   isBanned?: boolean | null
   createdAt?: Date | string
@@ -1492,9 +1263,7 @@ export type ProductUpdateWithoutCategoryInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1503,7 +1272,6 @@ export type ProductUpdateWithoutCategoryInput = {
   bannedProduct?: Prisma.BannedProductUpdateOneWithoutProductNestedInput
   images?: Prisma.ImageUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutCategoryInput = {
@@ -1514,9 +1282,7 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1525,7 +1291,6 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   bannedProduct?: Prisma.BannedProductUncheckedUpdateOneWithoutProductNestedInput
   images?: Prisma.ImageUncheckedUpdateManyWithoutProductNestedInput
   productView?: Prisma.productViewUncheckedUpdateManyWithoutProductNestedInput
-  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateManyWithoutCategoryInput = {
@@ -1536,9 +1301,7 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stock?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  condition?: Prisma.EnumProductConditionFieldUpdateOperationsInput | $Enums.ProductCondition
   brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  model?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessId?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1554,13 +1317,11 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
 export type ProductCountOutputType = {
   images: number
   productView: number
-  reviews: number
 }
 
 export type ProductCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   images?: boolean | ProductCountOutputTypeCountImagesArgs
   productView?: boolean | ProductCountOutputTypeCountProductViewArgs
-  reviews?: boolean | ProductCountOutputTypeCountReviewsArgs
 }
 
 /**
@@ -1587,13 +1348,6 @@ export type ProductCountOutputTypeCountProductViewArgs<ExtArgs extends runtime.T
   where?: Prisma.productViewWhereInput
 }
 
-/**
- * ProductCountOutputType without action
- */
-export type ProductCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ReviewWhereInput
-}
-
 
 export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1603,9 +1357,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   featured?: boolean
   active?: boolean
   stock?: boolean
-  condition?: boolean
   brand?: boolean
-  model?: boolean
   businessId?: boolean
   isBanned?: boolean
   createdAt?: boolean
@@ -1617,7 +1369,6 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   images?: boolean | Prisma.Product$imagesArgs<ExtArgs>
   productView?: boolean | Prisma.Product$productViewArgs<ExtArgs>
   category?: boolean | Prisma.Product$categoryArgs<ExtArgs>
-  reviews?: boolean | Prisma.Product$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["product"]>
 
@@ -1629,9 +1380,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   featured?: boolean
   active?: boolean
   stock?: boolean
-  condition?: boolean
   brand?: boolean
-  model?: boolean
   businessId?: boolean
   isBanned?: boolean
   createdAt?: boolean
@@ -1650,9 +1399,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   featured?: boolean
   active?: boolean
   stock?: boolean
-  condition?: boolean
   brand?: boolean
-  model?: boolean
   businessId?: boolean
   isBanned?: boolean
   createdAt?: boolean
@@ -1671,9 +1418,7 @@ export type ProductSelectScalar = {
   featured?: boolean
   active?: boolean
   stock?: boolean
-  condition?: boolean
   brand?: boolean
-  model?: boolean
   businessId?: boolean
   isBanned?: boolean
   createdAt?: boolean
@@ -1682,14 +1427,13 @@ export type ProductSelectScalar = {
   tags?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "featured" | "active" | "stock" | "condition" | "brand" | "model" | "businessId" | "isBanned" | "createdAt" | "updatedAt" | "categoryId" | "tags", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "featured" | "active" | "stock" | "brand" | "businessId" | "isBanned" | "createdAt" | "updatedAt" | "categoryId" | "tags", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   business?: boolean | Prisma.BusinessDefaultArgs<ExtArgs>
   bannedProduct?: boolean | Prisma.Product$bannedProductArgs<ExtArgs>
   images?: boolean | Prisma.Product$imagesArgs<ExtArgs>
   productView?: boolean | Prisma.Product$productViewArgs<ExtArgs>
   category?: boolean | Prisma.Product$categoryArgs<ExtArgs>
-  reviews?: boolean | Prisma.Product$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1709,7 +1453,6 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     images: Prisma.$ImagePayload<ExtArgs>[]
     productView: Prisma.$productViewPayload<ExtArgs>[]
     category: Prisma.$CategoryPayload<ExtArgs> | null
-    reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1719,9 +1462,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     featured: boolean
     active: boolean
     stock: number | null
-    condition: $Enums.ProductCondition
     brand: string | null
-    model: string | null
     businessId: string
     isBanned: boolean | null
     createdAt: Date
@@ -2127,7 +1868,6 @@ export interface Prisma__ProductClient<T, Null = never, ExtArgs extends runtime.
   images<T extends Prisma.Product$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   productView<T extends Prisma.Product$productViewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$productViewArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$productViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   category<T extends Prisma.Product$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$categoryArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  reviews<T extends Prisma.Product$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2164,9 +1904,7 @@ export interface ProductFieldRefs {
   readonly featured: Prisma.FieldRef<"Product", 'Boolean'>
   readonly active: Prisma.FieldRef<"Product", 'Boolean'>
   readonly stock: Prisma.FieldRef<"Product", 'Int'>
-  readonly condition: Prisma.FieldRef<"Product", 'ProductCondition'>
   readonly brand: Prisma.FieldRef<"Product", 'String'>
-  readonly model: Prisma.FieldRef<"Product", 'String'>
   readonly businessId: Prisma.FieldRef<"Product", 'String'>
   readonly isBanned: Prisma.FieldRef<"Product", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
@@ -2652,30 +2390,6 @@ export type Product$categoryArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.CategoryInclude<ExtArgs> | null
   where?: Prisma.CategoryWhereInput
-}
-
-/**
- * Product.reviews
- */
-export type Product$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Review
-   */
-  select?: Prisma.ReviewSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Review
-   */
-  omit?: Prisma.ReviewOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ReviewInclude<ExtArgs> | null
-  where?: Prisma.ReviewWhereInput
-  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
-  cursor?: Prisma.ReviewWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
 }
 
 /**

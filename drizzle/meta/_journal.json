@@ -15,6 +15,13 @@
       "when": 1765283132156,
       "tag": "0001_wild_bromley",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765284196957,
+      "tag": "0002_kind_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }

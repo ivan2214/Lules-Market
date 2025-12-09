@@ -1,6 +1,14 @@
 import { relations } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { business } from "./business-schema";
 import { userRoleEnum } from "./enums";
+import { notification } from "./notification-schema";
+import {
+  admin,
+  emailVerificationToken,
+  passwordResetToken,
+  profile,
+} from "./user-schema";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -93,16 +101,8 @@ export const userRelations = relations(user, ({ many, one }) => ({
   }),
   emailVerificationTokens: many(emailVerificationToken),
   passwordResetTokens: many(passwordResetToken),
+  notifications: many(notification),
 }));
-
-// Forward imports for circular references
-import { business } from "./business-schema";
-import {
-  admin,
-  emailVerificationToken,
-  passwordResetToken,
-  profile,
-} from "./user-schema";
 
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {

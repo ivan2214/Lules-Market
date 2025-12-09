@@ -40,14 +40,21 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 export const Permission = {
   ALL: 'ALL',
-  MODERATE_CONTENT: 'MODERATE_CONTENT',
   BAN_USERS: 'BAN_USERS',
-  MANAGE_PAYMENTS: 'MANAGE_PAYMENTS',
-  MANAGE_COUPONS: 'MANAGE_COUPONS',
-  VIEW_ANALYTIICS: 'VIEW_ANALYTIICS'
+  MANAGE_PLANS: 'MANAGE_PLANS'
 } as const
 
 export type Permission = (typeof Permission)[keyof typeof Permission]
+
+
+export const BusinessStatus = {
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type BusinessStatus = (typeof BusinessStatus)[keyof typeof BusinessStatus]
 
 
 export const NotificationType = {
@@ -65,22 +72,3 @@ export const NotificationType = {
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
-
-
-export const ProductCondition = {
-  NEW: 'NEW',
-  USED: 'USED',
-  REFURBISHED: 'REFURBISHED'
-} as const
-
-export type ProductCondition = (typeof ProductCondition)[keyof typeof ProductCondition]
-
-
-export const BusinessStatus = {
-  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
-  ACTIVE: 'ACTIVE',
-  SUSPENDED: 'SUSPENDED',
-  INACTIVE: 'INACTIVE'
-} as const
-
-export type BusinessStatus = (typeof BusinessStatus)[keyof typeof BusinessStatus]

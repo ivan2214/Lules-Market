@@ -44,7 +44,6 @@ export type ImageMinAggregateOutputType = {
   productId: string | null
   logoBusinessId: string | null
   coverBusinessId: string | null
-  postId: string | null
   avatarId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,7 +60,6 @@ export type ImageMaxAggregateOutputType = {
   productId: string | null
   logoBusinessId: string | null
   coverBusinessId: string | null
-  postId: string | null
   avatarId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -78,7 +76,6 @@ export type ImageCountAggregateOutputType = {
   productId: number
   logoBusinessId: number
   coverBusinessId: number
-  postId: number
   avatarId: number
   createdAt: number
   updatedAt: number
@@ -105,7 +102,6 @@ export type ImageMinAggregateInputType = {
   productId?: true
   logoBusinessId?: true
   coverBusinessId?: true
-  postId?: true
   avatarId?: true
   createdAt?: true
   updatedAt?: true
@@ -122,7 +118,6 @@ export type ImageMaxAggregateInputType = {
   productId?: true
   logoBusinessId?: true
   coverBusinessId?: true
-  postId?: true
   avatarId?: true
   createdAt?: true
   updatedAt?: true
@@ -139,7 +134,6 @@ export type ImageCountAggregateInputType = {
   productId?: true
   logoBusinessId?: true
   coverBusinessId?: true
-  postId?: true
   avatarId?: true
   createdAt?: true
   updatedAt?: true
@@ -243,7 +237,6 @@ export type ImageGroupByOutputType = {
   productId: string | null
   logoBusinessId: string | null
   coverBusinessId: string | null
-  postId: string | null
   avatarId: string | null
   createdAt: Date
   updatedAt: Date
@@ -283,7 +276,6 @@ export type ImageWhereInput = {
   productId?: Prisma.StringNullableFilter<"Image"> | string | null
   logoBusinessId?: Prisma.StringNullableFilter<"Image"> | string | null
   coverBusinessId?: Prisma.StringNullableFilter<"Image"> | string | null
-  postId?: Prisma.StringNullableFilter<"Image"> | string | null
   avatarId?: Prisma.StringNullableFilter<"Image"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Image"> | Date | string
@@ -291,7 +283,6 @@ export type ImageWhereInput = {
   product?: Prisma.XOR<Prisma.ProductNullableScalarRelationFilter, Prisma.ProductWhereInput> | null
   logoBusiness?: Prisma.XOR<Prisma.BusinessNullableScalarRelationFilter, Prisma.BusinessWhereInput> | null
   coverBusiness?: Prisma.XOR<Prisma.BusinessNullableScalarRelationFilter, Prisma.BusinessWhereInput> | null
-  post?: Prisma.XOR<Prisma.PostNullableScalarRelationFilter, Prisma.PostWhereInput> | null
   avatar?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
   bannedImages?: Prisma.XOR<Prisma.BannedImagesNullableScalarRelationFilter, Prisma.BannedImagesWhereInput> | null
 }
@@ -306,7 +297,6 @@ export type ImageOrderByWithRelationInput = {
   productId?: Prisma.SortOrderInput | Prisma.SortOrder
   logoBusinessId?: Prisma.SortOrderInput | Prisma.SortOrder
   coverBusinessId?: Prisma.SortOrderInput | Prisma.SortOrder
-  postId?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -314,7 +304,6 @@ export type ImageOrderByWithRelationInput = {
   product?: Prisma.ProductOrderByWithRelationInput
   logoBusiness?: Prisma.BusinessOrderByWithRelationInput
   coverBusiness?: Prisma.BusinessOrderByWithRelationInput
-  post?: Prisma.PostOrderByWithRelationInput
   avatar?: Prisma.ProfileOrderByWithRelationInput
   bannedImages?: Prisma.BannedImagesOrderByWithRelationInput
 }
@@ -333,14 +322,12 @@ export type ImageWhereUniqueInput = Prisma.AtLeast<{
   size?: Prisma.FloatNullableFilter<"Image"> | number | null
   isReported?: Prisma.BoolFilter<"Image"> | boolean
   productId?: Prisma.StringNullableFilter<"Image"> | string | null
-  postId?: Prisma.StringNullableFilter<"Image"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   isBanned?: Prisma.BoolNullableFilter<"Image"> | boolean | null
   product?: Prisma.XOR<Prisma.ProductNullableScalarRelationFilter, Prisma.ProductWhereInput> | null
   logoBusiness?: Prisma.XOR<Prisma.BusinessNullableScalarRelationFilter, Prisma.BusinessWhereInput> | null
   coverBusiness?: Prisma.XOR<Prisma.BusinessNullableScalarRelationFilter, Prisma.BusinessWhereInput> | null
-  post?: Prisma.XOR<Prisma.PostNullableScalarRelationFilter, Prisma.PostWhereInput> | null
   avatar?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
   bannedImages?: Prisma.XOR<Prisma.BannedImagesNullableScalarRelationFilter, Prisma.BannedImagesWhereInput> | null
 }, "key" | "logoBusinessId" | "coverBusinessId" | "avatarId">
@@ -355,7 +342,6 @@ export type ImageOrderByWithAggregationInput = {
   productId?: Prisma.SortOrderInput | Prisma.SortOrder
   logoBusinessId?: Prisma.SortOrderInput | Prisma.SortOrder
   coverBusinessId?: Prisma.SortOrderInput | Prisma.SortOrder
-  postId?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -380,7 +366,6 @@ export type ImageScalarWhereWithAggregatesInput = {
   productId?: Prisma.StringNullableWithAggregatesFilter<"Image"> | string | null
   logoBusinessId?: Prisma.StringNullableWithAggregatesFilter<"Image"> | string | null
   coverBusinessId?: Prisma.StringNullableWithAggregatesFilter<"Image"> | string | null
-  postId?: Prisma.StringNullableWithAggregatesFilter<"Image"> | string | null
   avatarId?: Prisma.StringNullableWithAggregatesFilter<"Image"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Image"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Image"> | Date | string
@@ -400,7 +385,6 @@ export type ImageCreateInput = {
   product?: Prisma.ProductCreateNestedOneWithoutImagesInput
   logoBusiness?: Prisma.BusinessCreateNestedOneWithoutLogoInput
   coverBusiness?: Prisma.BusinessCreateNestedOneWithoutCoverImageInput
-  post?: Prisma.PostCreateNestedOneWithoutImagesInput
   avatar?: Prisma.ProfileCreateNestedOneWithoutAvatarInput
   bannedImages?: Prisma.BannedImagesCreateNestedOneWithoutImageInput
 }
@@ -415,7 +399,6 @@ export type ImageUncheckedCreateInput = {
   productId?: string | null
   logoBusinessId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -436,7 +419,6 @@ export type ImageUpdateInput = {
   product?: Prisma.ProductUpdateOneWithoutImagesNestedInput
   logoBusiness?: Prisma.BusinessUpdateOneWithoutLogoNestedInput
   coverBusiness?: Prisma.BusinessUpdateOneWithoutCoverImageNestedInput
-  post?: Prisma.PostUpdateOneWithoutImagesNestedInput
   avatar?: Prisma.ProfileUpdateOneWithoutAvatarNestedInput
   bannedImages?: Prisma.BannedImagesUpdateOneWithoutImageNestedInput
 }
@@ -451,7 +433,6 @@ export type ImageUncheckedUpdateInput = {
   productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -469,7 +450,6 @@ export type ImageCreateManyInput = {
   productId?: string | null
   logoBusinessId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -498,7 +478,6 @@ export type ImageUncheckedUpdateManyInput = {
   productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -535,7 +514,6 @@ export type ImageCountOrderByAggregateInput = {
   productId?: Prisma.SortOrder
   logoBusinessId?: Prisma.SortOrder
   coverBusinessId?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
   avatarId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -556,7 +534,6 @@ export type ImageMaxOrderByAggregateInput = {
   productId?: Prisma.SortOrder
   logoBusinessId?: Prisma.SortOrder
   coverBusinessId?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
   avatarId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -573,7 +550,6 @@ export type ImageMinOrderByAggregateInput = {
   productId?: Prisma.SortOrder
   logoBusinessId?: Prisma.SortOrder
   coverBusinessId?: Prisma.SortOrder
-  postId?: Prisma.SortOrder
   avatarId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -736,48 +712,6 @@ export type ImageUncheckedUpdateManyWithoutProductNestedInput = {
   deleteMany?: Prisma.ImageScalarWhereInput | Prisma.ImageScalarWhereInput[]
 }
 
-export type ImageCreateNestedManyWithoutPostInput = {
-  create?: Prisma.XOR<Prisma.ImageCreateWithoutPostInput, Prisma.ImageUncheckedCreateWithoutPostInput> | Prisma.ImageCreateWithoutPostInput[] | Prisma.ImageUncheckedCreateWithoutPostInput[]
-  connectOrCreate?: Prisma.ImageCreateOrConnectWithoutPostInput | Prisma.ImageCreateOrConnectWithoutPostInput[]
-  createMany?: Prisma.ImageCreateManyPostInputEnvelope
-  connect?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-}
-
-export type ImageUncheckedCreateNestedManyWithoutPostInput = {
-  create?: Prisma.XOR<Prisma.ImageCreateWithoutPostInput, Prisma.ImageUncheckedCreateWithoutPostInput> | Prisma.ImageCreateWithoutPostInput[] | Prisma.ImageUncheckedCreateWithoutPostInput[]
-  connectOrCreate?: Prisma.ImageCreateOrConnectWithoutPostInput | Prisma.ImageCreateOrConnectWithoutPostInput[]
-  createMany?: Prisma.ImageCreateManyPostInputEnvelope
-  connect?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-}
-
-export type ImageUpdateManyWithoutPostNestedInput = {
-  create?: Prisma.XOR<Prisma.ImageCreateWithoutPostInput, Prisma.ImageUncheckedCreateWithoutPostInput> | Prisma.ImageCreateWithoutPostInput[] | Prisma.ImageUncheckedCreateWithoutPostInput[]
-  connectOrCreate?: Prisma.ImageCreateOrConnectWithoutPostInput | Prisma.ImageCreateOrConnectWithoutPostInput[]
-  upsert?: Prisma.ImageUpsertWithWhereUniqueWithoutPostInput | Prisma.ImageUpsertWithWhereUniqueWithoutPostInput[]
-  createMany?: Prisma.ImageCreateManyPostInputEnvelope
-  set?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  disconnect?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  delete?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  connect?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  update?: Prisma.ImageUpdateWithWhereUniqueWithoutPostInput | Prisma.ImageUpdateWithWhereUniqueWithoutPostInput[]
-  updateMany?: Prisma.ImageUpdateManyWithWhereWithoutPostInput | Prisma.ImageUpdateManyWithWhereWithoutPostInput[]
-  deleteMany?: Prisma.ImageScalarWhereInput | Prisma.ImageScalarWhereInput[]
-}
-
-export type ImageUncheckedUpdateManyWithoutPostNestedInput = {
-  create?: Prisma.XOR<Prisma.ImageCreateWithoutPostInput, Prisma.ImageUncheckedCreateWithoutPostInput> | Prisma.ImageCreateWithoutPostInput[] | Prisma.ImageUncheckedCreateWithoutPostInput[]
-  connectOrCreate?: Prisma.ImageCreateOrConnectWithoutPostInput | Prisma.ImageCreateOrConnectWithoutPostInput[]
-  upsert?: Prisma.ImageUpsertWithWhereUniqueWithoutPostInput | Prisma.ImageUpsertWithWhereUniqueWithoutPostInput[]
-  createMany?: Prisma.ImageCreateManyPostInputEnvelope
-  set?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  disconnect?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  delete?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  connect?: Prisma.ImageWhereUniqueInput | Prisma.ImageWhereUniqueInput[]
-  update?: Prisma.ImageUpdateWithWhereUniqueWithoutPostInput | Prisma.ImageUpdateWithWhereUniqueWithoutPostInput[]
-  updateMany?: Prisma.ImageUpdateManyWithWhereWithoutPostInput | Prisma.ImageUpdateManyWithWhereWithoutPostInput[]
-  deleteMany?: Prisma.ImageScalarWhereInput | Prisma.ImageScalarWhereInput[]
-}
-
 export type ImageCreateWithoutAvatarInput = {
   key: string
   url: string
@@ -791,7 +725,6 @@ export type ImageCreateWithoutAvatarInput = {
   product?: Prisma.ProductCreateNestedOneWithoutImagesInput
   logoBusiness?: Prisma.BusinessCreateNestedOneWithoutLogoInput
   coverBusiness?: Prisma.BusinessCreateNestedOneWithoutCoverImageInput
-  post?: Prisma.PostCreateNestedOneWithoutImagesInput
   bannedImages?: Prisma.BannedImagesCreateNestedOneWithoutImageInput
 }
 
@@ -805,7 +738,6 @@ export type ImageUncheckedCreateWithoutAvatarInput = {
   productId?: string | null
   logoBusinessId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   isBanned?: boolean | null
@@ -841,7 +773,6 @@ export type ImageUpdateWithoutAvatarInput = {
   product?: Prisma.ProductUpdateOneWithoutImagesNestedInput
   logoBusiness?: Prisma.BusinessUpdateOneWithoutLogoNestedInput
   coverBusiness?: Prisma.BusinessUpdateOneWithoutCoverImageNestedInput
-  post?: Prisma.PostUpdateOneWithoutImagesNestedInput
   bannedImages?: Prisma.BannedImagesUpdateOneWithoutImageNestedInput
 }
 
@@ -855,7 +786,6 @@ export type ImageUncheckedUpdateWithoutAvatarInput = {
   productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -875,7 +805,6 @@ export type ImageCreateWithoutBannedImagesInput = {
   product?: Prisma.ProductCreateNestedOneWithoutImagesInput
   logoBusiness?: Prisma.BusinessCreateNestedOneWithoutLogoInput
   coverBusiness?: Prisma.BusinessCreateNestedOneWithoutCoverImageInput
-  post?: Prisma.PostCreateNestedOneWithoutImagesInput
   avatar?: Prisma.ProfileCreateNestedOneWithoutAvatarInput
 }
 
@@ -889,7 +818,6 @@ export type ImageUncheckedCreateWithoutBannedImagesInput = {
   productId?: string | null
   logoBusinessId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -925,7 +853,6 @@ export type ImageUpdateWithoutBannedImagesInput = {
   product?: Prisma.ProductUpdateOneWithoutImagesNestedInput
   logoBusiness?: Prisma.BusinessUpdateOneWithoutLogoNestedInput
   coverBusiness?: Prisma.BusinessUpdateOneWithoutCoverImageNestedInput
-  post?: Prisma.PostUpdateOneWithoutImagesNestedInput
   avatar?: Prisma.ProfileUpdateOneWithoutAvatarNestedInput
 }
 
@@ -939,7 +866,6 @@ export type ImageUncheckedUpdateWithoutBannedImagesInput = {
   productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -958,7 +884,6 @@ export type ImageCreateWithoutLogoBusinessInput = {
   isBanned?: boolean | null
   product?: Prisma.ProductCreateNestedOneWithoutImagesInput
   coverBusiness?: Prisma.BusinessCreateNestedOneWithoutCoverImageInput
-  post?: Prisma.PostCreateNestedOneWithoutImagesInput
   avatar?: Prisma.ProfileCreateNestedOneWithoutAvatarInput
   bannedImages?: Prisma.BannedImagesCreateNestedOneWithoutImageInput
 }
@@ -972,7 +897,6 @@ export type ImageUncheckedCreateWithoutLogoBusinessInput = {
   isReported?: boolean
   productId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -997,7 +921,6 @@ export type ImageCreateWithoutCoverBusinessInput = {
   isBanned?: boolean | null
   product?: Prisma.ProductCreateNestedOneWithoutImagesInput
   logoBusiness?: Prisma.BusinessCreateNestedOneWithoutLogoInput
-  post?: Prisma.PostCreateNestedOneWithoutImagesInput
   avatar?: Prisma.ProfileCreateNestedOneWithoutAvatarInput
   bannedImages?: Prisma.BannedImagesCreateNestedOneWithoutImageInput
 }
@@ -1011,7 +934,6 @@ export type ImageUncheckedCreateWithoutCoverBusinessInput = {
   isReported?: boolean
   productId?: string | null
   logoBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1047,7 +969,6 @@ export type ImageUpdateWithoutLogoBusinessInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   product?: Prisma.ProductUpdateOneWithoutImagesNestedInput
   coverBusiness?: Prisma.BusinessUpdateOneWithoutCoverImageNestedInput
-  post?: Prisma.PostUpdateOneWithoutImagesNestedInput
   avatar?: Prisma.ProfileUpdateOneWithoutAvatarNestedInput
   bannedImages?: Prisma.BannedImagesUpdateOneWithoutImageNestedInput
 }
@@ -1061,7 +982,6 @@ export type ImageUncheckedUpdateWithoutLogoBusinessInput = {
   isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1092,7 +1012,6 @@ export type ImageUpdateWithoutCoverBusinessInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   product?: Prisma.ProductUpdateOneWithoutImagesNestedInput
   logoBusiness?: Prisma.BusinessUpdateOneWithoutLogoNestedInput
-  post?: Prisma.PostUpdateOneWithoutImagesNestedInput
   avatar?: Prisma.ProfileUpdateOneWithoutAvatarNestedInput
   bannedImages?: Prisma.BannedImagesUpdateOneWithoutImageNestedInput
 }
@@ -1106,7 +1025,6 @@ export type ImageUncheckedUpdateWithoutCoverBusinessInput = {
   isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
   productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1126,7 +1044,6 @@ export type ImageCreateWithoutProductInput = {
   isBanned?: boolean | null
   logoBusiness?: Prisma.BusinessCreateNestedOneWithoutLogoInput
   coverBusiness?: Prisma.BusinessCreateNestedOneWithoutCoverImageInput
-  post?: Prisma.PostCreateNestedOneWithoutImagesInput
   avatar?: Prisma.ProfileCreateNestedOneWithoutAvatarInput
   bannedImages?: Prisma.BannedImagesCreateNestedOneWithoutImageInput
 }
@@ -1140,7 +1057,6 @@ export type ImageUncheckedCreateWithoutProductInput = {
   isReported?: boolean
   logoBusinessId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1187,71 +1103,10 @@ export type ImageScalarWhereInput = {
   productId?: Prisma.StringNullableFilter<"Image"> | string | null
   logoBusinessId?: Prisma.StringNullableFilter<"Image"> | string | null
   coverBusinessId?: Prisma.StringNullableFilter<"Image"> | string | null
-  postId?: Prisma.StringNullableFilter<"Image"> | string | null
   avatarId?: Prisma.StringNullableFilter<"Image"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Image"> | Date | string
   isBanned?: Prisma.BoolNullableFilter<"Image"> | boolean | null
-}
-
-export type ImageCreateWithoutPostInput = {
-  key: string
-  url: string
-  isMainImage?: boolean
-  name?: string | null
-  size?: number | null
-  isReported?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  isBanned?: boolean | null
-  product?: Prisma.ProductCreateNestedOneWithoutImagesInput
-  logoBusiness?: Prisma.BusinessCreateNestedOneWithoutLogoInput
-  coverBusiness?: Prisma.BusinessCreateNestedOneWithoutCoverImageInput
-  avatar?: Prisma.ProfileCreateNestedOneWithoutAvatarInput
-  bannedImages?: Prisma.BannedImagesCreateNestedOneWithoutImageInput
-}
-
-export type ImageUncheckedCreateWithoutPostInput = {
-  key: string
-  url: string
-  isMainImage?: boolean
-  name?: string | null
-  size?: number | null
-  isReported?: boolean
-  productId?: string | null
-  logoBusinessId?: string | null
-  coverBusinessId?: string | null
-  avatarId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  isBanned?: boolean | null
-  bannedImages?: Prisma.BannedImagesUncheckedCreateNestedOneWithoutImageInput
-}
-
-export type ImageCreateOrConnectWithoutPostInput = {
-  where: Prisma.ImageWhereUniqueInput
-  create: Prisma.XOR<Prisma.ImageCreateWithoutPostInput, Prisma.ImageUncheckedCreateWithoutPostInput>
-}
-
-export type ImageCreateManyPostInputEnvelope = {
-  data: Prisma.ImageCreateManyPostInput | Prisma.ImageCreateManyPostInput[]
-  skipDuplicates?: boolean
-}
-
-export type ImageUpsertWithWhereUniqueWithoutPostInput = {
-  where: Prisma.ImageWhereUniqueInput
-  update: Prisma.XOR<Prisma.ImageUpdateWithoutPostInput, Prisma.ImageUncheckedUpdateWithoutPostInput>
-  create: Prisma.XOR<Prisma.ImageCreateWithoutPostInput, Prisma.ImageUncheckedCreateWithoutPostInput>
-}
-
-export type ImageUpdateWithWhereUniqueWithoutPostInput = {
-  where: Prisma.ImageWhereUniqueInput
-  data: Prisma.XOR<Prisma.ImageUpdateWithoutPostInput, Prisma.ImageUncheckedUpdateWithoutPostInput>
-}
-
-export type ImageUpdateManyWithWhereWithoutPostInput = {
-  where: Prisma.ImageScalarWhereInput
-  data: Prisma.XOR<Prisma.ImageUpdateManyMutationInput, Prisma.ImageUncheckedUpdateManyWithoutPostInput>
 }
 
 export type ImageCreateManyProductInput = {
@@ -1263,7 +1118,6 @@ export type ImageCreateManyProductInput = {
   isReported?: boolean
   logoBusinessId?: string | null
   coverBusinessId?: string | null
-  postId?: string | null
   avatarId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1282,7 +1136,6 @@ export type ImageUpdateWithoutProductInput = {
   isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   logoBusiness?: Prisma.BusinessUpdateOneWithoutLogoNestedInput
   coverBusiness?: Prisma.BusinessUpdateOneWithoutCoverImageNestedInput
-  post?: Prisma.PostUpdateOneWithoutImagesNestedInput
   avatar?: Prisma.ProfileUpdateOneWithoutAvatarNestedInput
   bannedImages?: Prisma.BannedImagesUpdateOneWithoutImageNestedInput
 }
@@ -1296,7 +1149,6 @@ export type ImageUncheckedUpdateWithoutProductInput = {
   isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1311,73 +1163,6 @@ export type ImageUncheckedUpdateManyWithoutProductInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   size?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  postId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-}
-
-export type ImageCreateManyPostInput = {
-  key: string
-  url: string
-  isMainImage?: boolean
-  name?: string | null
-  size?: number | null
-  isReported?: boolean
-  productId?: string | null
-  logoBusinessId?: string | null
-  coverBusinessId?: string | null
-  avatarId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  isBanned?: boolean | null
-}
-
-export type ImageUpdateWithoutPostInput = {
-  key?: Prisma.StringFieldUpdateOperationsInput | string
-  url?: Prisma.StringFieldUpdateOperationsInput | string
-  isMainImage?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  size?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  product?: Prisma.ProductUpdateOneWithoutImagesNestedInput
-  logoBusiness?: Prisma.BusinessUpdateOneWithoutLogoNestedInput
-  coverBusiness?: Prisma.BusinessUpdateOneWithoutCoverImageNestedInput
-  avatar?: Prisma.ProfileUpdateOneWithoutAvatarNestedInput
-  bannedImages?: Prisma.BannedImagesUpdateOneWithoutImageNestedInput
-}
-
-export type ImageUncheckedUpdateWithoutPostInput = {
-  key?: Prisma.StringFieldUpdateOperationsInput | string
-  url?: Prisma.StringFieldUpdateOperationsInput | string
-  isMainImage?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  size?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isBanned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  bannedImages?: Prisma.BannedImagesUncheckedUpdateOneWithoutImageNestedInput
-}
-
-export type ImageUncheckedUpdateManyWithoutPostInput = {
-  key?: Prisma.StringFieldUpdateOperationsInput | string
-  url?: Prisma.StringFieldUpdateOperationsInput | string
-  isMainImage?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  size?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  isReported?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverBusinessId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1398,7 +1183,6 @@ export type ImageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   productId?: boolean
   logoBusinessId?: boolean
   coverBusinessId?: boolean
-  postId?: boolean
   avatarId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1406,7 +1190,6 @@ export type ImageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   product?: boolean | Prisma.Image$productArgs<ExtArgs>
   logoBusiness?: boolean | Prisma.Image$logoBusinessArgs<ExtArgs>
   coverBusiness?: boolean | Prisma.Image$coverBusinessArgs<ExtArgs>
-  post?: boolean | Prisma.Image$postArgs<ExtArgs>
   avatar?: boolean | Prisma.Image$avatarArgs<ExtArgs>
   bannedImages?: boolean | Prisma.Image$bannedImagesArgs<ExtArgs>
 }, ExtArgs["result"]["image"]>
@@ -1421,7 +1204,6 @@ export type ImageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   productId?: boolean
   logoBusinessId?: boolean
   coverBusinessId?: boolean
-  postId?: boolean
   avatarId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1429,7 +1211,6 @@ export type ImageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   product?: boolean | Prisma.Image$productArgs<ExtArgs>
   logoBusiness?: boolean | Prisma.Image$logoBusinessArgs<ExtArgs>
   coverBusiness?: boolean | Prisma.Image$coverBusinessArgs<ExtArgs>
-  post?: boolean | Prisma.Image$postArgs<ExtArgs>
   avatar?: boolean | Prisma.Image$avatarArgs<ExtArgs>
 }, ExtArgs["result"]["image"]>
 
@@ -1443,7 +1224,6 @@ export type ImageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   productId?: boolean
   logoBusinessId?: boolean
   coverBusinessId?: boolean
-  postId?: boolean
   avatarId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1451,7 +1231,6 @@ export type ImageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   product?: boolean | Prisma.Image$productArgs<ExtArgs>
   logoBusiness?: boolean | Prisma.Image$logoBusinessArgs<ExtArgs>
   coverBusiness?: boolean | Prisma.Image$coverBusinessArgs<ExtArgs>
-  post?: boolean | Prisma.Image$postArgs<ExtArgs>
   avatar?: boolean | Prisma.Image$avatarArgs<ExtArgs>
 }, ExtArgs["result"]["image"]>
 
@@ -1465,19 +1244,17 @@ export type ImageSelectScalar = {
   productId?: boolean
   logoBusinessId?: boolean
   coverBusinessId?: boolean
-  postId?: boolean
   avatarId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   isBanned?: boolean
 }
 
-export type ImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "productId" | "logoBusinessId" | "coverBusinessId" | "postId" | "avatarId" | "createdAt" | "updatedAt" | "isBanned", ExtArgs["result"]["image"]>
+export type ImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"key" | "url" | "isMainImage" | "name" | "size" | "isReported" | "productId" | "logoBusinessId" | "coverBusinessId" | "avatarId" | "createdAt" | "updatedAt" | "isBanned", ExtArgs["result"]["image"]>
 export type ImageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.Image$productArgs<ExtArgs>
   logoBusiness?: boolean | Prisma.Image$logoBusinessArgs<ExtArgs>
   coverBusiness?: boolean | Prisma.Image$coverBusinessArgs<ExtArgs>
-  post?: boolean | Prisma.Image$postArgs<ExtArgs>
   avatar?: boolean | Prisma.Image$avatarArgs<ExtArgs>
   bannedImages?: boolean | Prisma.Image$bannedImagesArgs<ExtArgs>
 }
@@ -1485,14 +1262,12 @@ export type ImageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   product?: boolean | Prisma.Image$productArgs<ExtArgs>
   logoBusiness?: boolean | Prisma.Image$logoBusinessArgs<ExtArgs>
   coverBusiness?: boolean | Prisma.Image$coverBusinessArgs<ExtArgs>
-  post?: boolean | Prisma.Image$postArgs<ExtArgs>
   avatar?: boolean | Prisma.Image$avatarArgs<ExtArgs>
 }
 export type ImageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.Image$productArgs<ExtArgs>
   logoBusiness?: boolean | Prisma.Image$logoBusinessArgs<ExtArgs>
   coverBusiness?: boolean | Prisma.Image$coverBusinessArgs<ExtArgs>
-  post?: boolean | Prisma.Image$postArgs<ExtArgs>
   avatar?: boolean | Prisma.Image$avatarArgs<ExtArgs>
 }
 
@@ -1502,7 +1277,6 @@ export type $ImagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     product: Prisma.$ProductPayload<ExtArgs> | null
     logoBusiness: Prisma.$BusinessPayload<ExtArgs> | null
     coverBusiness: Prisma.$BusinessPayload<ExtArgs> | null
-    post: Prisma.$PostPayload<ExtArgs> | null
     avatar: Prisma.$ProfilePayload<ExtArgs> | null
     bannedImages: Prisma.$BannedImagesPayload<ExtArgs> | null
   }
@@ -1516,7 +1290,6 @@ export type $ImagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     productId: string | null
     logoBusinessId: string | null
     coverBusinessId: string | null
-    postId: string | null
     avatarId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1918,7 +1691,6 @@ export interface Prisma__ImageClient<T, Null = never, ExtArgs extends runtime.Ty
   product<T extends Prisma.Image$productArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$productArgs<ExtArgs>>): Prisma.Prisma__ProductClient<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   logoBusiness<T extends Prisma.Image$logoBusinessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$logoBusinessArgs<ExtArgs>>): Prisma.Prisma__BusinessClient<runtime.Types.Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   coverBusiness<T extends Prisma.Image$coverBusinessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$coverBusinessArgs<ExtArgs>>): Prisma.Prisma__BusinessClient<runtime.Types.Result.GetResult<Prisma.$BusinessPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  post<T extends Prisma.Image$postArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$postArgs<ExtArgs>>): Prisma.Prisma__PostClient<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   avatar<T extends Prisma.Image$avatarArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$avatarArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   bannedImages<T extends Prisma.Image$bannedImagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Image$bannedImagesArgs<ExtArgs>>): Prisma.Prisma__BannedImagesClient<runtime.Types.Result.GetResult<Prisma.$BannedImagesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1959,7 +1731,6 @@ export interface ImageFieldRefs {
   readonly productId: Prisma.FieldRef<"Image", 'String'>
   readonly logoBusinessId: Prisma.FieldRef<"Image", 'String'>
   readonly coverBusinessId: Prisma.FieldRef<"Image", 'String'>
-  readonly postId: Prisma.FieldRef<"Image", 'String'>
   readonly avatarId: Prisma.FieldRef<"Image", 'String'>
   readonly createdAt: Prisma.FieldRef<"Image", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Image", 'DateTime'>
@@ -2414,25 +2185,6 @@ export type Image$coverBusinessArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.BusinessInclude<ExtArgs> | null
   where?: Prisma.BusinessWhereInput
-}
-
-/**
- * Image.post
- */
-export type Image$postArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Post
-   */
-  select?: Prisma.PostSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Post
-   */
-  omit?: Prisma.PostOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PostInclude<ExtArgs> | null
-  where?: Prisma.PostWhereInput
 }
 
 /**

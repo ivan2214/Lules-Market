@@ -17,7 +17,7 @@ import {
   type Prisma,
   PrismaClient,
   type Product,
-  ProductCondition,
+
 } from "../app/generated/prisma/client";
 
 const adapter = new PrismaPg({
@@ -103,15 +103,13 @@ async function main() {
  // 1️⃣ Webhooks / Notificaciones / Pagos
 await prisma.$transaction([
   prisma.webhookEvent.deleteMany(),
-  prisma.notification.deleteMany(),
+  
   prisma.payment.deleteMany(),
 ]);
 
 // 2️⃣ Trials / Cupones / Analíticas
 await prisma.$transaction([
   prisma.trial.deleteMany(),
-  prisma.couponRedemption.deleteMany(),
-  prisma.coupon.deleteMany(),
   prisma.analytics.deleteMany(),
 ]);
 
@@ -121,12 +119,7 @@ await prisma.$transaction([
   prisma.productView.deleteMany(),
 ]);
 
-// 4️⃣ Reviews / posts / answers
-await prisma.$transaction([
-  prisma.review.deleteMany(),
-  prisma.answer.deleteMany(),
-  prisma.post.deleteMany(),
-]);
+
 
 // 5️⃣ Imágenes + baneos
 await prisma.$transaction([
@@ -301,13 +294,10 @@ await prisma.$transaction([
   // --- 4) Admins ---
   console.log("👑 Creando admins...");
 
-  const adminPermissions = [
+  const adminPermissions: Permission[] = [
     Permission.ALL,
     Permission.BAN_USERS,
-    Permission.MANAGE_COUPONS,
-    Permission.MANAGE_PAYMENTS,
-    Permission.MODERATE_CONTENT,
-    Permission.VIEW_ANALYTIICS,
+    Permission.MANAGE_PLANS
   ];
 
   for (let i = 0; i < 5; i++) {
@@ -501,14 +491,10 @@ await prisma.$transaction([
             : new Date(),
           featured: negocio.currentPlan?.planType === PlanType.PREMIUM,
           brand: getRandomBrandName(),
-          condition: faker.helpers.arrayElement([
-            ProductCondition.NEW,
-            ProductCondition.USED,
-            ProductCondition.REFURBISHED,
-          ]),
+          
           tags: faker.lorem.words(3).split(" "),
           active: faker.datatype.boolean(),
-          model: faker.vehicle.model(),
+          
         },
       });
 
@@ -550,55 +536,9 @@ await prisma.$transaction([
     }
   }
 
-  // --- 7) Reviews de productos (ya tenías) y reviews de negocios (agregado) ---
-  console.log("⭐ Generando reviews de productos y reviews para negocios...");
-  const usersProfiles = await prisma.profile.findMany();
-  const reviewsData: Prisma.ReviewCreateManyInput[] = Array.from(
-    { length: 600 },
-    () => ({
-      authorId: randomFrom(usersProfiles).userId,
-      productId: randomFrom(productos).id,
-      rating: faker.number.int({ min: 1, max: 5 }),
-      comment: faker.lorem.sentence(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }),
-  );
-  await prisma.review.createMany({ data: reviewsData });
 
-  // Reviews para negocios
-  const businessReviewsData: Prisma.ReviewCreateManyInput[] = Array.from(
-    { length: Math.min(400, negocios.length * 8) },
-    () => ({
-      authorId: randomFrom(usersProfiles).userId,
-      businessId: randomFrom(negocios).id,
-      rating: faker.number.int({ min: 1, max: 5 }),
-      comment: faker.lorem.sentences(faker.number.int({ min: 1, max: 3 })),
-      createdAt: faker.date.recent({
-        days: 90,
-      }),
-      updatedAt: faker.date.recent({ days: 30 }),
-    }),
-  );
-  await prisma.review.createMany({ data: businessReviewsData });
+  
 
-  // Recalcular rating promedio para cada negocio (simple promedio)
-  console.log("📈 Recalculando ratings promedio para negocios...");
-  for (const negocio of negocios) {
-    const aggregation = await prisma.review.aggregate({
-      where: { businessId: negocio.id },
-      _avg: { rating: true },
-    });
-    // avg redondeado para arriba a 1 decimal
-    const rating = aggregation._avg.rating;
-
-    const avg = rating ? Math.round(rating * 10) / 10 : 0;
-
-    await prisma.business.update({
-      where: { id: negocio.id },
-      data: { rating: avg },
-    });
-  }
 
   // --- 8) Vistas de productos y negocios ---
   console.log("👁 Registrando vistas de productos y negocios...");
@@ -616,42 +556,8 @@ await prisma.$transaction([
   }));
   await prisma.businessView.createMany({ data: businessViewsData });
 
-  // --- 9) Cupones y canjes (coupon redemptions) ---
-  console.log("🎟️ Creando cupones y redemptions...");
-  const coupons = await Promise.all(
-    Array.from({ length: 15 }, async () =>
-      prisma.coupon.create({
-        data: {
-          code: faker.string.alphanumeric(8).toUpperCase(),
-          discountPercent: faker.number.int({ min: 5, max: 40 }),
-          expiresAt: faker.date.soon({ days: 180 }),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      }),
-    ),
-  );
+  
 
-  // Realizar algunos canjes
-  const someBusinessesForCoupons = faker.helpers.arrayElements(
-    negocios,
-    Math.min(10, negocios.length),
-  );
-  for (const b of someBusinessesForCoupons) {
-    const coupon = randomFrom(coupons);
-    await prisma.couponRedemption.create({
-      data: {
-        couponId: coupon.id,
-        businessId: b.id,
-        redeemedAt: faker.date.recent({ days: 60 }),
-      },
-    });
-    // aumentar contador usedCount en coupon
-    await prisma.coupon.update({
-      where: { id: coupon.id },
-      data: { usedCount: { increment: 1 } },
-    });
-  }
 
   // --- 11) Pagos: crear pagos para muchas tiendas en distintos estados ---
   console.log(
@@ -758,6 +664,8 @@ await prisma.$transaction([
   }
 
   // --- 12) Generar algunas notificaciones globales y de usuarios ---
+  const usersProfiles = await prisma.profile.findMany();
+
   console.log("🔔 Creando notificaciones varias...");
   const someProfiles = usersProfiles.slice(
     0,
@@ -892,8 +800,8 @@ await prisma.$transaction([
     update: {
       totalTrials: { increment: 2 },
       activeTrials: { increment: 1 },
-      totalCoupons: { increment: 1 },
-      totalRedemptions: { increment: 1 },
+      
+      
       totalPayments: { increment: paymentsCreated.length },
       totalRevenue: {
         increment: paymentsCreated.reduce((s, p) => s + p.amount, 0),
@@ -903,61 +811,12 @@ await prisma.$transaction([
       date: dateOnly,
       totalTrials: 2,
       activeTrials: 1,
-      totalCoupons: 1,
-      totalRedemptions: 1,
+      
       totalPayments: paymentsCreated.length,
       totalRevenue: paymentsCreated.reduce((s, p) => s + p.amount, 0),
     },
   });
 
-  // --- 16) Posts, answers (ya los tenías) ---
-  console.log("📝 Creando posts públicos con imágenes y respuestas...");
-  const posts = [];
-  for (let i = 0; i < 35; i++) {
-    const user = randomFrom(usersProfiles);
-    const post = await prisma.post.create({
-      data: {
-        authorId: user.userId,
-        content: faker.lorem.sentences(3),
-        createdAt: faker.datatype.boolean()
-          ? faker.date.past({ refDate: new Date(subMonths(new Date(), 1)) })
-          : new Date(),
-      },
-    });
-    posts.push(post);
-
-    if (faker.datatype.boolean()) {
-      const imgCount = faker.number.int({ min: 1, max: 3 });
-      const imagenes = Array.from({ length: imgCount }, () => ({
-        postId: post.id,
-        url: faker.image.url(),
-        name: faker.word.sample(),
-        size: faker.number.int({ min: 20000, max: 2000000 }),
-        key: faker.string.uuid(),
-      }));
-      await prisma.image.createMany({ data: imagenes });
-    }
-  }
-
-  // Answers
-  const postsConRespuestas = faker.helpers.arrayElements(
-    posts,
-    Math.floor(posts.length * 0.5),
-  );
-  for (const post of postsConRespuestas) {
-    const cantidadRespuestas = faker.number.int({ min: 1, max: 5 });
-    for (let j = 0; j < cantidadRespuestas; j++) {
-      const user = randomFrom(usersProfiles);
-      await prisma.answer.create({
-        data: {
-          postId: post.id,
-          authorId: user.userId,
-          content: faker.lorem.sentences(faker.number.int({ min: 1, max: 3 })),
-          isAnon: Math.random() < 0.2,
-        },
-      });
-    }
-  }
 
   // --- 17) Random bans (negocios/productos) ya tenías: lo mantengo con leves ajustes ---
   console.log("🚨 Baneando algunos negocios y productos...");

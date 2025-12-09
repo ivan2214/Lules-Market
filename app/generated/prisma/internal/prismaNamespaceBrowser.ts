@@ -74,11 +74,6 @@ export const ModelName = {
   WebhookEvent: 'WebhookEvent',
   Analytics: 'Analytics',
   Trial: 'Trial',
-  Coupon: 'Coupon',
-  CouponRedemption: 'CouponRedemption',
-  Review: 'Review',
-  Post: 'Post',
-  Answer: 'Answer',
   Notification: 'Notification',
   Log: 'Log'
 } as const
@@ -255,7 +250,6 @@ export const BusinessScalarFieldEnum = {
   isBanned: 'isBanned',
   categoryId: 'categoryId',
   tags: 'tags',
-  rating: 'rating',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -320,9 +314,7 @@ export const ProductScalarFieldEnum = {
   featured: 'featured',
   active: 'active',
   stock: 'stock',
-  condition: 'condition',
   brand: 'brand',
-  model: 'model',
   businessId: 'businessId',
   isBanned: 'isBanned',
   createdAt: 'createdAt',
@@ -361,7 +353,6 @@ export const ImageScalarFieldEnum = {
   productId: 'productId',
   logoBusinessId: 'logoBusinessId',
   coverBusinessId: 'coverBusinessId',
-  postId: 'postId',
   avatarId: 'avatarId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -410,8 +401,6 @@ export const AnalyticsScalarFieldEnum = {
   date: 'date',
   totalTrials: 'totalTrials',
   activeTrials: 'activeTrials',
-  totalCoupons: 'totalCoupons',
-  totalRedemptions: 'totalRedemptions',
   totalPayments: 'totalPayments',
   totalRevenue: 'totalRevenue'
 } as const
@@ -431,75 +420,6 @@ export const TrialScalarFieldEnum = {
 } as const
 
 export type TrialScalarFieldEnum = (typeof TrialScalarFieldEnum)[keyof typeof TrialScalarFieldEnum]
-
-
-export const CouponScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  plan: 'plan',
-  durationDays: 'durationDays',
-  maxUses: 'maxUses',
-  usedCount: 'usedCount',
-  expiresAt: 'expiresAt',
-  active: 'active',
-  discountPercent: 'discountPercent',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
-
-
-export const CouponRedemptionScalarFieldEnum = {
-  id: 'id',
-  couponId: 'couponId',
-  businessId: 'businessId',
-  redeemedAt: 'redeemedAt'
-} as const
-
-export type CouponRedemptionScalarFieldEnum = (typeof CouponRedemptionScalarFieldEnum)[keyof typeof CouponRedemptionScalarFieldEnum]
-
-
-export const ReviewScalarFieldEnum = {
-  id: 'id',
-  rating: 'rating',
-  comment: 'comment',
-  authorId: 'authorId',
-  productId: 'productId',
-  businessId: 'businessId',
-  isHidden: 'isHidden',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
-
-
-export const PostScalarFieldEnum = {
-  id: 'id',
-  authorId: 'authorId',
-  content: 'content',
-  isAnon: 'isAnon',
-  isQuestion: 'isQuestion',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
-
-
-export const AnswerScalarFieldEnum = {
-  id: 'id',
-  postId: 'postId',
-  authorId: 'authorId',
-  content: 'content',
-  isAnon: 'isAnon',
-  isBest: 'isBest',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AnswerScalarFieldEnum = (typeof AnswerScalarFieldEnum)[keyof typeof AnswerScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
