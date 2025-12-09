@@ -1,7 +1,9 @@
 import { startOfMonth, subMonths } from "date-fns";
-import { MessageSquare, Package, Star, Store } from "lucide-react";
+import { and, count, eq, gte, lt } from "drizzle-orm";
+import { Package, Store } from "lucide-react";
 import { connection } from "next/server";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
+import { business, product } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
@@ -18,73 +20,59 @@ export async function DynamicStats() {
   const startThisMonth = startOfMonth(now);
   const startLastMonth = startOfMonth(subMonths(now, 1));
   const endLastMonth = startThisMonth;
-
   const [
     activeBusinessesTotal,
     activeBusinessesLastMonth,
     productsTotal,
     productsLastMonth,
-    reviewsTotal,
-    reviewsLastMonth,
-    avgRatingObj,
-    avgRatingLastMonthObj,
-  ] = await prisma.$transaction([
-    prisma.business.count({ where: { isActive: true, isBanned: false } }),
-    prisma.business.count({
-      where: {
-        isActive: true,
-        isBanned: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-    prisma.product.count({ where: { active: true, isBanned: false } }),
-    prisma.product.count({
-      where: {
-        active: true,
-        isBanned: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-    prisma.review.count({ where: { isHidden: false } }),
-    prisma.review.count({
-      where: {
-        isHidden: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
-    prisma.review.aggregate({
-      _avg: { rating: true },
-      where: { isHidden: false },
-    }),
-    prisma.review.aggregate({
-      _avg: { rating: true },
-      where: {
-        isHidden: false,
-        createdAt: { gte: startLastMonth, lt: endLastMonth },
-      },
-    }),
+  ] = await Promise.all([
+    // Total de negocios activos
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(and(eq(business.isActive, true), eq(business.isBanned, false))),
+    // Negocios activos creados el mes pasado
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(
+        and(
+          eq(business.isActive, true),
+          eq(business.isBanned, false),
+          gte(business.createdAt, startLastMonth),
+          lt(business.createdAt, endLastMonth),
+        ),
+      ),
+    // Total de productos activos
+    db
+      .select({ count: count() })
+      .from(product)
+      .where(and(eq(product.active, true), eq(product.isBanned, false))),
+    // Productos activos creados el mes pasado
+    db
+      .select({ count: count() })
+      .from(product)
+      .where(
+        and(
+          eq(product.active, true),
+          eq(product.isBanned, false),
+          gte(product.createdAt, startLastMonth),
+          lt(product.createdAt, endLastMonth),
+        ),
+      ),
   ]);
 
   const stats = {
     businesses: {
-      value: activeBusinessesTotal,
-      trend: calcTrend(activeBusinessesTotal, activeBusinessesLastMonth),
+      value: activeBusinessesTotal[0].count,
+      trend: calcTrend(
+        activeBusinessesTotal[0].count,
+        activeBusinessesLastMonth[0].count,
+      ),
     },
     products: {
-      value: productsTotal,
-      trend: calcTrend(productsTotal, productsLastMonth),
-    },
-    reviews: {
-      value: reviewsTotal,
-      trend: calcTrend(reviewsTotal, reviewsLastMonth),
-    },
-    avgRating: {
-      value: avgRatingObj._avg.rating ?? 0,
-      trend:
-        (((avgRatingObj._avg.rating ?? 0) -
-          (avgRatingLastMonthObj._avg.rating ?? 0)) *
-          100) /
-        5,
+      value: productsTotal[0].count,
+      trend: calcTrend(productsTotal[0].count, productsLastMonth[0].count),
     },
   };
 
@@ -127,42 +115,6 @@ export async function DynamicStats() {
           >
             {stats.products.trend > 0 ? "+" : ""}
             {stats.products.trend.toFixed(1)}% este mes
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="font-medium text-sm">
-            Opiniones Compartidas
-          </CardTitle>
-          <MessageSquare className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="font-bold text-2xl">{stats.reviews.value}</div>
-          <p
-            className={cn(
-              "text-muted-foreground text-xs",
-              stats.reviews.trend > 0 ? "text-green-600" : "text-red-600",
-            )}
-          >
-            {stats.reviews.trend > 0 ? "+" : ""}
-            {stats.reviews.trend.toFixed(1)}% este mes
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="font-medium text-sm">
-            Valoración Promedio
-          </CardTitle>
-          <Star className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="font-bold text-2xl">
-            {stats.avgRating.value.toFixed(1)}
-          </div>
-          <p className={cn("text-muted-foreground text-xs")}>
-            De <span className="font-bold text-yellow-600">5 estrellas</span>
           </p>
         </CardContent>
       </Card>

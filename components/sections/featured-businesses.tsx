@@ -1,7 +1,9 @@
+import { and, desc, eq } from "drizzle-orm";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
-import prisma from "@/lib/prisma";
+import { db } from "@/db";
+import { business } from "@/db/schema";
 import { PublicBusinessCard } from "../public/public-business-card";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
@@ -10,25 +12,23 @@ export async function FeaturedBusinesses() {
   // ✅ Mark as dynamic
   await connection();
 
-  const featuredBusinesses = await prisma.business.findMany({
+  /* const featuredBusinesses = await prisma.business.findMany({
     where: { isActive: true, isBanned: false },
     include: {
-      reviews: {
-        include: {
-          author: {
-            include: {
-              avatar: true,
-            },
-          },
-        },
-      },
       category: true,
       logo: true,
     },
-    orderBy: {
-      reviews: { _count: "desc" },
-    },
+
     take: 6,
+  }); */
+  const featuredBusinesses = await db.query.business.findMany({
+    where: and(eq(business.isActive, true), eq(business.isBanned, false)),
+    limit: 6,
+    orderBy: desc(business.createdAt),
+    with: {
+      category: true,
+      logo: true,
+    },
   });
 
   return (

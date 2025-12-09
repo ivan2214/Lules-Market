@@ -5,11 +5,9 @@ import type {
   CurrentPlan,
   Plan,
 } from "@/app/generated/prisma/client";
-import type { AnswerDTO } from "../answer/answer.dto";
 import type { CategoryDTO } from "../category/category.dto";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";
-import type { ReviewDTO } from "../review/review.dto";
 import type { UserDTO } from "../user/user.dto";
 
 export const BusinessSetupInputSchema = z.object({
@@ -41,8 +39,6 @@ export interface BusinessDTO extends Business {
   user?: UserDTO | null;
   bannedBusiness?: BannedBusiness | null;
   category?: CategoryDTO | null;
-  reviews?: ReviewDTO[] | null;
-  answers?: AnswerDTO[] | null;
   currentPlan?: CurrentPlanDTO | null;
 }
 

@@ -8,7 +8,6 @@ import type {
 import type { BusinessDTO } from "../business/business.dto";
 import type { CategoryDTO } from "../category/category.dto";
 import { ImageCreateInputSchema } from "../image/image.dto";
-import type { ReviewDTO } from "../review/review.dto";
 
 export const ProductCreateInputSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
@@ -44,5 +43,4 @@ export interface ProductDTO extends Product {
   business?: BusinessDTO | null;
   bannedProduct?: BannedProduct | null;
   category?: CategoryDTO | null;
-  reviews?: ReviewDTO[] | null;
 }

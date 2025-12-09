@@ -9,8 +9,7 @@
 
 ## Database & ORM
 - **PostgreSQL** as primary database
-- **Prisma ORM** with custom output path (`app/generated/prisma`)
-- **Prisma Accelerate** extension for connection pooling
+- **Drizzle ORM**
 
 ## Authentication & Security
 - **Better-Auth** for authentication system
@@ -55,17 +54,16 @@ pnpm build            # Build for production with Turbopack
 pnpm start            # Start production server
 
 # Database
-pnpm prisma generate  # Generate Prisma client
-pnpm prisma migrate dev --name (name)   # Push schema changes to database
-pnpm prisma studio    # Open Prisma Studio GUI
+pnpm db:generate      # Generate Drizzle client
+pnpm db:migrate       # Push schema changes to database
+pnpm db:studio        # Open Drizzle Studio GUI
+pnpm db:seed          # Seed database with initial data
 
 # Code Quality
 pnpm lint             # Run Biome linter
 pnpm format           # Format code with Biome
 pnpm type-check       # TypeScript type checking
 
-# Other
-pnpm postinstall      # Auto-runs after install (Prisma generate)
 ```
 
 ## Environment Variables Required
