@@ -12,7 +12,9 @@
     "check": "biome ci .",
     "type-check": "tsc --noEmit",
     "postinstall": "prisma generate",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "pnpm": {
     "overrides": {
@@ -59,6 +61,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.556.0",
@@ -93,6 +96,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "babel-plugin-react-compiler": "^1.0.0",
+    "drizzle-kit": "^0.31.8",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "js-cookie": "^3.0.5",

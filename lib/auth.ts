@@ -1,18 +1,14 @@
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { createAuthMiddleware } from "better-auth/api";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
 import { nextCookies } from "better-auth/next-js";
 
-// If your Prisma file is located elsewhere, you can change the path
-
-import { BusinessStatus } from "@/app/generated/prisma/enums";
+import { db } from "@/db";
 import { env } from "@/env";
 import { sendEmail } from "./email";
-import prisma from "./prisma";
 
 export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: "postgresql", // or "mysql", "postgresql", ...etc
+  database: drizzleAdapter(db, {
+    provider: "pg",
   }),
   emailAndPassword: {
     enabled: true,
@@ -52,7 +48,7 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     expiresIn: 60 * 60 * 1000,
     // esto es el momento en que se esta verificando el email
-    async onEmailVerification(user) {
+    /*     async onEmailVerification(user) {
       // Find the verification token
       const verificationToken = await prisma.emailVerificationToken.findUnique({
         where: { userId: user.id },
@@ -150,12 +146,12 @@ export const auth = betterAuth({
         buttonUrl: `${env.APP_URL}/dashboard`,
         userFirstname: user.name,
       });
-    },
+    }, */
     sendOnSignIn: false,
     sendOnSignUp: false,
   },
   plugins: [nextCookies()], // make sure this is the last plugin in the array
-  hooks: {
+  /*  hooks: {
     after: createAuthMiddleware(async (ctx) => {
       const { context } = ctx;
       const { newSession } = context;
@@ -204,5 +200,5 @@ export const auth = betterAuth({
         }
       }
     }),
-  },
+  }, */
 });
