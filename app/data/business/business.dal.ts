@@ -113,8 +113,8 @@ export async function listAllBusinessesByCategories({
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
 
-  const whereClause = category?.value
-    ? ilike(schema.category.value, `%${category.value}%`)
+  const whereClause = category?.id
+    ? eq(schema.business.categoryId, category.id)
     : undefined;
 
   const businesses = await db.query.business.findMany({
