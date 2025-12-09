@@ -55,6 +55,7 @@ interface CreatedBusiness {
   imagesUsed: number;
   maxProducts: number;
   maxImages: number;
+  name: string;
 }
 
 interface CreatedProduct {
@@ -306,6 +307,7 @@ async function seedNormalUsers(count: number = 10): Promise<void> {
   console.log(`👤 Creando ${count} usuarios normales...`);
 
   for (let i = 0; i < count; i++) {
+    console.log(`👤 Creando usuario ${i + 1} de ${count}`);
     const name = faker.person.fullName();
     const email = faker.internet.email();
 
@@ -350,6 +352,7 @@ async function seedAdmins(count: number = 3): Promise<void> {
   console.log(`👑 Creando ${count} admins...`);
 
   for (let i = 0; i < count; i++) {
+    console.log(`👑 Creando admin ${i + 1} de ${count}`);
     const name = faker.person.fullName();
     const email = faker.internet.email();
 
@@ -388,6 +391,7 @@ async function seedBusinesses(
   const businesses: CreatedBusiness[] = [];
 
   for (let i = 0; i < count; i++) {
+    console.log(`🏪 Creando negocio ${i + 1} de ${count}`);
     const category = faker.helpers.arrayElement(categories);
     const { planType, planStatus, expiresAt } = pickPlanForBusiness();
     const plan = plans.find((p) => p.type === planType);
@@ -421,9 +425,9 @@ async function seedBusinesses(
           verified: faker.datatype.boolean(),
           status: "ACTIVE",
         })
-        .returning({ id: schema.business.id });
+        .returning({ id: schema.business.id, name: schema.business.name });
 
-      const businessId = businessInsert[0].id;
+      const { id, name: businessName } = businessInsert[0];
 
       // Create current plan
       const productsUsed = faker.number.int({ min: 0, max: plan.maxProducts });
@@ -432,7 +436,7 @@ async function seedBusinesses(
       const currentPlanInsert = await db
         .insert(schema.currentPlan)
         .values({
-          businessId,
+          businessId: id,
           planType,
           planStatus,
           expiresAt,
@@ -454,7 +458,7 @@ async function seedBusinesses(
         .where(eq(schema.user.id, owner.id));
 
       businesses.push({
-        id: businessId,
+        id,
         userId: owner.id,
         currentPlanId: currentPlanInsert[0].id,
         planType,
@@ -462,6 +466,7 @@ async function seedBusinesses(
         imagesUsed,
         maxProducts: plan.maxProducts,
         maxImages: plan.maxImages,
+        name: businessName,
       });
     } catch (error) {
       console.log(`⚠️ Skipping business: ${error}`);
@@ -479,6 +484,8 @@ async function addBusinessImages(businesses: CreatedBusiness[]): Promise<void> {
   console.log("🖼️ Agregando imágenes a negocios...");
 
   for (const negocio of businesses) {
+    console.log(`🖼️ Agregando imágenes a negocio ${negocio.name}`);
+
     // Cover image
     await db.insert(schema.image).values({
       key: crypto.randomUUID(),
@@ -508,12 +515,14 @@ async function seedProducts(
   const products: CreatedProduct[] = [];
 
   for (const negocio of businesses) {
+    console.log(`🛒 Creando productos para el negocio ${negocio.name}`);
     const productsCount = faker.number.int({
       min: 1,
       max: Math.min(negocio.maxProducts, 20),
     });
 
     for (let i = 1; i <= productsCount; i++) {
+      console.log(`🛒 Creando producto ${i} de ${productsCount}`);
       const category = faker.helpers.arrayElement(categories);
 
       const productInsert = await db
@@ -580,7 +589,8 @@ async function seedViews(
   console.log("👁 Registrando vistas de productos y negocios...");
 
   // Product views
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 200; i++) {
+    console.log(`👁 Registrando vista de producto ${i + 1}`);
     const product = randomFrom(products);
     await db.insert(schema.productView).values({
       productId: product.id,
@@ -590,7 +600,8 @@ async function seedViews(
   }
 
   // Business views
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 150; i++) {
+    console.log(`👁 Registrando vista de negocio ${i + 1}`);
     const business = randomFrom(businesses);
     await db.insert(schema.businessView).values({
       businessId: business.id,
@@ -621,9 +632,11 @@ async function seedPaymentsAndWebhooks(
   const paymentsCreated: CreatedPayment[] = [];
 
   for (const negocio of businesses) {
+    console.log(`💳 Creando pagos para el negocio ${negocio.name}`);
     const payCount = faker.number.int({ min: 0, max: 4 });
 
     for (let p = 0; p < payCount; p++) {
+      console.log(`💳 Creando pago ${p + 1} de ${payCount}`);
       const status = randomFrom([...paymentStatuses]);
       const planType = randomFrom([
         PLAN_TYPE.BASIC,
