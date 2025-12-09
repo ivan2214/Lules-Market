@@ -88,6 +88,7 @@ export const plan = pgTable("plan", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: doublePrecision("price").notNull(),
+  discount: integer("discount").default(0).notNull(),
   features: text("features").array().notNull(),
   maxProducts: integer("max_products").notNull(),
   maxImages: integer("max_images").notNull(),

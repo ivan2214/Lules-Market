@@ -11,7 +11,7 @@ import { faker } from "@faker-js/faker";
 import { addDays, addMonths, subMonths } from "date-fns";
 import { eq, sql } from "drizzle-orm";
 
-import { db } from "@/db";
+import { db, type PlanInsert } from "@/db";
 import { auth } from "@/lib/auth";
 import * as schema from "./schema";
 
@@ -38,13 +38,6 @@ const PERMISSIONS = ["ALL", "BAN_USERS", "MANAGE_PLANS"] as const;
 
 type PlanType = (typeof PLAN_TYPE)[keyof typeof PLAN_TYPE];
 type PlanStatus = (typeof PLAN_STATUS)[keyof typeof PLAN_STATUS];
-
-interface CreatedPlan {
-  type: PlanType;
-  name: string;
-  maxProducts: number;
-  maxImages: number;
-}
 
 interface CreatedBusiness {
   id: string;
@@ -107,6 +100,7 @@ function pickPlanForBusiness(): {
   planType: PlanType;
   planStatus: PlanStatus;
   expiresAt: Date;
+  hasStatistics: boolean;
 } {
   const roll = Math.random();
   if (roll < 0.55) {
@@ -115,6 +109,7 @@ function pickPlanForBusiness(): {
       planType: PLAN_TYPE.FREE,
       planStatus: PLAN_STATUS.ACTIVE,
       expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
+      hasStatistics: false,
     };
   }
   if (roll < 0.85) {
@@ -123,6 +118,7 @@ function pickPlanForBusiness(): {
       planType: PLAN_TYPE.BASIC,
       planStatus: PLAN_STATUS.ACTIVE,
       expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
+      hasStatistics: true,
     };
   }
   // Premium
@@ -130,6 +126,7 @@ function pickPlanForBusiness(): {
     planType: PLAN_TYPE.PREMIUM,
     planStatus: PLAN_STATUS.ACTIVE,
     expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 12 })),
+    hasStatistics: true,
   };
 }
 
@@ -193,7 +190,7 @@ async function deleteAllData(): Promise<void> {
 // SEED PLANS
 // ===============================================================
 
-async function seedPlans(): Promise<CreatedPlan[]> {
+async function seedPlans(): Promise<PlanInsert[]> {
   console.log("📑 Upsert de planes (FREE / BASIC / PREMIUM)...");
 
   const plansData = [
@@ -213,7 +210,8 @@ async function seedPlans(): Promise<CreatedPlan[]> {
       type: PLAN_TYPE.BASIC as PlanType,
       name: "Básico",
       description: "Plan económico para comercios pequeños",
-      price: 2999,
+      price: 15000,
+      discount: 10,
       features: ["Listado destacado", "Estadísticas básicas"],
       maxProducts: 100,
       maxImages: 50,
@@ -225,7 +223,8 @@ async function seedPlans(): Promise<CreatedPlan[]> {
       type: PLAN_TYPE.PREMIUM as PlanType,
       name: "Premium",
       description: "Plan completo con features avanzadas",
-      price: 9999,
+      price: 25000,
+      discount: 20,
       features: [
         "Productos destacados",
         "Reportes avanzados",
@@ -239,7 +238,7 @@ async function seedPlans(): Promise<CreatedPlan[]> {
     },
   ];
 
-  const createdPlans: CreatedPlan[] = [];
+  const createdPlans: PlanInsert[] = [];
 
   for (const p of plansData) {
     // Check if exists
@@ -258,6 +257,13 @@ async function seedPlans(): Promise<CreatedPlan[]> {
       name: p.name,
       maxProducts: p.maxProducts,
       maxImages: p.maxImages,
+      discount: p.discount,
+      isActive: p.isActive,
+      hasStatistics: p.hasStatistics,
+      canFeatureProducts: p.canFeatureProducts,
+      features: p.features,
+      price: p.price,
+      description: p.description,
     });
   }
 
@@ -383,7 +389,7 @@ async function seedAdmins(count: number = 3): Promise<void> {
 
 async function seedBusinesses(
   categories: { id: string; label: string }[],
-  plans: CreatedPlan[],
+  plans: PlanInsert[],
   count: number = 20,
 ): Promise<CreatedBusiness[]> {
   console.log(`🏪 Creando ${count} negocios y asignando planes...`);
@@ -393,7 +399,8 @@ async function seedBusinesses(
   for (let i = 0; i < count; i++) {
     console.log(`🏪 Creando negocio ${i + 1} de ${count}`);
     const category = faker.helpers.arrayElement(categories);
-    const { planType, planStatus, expiresAt } = pickPlanForBusiness();
+    const { planType, planStatus, expiresAt, hasStatistics } =
+      pickPlanForBusiness();
     const plan = plans.find((p) => p.type === planType);
 
     if (!plan) continue;
@@ -445,6 +452,7 @@ async function seedBusinesses(
           isTrial: false,
           imagesUsed,
           productsUsed,
+          hasStatistics,
         })
         .returning({ id: schema.currentPlan.id });
 

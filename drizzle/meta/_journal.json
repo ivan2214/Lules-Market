@@ -29,6 +29,13 @@
       "when": 1765292179696,
       "tag": "0003_boring_sugar_man",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1765303856574,
+      "tag": "0004_yummy_monster_badoon",
+      "breakpoints": true
     }
   ]
 }

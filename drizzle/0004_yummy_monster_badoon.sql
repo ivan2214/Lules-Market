@@ -1,0 +1,1 @@
+ALTER TABLE "plan" ADD COLUMN "discount" integer DEFAULT 0 NOT NULL;
