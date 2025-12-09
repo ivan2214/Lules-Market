@@ -27,21 +27,12 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import type { Plan, PlanType } from "@/db";
+import type { Plan } from "@/db";
+import { PlanForm } from "./plan-form";
 
 type PlanClientProps = {
   plans: Plan[];
@@ -59,12 +50,6 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
   const handleEdit = (plan: Plan) => {
     setSelectedPlan(plan);
     setIsEditDialogOpen(true);
-  };
-
-  const handleSaveEdit = () => {
-    if (selectedPlan) {
-    }
-    setIsEditDialogOpen(false);
   };
 
   const columns: ColumnDef<Plan>[] = [
@@ -172,119 +157,22 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
       </Card>
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogTrigger asChild>
+          <Button>
+            <Pencil className="mr-2 h-4 w-4" />
+            Editar Plan
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-h-[calc(100vh-10rem)] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Plan</DialogTitle>
             <DialogDescription>
-              Modifica los parámetros del plan
+              Define los parámetros del nuevo plan de suscripción
             </DialogDescription>
           </DialogHeader>
-          {selectedPlan && (
-            <div className="space-y-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-name">Nombre del Plan</Label>
-                  <Input
-                    id="edit-name"
-                    value={selectedPlan.name}
-                    onChange={(e) =>
-                      setSelectedPlan({ ...selectedPlan, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-type">Tipo</Label>
-                  <Select
-                    value={selectedPlan.type}
-                    onValueChange={(value) =>
-                      setSelectedPlan({
-                        ...selectedPlan,
-                        type: value as PlanType,
-                      })
-                    }
-                  >
-                    <SelectTrigger id="edit-type">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="FREE">FREE</SelectItem>
-                      <SelectItem value="BASIC">BASIC</SelectItem>
-                      <SelectItem value="PREMIUM">PREMIUM</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-description">Descripción</Label>
-                <Textarea
-                  id="edit-description"
-                  value={selectedPlan.description}
-                  onChange={(e) =>
-                    setSelectedPlan({
-                      ...selectedPlan,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-price">Precio (centavos)</Label>
-                  <Input
-                    id="edit-price"
-                    type="number"
-                    value={selectedPlan.price}
-                    onChange={(e) =>
-                      setSelectedPlan({
-                        ...selectedPlan,
-                        price: Number.parseInt(e.target.value, 10),
-                      })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-maxProducts">Máx. Productos</Label>
-                  <Input
-                    id="edit-maxProducts"
-                    type="number"
-                    value={selectedPlan.maxProducts}
-                    onChange={(e) =>
-                      setSelectedPlan({
-                        ...selectedPlan,
-                        maxProducts: Number.parseInt(e.target.value, 10),
-                      })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-maxImages">Máx. Imágenes</Label>
-                  <Input
-                    id="edit-maxImages"
-                    type="number"
-                    value={selectedPlan.maxImages}
-                    onChange={(e) =>
-                      setSelectedPlan({
-                        ...selectedPlan,
-                        maxImages: Number.parseInt(e.target.value, 10),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsEditDialogOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button onClick={handleSaveEdit}>Guardar Cambios</Button>
-          </DialogFooter>
+          <PlanForm selectedPlan={selectedPlan} />
         </DialogContent>
       </Dialog>
-
       <AlertDialog open={toggleAlertOpen} onOpenChange={setToggleAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

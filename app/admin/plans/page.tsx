@@ -1,6 +1,7 @@
-import { Check } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,9 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { db, type Plan, schema } from "@/db";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { db, type Plan } from "@/db";
+import { formatCurrency } from "@/utils/format";
 import { PlanClient } from "./components/plan-client";
-import { PlanCreateFormDialog } from "./components/plan-create-form-dialog";
+import { PlanForm } from "./components/plan-form";
 
 async function getPlans(): Promise<Plan[]> {
   "use cache";
@@ -18,66 +28,6 @@ async function getPlans(): Promise<Plan[]> {
   cacheTag("plans-page");
 
   const plans = await db.query.plan.findMany();
-
-  if (plans.length === 0) {
-    // Seed default plans
-    await db.insert(schema.plan).values([
-      {
-        type: "FREE",
-        name: "Plan Gratuito",
-        description: "Perfecto para comenzar tu negocio online",
-        price: 0,
-        features: [
-          "Hasta 10 productos",
-          "3 imágenes por producto",
-          "Catálogo básico",
-          "Soporte por email",
-        ],
-        maxProducts: 10,
-        maxImages: 3,
-        isActive: true,
-        createdAt: new Date("2023-12-01"),
-      },
-      {
-        type: "BASIC",
-        name: "Plan Básico",
-        description: "Para negocios en crecimiento",
-        price: 14999,
-        features: [
-          "Hasta 50 productos",
-          "10 imágenes por producto",
-          "Catálogo personalizado",
-          "Estadísticas básicas",
-          "Soporte prioritario",
-        ],
-        maxProducts: 50,
-        maxImages: 10,
-        isActive: true,
-        createdAt: new Date("2023-12-01"),
-      },
-      {
-        type: "PREMIUM",
-        name: "Plan Premium",
-        description: "Para negocios profesionales",
-        price: 29999,
-        features: [
-          "Productos ilimitados",
-          "Imágenes ilimitadas",
-          "Catálogo premium",
-          "Estadísticas avanzadas",
-          "Soporte 24/7",
-          "Dominio personalizado",
-          "Sin comisiones",
-        ],
-        maxProducts: -1,
-        maxImages: -1,
-        isActive: true,
-        createdAt: new Date("2023-12-01"),
-      },
-    ]);
-
-    return await db.query.plan.findMany();
-  }
 
   return plans;
 }
@@ -95,7 +45,23 @@ export default async function PlansPage() {
             Administra los planes de suscripción disponibles
           </p>
         </div>
-        <PlanCreateFormDialog />
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Crear Plan
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-h-[calc(100vh-10rem)] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Crear Nuevo Plan</DialogTitle>
+              <DialogDescription>
+                Define los parámetros del nuevo plan de suscripción
+              </DialogDescription>
+            </DialogHeader>
+            <PlanForm />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -120,7 +86,7 @@ export default async function PlansPage() {
                   <div className="font-bold text-3xl">
                     {plan.price === 0
                       ? "Gratis"
-                      : `$${(plan.price / 100).toFixed(2)}`}
+                      : formatCurrency(plan.price, "ARS")}
                   </div>
                   <div className="text-muted-foreground text-sm">por mes</div>
                 </div>

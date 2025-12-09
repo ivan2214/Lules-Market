@@ -18,5 +18,7 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@wandry-ui": "https://ui.wandry.com.ua/r/{name}.json"
+  }
 }

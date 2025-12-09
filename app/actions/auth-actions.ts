@@ -113,7 +113,12 @@ export async function businessSignInAction(
 export const businessSignUpAction = async (
   _prevState: ActionResult,
   data: BusinessSignUpInput,
-): Promise<ActionResult> => {
+): Promise<
+  ActionResult & {
+    isAdmin?: boolean;
+    hasVerified?: boolean;
+  }
+> => {
   try {
     const result = BusinessSignUpInputSchema.safeParse(data);
     if (!result.success) {
@@ -146,7 +151,15 @@ export const businessSignUpAction = async (
       },
     });
 
-    await syncUserRole(res.user);
+    const syncUserRoleResult = await syncUserRole(res.user);
+
+    if (syncUserRoleResult.success) {
+      return {
+        successMessage: `Bienvenido de nuevo ${res.user.name}! Has iniciado sesión correctamente`,
+        isAdmin: true,
+        hasVerified: true,
+      };
+    }
 
     const user = await db.query.user.findFirst({
       where: eq(schema.user.id, res.user.id),
@@ -161,6 +174,8 @@ export const businessSignUpAction = async (
     return {
       successMessage:
         "Por favor, verifica tu email para completar el registro. Seras redirigido en unos segundos.",
+      hasVerified: true,
+      isAdmin: false,
     };
   } catch (error) {
     if (error instanceof APIError) {
