@@ -1,6 +1,7 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { getCategories } from "@/app/actions/public-actions";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import { getProductsByBusinessId } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
@@ -16,6 +17,7 @@ async function ProductsContent() {
 
   const canAdd =
     (currentPlan?.productsUsed || 0) < (currentPlan?.plan?.maxProducts || 0);
+  const categories = await getCategories();
 
   return (
     <>
@@ -28,6 +30,7 @@ async function ProductsContent() {
         </div>
         <ProductFormDialog
           canFeature={currentPlan?.canFeatureProducts || false}
+          categories={categories}
         />
       </div>
 
@@ -59,6 +62,7 @@ async function ProductsContent() {
             <div className="mt-4">
               <ProductFormDialog
                 canFeature={currentPlan?.canFeatureProducts || false}
+                categories={categories}
               />
             </div>
           </CardContent>
@@ -70,6 +74,7 @@ async function ProductsContent() {
               key={product.id}
               product={product}
               canFeature={currentPlan?.canFeatureProducts || false}
+              categories={categories}
             />
           ))}
         </div>

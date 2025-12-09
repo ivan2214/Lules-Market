@@ -9,6 +9,7 @@ import {
   createProductAction,
   updateProductAction,
 } from "@/app/actions/product.action";
+import type { CategoryDTO } from "@/app/data/category/category.dto";
 import {
   ProductCreateInputSchema,
   type ProductDTO,
@@ -42,7 +43,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useAction } from "@/hooks/use-action";
-import { CATEGORIES } from "@/lib/constants";
 import { Uploader } from "../uploader/uploader";
 
 interface ProductFormDialogProps {
@@ -51,6 +51,7 @@ interface ProductFormDialogProps {
   trigger?: React.ReactNode;
   className?: HTMLAttributes<"button">["className"];
   isViewMode?: boolean;
+  categories: CategoryDTO[];
 }
 
 export function ProductFormDialog({
@@ -58,6 +59,7 @@ export function ProductFormDialog({
   trigger,
   className,
   isViewMode = false,
+  categories,
 }: ProductFormDialogProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -236,15 +238,15 @@ export function ProductFormDialog({
                         <SelectValue placeholder="Seleccionar categorías" />
                       </SelectTrigger>
                       <SelectContent>
-                        {CATEGORIES.map((category) => (
-                          <SelectItem key={category} value={category}>
+                        {categories.map(({ id, label, value }) => (
+                          <SelectItem key={id} value={value}>
                             <div className="flex items-center gap-2">
                               <input
                                 type="checkbox"
-                                checked={field.value?.includes(category)}
+                                checked={field.value?.includes(value)}
                                 readOnly
                               />
-                              {category}
+                              {label}
                             </div>
                           </SelectItem>
                         ))}

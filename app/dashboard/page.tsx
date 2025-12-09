@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { getCategories } from "../actions/public-actions";
 import { getBusinessProducts } from "../data/business/business.dal";
 import { getCurrentBusiness } from "../data/business/require-busines";
 
@@ -19,6 +19,7 @@ async function DashboardContent() {
 
   const productCount = currentBusiness.products?.length || 0;
   const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
+  const categories = await getCategories();
 
   return (
     <>
@@ -95,6 +96,7 @@ async function DashboardContent() {
                 currentBusiness.currentPlan?.canFeatureProducts || false
               }
               className="w-full"
+              categories={categories}
             />
 
             <Button asChild variant="outline" className="w-full bg-transparent">
@@ -169,6 +171,7 @@ async function DashboardContent() {
                       </Button>
                     }
                     isViewMode={true}
+                    categories={categories}
                   />
                 </div>
               ))}

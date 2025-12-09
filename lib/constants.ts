@@ -1,19 +1,5 @@
 import { ShoppingBag, Store } from "lucide-react";
 
-export const CATEGORIES = [
-  "Alimentos",
-  "Bebidas",
-  "Ropa",
-  "Electrónica",
-  "Hogar",
-  "Salud",
-  "Belleza",
-  "Deportes",
-  "Juguetes",
-  "Mascotas",
-  "Otros",
-] as const;
-
 export const CONTACT_TYPES = {
   whatsapp: "WhatsApp",
   phone: "Teléfono",
