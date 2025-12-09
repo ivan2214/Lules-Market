@@ -50,7 +50,12 @@ export default async function ComerciosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters typeExplorer="comercios" params={await searchParams} />
+      <SearchAndFilters
+        categories={categories}
+        businesses={businesses}
+        typeExplorer="comercios"
+        params={await searchParams}
+      />
       {/* Category Pills */}
       <CategoryPills categories={categories} typeExplorer="comercios" />
 
@@ -59,11 +64,7 @@ export default async function ComerciosPage({
         <p className="text-muted-foreground text-sm">
           Mostrando {businesses.length} de {total} comercios
         </p>
-        <LimitSelector
-          currentLimit={currentLimit}
-          total={total}
-          currentPage={currentPage}
-        />
+        <LimitSelector currentLimit={currentLimit} total={total} />
       </div>
 
       {/* Businesses Grid */}

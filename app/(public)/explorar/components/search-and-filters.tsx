@@ -4,9 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -22,7 +20,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import type { Business, Category } from "@/db";
 import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
+import { BusinessesPills } from "./businesses-pills";
+import { CategoryPills } from "./category-pills";
 
 type SearchAndFiltersProps = {
   params?: {
@@ -40,14 +41,18 @@ type SearchAndFiltersProps = {
       | "oldest";
   };
   typeExplorer: TypeExplorer;
+  categories: Category[];
+  businesses: Business[];
 };
 
 export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   params,
   typeExplorer,
+  categories,
+  businesses,
 }) => {
-  const { search, sortBy } = params || {};
-  const [showOpenOnly, setShowOpenOnly] = useState(false);
+  const { search, sortBy, businessId } = params || {};
+
   const [searchValue, setSearchValue] = useState(search || "");
   const router = useRouter();
 
@@ -134,34 +139,29 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             Filtros
           </Button>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="max-h-100vh overflow-y-auto px-4">
           <SheetHeader>
             <SheetTitle>Filtros</SheetTitle>
             <SheetDescription>Refina tu búsqueda de comercios</SheetDescription>
           </SheetHeader>
-          <div className="mt-6 space-y-6">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="open"
-                checked={showOpenOnly}
-                onCheckedChange={(checked) =>
-                  setShowOpenOnly(checked as boolean)
-                }
-              />
-              <Label htmlFor="open">Solo comercios abiertos</Label>
-            </div>
+          {/* Category Pills */}
+          <section className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Categorias</h2>
+            <CategoryPills
+              typeExplorer={typeExplorer}
+              categories={categories}
+            />
+          </section>
 
-            <div>
-              <Button
-                className="w-full"
-                onClick={() => {
-                  setShowOpenOnly(false);
-                }}
-              >
-                Limpiar filtros
-              </Button>
-            </div>
-          </div>
+          {/* Business Pills */}
+          <section className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Comercios</h2>
+            <BusinessesPills
+              businessId={businessId}
+              typeExplorer={typeExplorer}
+              businesses={businesses}
+            />
+          </section>
         </SheetContent>
       </Sheet>
     </div>

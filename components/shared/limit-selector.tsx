@@ -12,14 +12,9 @@ import {
 interface LimitSelectorProps {
   currentLimit: number;
   total: number;
-  currentPage: number;
 }
 
-export function LimitSelector({
-  currentLimit,
-  total,
-  currentPage,
-}: LimitSelectorProps) {
+export function LimitSelector({ currentLimit, total }: LimitSelectorProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -31,20 +26,28 @@ export function LimitSelector({
     router.push(`${pathname}?${params.toString()}`);
   };
 
+  // Generar opciones automáticamente dividiendo el total
   const options: number[] = [];
-
   for (let i = 1; i <= total; i++) {
-    if (total % i === 0 && total / i !== currentPage) {
+    if (total % i === 0) {
       options.push(total / i);
     }
   }
+
+  // Asegurarse de que el currentLimit siempre esté en las opciones
+  if (!options.includes(currentLimit)) {
+    options.unshift(currentLimit);
+  }
+
+  // Orden descendente para UX más común (opcional)
+  options.sort((a, b) => b - a);
 
   return (
     <div className="flex items-center space-x-2">
       <p className="font-medium text-sm">Mostrar</p>
       <Select value={currentLimit.toString()} onValueChange={handleLimitChange}>
         <SelectTrigger className="h-8 w-[70px]">
-          <SelectValue placeholder={currentLimit} />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent side="top">
           {options.map((limit) => (
