@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Mail } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { verifyEmail } from "@/lib/auth-client";
 
 const verifyTokenSchema = z.object({
   token: z.string().min(1, "El token es requerido"),
@@ -26,7 +26,6 @@ const verifyTokenSchema = z.object({
 type VerifyTokenValues = z.infer<typeof verifyTokenSchema>;
 
 export function VerifyTokenForm() {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<VerifyTokenValues>({
@@ -38,7 +37,11 @@ export function VerifyTokenForm() {
 
   function onSubmit(data: VerifyTokenValues) {
     startTransition(() => {
-      router.push(`/auth/verify?token=${data.token}`);
+      verifyEmail({
+        query: {
+          token: data.token.trim(),
+        },
+      });
     });
   }
 

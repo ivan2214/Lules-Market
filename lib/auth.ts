@@ -183,6 +183,7 @@ export const syncUserRole = async (sessionUser: {
 
   if (isAdmin || isSuperAdmin) {
     // --- Update user role ---
+    console.log("Updating user role...");
     await db
       .update(userDrizzle)
       .set({
