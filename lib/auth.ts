@@ -1,8 +1,15 @@
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
 import { nextCookies } from "better-auth/next-js";
-
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
+import {
+  admin,
+  business,
+  emailVerificationToken,
+  user as userDrizzle,
+} from "@/db/schema";
 import { env } from "@/env";
 import { sendEmail } from "./email";
 
@@ -48,12 +55,15 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     expiresIn: 60 * 60 * 1000,
     // esto es el momento en que se esta verificando el email
-    /*     async onEmailVerification(user) {
-      // Find the verification token
-      const verificationToken = await prisma.emailVerificationToken.findUnique({
-        where: { userId: user.id },
-        include: { user: true },
-      });
+    async onEmailVerification(user) {
+      const verificationToken = await db.query.emailVerificationToken.findFirst(
+        {
+          where: eq(emailVerificationToken.userId, user.id),
+          with: {
+            user: true,
+          },
+        },
+      );
 
       if (!verificationToken) {
         throw new Error("Token de verificación inválido o expirado");
@@ -62,9 +72,9 @@ export const auth = betterAuth({
       // Check if token is expired
       if (verificationToken.expiresAt < new Date()) {
         // Delete expired token
-        await prisma.emailVerificationToken.delete({
-          where: { id: verificationToken.id },
-        });
+        await db
+          .delete(emailVerificationToken)
+          .where(eq(emailVerificationToken.id, verificationToken.id));
 
         throw new Error(
           "El enlace de verificación ha expirado. Solicitá un nuevo enlace.",
@@ -72,45 +82,42 @@ export const auth = betterAuth({
       }
 
       // Verify the user and update business status
-      await prisma.$transaction(async (tx) => {
-        // Update user as verified
-        await tx.user.update({
-          where: { id: verificationToken.userId },
-          data: { emailVerified: true },
-        });
 
-        // Update business status to active
-        await tx.business.updateMany({
-          where: { userId: verificationToken.userId },
-          data: { status: BusinessStatus.ACTIVE },
-        });
+      // 1) Marcar usuario como verificado
+      await db
+        .update(userDrizzle)
+        .set({ emailVerified: true })
+        .where(eq(userDrizzle.id, verificationToken.userId));
 
-        // Delete the verification token
-        await tx.emailVerificationToken.delete({
-          where: { id: verificationToken.id },
-        });
-      });
+      // 2) Activar negocios del usuario
+      await db
+        .update(business)
+        .set({ status: "ACTIVE" })
+        .where(eq(business.userId, verificationToken.userId));
+
+      // 3) Borrar el token
+      await db
+        .delete(emailVerificationToken)
+        .where(eq(emailVerificationToken.id, verificationToken.id));
     },
     async sendVerificationEmail({ token, user }) {
       // create email verification token
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-      const existingToken = await prisma.emailVerificationToken.findUnique({
-        where: { token },
+      const existingToken = await db.query.emailVerificationToken.findFirst({
+        where: eq(emailVerificationToken.token, token),
       });
 
       if (existingToken) {
-        await prisma.emailVerificationToken.delete({
-          where: { id: existingToken.id },
-        });
+        await db
+          .delete(emailVerificationToken)
+          .where(eq(emailVerificationToken.id, existingToken.id));
       }
 
-      await prisma.emailVerificationToken.create({
-        data: {
-          userId: user.id,
-          token,
-          expiresAt,
-        },
+      await db.insert(emailVerificationToken).values({
+        userId: user.id,
+        token,
+        expiresAt,
       });
 
       // Send verification email
@@ -126,7 +133,9 @@ export const auth = betterAuth({
       });
     },
     async afterEmailVerification({ id }) {
-      const user = await prisma.user.findUnique({ where: { id } });
+      const user = await db.query.user.findFirst({
+        where: eq(userDrizzle.id, id),
+      });
 
       if (!user) {
         return;
@@ -146,59 +155,45 @@ export const auth = betterAuth({
         buttonUrl: `${env.APP_URL}/dashboard`,
         userFirstname: user.name,
       });
-    }, */
+    },
     sendOnSignIn: false,
     sendOnSignUp: false,
   },
   plugins: [nextCookies()], // make sure this is the last plugin in the array
-  /*  hooks: {
+  hooks: {
     after: createAuthMiddleware(async (ctx) => {
       const { context } = ctx;
       const { newSession } = context;
 
-      const { user } = newSession || {};
+      const { user: sessionUser } = newSession || {};
 
-      if (user && user?.email === env.ADMIN_EMAIL) {
-        await prisma.user?.update({
-          where: { id: user?.id },
-          data: { userRole: "ADMIN", emailVerified: true },
-        });
-        const existingAdmin = await prisma.admin.findUnique({
-          where: { userId: user?.id },
-        });
+      if (!sessionUser) return;
 
-        if (!existingAdmin) {
-          await prisma.admin.create({
-            data: {
-              userId: user?.id,
-              permissions: {
-                set: ["ALL"],
-              },
-            },
-          });
-        }
-      }
-      if (user && user?.email === env.SUPER_ADMIN_EMAIL) {
-        await prisma.user?.update({
-          where: { id: user?.id },
-          data: { userRole: "SUPER_ADMIN", emailVerified: true },
+      const isAdmin = sessionUser.email === env.ADMIN_EMAIL;
+      const isSuperAdmin = sessionUser.email === env.SUPER_ADMIN_EMAIL;
+
+      if (isAdmin || isSuperAdmin) {
+        // --- Update user role ---
+        await db
+          .update(userDrizzle)
+          .set({
+            userRole: isAdmin ? "ADMIN" : "SUPER_ADMIN",
+            emailVerified: true,
+          })
+          .where(eq(userDrizzle.id, sessionUser.id));
+
+        // --- Check existing admin ---
+        const existing = await db.query.admin.findFirst({
+          where: eq(admin.userId, sessionUser.id),
         });
 
-        const existingSuperAdmin = await prisma.admin.findUnique({
-          where: { userId: user?.id },
-        });
-
-        if (!existingSuperAdmin) {
-          await prisma.admin.create({
-            data: {
-              userId: user?.id,
-              permissions: {
-                set: ["ALL"],
-              },
-            },
+        if (!existing) {
+          await db.insert(admin).values({
+            userId: sessionUser.id,
+            permissions: ["ALL"], // array directo
           });
         }
       }
     }),
-  }, */
+  },
 });

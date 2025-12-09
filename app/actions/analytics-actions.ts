@@ -2,17 +2,15 @@
 
 import { updateTag } from "next/cache";
 import { headers } from "next/headers";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 
 export async function trackProductView(productId: string) {
   try {
     const currentHeaders = await headers();
     const referrer = currentHeaders.get("referer") || undefined;
-    await prisma.productView.create({
-      data: {
-        productId,
-        referrer,
-      },
+    await db.insert(schema.productView).values({
+      productId,
+      referrer,
     });
   } catch (error) {
     console.error("Error tracking product view:", error);
@@ -25,11 +23,9 @@ export async function trackBusinessView(businessId: string) {
   try {
     const currentHeaders = await headers();
     const referrer = currentHeaders.get("referer") || undefined;
-    await prisma.businessView.create({
-      data: {
-        businessId,
-        referrer,
-      },
+    await db.insert(schema.businessView).values({
+      businessId,
+      referrer,
     });
   } catch (error) {
     console.error("Error tracking business view:", error);

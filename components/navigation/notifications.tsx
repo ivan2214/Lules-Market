@@ -1,5 +1,4 @@
 import { Bell } from "lucide-react";
-import type { Notification } from "@/app/generated/prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { Notification } from "@/db";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 

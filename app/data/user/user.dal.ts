@@ -1,7 +1,7 @@
 "use server";
-import { cacheLife, cacheTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache-tags";
-import prisma from "@/lib/prisma";
+import { eq } from "drizzle-orm";
+import { cacheLife } from "next/cache";
+import { db, schema } from "@/db";
 import type { ProfileDTO } from "../profile/profile.dto";
 
 export async function getPublicProfile(
@@ -9,69 +9,13 @@ export async function getPublicProfile(
 ): Promise<ProfileDTO | null> {
   "use cache";
   cacheLife("minutes");
-  cacheTag(`profile-${userId}`, CACHE_TAGS.PUBLIC_POSTS);
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-      userRole: "USER", // Only fetch normal users
-    },
-    include: {
+  const user = await db.query.user.findFirst({
+    where: eq(schema.user.id, userId),
+    with: {
       profile: {
-        include: {
+        with: {
           avatar: true,
-          posts: {
-            where: {
-              isAnon: false, // Don't show anonymous posts on profile
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            include: {
-              author: {
-                include: {
-                  avatar: true,
-                },
-              },
-              images: true,
-              answers: {
-                include: {
-                  author: {
-                    include: {
-                      avatar: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          reviews: {
-            where: {
-              isHidden: false,
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            include: {
-              product: {
-                include: {
-                  images: {
-                    take: 1,
-                  },
-                },
-              },
-              business: {
-                include: {
-                  logo: true,
-                },
-              },
-              author: {
-                include: {
-                  avatar: true,
-                },
-              },
-            },
-          },
         },
       },
     },
@@ -81,5 +25,5 @@ export async function getPublicProfile(
     return null;
   }
 
-  return user.profile;
+  return user.profile as ProfileDTO;
 }

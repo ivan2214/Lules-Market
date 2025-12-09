@@ -1,4 +1,4 @@
-import type { Admin } from "@/app/generated/prisma/client";
+import type { Admin } from "@/db";
 import type { UserDTO } from "../user/user.dto";
 
 export interface AdminDTO extends Admin {

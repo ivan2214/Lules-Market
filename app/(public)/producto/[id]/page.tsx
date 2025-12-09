@@ -180,10 +180,6 @@ export default async function ProductPage({ params }: Props) {
               <CardHeader>
                 <TabsList className="w-full grid-cols-3">
                   <TabsTrigger value="description">Descripción</TabsTrigger>
-
-                  {/* <TabsTrigger value="reviews">
-                    Opiniones ({product.reviews.length})
-                  </TabsTrigger> */}
                 </TabsList>
               </CardHeader>
               <CardContent>
@@ -197,155 +193,6 @@ export default async function ProductPage({ params }: Props) {
                     </p>
                   </div>
                 </TabsContent>
-
-                {/*       <TabsContent value="reviews" className="space-y-4">
-          
-                  <div className="flex items-center gap-6 rounded-lg bg-muted p-4">
-                    <div className="text-center">
-                      <div className="font-bold text-4xl">
-                        {product.business.rating}
-                      </div>
-                      <div className="flex items-center justify-center gap-1">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i.toString()}
-                            className={`h-4 w-4 ${
-                              i < Math.floor(product.business.rating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p className="text-muted-foreground text-xs">
-                        {product.reviews.length} opiniones
-                      </p>
-                    </div>
-                    <Separator orientation="vertical" className="h-16" />
-                    <div className="flex-1">
-                      <p className="text-muted-foreground text-sm">
-                        {Math.round(
-                          (product.reviews.filter((r) => r.rating === 5)
-                            .length /
-                            product.reviews.length) *
-                            100,
-                        )}
-                        % de compradores recomiendan este producto
-                      </p>
-                    </div>
-                  </div>
-
-                  
-                  <div className="space-y-4">
-                    {product.reviews.map((review) => (
-                      <div
-                        key={review.id}
-                        className="border-border border-b pb-4 last:border-0"
-                      >
-                        <div className="mb-2 flex items-start justify-between">
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage
-                                src={review.avatar || "/placeholder.svg"}
-                              />
-                              <AvatarFallback>
-                                {review.author[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-semibold">{review.author}</p>
-                              <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                  {Array.from({ length: 5 }).map((_, i) => (
-                                    <Star
-                                      key={i.toString()}
-                                      className={`h-3 w-3 ${
-                                        i < review.rating
-                                          ? "fill-yellow-400 text-yellow-400"
-                                          : "text-gray-300"
-                                      }`}
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-muted-foreground text-xs">
-                                  {review.date}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <p className="mb-2 text-muted-foreground text-sm leading-relaxed">
-                          {review.comment}
-                        </p>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2 text-xs"
-                          >
-                            <Heart className="h-3 w-3" />
-                            Útil ({review.helpful})
-                          </Button>
-                          <ReviewDetailModal
-                            trigger={
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-xs"
-                              >
-                                Ver opinión completa
-                              </Button>
-                            }
-                            review={{
-                              id: review.id,
-                              author: review.author,
-                              avatar: review.avatar,
-                              rating: review.rating,
-                              title: product.title,
-                              comment: review.comment,
-                              date: review.date,
-                              product: product.title,
-                              helpful: review.helpful,
-                              verified: true,
-                              images: [
-                                "/ergonomic-office-chair.png",
-                                "/modern-laptop-workspace.png",
-                              ],
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <ReviewDetailModal
-                    trigger={
-                      <Button
-                        variant="outline"
-                        className="w-full bg-transparent"
-                      >
-                        Ver todas las opiniones
-                      </Button>
-                    }
-                    review={{
-                      id: product.reviews[0].id,
-                      author: product.reviews[0].author,
-                      avatar: product.reviews[0].avatar,
-                      rating: product.reviews[0].rating,
-                      title: product.title,
-                      comment: product.reviews[0].comment,
-                      date: product.reviews[0].date,
-                      product: product.title,
-                      helpful: product.reviews[0].helpful,
-                      verified: true,
-                      images: [
-                        "/ergonomic-office-chair.png",
-                        "/modern-laptop-workspace.png",
-                        "/modern-sofa.png",
-                      ],
-                    }}
-                  />
-                </TabsContent> */}
               </CardContent>
             </Tabs>
           </Card>
@@ -381,7 +228,7 @@ export default async function ProductPage({ params }: Props) {
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">6.9</span>
                 </div>
-                <span>({product.business?.reviews?.length} opiniones)</span>
+
                 <span>·</span>
                 <span>{product.views?.length} vistas</span>
               </CardDescription>
@@ -420,10 +267,6 @@ export default async function ProductPage({ params }: Props) {
                       ? `${product.stock} unidades disponibles`
                       : "Sin stock"}
                   </span>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Condición</span>
-                  <span className="font-semibold">{product.condition}</span>
                 </div>
               </div>
 
@@ -493,16 +336,6 @@ export default async function ProductPage({ params }: Props) {
                   <div className="flex items-center gap-2">
                     <p className="font-semibold">{product.business?.name}</p>
                   </div>
-                  <div className="flex items-center gap-1 text-sm">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold">
-                      {/* {product.business.rating} */}
-                      6.9
-                    </span>
-                    <span className="text-muted-foreground">
-                      ({product.business?.reviews?.length} opiniones)
-                    </span>
-                  </div>
                 </div>
               </Link>
 
@@ -510,14 +343,14 @@ export default async function ProductPage({ params }: Props) {
 
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <span className="text-muted-foreground">
                     {product.business?.address}
                   </span>
                 </div>
 
                 <div className="flex items-start gap-2">
-                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                  <Phone className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <a
                     href={`tel:${product.business?.phone}`}
                     className="text-primary hover:underline"
@@ -526,7 +359,7 @@ export default async function ProductPage({ params }: Props) {
                   </a>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <a
                     href={`mailto:${product.business?.email}`}
                     className="text-primary hover:underline"

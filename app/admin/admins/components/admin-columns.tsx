@@ -35,10 +35,10 @@ function AdminColumnsInner({ admins }: { admins: AdminDTO[] }) {
       header: "Permisos",
       cell: ({ row }) => (
         <div className="flex flex-wrap gap-1">
-          {row.original.permissions.includes("ALL") ? (
+          {row.original.permissions?.includes("ALL") ? (
             <Badge>Todos los permisos</Badge>
           ) : (
-            row.original.permissions.map((perm) => (
+            row.original.permissions?.map((perm) => (
               <Badge key={perm} variant="outline">
                 {perm.replace("_", " ")}
               </Badge>

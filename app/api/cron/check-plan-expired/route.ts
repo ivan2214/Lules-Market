@@ -1,8 +1,9 @@
+import { and, eq, lt } from "drizzle-orm";
 import { type NextRequest, NextResponse } from "next/server";
 import { createLog } from "@/app/data/admin/admin.dal";
+import { db, schema } from "@/db";
 import { env } from "@/env";
 import { sendEmail } from "@/lib/email";
-import prisma from "@/lib/prisma";
 
 /**
  * Cron job para verificar y desactivar planes expirados
@@ -19,25 +20,27 @@ export async function GET(req: NextRequest) {
     const now = new Date();
 
     // Buscar todos los planes activos que ya vencieron
-    const vencidos = await prisma.currentPlan.findMany({
-      where: {
-        isActive: true,
-        expiresAt: { lt: now },
-      },
-      include: {
+    const vencidos = await db.query.currentPlan.findMany({
+      where: and(
+        eq(schema.currentPlan.isActive, true),
+        lt(schema.currentPlan.expiresAt, now),
+      ),
+      with: {
         business: {
-          select: {
+          columns: {
             name: true,
             id: true,
+          },
+          with: {
             user: {
-              select: {
+              columns: {
                 email: true,
               },
             },
           },
         },
         plan: {
-          select: {
+          columns: {
             name: true,
             type: true,
           },
@@ -49,22 +52,23 @@ export async function GET(req: NextRequest) {
 
     for (const plan of vencidos) {
       // Desactivar el plan vencido
-      await prisma.currentPlan.update({
-        where: { id: plan.id },
-        data: { isActive: false },
-      });
+      await db
+        .update(schema.currentPlan)
+        .set({ isActive: false })
+        .where(eq(schema.currentPlan.id, plan.id));
 
       // enviar email informando el vencimiento del plan
-
-      await sendEmail({
-        to: plan.business.user?.email,
-        subject: "Tu plan expiró en LulesMarket",
-        description: `Tu plan "${plan.plan.name}" ha expirado el ${plan.expiresAt.toLocaleString()}.`,
-        buttonText: "Actualizar plan",
-        buttonUrl: `${env.APP_URL}/dashboard/subscription`,
-        title: "Plan expirado",
-        userFirstname: plan.business.name,
-      });
+      if (plan.business?.user?.email && plan.plan && plan.expiresAt) {
+        await sendEmail({
+          to: plan.business.user.email,
+          subject: "Tu plan expiró en LulesMarket",
+          description: `Tu plan "${plan.plan.name}" ha expirado el ${plan.expiresAt.toLocaleString()}.`,
+          buttonText: "Actualizar plan",
+          buttonUrl: `${env.APP_URL}/dashboard/subscription`,
+          title: "Plan expirado",
+          userFirstname: plan.business.name,
+        });
+      }
 
       // Registrar log de la desactivación
       await createLog({
@@ -73,10 +77,10 @@ export async function GET(req: NextRequest) {
         entityType: "PlanActive",
         entityId: plan.id,
         details: {
-          businessName: plan.business.name,
-          businessId: plan.business.id,
-          planName: plan.plan.name,
-          planSlug: plan.plan.type,
+          businessName: plan.business?.name,
+          businessId: plan.business?.id,
+          planName: plan.plan?.name,
+          planSlug: plan.plan?.type,
           expiresAt: plan.expiresAt,
         },
       });

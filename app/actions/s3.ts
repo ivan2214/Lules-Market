@@ -6,10 +6,11 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
+import { db, schema } from "@/db";
 import { env } from "@/env";
-import prisma from "@/lib/prisma";
 
 const s3Client = new S3Client({
   region: env.AWS_REGION || "",
@@ -78,11 +79,7 @@ export async function deleteS3Object({ key }: { key: string }) {
 
     await s3Client.send(command);
 
-    await prisma.image.deleteMany({
-      where: {
-        key,
-      },
-    });
+    await db.delete(schema.image).where(eq(schema.image.key, key));
 
     return { success: true };
   } catch (error) {

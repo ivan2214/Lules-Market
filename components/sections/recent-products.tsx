@@ -1,7 +1,8 @@
+import { and, desc, eq } from "drizzle-orm";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { connection } from "next/server";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import { ProductPublicCard } from "../public/product-public-card";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
@@ -10,15 +11,18 @@ export async function RecentProducts() {
   // ✅ Mark as dynamic
   await connection();
 
-  const recentProducts = await prisma.product.findMany({
-    where: { active: true, isBanned: false },
-    include: {
+  const recentProducts = await db.query.product.findMany({
+    where: and(
+      eq(schema.product.active, true),
+      eq(schema.product.isBanned, false),
+    ),
+    with: {
       images: true,
       business: true,
       category: true,
     },
-    orderBy: { createdAt: "desc" },
-    take: 8,
+    orderBy: [desc(schema.product.createdAt)],
+    limit: 8,
   });
 
   return (

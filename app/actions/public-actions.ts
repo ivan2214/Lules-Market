@@ -2,10 +2,9 @@
 
 import { cacheLife, cacheTag } from "next/cache";
 import * as BusinessDAL from "@/app/data/business/business.dal";
-import * as PostDAL from "@/app/data/post/post.dal";
 import * as ProductDAL from "@/app/data/product/product.dal";
+import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import prisma from "@/lib/prisma";
 import type { CategoryDTO } from "../data/category/category.dto";
 
 export async function getPublicBusinesses(params?: {
@@ -77,22 +76,6 @@ export async function getPublicProducts(params?: {
   });
 }
 
-export async function getPublicPosts(params?: {
-  search?: string;
-  page?: number;
-  limit?: number;
-  sortBy?: "date_asc" | "date_desc";
-}) {
-  const { search, page = 1, limit = 12, sortBy } = params || {};
-
-  return PostDAL.listAllPosts({
-    search,
-    page,
-    limit,
-    sort: sortBy,
-  });
-}
-
 export async function getPublicBusiness(businessId: string) {
   return BusinessDAL.getBusinessById(businessId);
 }
@@ -106,7 +89,7 @@ export async function getCategories() {
   cacheLife("days");
   cacheTag(CACHE_TAGS.CATEGORIES, CACHE_TAGS.PRODUCTS);
 
-  const categories = await prisma.category.findMany();
+  const categories = await db.query.category.findMany();
 
   return categories;
 }

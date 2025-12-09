@@ -1,8 +1,9 @@
 import "server-only";
+import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { cache } from "react";
-import prisma from "@/lib/prisma";
+import { db, schema } from "@/db";
 import { requireUser } from "../user/require-user";
 import type { BusinessDTO } from "./business.dto";
 
@@ -11,36 +12,38 @@ export const requireBusiness = cache(async () => {
 
   const session = await requireUser();
 
-  const business = await prisma.business.findUnique({
-    where: { userId: session.userId },
-    include: {
+  const business = await db.query.business.findFirst({
+    where: eq(schema.business.userId, session.userId),
+    with: {
       logo: true,
       coverImage: true,
       category: true,
       user: {
-        include: {
+        with: {
           admin: true,
-
           business: true,
         },
       },
       products: {
-        include: {
+        where: eq(schema.product.active, true),
+        orderBy: [
+          desc(schema.product.featured),
+          desc(schema.product.createdAt),
+        ],
+        with: {
           images: true,
         },
-        where: { active: true },
-        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
       },
       currentPlan: {
-        include: {
+        with: {
           plan: true,
         },
       },
     },
   });
 
-  const isAdmin = await prisma.admin.findUnique({
-    where: { userId: session.userId },
+  const isAdmin = await db.query.admin.findFirst({
+    where: eq(schema.admin.userId, session.userId),
   });
 
   if (isAdmin) {
@@ -64,7 +67,7 @@ export const getCurrentBusiness = cache(
     const { business } = await requireBusiness();
 
     return {
-      currentBusiness: business,
+      currentBusiness: business as BusinessDTO,
     };
   },
 );

@@ -49,7 +49,7 @@ export const AdminMenu: React.FC<AdminMenuProps> = ({ admin }) => {
         <DropdownMenuLabel className="flex flex-col items-start gap-2">
           Permisos:
           <span className="font-extralight text-xs">
-            {admin.permissions.map((permission) => permission).join(", ")}
+            {admin.permissions?.map((permission) => permission).join(", ")}
           </span>
         </DropdownMenuLabel>
 

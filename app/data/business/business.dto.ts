@@ -1,10 +1,5 @@
 import { z } from "zod";
-import type {
-  BannedBusiness,
-  Business,
-  CurrentPlan,
-  Plan,
-} from "@/app/generated/prisma/client";
+import type { BannedBusiness, Business, CurrentPlan, Plan } from "@/db";
 import type { CategoryDTO } from "../category/category.dto";
 import { type CleanImage, ImageCreateInputSchema } from "../image/image.dto";
 import type { ProductDTO } from "../product/product.dto";

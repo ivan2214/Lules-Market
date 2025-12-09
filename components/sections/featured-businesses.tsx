@@ -12,15 +12,6 @@ export async function FeaturedBusinesses() {
   // ✅ Mark as dynamic
   await connection();
 
-  /* const featuredBusinesses = await prisma.business.findMany({
-    where: { isActive: true, isBanned: false },
-    include: {
-      category: true,
-      logo: true,
-    },
-
-    take: 6,
-  }); */
   const featuredBusinesses = await db.query.business.findMany({
     where: and(eq(business.isActive, true), eq(business.isBanned, false)),
     limit: 6,

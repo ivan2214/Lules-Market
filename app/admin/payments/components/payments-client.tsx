@@ -4,7 +4,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 import { useState } from "react";
 import type { PaymentDTO } from "@/app/data/payment/payment.dto";
-import type { WebhookEvent } from "@/app/generated/prisma/client";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { WebhookEvent } from "@/db";
 import type { PaymentStatusMP } from "@/types";
 
 const getProcessedBadge = (processed: boolean) => {

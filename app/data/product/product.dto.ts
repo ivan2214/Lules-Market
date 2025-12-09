@@ -1,10 +1,5 @@
 import { z } from "zod";
-import type {
-  BannedProduct,
-  Image,
-  Product,
-  productView,
-} from "@/app/generated/prisma/client";
+import type { BannedProduct, Image, Product, ProductView } from "@/db";
 import type { BusinessDTO } from "../business/business.dto";
 import type { CategoryDTO } from "../category/category.dto";
 import { ImageCreateInputSchema } from "../image/image.dto";
@@ -39,7 +34,7 @@ export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
 
 export interface ProductDTO extends Product {
   images: Image[];
-  views?: productView[] | null;
+  views?: ProductView[] | null;
   business?: BusinessDTO | null;
   bannedProduct?: BannedProduct | null;
   category?: CategoryDTO | null;

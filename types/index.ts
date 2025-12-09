@@ -104,7 +104,6 @@ export interface Analytics {
   totalPayments: number;
   totalRevenue: number;
   activeTrials: number;
-  activeCoupons: number;
   bannedUsers: number;
   bannedBusinesses: number;
   bannedProducts: number;

@@ -1,8 +1,8 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
-import prisma from "@/lib/prisma";
 
 export async function createLog(data: {
   businessId?: string;
@@ -14,16 +14,17 @@ export async function createLog(data: {
   details?: Record<string, any>;
 }) {
   try {
-    const log = await prisma.log.create({
-      data: {
+    const [log] = await db
+      .insert(schema.log)
+      .values({
         businessId: data.businessId,
         adminId: data.adminId,
         action: data.action,
         entityType: data.entityType,
         entityId: data.entityId,
         details: data.details || {},
-      },
-    });
+      })
+      .returning();
     return { success: true, log };
   } catch (error) {
     console.error("Error creating log:", error);
@@ -37,7 +38,7 @@ export async function deleteAllLogs(
   _prevState: ActionResult,
 ): Promise<ActionResult> {
   try {
-    await prisma.log.deleteMany();
+    await db.delete(schema.log);
     return { successMessage: "Logs eliminados exitosamente" };
   } catch (error) {
     console.error("Error deleting logs:", error);

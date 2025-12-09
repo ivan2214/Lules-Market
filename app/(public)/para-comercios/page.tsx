@@ -2,11 +2,14 @@
 
 import { ArrowRight, Check, Store, TrendingUp, Zap } from "lucide-react";
 import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PLAN_FEATURES, PLAN_NAMES, PLAN_PRICES } from "@/lib/constants";
+import { Skeleton } from "@/components/ui/skeleton";
+import { db, type Plan, schema } from "@/db";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 
@@ -49,40 +52,93 @@ export const metadata: Metadata = {
   },
 };
 
-// Definición de los planes de precios
-const pricingPlans = [
-  {
-    id: "free",
-    name: PLAN_NAMES.FREE,
-    price: PLAN_PRICES.FREE,
-    period: "Para comenzar",
-    features: PLAN_FEATURES.FREE,
-    buttonText: "Comenzar Gratis",
-    featured: false,
-  },
-  {
-    id: "basic",
-    name: PLAN_NAMES.BASIC,
-    price: PLAN_PRICES.BASIC,
-    period: "Por mes",
-    features: PLAN_FEATURES.BASIC,
-    buttonText: "Comenzar Ahora",
-    featured: true,
-  },
-  {
-    id: "premium",
-    name: PLAN_NAMES.PREMIUM,
-    price: PLAN_PRICES.PREMIUM,
-    period: "Por mes",
-    features: PLAN_FEATURES.PREMIUM,
-    buttonText: "Comenzar Ahora",
-    featured: false,
-  },
-];
+const getPlans = async () => {
+  "use cache";
+  cacheLife("days");
+  const plans = await db.select().from(schema.plan);
+  return plans;
+};
 
-export default function ForBusinessPage() {
+const PlanPricingPreview = async ({ plans }: { plans: Plan[] }) => {
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-background to-muted px-4">
+    <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+      {plans.map((plan) => (
+        <Card
+          key={plan.type}
+          className={cn(
+            "relative",
+            plan.type === "BASIC" && "border-primary shadow-lg",
+          )}
+        >
+          <CardContent className="flex h-full flex-col justify-between">
+            <div className="mb-4">
+              <h3 className="font-bold text-2xl">{plan.name}</h3>
+              <p className="mt-2 font-bold text-3xl">
+                ARS{formatCurrency(plan.price, "ARS")}
+              </p>
+              <p className="text-muted-foreground text-sm">{plan.type}</p>
+            </div>
+            <ul className="mb-6 space-y-3">
+              {plan.features.map((feature) => (
+                <li key={feature} className="flex items-start gap-2">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                  <span className="text-sm">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <Button
+              asChild
+              className="w-full"
+              variant={plan.type === "BASIC" ? "default" : "outline"}
+            >
+              <Link href="/auth/signup">Comenzar Gratis</Link>
+            </Button>
+            {plan.type === "BASIC" && (
+              <Badge className="-top-3 -right-3 absolute">Más Popular</Badge>
+            )}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+};
+
+const PlanPricingPreviewSkeleton = () => {
+  return (
+    <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+      {[1, 2, 3].map((i) => (
+        <Card key={i} className="relative">
+          <CardContent className="flex h-full flex-col justify-between space-y-6 p-6">
+            {/* Header */}
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-8 w-40" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+
+            {/* Features */}
+            <ul className="space-y-3">
+              {[1, 2, 3, 4].map((f) => (
+                <li key={f} className="flex items-start gap-2">
+                  <Skeleton className="h-5 w-5 rounded-full" />
+                  <Skeleton className="h-4 w-40" />
+                </li>
+              ))}
+            </ul>
+
+            {/* Button */}
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+};
+
+export default async function ForBusinessPage() {
+  const plans = await getPlans();
+  return (
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
         <div className="container relative z-10">
@@ -182,49 +238,9 @@ export default function ForBusinessPage() {
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
-            {pricingPlans.map((plan) => (
-              <Card
-                key={plan.id}
-                className={cn(
-                  "relative",
-                  plan.featured && "border-primary shadow-lg",
-                )}
-              >
-                <CardContent className="flex h-full flex-col justify-between">
-                  <div className="mb-4">
-                    <h3 className="font-bold text-2xl">{plan.name}</h3>
-                    <p className="mt-2 font-bold text-3xl">
-                      ARS{formatCurrency(plan.price, "ARS")}
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                      {plan.period}
-                    </p>
-                  </div>
-                  <ul className="mb-6 space-y-3">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    asChild
-                    className="w-full"
-                    variant={plan.featured ? "default" : "outline"}
-                  >
-                    <Link href="/auth/signup">{plan.buttonText}</Link>
-                  </Button>
-                  {plan.featured && (
-                    <Badge className="-top-3 -right-3 absolute">
-                      Más Popular
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <Suspense fallback={<PlanPricingPreviewSkeleton />}>
+            <PlanPricingPreview plans={plans} />
+          </Suspense>
         </div>
       </section>
 

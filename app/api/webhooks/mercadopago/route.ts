@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
+import { eq } from "drizzle-orm";
+import { db, schema } from "@/db";
 import { env } from "@/env";
 import { paymentClient } from "@/lib/mercadopago";
-import prisma from "@/lib/prisma";
 
 /**
  * Webhook handler Mercado Pago
@@ -33,18 +34,16 @@ export async function POST(request: Request) {
 
     // Intentar crear registro de evento; si existe, devolvemos 200 (ya procesado o en proceso)
     try {
-      await prisma.webhookEvent.create({
-        data: {
-          requestId: requestId || buildRequestId(body),
-          eventType: body.type || body.type || "unknown",
-          mpId: getMpIdFromBody(body),
-          payload: body,
-        },
+      await db.insert(schema.webhookEvent).values({
+        requestId: requestId || buildRequestId(body),
+        eventType: body.type || body.type || "unknown",
+        mpId: getMpIdFromBody(body),
+        payload: body,
       });
       // biome-ignore lint/suspicious/noExplicitAny: <reason>
     } catch (err: any) {
       // Si la creación falla por unique constraint -> ya procesado
-      if (isPrismaUniqueConstraintError(err)) {
+      if (isUniqueConstraintError(err)) {
         return new Response(JSON.stringify({ received: true }), {
           status: 200,
         });
@@ -93,8 +92,8 @@ export async function POST(request: Request) {
       let paymentIdDB = externalReference || findPaymentIdInPayload(body);
 
       if (!paymentIdDB) {
-        const paymentByMP = await prisma.payment.findUnique({
-          where: { mpPaymentId },
+        const paymentByMP = await db.query.payment.findFirst({
+          where: eq(schema.payment.mpPaymentId, mpPaymentId),
         });
         if (paymentByMP) {
           paymentIdDB = paymentByMP.id;
@@ -118,8 +117,8 @@ export async function POST(request: Request) {
         );
       } else {
         // fetch payment record
-        const paymentRecord = await prisma.payment.findUnique({
-          where: { id: paymentIdDB },
+        const paymentRecord = await db.query.payment.findFirst({
+          where: eq(schema.payment.id, paymentIdDB),
         });
         if (!paymentRecord) {
           console.warn("Payment record not found for id:", paymentIdDB);
@@ -128,21 +127,22 @@ export async function POST(request: Request) {
           if (normalizedStatus === "approved") {
             // Update payment + business in a transaction
             const expireAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-            await prisma.$transaction([
-              prisma.payment.update({
-                where: { id: paymentIdDB },
-                data: {
+            await db.transaction(async (tx) => {
+              await tx
+                .update(schema.payment)
+                .set({
                   status: "approved",
                   mpStatus: mpStatus,
                   mpPaymentId,
                   paymentMethod: mpPayment?.payment_method_id ?? undefined,
                   amount: mpPayment?.transaction_amount ?? paymentRecord.amount,
                   currency: mpPayment?.currency_id ?? paymentRecord.currency,
-                },
-              }),
-              prisma.currentPlan.update({
-                where: { businessId: paymentRecord.businessId },
-                data: {
+                })
+                .where(eq(schema.payment.id, paymentIdDB as string));
+
+              await tx
+                .update(schema.currentPlan)
+                .set({
                   planType: paymentRecord.plan,
                   planStatus: "ACTIVE",
                   expiresAt: expireAt,
@@ -151,48 +151,51 @@ export async function POST(request: Request) {
                   productsUsed: 0,
                   isActive: true,
                   isTrial: false,
-                },
-              }),
-              prisma.webhookEvent.update({
-                where: { requestId },
-                data: { processed: true, processedAt: new Date() },
-              }),
-            ]);
+                })
+                .where(
+                  eq(schema.currentPlan.businessId, paymentRecord.businessId),
+                );
+
+              await tx
+                .update(schema.webhookEvent)
+                .set({ processed: true, processedAt: new Date() })
+                .where(eq(schema.webhookEvent.requestId, requestId));
+            });
           } else if (normalizedStatus === "pending") {
-            await prisma.payment.update({
-              where: { id: paymentIdDB },
-              data: {
+            await db
+              .update(schema.payment)
+              .set({
                 status: "pending",
                 mpStatus: mpStatus,
                 mpPaymentId,
-              },
-            });
-            await prisma.webhookEvent.update({
-              where: { requestId },
-              data: { processed: true, processedAt: new Date() },
-            });
+              })
+              .where(eq(schema.payment.id, paymentIdDB));
+            await db
+              .update(schema.webhookEvent)
+              .set({ processed: true, processedAt: new Date() })
+              .where(eq(schema.webhookEvent.requestId, requestId));
           } else {
             // rejected/failed/other
-            await prisma.payment.update({
-              where: { id: paymentIdDB },
-              data: {
+            await db
+              .update(schema.payment)
+              .set({
                 status: "rejected",
                 mpStatus: mpStatus,
                 mpPaymentId,
-              },
-            });
-            await prisma.webhookEvent.update({
-              where: { requestId },
-              data: { processed: true, processedAt: new Date() },
-            });
+              })
+              .where(eq(schema.payment.id, paymentIdDB));
+            await db
+              .update(schema.webhookEvent)
+              .set({ processed: true, processedAt: new Date() })
+              .where(eq(schema.webhookEvent.requestId, requestId));
           }
         }
       }
     } else {
-      await prisma.webhookEvent.update({
-        where: { requestId },
-        data: { processed: true, processedAt: new Date() },
-      });
+      await db
+        .update(schema.webhookEvent)
+        .set({ processed: true, processedAt: new Date() })
+        .where(eq(schema.webhookEvent.requestId, requestId));
     }
 
     // Todo bien
@@ -222,12 +225,13 @@ function normalizeMpStatus(s: string) {
   return s;
 }
 
-function isPrismaUniqueConstraintError(err: {
+function isUniqueConstraintError(err: {
   code: string;
   // biome-ignore lint/suspicious/noExplicitAny: <reason>
-  meta: { target: any };
+  constraint?: any;
 }) {
-  return err?.code === "P2002" || err?.meta?.target; // P2002 unique constraint
+  // PostgreSQL unique constraint error code is 23505
+  return err?.code === "23505" || err?.constraint;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <reason>

@@ -20,6 +20,9 @@ export const permissionEnum = pgEnum("permission", [
   "ALL",
   "BAN_USERS",
   "MANAGE_PLANS",
+  "MANAGE_PAYMENTS",
+  "MODERATE_CONTENT",
+  "VIEW_ANALYTICS",
 ]);
 
 export const businessStatusEnum = pgEnum("business_status", [

@@ -2,9 +2,10 @@
 
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Business } from "@/app/generated/prisma/client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { Business } from "@/db";
 import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
 
 type ActiveFiltersProps = {

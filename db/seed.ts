@@ -689,7 +689,6 @@ async function seedSampleWebhooks(): Promise<void> {
   const webhookSamples = [
     { eventType: "user.created", payload: { example: true } },
     { eventType: "plan.updated", payload: { example: true } },
-    { eventType: "coupon.redeemed", payload: { example: true } },
   ];
 
   for (const s of webhookSamples) {
