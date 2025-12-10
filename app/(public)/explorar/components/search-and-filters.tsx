@@ -1,4 +1,5 @@
 "use client";
+
 import { Search, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,7 +22,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import type { Business, Category } from "@/db";
-import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
+import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
 import { BusinessesPills } from "./businesses-pills";
 import { CategoryPills } from "./category-pills";
 
@@ -51,19 +52,20 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   categories,
   businesses,
 }) => {
-  const { search, sortBy, businessId } = params || {};
-
+  const { search, sortBy, businessId, category } = params || {};
   const [searchValue, setSearchValue] = useState(search || "");
   const router = useRouter();
 
+  const { createUrl } = useSearchUrl({ currentParams: params, typeExplorer });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const url = createSearchUrl({
-      currentParams: params,
-      updates: { search: searchValue },
-      typeExplorer,
-    });
+    const url = createUrl({ search: searchValue });
+    router.push(url);
+  };
 
+  const handleSortChange = (value: string) => {
+    const url = createUrl({ sortBy: value });
     router.push(url);
   };
 
@@ -71,11 +73,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
     <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
       <form onSubmit={handleSubmit} className="relative flex-1">
         <Link
-          href={createSearchUrl({
-            currentParams: params,
-            updates: { search: searchValue },
-            typeExplorer,
-          })}
+          href={createUrl({ search: searchValue })}
           className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground"
         >
           <Search className="h-4 w-4" />
@@ -90,47 +88,26 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
         />
       </form>
 
-      {typeExplorer === "productos" ? (
-        <Select
-          value={sortBy}
-          onValueChange={(value) => {
-            createSearchUrl({
-              currentParams: params,
-              updates: { sortBy: value },
-              typeExplorer,
-            });
-          }}
-        >
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Ordenar por" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="price_asc">Precio ascendente</SelectItem>
-            <SelectItem value="price_desc">Precio descendente</SelectItem>
-            <SelectItem value="name_asc">Nombre ascendente</SelectItem>
-            <SelectItem value="name_desc">Nombre descendente</SelectItem>
-          </SelectContent>
-        </Select>
-      ) : (
-        <Select
-          value={sortBy}
-          onValueChange={(value) => {
-            createSearchUrl({
-              currentParams: params,
-              updates: { sortBy: value },
-              typeExplorer,
-            });
-          }}
-        >
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Ordenar por" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="newest">Mas recientes</SelectItem>
-            <SelectItem value="oldest">Mas antiguos</SelectItem>
-          </SelectContent>
-        </Select>
-      )}
+      <Select value={sortBy} onValueChange={handleSortChange}>
+        <SelectTrigger className="w-full md:w-[200px]">
+          <SelectValue placeholder="Ordenar por" />
+        </SelectTrigger>
+        <SelectContent>
+          {typeExplorer === "productos" ? (
+            <>
+              <SelectItem value="price_asc">Precio: Menor a mayor</SelectItem>
+              <SelectItem value="price_desc">Precio: Mayor a menor</SelectItem>
+              <SelectItem value="name_asc">Nombre: A-Z</SelectItem>
+              <SelectItem value="name_desc">Nombre: Z-A</SelectItem>
+            </>
+          ) : (
+            <>
+              <SelectItem value="newest">Más recientes</SelectItem>
+              <SelectItem value="oldest">Más antiguos</SelectItem>
+            </>
+          )}
+        </SelectContent>
+      </Select>
 
       <Sheet>
         <SheetTrigger asChild>
@@ -144,12 +121,14 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <SheetTitle>Filtros</SheetTitle>
             <SheetDescription>Refina tu búsqueda de comercios</SheetDescription>
           </SheetHeader>
+
           {/* Category Pills */}
           <section className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Categorias</h2>
+            <h2 className="font-bold text-2xl">Categorías</h2>
             <CategoryPills
               typeExplorer={typeExplorer}
               categories={categories}
+              category={category}
             />
           </section>
 
@@ -157,9 +136,9 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           <section className="flex flex-col gap-4">
             <h2 className="font-bold text-2xl">Comercios</h2>
             <BusinessesPills
-              businessId={businessId}
               typeExplorer={typeExplorer}
               businesses={businesses}
+              businessId={businessId}
             />
           </section>
         </SheetContent>

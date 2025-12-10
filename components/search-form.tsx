@@ -31,12 +31,12 @@ export const SearchForm = () => {
     }
   }
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value.trim() || e.target.value === "") {
+    const value = e.target.value;
+    if (!value.trim() || value === "") {
       setResults({ products: [], total: 0 });
       setSearch("");
       return;
     }
-    const value = e.target.value;
     setSearch(value);
 
     // Debounce: espera 300ms antes de hacer la llamada, cancela la anterior si existe
@@ -62,7 +62,10 @@ export const SearchForm = () => {
     <section className="relative mx-auto w-full max-w-lg">
       <form onSubmit={handleSearch}>
         <div className="relative">
-          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+          <Search
+            onClick={handleSearch}
+            className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground"
+          />
           <Input
             type="search"
             placeholder="Buscar productos..."
@@ -101,7 +104,7 @@ export const SearchForm = () => {
                 </div>
                 <div>
                   <Link
-                    href={`/productos/${product.id}`}
+                    href={`/producto/${product.id}`}
                     className="font-semibold text-sm hover:underline"
                     title={product.name}
                     aria-label={product.name}
