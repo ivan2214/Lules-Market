@@ -8,7 +8,7 @@ type BusinessGridProps = {
 
 export const BusinessGrid: React.FC<BusinessGridProps> = ({ businesses }) => {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
       {businesses.map((business) => (
         <BusinessCard key={business.id} business={business} />
       ))}

@@ -38,7 +38,6 @@ export async function listAllBusinesses({
   category,
   limit,
   page,
-
   sortBy,
 }: {
   search?: string;
@@ -64,7 +63,13 @@ export async function listAllBusinesses({
   }
 
   if (category) {
-    conditions.push(eq(schema.business.categoryId, category));
+    const categoryId = await db.query.category.findFirst({
+      where: eq(schema.category.value, category),
+    });
+
+    if (categoryId) {
+      conditions.push(eq(schema.business.categoryId, categoryId.id));
+    }
   }
 
   if (sortBy === "newest") {

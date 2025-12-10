@@ -6,7 +6,7 @@ import {
 import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
-import { CategoryPills } from "../components/category-pills";
+import { ActiveFilters } from "../components/active-filters";
 import { SearchAndFilters } from "../components/search-and-filters";
 import { BusinessGrid, BusinessGridSkeleton } from "./components/business-grid";
 
@@ -56,8 +56,21 @@ export default async function ComerciosPage({
         typeExplorer="comercios"
         params={await searchParams}
       />
-      {/* Category Pills */}
-      <CategoryPills categories={categories} typeExplorer="comercios" />
+
+      {/* ACTIVE FILTERS */}
+      {!!(await searchParams) && (
+        <ActiveFilters
+          typeExplorer="comercios"
+          params={{
+            search,
+            category,
+            page,
+            limit,
+            sortBy,
+          }}
+          businesses={businesses}
+        />
+      )}
 
       {/* Results Count and Limit Selector */}
       <div className="mb-4 flex items-center justify-between">

@@ -29,7 +29,6 @@ export async function getPublicBusinesses(params?: {
     category,
     page,
     limit,
-
     sortBy,
   });
 }
