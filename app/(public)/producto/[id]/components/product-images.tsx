@@ -1,6 +1,6 @@
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -17,13 +17,13 @@ type Props = {
 
 export function ProductImages({ images, name }: Props) {
   return (
-    <Card className="mb-6">
-      <CardContent className="p-6">
+    <Card className="m-0 gap-0 p-0">
+      <CardHeader className="overflow-hidden rounded-lg p-0">
         <Carousel className="w-full">
           <CarouselContent>
             {images?.map((image) => (
               <CarouselItem key={image.key}>
-                <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+                <div className="aspect-square bg-muted">
                   <ImageWithSkeleton
                     src={image.url}
                     alt={`${name} - Imagen ${image.key}`}
@@ -36,18 +36,20 @@ export function ProductImages({ images, name }: Props) {
           <CarouselPrevious className="left-4" />
           <CarouselNext className="right-4" />
         </Carousel>
-
+      </CardHeader>
+      <CardContent className="m-0 px-2 py-3">
         {/* Thumbnails */}
-        <div className="mt-4 flex gap-2 overflow-x-auto">
+        <div className="flex gap-2 overflow-x-auto">
           {images?.map((image, index) => (
             <Button
+              variant="ghost"
               key={image.key}
-              className="shrink-0 overflow-hidden rounded-md border-2 border-transparent hover:border-primary"
+              className="h-16 w-16 overflow-hidden rounded-md p-0"
             >
               <ImageWithSkeleton
                 src={image.url}
                 alt={`Thumbnail ${index + 1}`}
-                className="h-20 w-20 object-cover"
+                className="h-full w-full rounded-md object-cover transition-all hover:scale-110"
               />
             </Button>
           ))}

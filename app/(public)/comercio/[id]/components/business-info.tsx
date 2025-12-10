@@ -43,7 +43,7 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
       <div className="mb-6 md:mb-8">
         <div className="mx-auto max-w-5xl">
           <div className="w-full">
-            <div className="aspect-[4/3] overflow-hidden rounded-xl md:aspect-video md:rounded-2xl">
+            <div className="aspect-4/3 overflow-hidden rounded-xl md:aspect-video md:rounded-2xl">
               <ImageWithSkeleton
                 src={business?.coverImage?.url || "/placeholder.svg"}
                 alt={`${business?.name} - Imagen principal`}
@@ -91,6 +91,61 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
               </CardFooter>
             )}
           </Card>
+          {/* Productos destacados */}
+          {products?.length && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg md:text-xl">
+                  Productos Destacados
+                </CardTitle>
+                <CardDescription className="text-xs md:text-sm">
+                  Algunos de nuestros productos más populares
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
+                {products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="w-full overflow-hidden rounded-md border"
+                  >
+                    <header>
+                      <ImageWithSkeleton
+                        src={mainImage(product.images) || "/placeholder.svg"}
+                        alt={product.name}
+                        className="h-48 w-full object-cover"
+                      />
+                    </header>
+                    <article className="items-start1 flex flex-col justify-between gap-5 p-4">
+                      <h2 className="font-semibold text-base md:text-lg">
+                        {product.name}
+                      </h2>
+                      <p className="line-clamp-5 overflow-hidden font-extralight text-muted-foreground text-sm md:text-base">
+                        {product.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-muted-foreground text-sm md:text-base">
+                          {formatCurrency(product.price || 0, "ARS")}
+                        </span>
+                        <Button
+                          size="sm"
+                          className="text-xs md:text-sm"
+                          asChild
+                        >
+                          <Link href={`/producto/${product.id}`}>
+                            Ver producto
+                          </Link>
+                        </Button>
+                      </div>
+                    </article>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+          {/* similar business */}
+          {similarBusinesses && similarBusinesses.length > 0 && (
+            <SimilarBusinesses businesses={similarBusinesses} />
+          )}
         </div>
 
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
@@ -219,58 +274,8 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
               </Button>
             </CardFooter>
           </Card>
-          {/* similar business */}
-          {similarBusinesses && similarBusinesses.length > 0 && (
-            <SimilarBusinesses businesses={similarBusinesses} />
-          )}
         </div>
       </div>
-
-      {/* Productos destacados */}
-      {products?.length && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl">
-              Productos Destacados
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              Algunos de nuestros productos más populares
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="w-full overflow-hidden rounded-md border"
-              >
-                <header>
-                  <ImageWithSkeleton
-                    src={mainImage(product.images) || "/placeholder.svg"}
-                    alt={product.name}
-                    className="h-48 w-full object-cover"
-                  />
-                </header>
-                <article className="items-start1 flex flex-col justify-between gap-5 p-4">
-                  <h2 className="font-semibold text-base md:text-lg">
-                    {product.name}
-                  </h2>
-                  <p className="line-clamp-5 overflow-hidden font-extralight text-muted-foreground text-sm md:text-base">
-                    {product.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-muted-foreground text-sm md:text-base">
-                      {formatCurrency(product.price || 0, "ARS")}
-                    </span>
-                    <Button size="sm" className="text-xs md:text-sm" asChild>
-                      <Link href={`/producto/${product.id}`}>Ver producto</Link>
-                    </Button>
-                  </div>
-                </article>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
     </main>
   );
 };

@@ -1,16 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import {
   ArrowLeft,
-  Clock,
-  Heart,
   Mail,
   MapPin,
   MessageCircle,
   Phone,
-  Share2,
-  ShoppingCart,
   Star,
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -24,7 +19,14 @@ import {
 import { ProductSchema } from "@/components/structured-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { ProductImages } from "./components/product-images";
 import { ProductViewTracker } from "./components/product-view-tracker";
@@ -166,32 +168,18 @@ export default async function ProductPage({ params }: Props) {
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Left Column - Images & Details */}
-        <div className="lg:col-span-2">
+        <div className="flex flex-col gap-2 lg:col-span-2">
           <ProductImages images={product.images} name={product.name} />
           {/* Product Details Tabs */}
           <Card>
-            <Tabs defaultValue="description" className="w-full">
-              <CardHeader>
-                <TabsList className="w-full grid-cols-3">
-                  <TabsTrigger value="description">Descripción</TabsTrigger>
-                </TabsList>
-              </CardHeader>
-              <CardContent>
-                <TabsContent value="description" className="space-y-4">
-                  <div>
-                    <h3 className="mb-2 font-semibold">
-                      Descripción del producto
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {product.description}
-                    </p>
-                  </div>
-                </TabsContent>
-              </CardContent>
-            </Tabs>
+            <CardHeader>
+              <CardTitle>Descripción</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription>{product.description}</CardDescription>
+            </CardContent>
           </Card>
         </div>
-        {/* Right Column - Purchase Info & Business */}
 
         {/* Right Column - Purchase Info & Business */}
         <div className="space-y-6">
@@ -204,17 +192,17 @@ export default async function ProductPage({ params }: Props) {
                   variant="outline"
                   className="text-xs"
                 >
-                  {product.category?.value}
+                  {`${product.category?.value.charAt(0).toUpperCase()}${product.category?.value.slice(1)}`}
                 </Badge>
 
-                <div className="flex gap-1">
+                {/* <div className="flex gap-1">
                   <Button variant="ghost" size="icon">
                     <Heart className="h-5 w-5" />
                   </Button>
                   <Button variant="ghost" size="icon">
                     <Share2 className="h-5 w-5" />
                   </Button>
-                </div>
+                </div> */}
               </div>
               <CardTitle className="text-2xl">{product.name}</CardTitle>
             </CardHeader>
@@ -223,18 +211,8 @@ export default async function ProductPage({ params }: Props) {
               <div>
                 <div className="flex items-baseline gap-2">
                   <span className="font-bold text-3xl text-primary">
-                    ${product.price?.toLocaleString()}
+                    {formatCurrency(product.price || 0, "ARS")}
                   </span>
-                  {/*     {product.originalPrice && (
-                    <>
-                      <span className="text-lg text-muted-foreground line-through">
-                        ${product.originalPrice.toLocaleString()}
-                      </span>
-                      <Badge variant="destructive">
-                        {product.discount}% OFF
-                      </Badge>
-                    </>
-                  )} */}
                 </div>
                 <p className="mt-1 text-muted-foreground text-sm">
                   Precio en efectivo o transferencia
@@ -259,43 +237,26 @@ export default async function ProductPage({ params }: Props) {
 
               {/* Actions */}
               <div className="space-y-2">
-                <Button
-                  className="w-full gap-2"
-                  size="lg"
-                  disabled={product.stock === 0}
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  Comprar ahora
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full gap-2 bg-transparent"
-                  size="lg"
-                >
-                  <MessageCircle className="h-5 w-5" />
+                <Button className="w-full gap-2" size="lg">
+                  <MessageCircle className="size-5" />
                   Consultar disponibilidad
                 </Button>
               </div>
 
               {/* Trust Badges */}
-              <div className="space-y-2 rounded-lg bg-muted p-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
-                    <Star className="h-3 w-3 text-primary" />
+              {(product.business?.verified ||
+                product.business?.user?.emailVerified) && (
+                <div className="space-y-2 rounded-lg bg-muted p-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                      <Star className="h-3 w-3 text-primary" />
+                    </div>
+                    <span className="text-muted-foreground">
+                      Vendedor verificado
+                    </span>
                   </div>
-                  <span className="text-muted-foreground">
-                    Vendedor verificado
-                  </span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
-                    <Clock className="h-3 w-3 text-primary" />
-                  </div>
-                  <span className="text-muted-foreground">
-                    Entrega en 24-48 hs
-                  </span>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 

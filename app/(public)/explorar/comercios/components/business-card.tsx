@@ -15,9 +15,15 @@ type BusinessCardProps = { business: BusinessDTO };
 
 export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
   return (
-    <Link key={business.id} href={`/comercio/${business.id}`}>
-      <Card className="h-full overflow-hidden p-0 transition-all hover:shadow-lg">
-        <div className="relative aspect-video overflow-hidden">
+    <Card
+      key={business.id}
+      className="flex h-full w-full flex-col items-start justify-between gap-3 overflow-hidden p-0 transition-all hover:shadow-lg"
+    >
+      <CardHeader className="w-full p-0">
+        <Link
+          href={`/comercio/${business.id}`}
+          className="relative aspect-video w-full overflow-hidden p-0"
+        >
           <ImageWithSkeleton
             src={business.coverImage?.url || "/placeholder.svg"}
             alt={business.name}
@@ -28,26 +34,20 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
               Abierto
             </Badge>
           )} */}
+        </Link>
+      </CardHeader>
+
+      <CardContent className="flex h-full flex-col justify-between gap-y-3 p-3">
+        <CardTitle className="line-clamp-1">{business.name}</CardTitle>
+        <Badge variant="secondary">{business.category?.label}</Badge>
+        <CardDescription className="line-clamp-5">
+          {business.description}
+        </CardDescription>
+        <div className="flex items-center gap-2 text-secondary-foreground text-sm">
+          <MapPin className="h-4 w-4" />
+          <span className="line-clamp-1">{business.address}</span>
         </div>
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <CardTitle className="line-clamp-1">{business.name}</CardTitle>
-              <CardDescription>{business.category?.label}</CardDescription>
-            </div>
-            <Badge variant="secondary">{business.category?.label}</Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3 pb-4">
-          <p className="line-clamp-2 text-muted-foreground text-sm">
-            {business.description}
-          </p>
-          <div className="flex items-center gap-2 text-muted-foreground text-sm">
-            <MapPin className="h-4 w-4" />
-            <span className="line-clamp-1">{business.address}</span>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
+      </CardContent>
+    </Card>
   );
 };

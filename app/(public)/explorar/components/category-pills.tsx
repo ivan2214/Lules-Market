@@ -1,65 +1,52 @@
 "use client";
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import type { Category } from "@/db";
-import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
+import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
 
 type CategoryPillsProps = {
   categories: Category[];
   typeExplorer: TypeExplorer;
+  category?: string;
 };
 
 export const CategoryPills: React.FC<CategoryPillsProps> = ({
   categories,
   typeExplorer,
+  category,
 }) => {
   const params = useSearchParams();
-  const currentParams: {
-    search?: string;
-    category?: string;
-    page?: string;
-    businessId?: string;
-    limit?: string;
-    sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-  } = {
+  const currentParams: Record<string, string | undefined> = {
     search: params.get("search") ?? undefined,
-    category: params.get("category") ?? undefined,
     page: params.get("page") ?? undefined,
+    limit: params.get("limit") ?? undefined,
+    sortBy: params.get("sortBy") ?? undefined,
     businessId: params.get("businessId") ?? undefined,
-    sortBy: params.get("sort") as
-      | "price_asc"
-      | "price_desc"
-      | "name_asc"
-      | "name_desc"
-      | undefined,
+    category: params.get("category") ?? undefined,
   };
+
+  const { createUrl } = useSearchUrl({ currentParams, typeExplorer });
 
   return (
     <div className="mb-6 flex flex-wrap gap-2">
-      {categories.map((category) => (
-        <Badge
-          key={category.id}
-          variant={
-            currentParams.category?.toLowerCase() ===
-            category.value.toLowerCase()
-              ? "default"
-              : "outline"
-          }
-          className="cursor-pointer px-4 py-2"
-          asChild
-        >
-          <Link
-            href={createSearchUrl({
-              currentParams,
-              updates: { category: category.value },
-              typeExplorer,
-            })}
+      <Badge variant="outline" className="cursor-pointer px-4 py-2" asChild>
+        <Link href={createUrl({ category: undefined })}>Todo</Link>
+      </Badge>
+      {categories.map((cat) => {
+        const isActive = category?.toLowerCase() === cat.value.toLowerCase();
+        return (
+          <Badge
+            key={cat.id}
+            variant={isActive ? "default" : "outline"}
+            className="cursor-pointer px-4 py-2"
+            asChild
           >
-            {category.value}
-          </Link>
-        </Badge>
-      ))}
+            <Link href={createUrl({ category: cat.value })}>{cat.value}</Link>
+          </Badge>
+        );
+      })}
     </div>
   );
 };

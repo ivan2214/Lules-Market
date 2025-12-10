@@ -8,8 +8,6 @@ import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
 import { ActiveFilters } from "../components/active-filters";
-import { BusinessesPills } from "../components/businesses-pills";
-import { CategoryPills } from "../components/category-pills";
 import { SearchAndFilters } from "../components/search-and-filters";
 import { ProductsGrid, ProductsGridSkeleton } from "./components/products-grid";
 
@@ -59,23 +57,12 @@ export default async function ProductosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters params={await searchParams} typeExplorer="productos" />
-
-      {/* Category Pills */}
-      <section>
-        <h2 className="mb-2 font-bold text-2xl">Categorias</h2>
-        <CategoryPills typeExplorer="productos" categories={categories} />
-      </section>
-
-      {/* Business Pills */}
-      <section>
-        <h2 className="mb-2 font-bold text-2xl">Comercios</h2>
-        <BusinessesPills
-          businessId={businessId}
-          typeExplorer="productos"
-          businesses={businesses}
-        />
-      </section>
+      <SearchAndFilters
+        categories={categories}
+        businesses={businesses}
+        params={await searchParams}
+        typeExplorer="productos"
+      />
 
       {/* ACTIVE FILTERS */}
       {!!(await searchParams) && (
@@ -98,11 +85,7 @@ export default async function ProductosPage({
         <p className="text-muted-foreground text-sm">
           Mostrando {products.length} de {total} productos
         </p>
-        <LimitSelector
-          currentLimit={currentLimit}
-          total={total}
-          currentPage={currentPage}
-        />
+        <LimitSelector currentLimit={currentLimit} total={total} />
       </div>
 
       {/* Products Grid */}

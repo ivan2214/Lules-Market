@@ -16,14 +16,9 @@ export default function Loading() {
         <Skeleton className="h-10 w-[100px]" />
       </div>
 
-      {/* Pills Skeleton */}
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-32" />
-        <div className="flex gap-2 overflow-hidden">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={`pill-${i}`} className="h-8 w-24 rounded-full" />
-          ))}
-        </div>
+      <div className="mb-4 flex items-center justify-between">
+        <Skeleton className="h-8 w-36" />
+        <Skeleton className="h-8 w-24" />
       </div>
 
       {/* Grid Skeleton */}

@@ -19,8 +19,7 @@
   },
   "pnpm": {
     "overrides": {
-      "hono": "4.10.3",
-      "valibot": "1.2.0"
+      "esbuild": "^0.25.0"
     }
   },
   "lint-staged": {

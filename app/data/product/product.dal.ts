@@ -75,7 +75,12 @@ export async function listAllProducts({
   }
 
   if (category) {
-    conditions.push(eq(schema.product.categoryId, category));
+    const categoryDB = await db.query.category.findFirst({
+      where: eq(schema.category.value, category),
+    });
+
+    categoryDB &&
+      conditions.push(eq(schema.product.categoryId, categoryDB?.id));
   }
 
   const whereClause = and(...conditions);

@@ -1,64 +1,53 @@
 "use client";
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-
 import { Badge } from "@/components/ui/badge";
 import type { Business } from "@/db";
-import { createSearchUrl, type TypeExplorer } from "@/lib/utils";
+import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
 
-type BusinessessProps = {
+type BusinessesPillsProps = {
   businesses: Business[];
   typeExplorer: TypeExplorer;
   businessId?: string;
 };
 
-export const BusinessesPills: React.FC<BusinessessProps> = ({
+export const BusinessesPills: React.FC<BusinessesPillsProps> = ({
   businesses,
   typeExplorer,
   businessId,
 }) => {
   const params = useSearchParams();
-  const currentParams: {
-    search?: string;
-    business?: string;
-    page?: string;
-    businessId?: string;
-    limit?: string;
-    sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-  } = {
+  const currentParams: Record<string, string | undefined> = {
     search: params.get("search") ?? undefined,
-    business: params.get("business") ?? undefined,
     page: params.get("page") ?? undefined,
+    limit: params.get("limit") ?? undefined,
+    sortBy: params.get("sortBy") ?? undefined,
     businessId: params.get("businessId") ?? undefined,
-    sortBy: params.get("sort") as
-      | "price_asc"
-      | "price_desc"
-      | "name_asc"
-      | "name_desc"
-      | undefined,
   };
+
+  const { createUrl } = useSearchUrl({ currentParams, typeExplorer });
+
   return (
     <div className="mb-6 flex flex-wrap gap-2">
-      {businesses.map((business) => (
-        <Badge
-          key={business.id}
-          variant={
-            businessId === business.id.toLowerCase() ? "default" : "outline"
-          }
-          className="cursor-pointer px-4 py-2"
-          asChild
-        >
-          <Link
-            href={createSearchUrl({
-              currentParams,
-              updates: { businessId: business.id },
-              typeExplorer,
-            })}
+      <Badge variant="outline" className="cursor-pointer px-4 py-2" asChild>
+        <Link href={createUrl({ businessId: undefined })}>Todo</Link>
+      </Badge>
+      {businesses.map((business) => {
+        const isActive = businessId === business.id.toLowerCase();
+        return (
+          <Badge
+            key={business.id}
+            variant={isActive ? "default" : "outline"}
+            className="cursor-pointer px-4 py-2"
+            asChild
           >
-            {business.name}
-          </Link>
-        </Badge>
-      ))}
+            <Link href={createUrl({ businessId: business.id })}>
+              {business.name}
+            </Link>
+          </Badge>
+        );
+      })}
     </div>
   );
 };
