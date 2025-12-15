@@ -10,13 +10,11 @@ import {
   CardTitle,
 } from "../ui/card";
 
-interface PublicBusinessCardProps {
+interface BusinessCardProps {
   business: BusinessDTO;
 }
 
-export const PublicBusinessCard: React.FC<PublicBusinessCardProps> = ({
-  business,
-}) => {
+export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
   return (
     <Link key={business.id} href={`/comercio/${business.id}`}>
       <Card className="h-full overflow-hidden p-0 transition-all hover:shadow-lg">

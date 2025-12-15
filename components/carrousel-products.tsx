@@ -1,7 +1,7 @@
 "use client";
 import Autoplay from "embla-carousel-autoplay";
 import type { ProductDTO } from "@/app/data/product/product.dto";
-import { ProductPublicCard } from "@/components/public/product-public-card";
+import { ProductPublicCard } from "@/components/public/product-card";
 import {
   Carousel,
   CarouselContent,

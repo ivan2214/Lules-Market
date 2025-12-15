@@ -1,26 +1,16 @@
-import { and, desc, eq } from "drizzle-orm";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { connection } from "next/server";
-import { db } from "@/db";
-import { business } from "@/db/schema";
-import { PublicBusinessCard } from "../public/public-business-card";
+import { orpc } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { BusinessList } from "../public/business-list";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
 
 export async function FeaturedBusinesses() {
-  // ✅ Mark as dynamic
-  await connection();
-
-  const featuredBusinesses = await db.query.business.findMany({
-    where: and(eq(business.isActive, true), eq(business.isBanned, false)),
-    limit: 6,
-    orderBy: desc(business.createdAt),
-    with: {
-      category: true,
-      logo: true,
-    },
-  });
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(
+    orpc.business.featuredBusinesses.queryOptions(),
+  );
 
   return (
     <section className="mb-12">
@@ -38,11 +28,9 @@ export async function FeaturedBusinesses() {
           </Link>
         </Button>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {featuredBusinesses.map((business) => (
-          <PublicBusinessCard key={business.id} business={business} />
-        ))}
-      </div>
+      <HydrateClient client={queryClient}>
+        <BusinessList />
+      </HydrateClient>
     </section>
   );
 }

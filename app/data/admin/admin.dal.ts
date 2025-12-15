@@ -2,18 +2,10 @@
 
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
-import { db, type PlanType, schema } from "@/db";
+import { db, type LogInsert, type PlanType, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 
-export async function createLog(data: {
-  businessId?: string;
-  adminId?: string;
-  action: string;
-  entityType?: string;
-  entityId?: string;
-  // biome-ignore lint/suspicious/noExplicitAny: <necessary>
-  details?: Record<string, any>;
-}) {
+export async function createLog(data: LogInsert) {
   try {
     const [log] = await db
       .insert(schema.log)

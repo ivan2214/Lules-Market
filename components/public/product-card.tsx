@@ -13,12 +13,12 @@ import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { Button } from "../ui/button";
 
-interface ProductPublicCardProps {
+interface ProductCardProps {
   product: ProductDTO;
   isCarrousel?: boolean;
 }
 
-export function ProductPublicCard({ product }: ProductPublicCardProps) {
+export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link key={product.id} href={`/producto/${product.id}`}>
       <Card className="overflow-hidden p-0 transition-all hover:shadow-lg">

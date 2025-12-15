@@ -1,29 +1,14 @@
-import { and, desc, eq } from "drizzle-orm";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { connection } from "next/server";
-import { db, schema } from "@/db";
-import { ProductPublicCard } from "../public/product-public-card";
+import { orpc } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { ProductList } from "../public/product-list";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
 
 export async function RecentProducts() {
-  // ✅ Mark as dynamic
-  await connection();
-
-  const recentProducts = await db.query.product.findMany({
-    where: and(
-      eq(schema.product.active, true),
-      eq(schema.product.isBanned, false),
-    ),
-    with: {
-      images: true,
-      business: true,
-      category: true,
-    },
-    orderBy: [desc(schema.product.createdAt)],
-    limit: 8,
-  });
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(orpc.products.recentProducts.queryOptions());
 
   return (
     <section className="mb-12">
@@ -39,11 +24,9 @@ export async function RecentProducts() {
           </Link>
         </Button>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {recentProducts.map((product) => (
-          <ProductPublicCard key={product.id} product={product} />
-        ))}
-      </div>
+      <HydrateClient client={queryClient}>
+        <ProductList />
+      </HydrateClient>
     </section>
   );
 }

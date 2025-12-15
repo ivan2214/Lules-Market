@@ -1,5 +1,5 @@
 import type { ProductDTO } from "@/app/data/product/product.dto";
-import { ProductGrid } from "@/components/public/product-grid";
+import { ProductGrid } from "@/components/public/product-list";
 import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {
