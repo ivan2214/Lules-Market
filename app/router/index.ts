@@ -1,6 +1,7 @@
 import { createLog } from "./admin";
 import { featuredBusinesses } from "./business";
 import { recentProducts } from "./products";
+import { getHomePageStats } from "./stats";
 
 export const router = {
   admin: {
@@ -11,5 +12,8 @@ export const router = {
   },
   business: {
     featuredBusinesses,
+  },
+  stats: {
+    getHomePageStats,
   },
 };
