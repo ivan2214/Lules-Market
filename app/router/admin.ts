@@ -3,26 +3,6 @@ import { z } from "zod";
 import * as dal from "@/app/data/admin/admin.dal";
 import type { Log, LogInsert } from "@/db";
 
-const LogInsertSchema = z.object({
-  businessId: z.string(),
-  adminId: z.string(),
-  action: z.string(),
-  entityType: z.string(),
-  entityId: z.string(),
-  details: z.any(),
-}) satisfies z.ZodType<LogInsert>;
-
-const LogReturnSchema = z.object({
-  id: z.string(),
-  businessId: z.string(),
-  adminId: z.string(),
-  action: z.string(),
-  entityType: z.string(),
-  entityId: z.string(),
-  details: z.any(),
-  timestamp: z.date(),
-}) satisfies z.ZodType<Log>;
-
 export const createLog = os
   .route({
     method: "POST",
@@ -31,14 +11,16 @@ export const createLog = os
     description: "Create a new log",
     tags: ["Admin"],
   })
-  .input(LogInsertSchema)
+  .input(z.custom<LogInsert>())
   .output(
     z.object({
       success: z.boolean(),
-      log: LogReturnSchema,
+      log: z.custom<Log>().optional(),
+      error: z.string().optional(),
     }),
   )
   .handler(async ({ input }) => {
-    const log = await dal.createLog(input);
-    return { success: true, log };
+    const result = await dal.createLog(input);
+
+    return result;
   });
