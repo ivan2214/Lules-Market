@@ -2,30 +2,8 @@
 
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
-import { db, type LogInsert, type PlanType, schema } from "@/db";
+import { db, type PlanType, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
-
-export async function createLog(data: LogInsert) {
-  try {
-    const [log] = await db
-      .insert(schema.log)
-      .values({
-        businessId: data.businessId,
-        adminId: data.adminId,
-        action: data.action,
-        entityType: data.entityType,
-        entityId: data.entityId,
-        details: data.details || {},
-      })
-      .returning();
-    return { success: true, log };
-  } catch (error) {
-    console.error("Error creating log:", error);
-    return { success: false, error: "Failed to create log." };
-  } finally {
-    updateTag("admin-logs");
-  }
-}
 
 export async function deleteAllLogs(
   _prevState: ActionResult,

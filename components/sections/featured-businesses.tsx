@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { orpc } from "@/lib/orpc";
+import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { BusinessList } from "../public/business-list";
 import { Button } from "../ui/button";
@@ -9,7 +9,7 @@ import { Card, CardHeader } from "../ui/card";
 export async function FeaturedBusinesses() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(
-    orpc.business.featuredBusinesses.queryOptions(),
+    orpcTanstack.business.featuredBusinesses.queryOptions(),
   );
 
   return (
