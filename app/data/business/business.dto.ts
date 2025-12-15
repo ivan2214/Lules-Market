@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { BusinessWithRelations } from "@/db/types";
 import { ImageCreateInputSchema } from "../image/image.dto";
 
 export const BusinessSetupInputSchema = z.object({
@@ -23,5 +22,3 @@ export const BusinessUpdateInputSchema = BusinessSetupInputSchema.extend({
 });
 
 export type BusinessUpdateInput = z.infer<typeof BusinessUpdateInputSchema>;
-
-export type BusinessDTO = BusinessWithRelations;

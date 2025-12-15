@@ -3,7 +3,6 @@
 import { Menu, Store } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,10 +10,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import type { BusinessWithRelations } from "@/db";
 import { UserMenu } from "../navigation/user-menu";
 import { DashboardSidebar } from "./dashboard-sidebar";
 
-export function DashboardHeader({ business }: { business: BusinessDTO }) {
+export function DashboardHeader({
+  business,
+}: {
+  business: BusinessWithRelations;
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {

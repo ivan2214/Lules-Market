@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
+import type { BusinessWithRelations } from "@/db";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { Badge } from "../ui/badge";
 import {
@@ -11,7 +11,7 @@ import {
 } from "../ui/card";
 
 interface BusinessCardProps {
-  business: BusinessDTO;
+  business: BusinessWithRelations;
 }
 
 export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {

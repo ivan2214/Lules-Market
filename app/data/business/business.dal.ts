@@ -12,6 +12,7 @@ import {
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { deleteS3Object } from "@/app/actions/s3";
+import type { BusinessWithRelations } from "@/db";
 import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
@@ -20,12 +21,12 @@ import type { CategoryDTO } from "../category/category.dto";
 import type { ProductDTO } from "../product/product.dto";
 import { requireUser } from "../user/require-user";
 import {
-  type BusinessDTO,
   type BusinessSetupInput,
   BusinessSetupInputSchema,
   type BusinessUpdateInput,
   BusinessUpdateInputSchema,
 } from "./business.dto";
+
 import { canEditBusiness } from "./business.policy";
 import { getCurrentBusiness } from "./require-busines";
 
@@ -113,7 +114,7 @@ export async function listAllBusinessesByCategories({
   category,
 }: {
   category?: CategoryDTO | null;
-}): Promise<{ businesses: BusinessDTO[] }> {
+}): Promise<{ businesses: BusinessWithRelations[] }> {
   "use cache";
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
@@ -144,12 +145,12 @@ export async function listAllBusinessesByCategories({
       )
     : businesses;
 
-  return { businesses: filteredBusinesses as BusinessDTO[] };
+  return { businesses: filteredBusinesses as BusinessWithRelations[] };
 }
 
 export async function getBusinessById(
   businessId: string,
-): Promise<BusinessDTO | null> {
+): Promise<BusinessWithRelations | null> {
   "use cache";
   cacheLife("hours");
   cacheTag(
@@ -178,7 +179,7 @@ export async function getBusinessById(
     },
   });
 
-  return business as BusinessDTO | null;
+  return business as BusinessWithRelations | null;
 }
 
 export async function businessSetup(

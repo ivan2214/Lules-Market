@@ -3,7 +3,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Facebook, Instagram, MessageCircle, Store } from "lucide-react";
 import { useState } from "react";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { BusinessActions } from "@/components/admin/business-actions";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -21,18 +20,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { BusinessWithRelations } from "@/db";
 
 type BusinessesClientProps = {
-  businesses: BusinessDTO[];
+  businesses: BusinessWithRelations[];
 };
 
 export const BusinessesClient: React.FC<BusinessesClientProps> = ({
   businesses,
 }) => {
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
-  const [selectedBusiness, setSelectedBusiness] = useState<BusinessDTO | null>(
-    null,
-  );
+  const [selectedBusiness, setSelectedBusiness] =
+    useState<BusinessWithRelations | null>(null);
 
   const handleViewDetails = (businessId: string) => {
     const business = businesses.find((b) => b.id === businessId);
@@ -42,7 +41,7 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
     }
   };
 
-  const columns: ColumnDef<BusinessDTO>[] = [
+  const columns: ColumnDef<BusinessWithRelations>[] = [
     {
       accessorKey: "name",
       header: "Negocio",

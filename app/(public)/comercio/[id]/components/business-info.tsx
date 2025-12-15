@@ -10,7 +10,7 @@ import {
   Share2,
 } from "lucide-react";
 import Link from "next/link";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
+
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,20 +22,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { BusinessWithRelations } from "@/db";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { SimilarBusinesses } from "./similar-businesses";
 
 type BusinessInfoProps = {
-  business: BusinessDTO;
-  similarBusinesses?: BusinessDTO[];
+  business: BusinessWithRelations;
+  similarBusinesses?: BusinessWithRelations[];
 };
 
 export const BusinessInfo: React.FC<BusinessInfoProps> = ({
   business,
   similarBusinesses,
 }) => {
-  const products: BusinessDTO["products"] = business?.products;
+  const products: BusinessWithRelations["products"] = business?.products;
 
   return (
     <main className="container px-4 py-4 md:py-8">

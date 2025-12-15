@@ -3,9 +3,9 @@ import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { cache } from "react";
+import type { BusinessWithRelations } from "@/db";
 import { db, schema } from "@/db";
 import { requireUser } from "../user/require-user";
-import type { BusinessDTO } from "./business.dto";
 
 export const requireBusiness = cache(async () => {
   await connection();
@@ -62,12 +62,12 @@ export const requireBusiness = cache(async () => {
 
 export const getCurrentBusiness = cache(
   async (): Promise<{
-    currentBusiness: BusinessDTO;
+    currentBusiness: BusinessWithRelations;
   }> => {
     const { business } = await requireBusiness();
 
     return {
-      currentBusiness: business as BusinessDTO,
+      currentBusiness: business,
     };
   },
 );

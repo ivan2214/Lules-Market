@@ -14,7 +14,6 @@ import {
   unbannedBusiness,
 } from "@/app/admin/businesses/actions/banned-business";
 import { changePlan } from "@/app/admin/businesses/actions/change-plan";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,12 +50,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { PlanType } from "@/db";
+import type { BusinessWithRelations, PlanType } from "@/db";
 import { Field, FieldContent, FieldDescription, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 
 interface BusinessActionsProps {
-  business: BusinessDTO;
+  business: BusinessWithRelations;
   onViewDetails: (businessId: string) => void;
 }
 

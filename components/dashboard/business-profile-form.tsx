@@ -3,7 +3,6 @@
 import { Controller } from "react-hook-form";
 import { updateBusinessAction } from "@/app/actions/business-actions";
 import {
-  type BusinessDTO,
   type BusinessUpdateInput,
   BusinessUpdateInputSchema,
 } from "@/app/data/business/business.dto";
@@ -27,11 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { BusinessWithRelations } from "@/db";
 import { useAction } from "@/hooks/use-action";
 import { Uploader } from "../uploader/uploader";
 
 interface BusinessProfileFormProps {
-  business: BusinessDTO;
+  business: BusinessWithRelations;
   categories: { label: string; value: string }[];
 }
 

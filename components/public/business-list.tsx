@@ -1,12 +1,12 @@
 "use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { orpcTanstack } from "@/lib/orpc";
+import type { BusinessWithRelations } from "@/db";
 import { BusinessCard } from "./business-card";
 
-export const BusinessList = () => {
-  const { data: featuredBusinesses } = useSuspenseQuery(
-    orpcTanstack.business.featuredBusinesses.queryOptions(),
-  );
+export const BusinessList = ({
+  featuredBusinesses,
+}: {
+  featuredBusinesses: BusinessWithRelations[];
+}) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {featuredBusinesses.map((business) => (
