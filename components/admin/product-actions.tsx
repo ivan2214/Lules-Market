@@ -2,7 +2,6 @@
 
 import { Ban, CheckCircle, Eye, MoreHorizontal, Power } from "lucide-react";
 import { useState } from "react";
-import type { ProductDTO } from "@/app/data/product/product.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,9 +21,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { ProductWithRelations } from "@/db";
 
 interface ProductActionsProps {
-  product: ProductDTO;
+  product: ProductWithRelations;
   onBan: (productId: string) => void;
   onUnban: (productId: string) => void;
   onToggleActive: (productId: string) => void;

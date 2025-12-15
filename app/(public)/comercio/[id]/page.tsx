@@ -5,11 +5,11 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import {
   getPublicBusiness,
-  getPublicBusinesses,
   getPublicBusinessesByCategories,
 } from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
+import { orpc } from "@/lib/orpc";
 import { BusinessInfo } from "./components/business-info";
 import { BusinessViewTracker } from "./components/business-view-tracker";
 
@@ -121,7 +121,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const { businesses } = await getPublicBusinesses();
+  const { businesses } = await orpc.business.listAllBusinesses();
 
   // fallback si no hay negocios
   if (!businesses.length) {

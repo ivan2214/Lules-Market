@@ -4,8 +4,8 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Activity, startTransition, useEffect, useRef, useState } from "react";
-import { getPublicProducts } from "@/app/actions/public-actions";
-import type { ProductDTO } from "@/app/data/product/product.dto";
+import type { ProductWithRelations } from "@/db";
+import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
@@ -17,7 +17,7 @@ export const SearchForm = () => {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const [results, setResults] = useState<{
-    products: ProductDTO[];
+    products: ProductWithRelations[];
     total: number;
   }>({ products: [], total: 0 });
 
@@ -45,7 +45,9 @@ export const SearchForm = () => {
     }
     debounceRef.current = window.setTimeout(() => {
       startTransition(async () => {
-        const { products, total } = await getPublicProducts({ search: value });
+        const { products, total } = await orpc.products.listAllProducts({
+          search: value,
+        });
         setResults({ products, total });
       });
     }, 300);

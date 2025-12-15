@@ -12,7 +12,7 @@ import {
 import type { CategoryDTO } from "@/app/data/category/category.dto";
 import {
   ProductCreateInputSchema,
-  type ProductDTO,
+  type ProductWithRelations,
 } from "@/app/data/product/product.dto";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,7 +47,7 @@ import { Uploader } from "../uploader/uploader";
 
 interface ProductFormDialogProps {
   canFeature: boolean;
-  product?: ProductDTO;
+  product?: ProductWithRelations;
   trigger?: React.ReactNode;
   className?: HTMLAttributes<"button">["className"];
   isViewMode?: boolean;

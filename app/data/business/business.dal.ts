@@ -1,24 +1,14 @@
 "use server";
-import {
-  and,
-  count,
-  desc,
-  eq,
-  ilike,
-  inArray,
-  or,
-  type SQL,
-} from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { deleteS3Object } from "@/app/actions/s3";
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations, ProductWithRelations } from "@/db";
 import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { daysFromNow } from "@/utils";
 import type { CategoryDTO } from "../category/category.dto";
-import type { ProductDTO } from "../product/product.dto";
 import { requireUser } from "../user/require-user";
 import {
   type BusinessSetupInput,
@@ -29,86 +19,6 @@ import {
 
 import { canEditBusiness } from "./business.policy";
 import { getCurrentBusiness } from "./require-busines";
-
-// ========================================
-// FUNCIONES PÚBLICAS (CACHEABLES)
-// ========================================
-
-export async function listAllBusinesses({
-  search,
-  category,
-  limit,
-  page,
-  sortBy,
-}: {
-  search?: string;
-  category?: string;
-  page: number;
-  limit: number;
-  sortBy?: "newest" | "oldest";
-}) {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
-
-  // Build where conditions
-  const conditions = [eq(schema.business.isActive, true)];
-
-  if (search) {
-    conditions.push(
-      or(
-        ilike(schema.business.name, `%${search}%`),
-        ilike(schema.business.description, `%${search}%`),
-      ) as SQL<string>,
-    );
-  }
-
-  if (category) {
-    const categoryId = await db.query.category.findFirst({
-      where: eq(schema.category.value, category),
-    });
-
-    if (categoryId) {
-      conditions.push(eq(schema.business.categoryId, categoryId.id));
-    }
-  }
-
-  if (sortBy === "newest") {
-    conditions.push(desc(schema.business.createdAt));
-  }
-
-  const whereClause = and(...conditions);
-
-  const [businesses, totalResult] = await Promise.all([
-    db.query.business.findMany({
-      where: whereClause,
-      with: {
-        products: {
-          where: eq(schema.product.active, true),
-          with: {
-            images: true,
-          },
-          limit: 4,
-          orderBy: [
-            desc(schema.product.featured),
-            desc(schema.product.createdAt),
-          ],
-        },
-        logo: true,
-        category: true,
-        coverImage: true,
-      },
-      orderBy: [desc(schema.business.createdAt)],
-      offset: (page - 1) * limit,
-      limit: limit,
-    }),
-    db.select({ count: count() }).from(schema.business).where(whereClause),
-  ]);
-
-  const total = totalResult[0]?.count ?? 0;
-
-  return { businesses, total };
-}
 
 export async function listAllBusinessesByCategories({
   category,
@@ -472,7 +382,7 @@ export async function getBusinessProducts({
 }: {
   limit: number;
   offset: number;
-}): Promise<ProductDTO[]> {
+}): Promise<ProductWithRelations[]> {
   // NO usar "use cache" - requiere autenticación
   const { currentBusiness } = await getCurrentBusiness();
 
@@ -486,7 +396,7 @@ export async function getBusinessProducts({
     },
   });
 
-  return products as ProductDTO[];
+  return products as ProductWithRelations[];
 }
 
 export async function deleteBusiness(): Promise<ActionResult> {

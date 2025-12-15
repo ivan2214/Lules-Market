@@ -6,7 +6,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { deleteProductAction } from "@/app/actions/product.action";
 import type { CategoryDTO } from "@/app/data/category/category.dto";
-import type { ProductDTO } from "@/app/data/product/product.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,12 +20,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import type { ProductWithRelations } from "@/db";
 import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { ProductFormDialog } from "./product-form-dialog";
 
 interface ProductCardProps {
-  product: ProductDTO;
+  product: ProductWithRelations;
   canFeature: boolean;
   categories: CategoryDTO[];
 }

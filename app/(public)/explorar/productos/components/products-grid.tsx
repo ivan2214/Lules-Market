@@ -1,8 +1,8 @@
-import type { ProductDTO } from "@/app/data/product/product.dto";
 import { ProductCard } from "@/components/public/product-card";
+import type { ProductWithRelations } from "@/db";
 
 type ProductsGridProps = {
-  products: ProductDTO[];
+  products: ProductWithRelations[];
 };
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({ products }) => {

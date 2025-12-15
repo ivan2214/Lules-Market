@@ -3,7 +3,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { useState } from "react";
-import type { ProductDTO } from "@/app/data/product/product.dto";
 import { ProductActions } from "@/components/admin/product-actions";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -21,17 +20,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { ProductWithRelations } from "@/db";
 import { mainImage } from "@/utils/main-image";
 
 type ProductsClientProps = {
-  products: ProductDTO[];
+  products: ProductWithRelations[];
 };
 
 export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ProductDTO | null>(
-    null,
-  );
+  const [selectedProduct, setSelectedProduct] =
+    useState<ProductWithRelations | null>(null);
 
   const handleBan = (_productId: string) => {};
 
@@ -47,7 +46,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
     }
   };
 
-  const columns: ColumnDef<ProductDTO>[] = [
+  const columns: ColumnDef<ProductWithRelations>[] = [
     {
       accessorKey: "name",
       header: "Producto",

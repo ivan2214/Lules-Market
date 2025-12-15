@@ -1,18 +1,8 @@
 import "server-only";
-import {
-  and,
-  asc,
-  count,
-  desc,
-  eq,
-  ilike,
-  inArray,
-  or,
-  type SQL,
-} from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { deleteS3Object } from "@/app/actions/s3";
-import { db, schema } from "@/db";
+import { db, type ProductWithRelations, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { getCurrentBusiness } from "../business/require-busines";
@@ -20,7 +10,6 @@ import { requireUser } from "../user/require-user";
 import {
   type ProductCreateInput,
   ProductCreateInputSchema,
-  type ProductDTO,
   type ProductUpdateInput,
   ProductUpdateInputSchema,
 } from "./product.dto";
@@ -30,110 +19,7 @@ import {
   canFeatureProduct,
 } from "./product.policy";
 
-// ========================================
-// FUNCIONES PÚBLICAS (CACHEABLES)
-// ========================================
-
-export async function listAllProducts({
-  limit,
-  page,
-  search,
-  sort,
-  businessId,
-  category,
-}: {
-  search?: string;
-  category?: string;
-  businessId?: string;
-  page: number;
-  limit: number;
-  sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
-}): Promise<{
-  products: ProductDTO[];
-  total: number;
-  pages: number;
-  currentPage: number;
-}> {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, CACHE_TAGS.PRODUCTS);
-
-  // Build where conditions
-  const conditions: SQL<unknown>[] = [eq(schema.product.active, true)];
-
-  if (businessId) {
-    conditions.push(eq(schema.product.businessId, businessId));
-  }
-
-  if (search) {
-    conditions.push(
-      or(
-        ilike(schema.product.name, `%${search}%`),
-        ilike(schema.product.description, `%${search}%`),
-      ) as SQL<string>,
-    );
-  }
-
-  if (category) {
-    const categoryDB = await db.query.category.findFirst({
-      where: eq(schema.category.value, category),
-    });
-
-    categoryDB &&
-      conditions.push(eq(schema.product.categoryId, categoryDB?.id));
-  }
-
-  const whereClause = and(...conditions);
-
-  // Build order by
-  const orderBy = [];
-
-  if (sort) {
-    const [field, direction] = sort.split("_");
-    if (field === "price") {
-      orderBy.push(
-        direction === "asc"
-          ? asc(schema.product.price)
-          : desc(schema.product.price),
-      );
-    } else if (field === "name") {
-      orderBy.push(
-        direction === "asc"
-          ? asc(schema.product.name)
-          : desc(schema.product.name),
-      );
-    }
-  }
-
-  orderBy.push(desc(schema.product.featured));
-  orderBy.push(desc(schema.product.createdAt));
-
-  const [products, totalResult] = await Promise.all([
-    db.query.product.findMany({
-      where: whereClause,
-      with: {
-        business: true,
-        images: true,
-        category: true,
-      },
-      orderBy,
-      offset: (page - 1) * limit,
-      limit: limit,
-    }),
-    db.select({ count: count() }).from(schema.product).where(whereClause),
-  ]);
-
-  const total = totalResult[0]?.count ?? 0;
-
-  return {
-    products: products as ProductDTO[],
-    total,
-    pages: Math.ceil(total / limit),
-    currentPage: page,
-  };
-}
-
-export async function listFeaturedProducts(): Promise<ProductDTO[]> {
+export async function listFeaturedProducts(): Promise<ProductWithRelations[]> {
   "use cache";
   cacheLife("minutes");
   cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, "featured");
@@ -153,12 +39,12 @@ export async function listFeaturedProducts(): Promise<ProductDTO[]> {
     orderBy: [desc(schema.product.createdAt)],
   });
 
-  return products as ProductDTO[];
+  return products as ProductWithRelations[];
 }
 
 export async function getProductById(
   productId: string,
-): Promise<ProductDTO | null> {
+): Promise<ProductWithRelations | null> {
   "use cache";
   cacheLife("hours");
   cacheTag(CACHE_TAGS.PUBLIC_PRODUCTS, `product-${productId}`);
@@ -181,14 +67,16 @@ export async function getProductById(
     },
   });
 
-  return product as ProductDTO | null;
+  return product as ProductWithRelations | null;
 }
 
 // ========================================
 // FUNCIONES PRIVADAS (NO CACHEABLES - Requieren autenticación)
 // ========================================
 
-export async function getProductsByBusinessId(): Promise<ProductDTO[]> {
+export async function getProductsByBusinessId(): Promise<
+  ProductWithRelations[]
+> {
   const { currentBusiness } = await getCurrentBusiness();
 
   const products = await db.query.product.findMany({
@@ -199,7 +87,7 @@ export async function getProductsByBusinessId(): Promise<ProductDTO[]> {
     },
   });
 
-  return products as ProductDTO[];
+  return products as ProductWithRelations[];
 }
 
 export async function createProduct(

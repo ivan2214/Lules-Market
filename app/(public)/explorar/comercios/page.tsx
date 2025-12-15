@@ -1,11 +1,9 @@
 import { Suspense } from "react";
-import {
-  getCategories,
-  getPublicBusinesses,
-} from "@/app/actions/public-actions";
+import { getCategories } from "@/app/actions/public-actions";
 import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
+import { orpc } from "@/lib/orpc";
 import { ActiveFilters } from "../components/active-filters";
 import { SearchAndFilters } from "../components/search-and-filters";
 import { BusinessGrid, BusinessGridSkeleton } from "./components/business-grid";
@@ -28,7 +26,7 @@ export default async function ComerciosPage({
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
 
-  const { businesses, total } = await getPublicBusinesses({
+  const { businesses, total } = await orpc.business.listAllBusinesses({
     category,
     search,
     sortBy,

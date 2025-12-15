@@ -1,6 +1,6 @@
 import { createLog } from "./admin";
-import { featuredBusinesses } from "./business";
-import { recentProducts } from "./products";
+import { featuredBusinesses, listAllBusinesses } from "./business";
+import { listAllProducts, recentProducts } from "./products";
 import { getHomePageStats } from "./stats";
 
 export const router = {
@@ -9,9 +9,11 @@ export const router = {
   },
   products: {
     recentProducts,
+    listAllProducts,
   },
   business: {
     featuredBusinesses,
+    listAllBusinesses,
   },
   stats: {
     getHomePageStats,

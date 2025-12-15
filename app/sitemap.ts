@@ -1,8 +1,5 @@
 import type { MetadataRoute } from "next";
-import {
-  getPublicBusinesses,
-  getPublicProducts,
-} from "./actions/public-actions";
+import { orpc } from "@/lib/orpc";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://lules-market.vercel.app";
@@ -61,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Obtener productos dinámicos
-  const { products } = await getPublicProducts();
+  const { products } = await orpc.products.listAllProducts();
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${baseUrl}/productos/${product.id}`,
     lastModified: product.updatedAt,
@@ -70,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Obtener comercios dinámicos
-  const { businesses } = await getPublicBusinesses();
+  const { businesses } = await orpc.business.listAllBusinesses();
   const businessPages: MetadataRoute.Sitemap = businesses.map((business) => ({
     url: `${baseUrl}/comercios/${business.id}`,
     lastModified: business.updatedAt,
