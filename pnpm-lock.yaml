@@ -91,7 +91,7 @@ importers:
         version: 1.6.1(next@16.0.10(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@wandry/inertia-form':
         specifier: 1.11.0
-        version: 1.11.0(@inertiajs/core@2.2.20)(@inertiajs/react@2.2.20(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(clsx@2.1.1)(react@19.2.3)
+        version: 1.11.0(@inertiajs/core@2.3.1)(@inertiajs/react@2.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(clsx@2.1.1)(react@19.2.3)
       better-auth:
         specifier: 1.4.7
         version: 1.4.7(drizzle-kit@0.31.8)(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(kysely@0.28.9)(pg@8.16.3))(next@16.0.10(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(pg@8.16.3)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -151,7 +151,7 @@ importers:
         version: 7.68.0(react@19.2.3)
       recharts:
         specifier: 3.6.0
-        version: 3.6.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react-is@18.3.1)(react@19.2.3)(redux@5.0.1)
+        version: 3.6.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react-is@16.13.1)(react@19.2.3)(redux@5.0.1)
       sonner:
         specifier: 2.0.7
         version: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -920,11 +920,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@inertiajs/core@2.2.20':
-    resolution: {integrity: sha512-sfMlbutO2/bP9e5swUFo/shu/+QsDisXXXyRIQ1dJeBAawcDZGT7rSTBGFuzE2fdF6UYDBvY9QHMAbzAOlVf0A==}
+  '@inertiajs/core@2.3.1':
+    resolution: {integrity: sha512-K/v/e+HDDkC3FFLbi6GePU49cvYtRKx+KexslotudR3k/JwpKuwseo+sp4tSVPr3FkEfIP7VcC8kHOXSrOmobQ==}
 
-  '@inertiajs/react@2.2.20':
-    resolution: {integrity: sha512-F0UAkzG7tL896Gw8m0V2WqKKFMKD3YMHTU9Yli5h00b9GMirySf53vyOw+hGq2Zie41OAHJPKSdFkPZ95tC7dQ==}
+  '@inertiajs/react@2.3.1':
+    resolution: {integrity: sha512-1hOQxRPqJ8NFG2Rnw+6o+0bO/Jlz3qR5w1V48d1sboi2fhVrXLXANvgAZgySrmhJyPO2UmUP+4UDx+ze4hFNLQ==}
     peerDependencies:
       react: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -3054,6 +3054,9 @@ packages:
     resolution: {integrity: sha512-3BeXMoiOhpOwu62CiVpO6lxfq4eS6KMYfQdMsN/2kUCRNuF2YiEr7u0HLHaQU+O4Xu8YXE3bHVkwaQ85i72EuA==}
     engines: {node: '>=20.0.0'}
 
+  laravel-precognition@1.0.0:
+    resolution: {integrity: sha512-hvXPT7dayCQAidxnsY0hab9Q+Y2rsh7xRpH9uiFtXN8Dekc3tIZt+NrxrOZ9N5SwHBmRBze/Bv+ElfXac0kD6g==}
+
   leac@0.6.0:
     resolution: {integrity: sha512-y+SqErxb8h7nE/fiEX07jsbuhrpO9lL8eca7/Y1nuWV2moNlXhyd59iDGcRf6moVyDMbmTNzL40SUyrFU/yDpg==}
 
@@ -3504,9 +3507,6 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-
-  react-is@18.3.1:
-    resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
   react-redux@9.2.0:
     resolution: {integrity: sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g==}
@@ -4923,19 +4923,21 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@inertiajs/core@2.2.20':
+  '@inertiajs/core@2.3.1':
     dependencies:
       '@types/lodash-es': 4.17.12
       axios: 1.13.2
+      laravel-precognition: 1.0.0
       lodash-es: 4.17.21
       qs: 6.14.0
     transitivePeerDependencies:
       - debug
 
-  '@inertiajs/react@2.2.20(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@inertiajs/react@2.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
-      '@inertiajs/core': 2.2.20
+      '@inertiajs/core': 2.3.1
       '@types/lodash-es': 4.17.12
+      laravel-precognition: 1.0.0
       lodash-es: 4.17.21
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
@@ -6228,10 +6230,10 @@ snapshots:
       next: 16.0.10(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
 
-  '@wandry/inertia-form@1.11.0(@inertiajs/core@2.2.20)(@inertiajs/react@2.2.20(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(clsx@2.1.1)(react@19.2.3)':
+  '@wandry/inertia-form@1.11.0(@inertiajs/core@2.3.1)(@inertiajs/react@2.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(clsx@2.1.1)(react@19.2.3)':
     dependencies:
-      '@inertiajs/core': 2.2.20
-      '@inertiajs/react': 2.2.20(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@inertiajs/core': 2.3.1
+      '@inertiajs/react': 2.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/react': 19.2.7
       '@types/react-dom': 19.2.3(@types/react@19.2.7)
       clsx: 2.1.1
@@ -6906,6 +6908,13 @@ snapshots:
 
   kysely@0.28.9: {}
 
+  laravel-precognition@1.0.0:
+    dependencies:
+      axios: 1.13.2
+      lodash-es: 4.17.21
+    transitivePeerDependencies:
+      - debug
+
   leac@0.6.0: {}
 
   lightningcss-android-arm64@1.30.2:
@@ -7327,8 +7336,6 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-is@18.3.1: {}
-
   react-redux@9.2.0(@types/react@19.2.7)(react@19.2.3)(redux@5.0.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
@@ -7369,7 +7376,7 @@ snapshots:
 
   readdirp@4.1.2: {}
 
-  recharts@3.6.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react-is@18.3.1)(react@19.2.3)(redux@5.0.1):
+  recharts@3.6.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react-is@16.13.1)(react@19.2.3)(redux@5.0.1):
     dependencies:
       '@reduxjs/toolkit': 2.11.2(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.3)(redux@5.0.1))(react@19.2.3)
       clsx: 2.1.1
@@ -7379,7 +7386,7 @@ snapshots:
       immer: 10.2.0
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      react-is: 18.3.1
+      react-is: 16.13.1
       react-redux: 9.2.0(@types/react@19.2.7)(react@19.2.3)(redux@5.0.1)
       reselect: 5.1.1
       tiny-invariant: 1.3.3
