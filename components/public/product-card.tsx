@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { ProductDTO } from "@/app/data/product/product.dto";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,13 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { ProductWithRelations } from "@/db";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { Button } from "../ui/button";
 
 interface ProductCardProps {
-  product: ProductDTO;
+  product: ProductWithRelations;
   isCarrousel?: boolean;
 }
 

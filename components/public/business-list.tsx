@@ -1,4 +1,3 @@
-"use client";
 import type { BusinessWithRelations } from "@/db";
 import { BusinessCard } from "./business-card";
 

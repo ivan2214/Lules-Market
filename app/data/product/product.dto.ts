@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { ProductWithRelations } from "@/db/types";
 import { ImageCreateInputSchema } from "../image/image.dto";
 
 export const ProductCreateInputSchema = z.object({
@@ -29,5 +28,3 @@ export const ProductDeleteInputSchema = z.object({
 });
 
 export type ProductDeleteInput = z.infer<typeof ProductDeleteInputSchema>;
-
-export type ProductDTO = ProductWithRelations;

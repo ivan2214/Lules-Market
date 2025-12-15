@@ -1,17 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { orpcTanstack } from "@/lib/orpc";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/lib/orpc";
 import { ProductList } from "../public/product-list";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
 
 export async function RecentProducts() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(
-    orpcTanstack.products.recentProducts.queryOptions(),
-  );
-
+  const products = await orpc.products.recentProducts();
   return (
     <section className="mb-12">
       <div className="mb-6 flex items-center justify-between">
@@ -26,9 +21,8 @@ export async function RecentProducts() {
           </Link>
         </Button>
       </div>
-      <HydrateClient client={queryClient}>
-        <ProductList />
-      </HydrateClient>
+
+      <ProductList products={products} />
     </section>
   );
 }

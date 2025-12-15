@@ -1,12 +1,11 @@
-"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { orpcTanstack } from "@/lib/orpc";
+import type { ProductWithRelations } from "@/db";
 import { ProductCard } from "./product-card";
 
-export function ProductList() {
-  const { data: products } = useSuspenseQuery(
-    orpcTanstack.products.recentProducts.queryOptions(),
-  );
+export function ProductList({
+  products,
+}: {
+  products: ProductWithRelations[];
+}) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {products.map((product) => (
