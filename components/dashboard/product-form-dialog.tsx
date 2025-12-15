@@ -10,10 +10,7 @@ import {
   updateProductAction,
 } from "@/app/actions/product.action";
 import type { CategoryDTO } from "@/app/data/category/category.dto";
-import {
-  ProductCreateInputSchema,
-  type ProductWithRelations,
-} from "@/app/data/product/product.dto";
+import { ProductCreateInputSchema } from "@/app/data/product/product.dto";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,6 +39,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import type { ProductWithRelations } from "@/db";
 import { useAction } from "@/hooks/use-action";
 import { Uploader } from "../uploader/uploader";
 

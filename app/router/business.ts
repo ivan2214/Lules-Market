@@ -1,7 +1,11 @@
 import { os } from "@orpc/server";
-import { and, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
 import z from "zod";
-import { type BusinessWithRelations, db } from "@/db";
+import {
+  type BusinessWithRelations,
+  type CategoryWithRelations,
+  db,
+} from "@/db";
 import { business, category as categorySchema, product } from "@/db/schema";
 
 export const featuredBusinesses = os
@@ -76,6 +80,8 @@ export const listAllBusinesses = os
 
     if (sortBy === "newest") {
       conditions.push(desc(business.createdAt));
+    } else if (sortBy === "oldest") {
+      conditions.push(asc(business.createdAt));
     }
 
     const whereClause = and(...conditions);
@@ -105,4 +111,83 @@ export const listAllBusinesses = os
     const total = totalResult[0]?.count ?? 0;
 
     return { businesses, total };
+  });
+
+export const listAllBusinessesByCategories = os
+  .route({
+    method: "GET",
+    summary: "Obtener todos los negocios por categoría",
+    description: "Obtener una lista de todos los negocios por categoría",
+    tags: ["Business"],
+  })
+  .input(z.object({ category: z.custom<CategoryWithRelations>() }))
+  .output(z.object({ businesses: z.array(z.custom<BusinessWithRelations>()) }))
+  .handler(async ({ input }) => {
+    const { category } = input;
+    const whereClause = category?.id
+      ? eq(business.categoryId, category.id)
+      : undefined;
+
+    const businesses = await db.query.business.findMany({
+      where: whereClause,
+      with: {
+        products: {
+          with: {
+            images: true,
+          },
+        },
+        logo: true,
+        category: true,
+        coverImage: true,
+      },
+      orderBy: [desc(business.createdAt)],
+    });
+
+    // Filter by category in memory if needed
+    const filteredBusinesses = category?.value
+      ? businesses.filter((b) =>
+          b.category?.value
+            ?.toLowerCase()
+            .includes(category.value.toLowerCase()),
+        )
+      : businesses;
+
+    return { businesses: filteredBusinesses };
+  });
+
+export const getBusinessById = os
+  .route({
+    method: "GET",
+    summary: "Obtener un negocio por ID",
+    description: "Obtener un negocio por ID",
+    tags: ["Business"],
+  })
+  .input(z.object({ id: z.string() }))
+  .output(z.object({ business: z.custom<BusinessWithRelations>().optional() }))
+  .handler(async ({ input }) => {
+    const { id } = input;
+    const businessFound = await db.query.business.findFirst({
+      where: eq(business.id, id),
+      with: {
+        logo: true,
+        coverImage: true,
+        category: true,
+        products: {
+          where: eq(product.active, true),
+          with: {
+            images: true,
+            category: true,
+          },
+          orderBy: [desc(product.featured), desc(product.createdAt)],
+        },
+      },
+    });
+    if (!businessFound) {
+      return {
+        business: undefined,
+      };
+    }
+    return {
+      business: businessFound,
+    };
   });

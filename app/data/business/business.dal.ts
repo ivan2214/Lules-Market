@@ -1,14 +1,13 @@
 "use server";
 import { desc, eq, inArray } from "drizzle-orm";
-import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { deleteS3Object } from "@/app/actions/s3";
-import type { BusinessWithRelations, ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db";
 import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { daysFromNow } from "@/utils";
-import type { CategoryDTO } from "../category/category.dto";
 import { requireUser } from "../user/require-user";
 import {
   type BusinessSetupInput,
@@ -19,78 +18,6 @@ import {
 
 import { canEditBusiness } from "./business.policy";
 import { getCurrentBusiness } from "./require-busines";
-
-export async function listAllBusinessesByCategories({
-  category,
-}: {
-  category?: CategoryDTO | null;
-}): Promise<{ businesses: BusinessWithRelations[] }> {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag(CACHE_TAGS.PUBLIC_BUSINESSES, CACHE_TAGS.BUSINESSES);
-
-  const whereClause = category?.id
-    ? eq(schema.business.categoryId, category.id)
-    : undefined;
-
-  const businesses = await db.query.business.findMany({
-    where: whereClause,
-    with: {
-      products: {
-        with: {
-          images: true,
-        },
-      },
-      logo: true,
-      category: true,
-      coverImage: true,
-    },
-    orderBy: [desc(schema.business.createdAt)],
-  });
-
-  // Filter by category in memory if needed
-  const filteredBusinesses = category?.value
-    ? businesses.filter((b) =>
-        b.category?.value?.toLowerCase().includes(category.value.toLowerCase()),
-      )
-    : businesses;
-
-  return { businesses: filteredBusinesses as BusinessWithRelations[] };
-}
-
-export async function getBusinessById(
-  businessId: string,
-): Promise<BusinessWithRelations | null> {
-  "use cache";
-  cacheLife("hours");
-  cacheTag(
-    CACHE_TAGS.PUBLIC_BUSINESSES,
-    CACHE_TAGS.BUSINESSES,
-    `business-${businessId}`,
-  );
-
-  const business = await db.query.business.findFirst({
-    where: eq(schema.business.id, businessId),
-    with: {
-      logo: true,
-      coverImage: true,
-      category: true,
-      products: {
-        where: eq(schema.product.active, true),
-        with: {
-          images: true,
-          category: true,
-        },
-        orderBy: [
-          desc(schema.product.featured),
-          desc(schema.product.createdAt),
-        ],
-      },
-    },
-  });
-
-  return business as BusinessWithRelations | null;
-}
 
 export async function businessSetup(
   data: BusinessSetupInput,

@@ -3,10 +3,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import {
-  getPublicBusiness,
-  getPublicBusinessesByCategories,
-} from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
 import { orpc } from "@/lib/orpc";
@@ -19,7 +15,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const business = await getPublicBusiness(id);
+  const { business } = await orpc.business.getBusinessById({ id });
 
   if (!business) {
     notFound();
@@ -137,16 +133,18 @@ export default async function BusinessPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const business = await getPublicBusiness(id);
+  const { business } = await orpc.business.getBusinessById({ id });
 
   if (!business) {
     notFound();
   }
 
   // Comercios de la misma categoría
-  const similarBusinesses = await getPublicBusinessesByCategories(
-    business.category,
-  );
+  const similarBusinesses =
+    business.category &&
+    (await orpc.business.listAllBusinessesByCategories({
+      category: business.category,
+    }));
 
   return (
     <div className="container mx-auto space-y-8 py-8">
@@ -170,7 +168,10 @@ export default async function BusinessPage({
         </Link>
       </Button>
 
-      <BusinessInfo similarBusinesses={similarBusinesses} business={business} />
+      <BusinessInfo
+        similarBusinesses={similarBusinesses?.businesses}
+        business={business}
+      />
     </div>
   );
 }
