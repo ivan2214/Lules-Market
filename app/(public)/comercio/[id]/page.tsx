@@ -121,7 +121,7 @@ export async function generateStaticParams() {
 
   // fallback si no hay negocios
   if (!businesses.length) {
-    return [{ id: "default" }]; // id que haga sentido para tu app
+    return [];
   }
 
   return businesses.map((business) => ({ id: business.id }));

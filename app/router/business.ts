@@ -58,6 +58,8 @@ export const listAllBusinesses = os
     // Build where conditions
     const conditions = [eq(business.isActive, true)];
 
+    let orderBy: ReturnType<typeof asc> | ReturnType<typeof desc> | undefined;
+
     if (search) {
       conditions.push(
         or(
@@ -77,10 +79,10 @@ export const listAllBusinesses = os
       }
     }
 
-    if (sortBy === "newest") {
-      conditions.push(desc(business.createdAt));
-    } else if (sortBy === "oldest") {
-      conditions.push(asc(business.createdAt));
+    if (sortBy === "oldest") {
+      orderBy = asc(business.createdAt);
+    } else {
+      orderBy = desc(business.createdAt); // default newest
     }
 
     const whereClause = and(...conditions);
@@ -101,7 +103,7 @@ export const listAllBusinesses = os
           category: true,
           coverImage: true,
         },
-        orderBy: [desc(business.createdAt)],
+        orderBy,
         ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
       }),
       db.select({ count: count() }).from(business).where(whereClause),
