@@ -4,22 +4,21 @@ import Link from "next/link";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCategories } from "../actions/public-actions";
-import { getBusinessProducts } from "../data/business/business.dal";
+import { orpc } from "@/lib/orpc";
 import { getCurrentBusiness } from "../data/business/require-busines";
 
 // ✅ Componente separado para contenido con auth
 async function DashboardContent() {
   const { currentBusiness } = await getCurrentBusiness();
 
-  const productsBusiness = await getBusinessProducts({
+  const productsBusiness = await orpc.business.myProducts({
     limit: 5,
     offset: 0,
   });
 
   const productCount = currentBusiness.products?.length || 0;
   const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
-  const categories = await getCategories();
+  const categories = await orpc.category.listAllCategories();
 
   return (
     <>

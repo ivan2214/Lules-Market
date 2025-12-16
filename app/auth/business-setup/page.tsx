@@ -1,5 +1,4 @@
 import { connection } from "next/server";
-import { getCategories } from "@/app/actions/public-actions";
 import { requireUser } from "@/app/data/user/require-user";
 import { BusinessSetupForm } from "@/components/auth/business-setup-form";
 import {
@@ -9,11 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { orpc } from "@/lib/orpc";
 
 export default async function BusinessSetup() {
   await connection();
   await requireUser();
-  const categories = await getCategories();
+  const categories = await orpc.category.listAllCategories();
   return (
     <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center p-4">
       <Card className="w-full max-w-2xl">

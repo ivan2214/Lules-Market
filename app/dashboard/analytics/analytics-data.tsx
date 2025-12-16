@@ -1,8 +1,8 @@
-import { getAnalytics } from "@/app/data/analytics/analytics.dal";
-import type { AnalyticsPeriod } from "@/app/data/analytics/analytics.dto";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
+import type { AnalyticsPeriod } from "@/app/router/analytics";
 
 import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
+import { orpc } from "@/lib/orpc";
 
 type AnalyticsData = {
   totalViews: number;
@@ -54,7 +54,9 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
     // Fetch analytics data
     let data: AnalyticsData;
     try {
-      const analytics = await getAnalytics(period, currentBusiness.id);
+      const analytics = await orpc.analytics.getStats({
+        period,
+      });
       data = {
         totalViews: analytics?.totalViews ?? 0,
         productViews: analytics?.productViews ?? 0,

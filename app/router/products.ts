@@ -12,7 +12,6 @@ export const recentProducts = os
     description: "Obtener una lista de productos recientes",
     tags: ["Products"],
   })
-  .input(z.void())
   .output(z.array(z.custom<ProductWithRelations>()))
   .handler(async () => {
     const products = await db.query.product.findMany({
@@ -126,5 +125,35 @@ export const listAllProducts = os
       total,
       ...(limit ? { pages: Math.ceil(total / limit) } : {}),
       ...(page ? { currentPage: page } : {}),
+    };
+  });
+
+export const getProductById = os
+  .route({
+    path: "/products/:id",
+    method: "GET",
+    summary: "Obtener un producto por ID",
+    description: "Obtener un producto por ID",
+    tags: ["Products"],
+  })
+  .input(z.object({ id: z.string() }))
+  .output(z.object({ product: z.custom<ProductWithRelations>().optional() }))
+  .handler(async ({ input }) => {
+    const { id } = input;
+    const productFound = await db.query.product.findFirst({
+      where: eq(product.id, id),
+      with: {
+        business: true,
+        images: true,
+        category: true,
+      },
+    });
+    if (!productFound) {
+      return {
+        product: undefined,
+      };
+    }
+    return {
+      product: productFound,
     };
   });

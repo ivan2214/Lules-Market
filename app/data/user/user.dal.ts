@@ -1,12 +1,11 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { cacheLife } from "next/cache";
-import { db, schema } from "@/db";
-import type { ProfileDTO } from "../profile/profile.dto";
+import { db, type ProfileWithRelations, schema } from "@/db";
 
 export async function getPublicProfile(
   userId: string,
-): Promise<ProfileDTO | null> {
+): Promise<ProfileWithRelations | null> {
   "use cache";
   cacheLife("minutes");
 
@@ -25,5 +24,5 @@ export async function getPublicProfile(
     return null;
   }
 
-  return user.profile as ProfileDTO;
+  return user.profile as ProfileWithRelations;
 }

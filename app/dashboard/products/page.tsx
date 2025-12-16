@@ -1,23 +1,22 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getCategories } from "@/app/actions/public-actions";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
-import { getProductsByBusinessId } from "@/app/data/product/product.dal";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { orpc } from "@/lib/orpc";
 
 async function ProductsContent() {
   const { currentBusiness } = await getCurrentBusiness();
-  const products = await getProductsByBusinessId();
+  const products = await orpc.products.listProductsByBusinessId();
 
   const currentPlan = currentBusiness.currentPlan;
 
   const canAdd =
     (currentPlan?.productsUsed || 0) < (currentPlan?.plan?.maxProducts || 0);
-  const categories = await getCategories();
+  const categories = await orpc.category.listAllCategories();
 
   return (
     <>

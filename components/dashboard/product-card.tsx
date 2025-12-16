@@ -4,8 +4,6 @@ import { Edit, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteProductAction } from "@/app/actions/product.action";
-import type { CategoryDTO } from "@/app/data/category/category.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +18,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import type { ProductWithRelations } from "@/db";
+import type { CategoryWithRelations, ProductWithRelations } from "@/db";
+import { orpcTanstack } from "@/lib/orpc";
 import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { ProductFormDialog } from "./product-form-dialog";
@@ -28,7 +27,7 @@ import { ProductFormDialog } from "./product-form-dialog";
 interface ProductCardProps {
   product: ProductWithRelations;
   canFeature: boolean;
-  categories: CategoryDTO[];
+  categories: CategoryWithRelations[];
 }
 
 export function ProductCard({
@@ -42,7 +41,7 @@ export function ProductCard({
   async function handleDelete() {
     setLoading(true);
     try {
-      const result = await deleteProductAction({
+      const result = await orpcTanstack.products.delete.mutationOptions({
         productId: product.id,
       });
       if (result) {

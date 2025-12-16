@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 import { useState } from "react";
-import type { PaymentDTO } from "@/app/data/payment/payment.dto";
+
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { WebhookEvent } from "@/db";
+import type { PaymentWithRelations, WebhookEvent } from "@/db";
 import type { PaymentStatusMP } from "@/types";
 
 const getProcessedBadge = (processed: boolean) => {
@@ -44,7 +44,7 @@ const getStatusBadge = (status: PaymentStatusMP) => {
 };
 
 type PaymentsClientProps = {
-  payments: PaymentDTO[];
+  payments: PaymentWithRelations[];
   webhookEvents: WebhookEvent[];
 };
 
@@ -52,9 +52,8 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
   payments,
   webhookEvents,
 }) => {
-  const [selectedPayment, setSelectedPayment] = useState<PaymentDTO | null>(
-    null,
-  );
+  const [selectedPayment, setSelectedPayment] =
+    useState<PaymentWithRelations | null>(null);
   const [selectedWebhookEvent, setSelectedWebhookEvent] =
     useState<WebhookEvent | null>(null);
 
@@ -75,7 +74,7 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
     }
   };
 
-  const paymentColumns: ColumnDef<PaymentDTO>[] = [
+  const paymentColumns: ColumnDef<PaymentWithRelations>[] = [
     {
       accessorKey: "externalId",
       header: "ID Externo",

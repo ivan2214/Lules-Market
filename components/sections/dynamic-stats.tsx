@@ -14,7 +14,7 @@ export async function DynamicStats() {
     activeBusinessesLastMonth,
     productsTotal,
     productsLastMonth,
-  } = await orpc.stats.getHomePageStats();
+  } = await orpc.analytics.getHomePageStats();
   const stats = {
     businesses: {
       value: activeBusinessesTotal,

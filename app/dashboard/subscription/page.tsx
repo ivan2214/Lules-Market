@@ -1,5 +1,5 @@
 import { getPlans } from "@/app/actions/plan-actions";
-import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
+
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { orpc } from "@/lib/orpc";
 
 export default async function SubscriptionPage() {
   const { currentBusiness } = await getCurrentBusiness();
 
-  const payments = await getSubscriptionHistory();
+  const payments = await orpc.payment.history();
 
   const plans = await getPlans();
 

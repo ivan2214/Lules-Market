@@ -1,7 +1,9 @@
 import { os } from "@orpc/server";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { db, type Log, type LogInsert } from "@/db";
-import { log as schemaLog } from "@/db/schema";
+import { db, type Log, type LogInsert, type PlanInsert } from "@/db";
+import { plan, log as schemaLog } from "@/db/schema";
+import { adminAuthorized } from "./middlewares/authorized";
 
 export const createLog = os
   .route({
@@ -36,5 +38,75 @@ export const createLog = os
     } catch (error) {
       console.error("Error creating log:", error);
       return { success: false, error: "Failed to create log." };
+    }
+  });
+
+export const createPlan = adminAuthorized
+  .route({
+    method: "POST",
+    path: "/admin/plans/createPlan",
+    summary: "Create a new plan",
+    description: "Create a new plan",
+    tags: ["Admin"],
+  })
+  .input(z.custom<PlanInsert>())
+  .output(
+    z.object({
+      errorMessage: z.string().optional(),
+      successMessage: z.string().optional(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    try {
+      const alreadyExists = await db
+        .select()
+        .from(plan)
+        .where(eq(plan.type, input.type))
+        .limit(1);
+      if (alreadyExists.length > 0) {
+        return { errorMessage: "El plan ya existe" };
+      }
+      await db.insert(plan).values({
+        name: input.name,
+        type: input.type,
+        description: input.description,
+        price: input.price,
+        discount: input.discount,
+        maxProducts: input.maxProducts,
+        maxImages: input.maxImages,
+        features: input.features,
+        canFeatureProducts: input.canFeatureProducts,
+        hasStatistics: input.hasStatistics,
+        isActive: input.isActive,
+      });
+
+      return { successMessage: "Plan creado exitosamente" };
+    } catch (error) {
+      console.error("Error creating plan:", error);
+      return { errorMessage: "Error al crear el plan" };
+    }
+  });
+
+export const deleteAllLogs = adminAuthorized
+  .route({
+    method: "POST",
+    path: "/admin/deleteAllLogs",
+    summary: "Delete all logs",
+    description: "Delete all logs",
+    tags: ["Admin"],
+  })
+  .output(
+    z.object({
+      successMessage: z.string().optional(),
+      errorMessage: z.string().optional(),
+    }),
+  )
+  .handler(async () => {
+    try {
+      await db.delete(schemaLog);
+      return { successMessage: "Logs eliminados exitosamente" };
+    } catch (error) {
+      console.error("Error deleting logs:", error);
+      return { errorMessage: "Error al eliminar los logs" };
     }
   });

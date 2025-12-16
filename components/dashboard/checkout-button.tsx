@@ -4,9 +4,10 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { createPaymentPreference } from "@/app/actions/subscription-actions";
+
 import { Button } from "@/components/ui/button";
 import type { PlanType } from "@/db";
+import { orpc } from "@/lib/orpc";
 
 interface CheckoutButtonProps {
   plan: PlanType;
@@ -19,7 +20,9 @@ export function CheckoutButton({ plan }: CheckoutButtonProps) {
   async function handleCheckout() {
     setLoading(true);
     try {
-      const { initPoint } = await createPaymentPreference(plan);
+      const { initPoint } = await orpc.payment.createPreference({
+        planType: plan,
+      });
 
       // In development, use sandbox
       const checkoutUrl = initPoint;

@@ -1,4 +1,4 @@
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
+import type { ImageInsert } from "@/db";
 
 export interface UploaderProps {
   variant?: "default" | "minimal" | "avatar";
@@ -6,8 +6,8 @@ export interface UploaderProps {
   maxSize?: number; // in MB
   accept?: string[];
   preview?: "grid" | "list";
-  onChange: (files: (ImageCreateInput | ImageCreateInput[]) | null) => void;
-  value?: ImageCreateInput | ImageCreateInput[] | null;
+  onChange: (files: (ImageInsert | ImageInsert[]) | null) => void;
+  value?: ImageInsert | ImageInsert[] | null;
   disabled?: boolean;
   className?: string;
   placeholder?: string;

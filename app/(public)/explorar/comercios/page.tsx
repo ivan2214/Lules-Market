@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getCategories } from "@/app/actions/public-actions";
+
 import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
@@ -35,7 +35,7 @@ export default async function ComerciosPage({
   });
 
   const totalPages = Math.ceil(total / currentLimit);
-  const categories = await getCategories();
+  const categories = await orpc.category.listAllCategories();
 
   return (
     <>

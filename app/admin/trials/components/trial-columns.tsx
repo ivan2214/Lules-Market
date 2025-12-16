@@ -3,15 +3,18 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Calendar, XCircle } from "lucide-react";
 import { Suspense, useState } from "react";
-import type { TrialDTO } from "@/app/data/trial/trial.dto";
+
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { TrialWithRelations } from "@/db";
 import { TrialExtendDialog } from "./trial-extend-dialog";
 import { TrialFinishAlertDialog } from "./trial-finish-alert-dialog";
 
-function TrialColumnsInner({ trials }: { trials: TrialDTO[] }) {
-  const [selectedTrial, setSelectedTrial] = useState<TrialDTO | null>(null);
+function TrialColumnsInner({ trials }: { trials: TrialWithRelations[] }) {
+  const [selectedTrial, setSelectedTrial] = useState<TrialWithRelations | null>(
+    null,
+  );
 
   const [trialExtendDialog, setTrialExtendDialog] = useState<boolean>(false);
   const [trialFinishAlertDialog, setTrialFinishAlertDialog] =
@@ -34,7 +37,7 @@ function TrialColumnsInner({ trials }: { trials: TrialDTO[] }) {
     return diff;
   };
 
-  const columns: ColumnDef<TrialDTO>[] = [
+  const columns: ColumnDef<TrialWithRelations>[] = [
     {
       accessorKey: "businessName",
       header: "Negocio",
@@ -139,7 +142,7 @@ function TrialColumnsInner({ trials }: { trials: TrialDTO[] }) {
   );
 }
 
-export function TrialColumns({ trials }: { trials: TrialDTO[] }) {
+export function TrialColumns({ trials }: { trials: TrialWithRelations[] }) {
   return (
     <Suspense fallback={<div>Cargando...</div>}>
       <TrialColumnsInner trials={trials} />

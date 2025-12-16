@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getPublicProduct } from "@/app/actions/public-actions";
+
 import { ProductSchema } from "@/components/structured-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
-  const product = await getPublicProduct(id);
+  const { product } = await orpc.products.getProductById({ id });
 
   if (!product) {
     notFound();
@@ -134,7 +134,7 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const product = await getPublicProduct(id);
+  const { product } = await orpc.products.getProductById({ id });
 
   if (!product) {
     notFound();

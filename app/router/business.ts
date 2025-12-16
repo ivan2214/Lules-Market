@@ -15,7 +15,6 @@ export const featuredBusinesses = os
     description: "Obtener una lista de negocios destacados",
     tags: ["Business"],
   })
-  .input(z.void())
   .output(z.array(z.custom<BusinessWithRelations>()))
   .handler(async () => {
     const featuredBusinesses = await db.query.business.findMany({

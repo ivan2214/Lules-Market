@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
+import type { ImageInsert } from "@/db";
 
 export type VariantCommonProps = {
   id?: string | undefined;
@@ -11,7 +11,7 @@ export type VariantCommonProps = {
   maxFiles?: number | undefined;
   maxSize?: number | undefined;
   preview?: "grid" | "list" | undefined;
-  value?: ImageCreateInput | ImageCreateInput[] | null | undefined;
+  value?: ImageInsert | ImageInsert[] | null | undefined;
   uploading?:
     | {
         isLoading: boolean;
@@ -28,7 +28,7 @@ export type VariantCommonProps = {
     props?: React.InputHTMLAttributes<HTMLInputElement>,
   ) => React.InputHTMLAttributes<HTMLInputElement>;
   canUploadMoreFiles: (
-    value: ImageCreateInput | ImageCreateInput[] | null | undefined,
+    value: ImageInsert | ImageInsert[] | null | undefined,
     max?: number,
   ) => boolean;
   removeFile: (key: string) => void;

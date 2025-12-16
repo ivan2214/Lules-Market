@@ -2,7 +2,6 @@
 
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { AdminDTO } from "@/app/data/admin/admin.dto";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -12,11 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { AdminWithRelations } from "@/db";
 import { signOut } from "@/lib/auth-client";
 import { Button } from "../ui/button";
 
 type AdminMenuProps = {
-  admin: AdminDTO;
+  admin: AdminWithRelations;
 };
 
 export const AdminMenu: React.FC<AdminMenuProps> = ({ admin }) => {
