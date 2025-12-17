@@ -192,3 +192,10 @@ export const getBusinessById = os
       business: businessFound,
     };
   });
+
+export const businessRoute = {
+  featuredBusinesses,
+  listAllBusinesses,
+  listAllBusinessesByCategories,
+  getBusinessById,
+};

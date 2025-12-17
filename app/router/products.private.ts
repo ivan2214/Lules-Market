@@ -344,3 +344,10 @@ export const listProductsByBusinessId = businessAuthorized
 
     return products;
   });
+
+export const productsPrivateRoute = {
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  listProductsByBusinessId,
+};

@@ -20,3 +20,7 @@ export const listAllCategories = os
 
     return categories;
   });
+
+export const categoryRoute = {
+  listAllCategories,
+};

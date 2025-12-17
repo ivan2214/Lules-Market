@@ -446,3 +446,14 @@ export const success = businessAuthorized
       throw error;
     }
   });
+
+export const paymentRoute = {
+  createPreference,
+  upgrade,
+  cancel,
+  history,
+  startTrial,
+  failure,
+  getPayment,
+  success,
+};

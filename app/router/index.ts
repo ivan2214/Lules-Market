@@ -1,88 +1,28 @@
-import { createLog, createPlan, deleteAllLogs } from "./admin";
-import { getHomePageStats, getProductStats, getStats } from "./analytics";
-import {
-  featuredBusinesses,
-  getBusinessById,
-  listAllBusinesses,
-  listAllBusinessesByCategories,
-} from "./business";
-import {
-  businessSetup,
-  deleteBusiness,
-  getMyBusinessProducts,
-  updateBusiness,
-} from "./business.private";
-import { listAllCategories } from "./category";
-import {
-  cancel,
-  createPreference,
-  failure,
-  getPayment,
-  history,
-  startTrial,
-  success,
-  upgrade,
-} from "./payment";
-import { getProductById, listAllProducts, recentProducts } from "./products";
-import {
-  createProduct,
-  deleteProduct,
-  listProductsByBusinessId,
-  updateProduct,
-} from "./products.private";
-import { deleteAccount, updateAccount } from "./settings";
+import { adminRoute } from "./admin";
+import { analyticsRoute } from "./analytics";
+import { businessRoute } from "./business";
+import { businessPrivateRoute } from "./business.private";
+import { categoryRoute } from "./category";
+import { paymentRoute } from "./payment";
+import { productsRoute } from "./products";
+import { productsPrivateRoute } from "./products.private";
+import { settingsRoute } from "./settings";
 
 export const router = {
-  category: {
-    listAllCategories,
-  },
-  admin: {
-    createLog,
-    deleteAllLogs,
-    plans: {
-      createPlan,
-    },
-  },
+  category: categoryRoute,
+  admin: adminRoute,
   products: {
-    // Public
-    recentProducts,
-    listAllProducts,
-    getProductById,
+    ...productsRoute,
     // Private
-    create: createProduct,
-    update: updateProduct,
-    delete: deleteProduct,
-    listProductsByBusinessId,
+    ...productsPrivateRoute,
   },
   business: {
     // Public
-    featuredBusinesses,
-    listAllBusinesses,
-    listAllBusinessesByCategories,
-    getBusinessById,
+    businessRoute,
     // Private
-    setup: businessSetup,
-    update: updateBusiness,
-    delete: deleteBusiness,
-    myProducts: getMyBusinessProducts,
+    ...businessPrivateRoute,
   },
-  analytics: {
-    getStats,
-    getProductStats,
-    getHomePageStats,
-  },
-  payment: {
-    createPreference,
-    upgrade,
-    cancel,
-    history,
-    startTrial,
-    failure,
-    getPayment,
-    success,
-  },
-  settings: {
-    updateAccount,
-    deleteAccount,
-  },
+  analytics: analyticsRoute,
+  payment: paymentRoute,
+  settings: settingsRoute,
 };

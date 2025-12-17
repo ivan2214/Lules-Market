@@ -109,3 +109,9 @@ export const deleteAllLogs = adminAuthorized
       return { errorMessage: "Error al eliminar los logs" };
     }
   });
+
+export const adminRoute = {
+  createLog,
+  createPlan,
+  deleteAllLogs,
+};

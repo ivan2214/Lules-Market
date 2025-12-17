@@ -266,3 +266,9 @@ export const getProductStats = businessAuthorized
       dailyViews: sortedDailyViews,
     };
   });
+
+export const analyticsRoute = {
+  getStats,
+  getProductStats,
+  getHomePageStats,
+};

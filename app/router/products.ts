@@ -157,3 +157,9 @@ export const getProductById = os
       product: productFound,
     };
   });
+
+export const productsRoute = {
+  recentProducts,
+  listAllProducts,
+  getProductById,
+};

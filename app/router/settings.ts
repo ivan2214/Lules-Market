@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 import z from "zod";
 import { db, schema } from "@/db";
-import { authorized } from "./middlewares/authorized";
+import { authorizedLogged } from "./middlewares/authorized";
 import { AccountUpdateSchema } from "./schemas";
 
-export const updateAccount = authorized
+export const updateAccount = authorizedLogged
   .route({
     method: "PATCH",
     description: "Update account",
@@ -24,7 +24,7 @@ export const updateAccount = authorized
     return updated;
   });
 
-export const deleteAccount = authorized
+export const deleteAccount = authorizedLogged
   .route({
     method: "DELETE",
     description: "Delete account",
@@ -52,3 +52,8 @@ export const deleteAccount = authorized
       };
     }
   });
+
+export const settingsRoute = {
+  updateAccount,
+  deleteAccount,
+};

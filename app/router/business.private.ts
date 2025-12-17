@@ -374,3 +374,10 @@ export const getMyBusinessProducts = businessAuthorized
 
     return products;
   });
+
+export const businessPrivateRoute = {
+  setup: businessSetup,
+  update: updateBusiness,
+  delete: deleteBusiness,
+  myProducts: getMyBusinessProducts,
+};
