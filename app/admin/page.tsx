@@ -22,6 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db, schema } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { Analytics } from "@/types";
 
 // ====================== 📘 Tipos auxiliares ======================
@@ -78,6 +79,10 @@ const round = (n: number, decimals = 2): number => {
 export async function getAdminDashboardStats(): Promise<{
   stats: DashboardStats;
 }> {
+  "use cache";
+  cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.STATS);
+  cacheLife("seconds");
+
   const now = new Date();
 
   const startCurrentMonth = startOfMonth(now);
@@ -232,6 +237,10 @@ async function getAnalyticsData(): Promise<{
   monthlyData: Analytics["monthlyRevenue"];
   businessGrowthData: Analytics["businessGrowth"];
 }> {
+  "use cache";
+  cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.ANALYTICS);
+  cacheLife("seconds");
+
   // Count businesses by plan type
   const [freeResult, basicResult, premiumResult] = await Promise.all([
     db
@@ -355,10 +364,6 @@ async function getAnalyticsData(): Promise<{
 // ====================== 🧩 Componente principal ======================
 
 export default async function AdminDashboard() {
-  "use cache";
-  cacheLife("seconds");
-  cacheTag("admin-page");
-
   const [{ stats }, analytics] = await Promise.all([
     getAdminDashboardStats(),
     getAnalyticsData(),

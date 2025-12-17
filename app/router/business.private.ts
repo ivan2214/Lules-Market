@@ -5,15 +5,14 @@ import { z } from "zod";
 import { deleteS3Object } from "@/app/actions/s3";
 import { type Business, db, schema } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { authorized, businessAuthorized } from "./middlewares/authorized";
+import { authorizedLogged, businessAuthorized } from "./middlewares/authorized";
 import { BusinessSetupSchema, BusinessUpdateSchema } from "./schemas";
 
 // Helper for invalidation
 const invalidateBusiness = (businessId?: string) => {
-  updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-  updateTag(CACHE_TAGS.BUSINESSES);
+  updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
   if (businessId) {
-    updateTag(`business-${businessId}`);
+    updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
   }
 };
 
@@ -21,7 +20,7 @@ const invalidateBusiness = (businessId?: string) => {
 // BUSINESS SETUP
 // ==========================================
 
-export const businessSetup = authorized
+export const businessSetup = authorizedLogged
   .route({
     method: "POST",
     description: "Setup business",
@@ -332,8 +331,7 @@ export const deleteBusiness = businessAuthorized
         .where(eq(schema.user.id, currentBusiness.userId));
 
       invalidateBusiness(currentBusiness.id);
-      updateTag(CACHE_TAGS.PUBLIC_PRODUCTS);
-      updateTag(CACHE_TAGS.PRODUCTS);
+      updateTag(CACHE_TAGS.PRODUCT.GET_ALL);
 
       return { success: true };
     } catch (error) {

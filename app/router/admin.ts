@@ -1,11 +1,10 @@
-import { os } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db, type Log, type LogInsert, type PlanInsert } from "@/db";
 import { plan, log as schemaLog } from "@/db/schema";
 import { adminAuthorized } from "./middlewares/authorized";
 
-export const createLog = os
+export const createLog = adminAuthorized
   .route({
     method: "POST",
     path: "/admin/createLog",

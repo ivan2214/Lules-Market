@@ -12,10 +12,9 @@ import {
 } from "./schemas";
 
 const invalidateProducts = (productId?: string) => {
-  updateTag(CACHE_TAGS.PUBLIC_PRODUCTS);
-  updateTag(CACHE_TAGS.PRODUCTS);
+  updateTag(CACHE_TAGS.PRODUCT.GET_ALL);
   if (productId) {
-    updateTag(`product-${productId}`);
+    updateTag(CACHE_TAGS.PRODUCT.GET_BY_ID(productId));
   }
 };
 

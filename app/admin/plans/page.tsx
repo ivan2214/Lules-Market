@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { db, type Plan } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { formatCurrency } from "@/utils/format";
 import { PlanClient } from "./components/plan-client";
 import { PlanForm } from "./components/plan-form";
@@ -25,7 +26,7 @@ import { PlanForm } from "./components/plan-form";
 async function getPlans(): Promise<Plan[]> {
   "use cache";
   cacheLife("days");
-  cacheTag("plans-page");
+  cacheTag(CACHE_TAGS.ADMIN.PLANS.GET_ALL);
 
   const plans = await db.query.plan.findMany();
 

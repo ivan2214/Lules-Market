@@ -2,35 +2,16 @@ import { ORPCError } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { z } from "zod";
-import {
-  type CurrentPlan,
-  db,
-  type PaymentWithRelations,
-  type PlanType,
-  schema,
-} from "@/db";
+import { type CurrentPlan, db, type PaymentWithRelations, schema } from "@/db";
 import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
+import { getPlan } from "../data/plan/plan.dal";
 import { businessAuthorized } from "./middlewares/authorized";
 
-// Helper to get plan
-async function getPlan(planType: PlanType) {
-  try {
-    const result = await db.query.plan.findFirst({
-      where: eq(schema.plan.type, planType),
-    });
-    return result ?? null;
-  } catch (error) {
-    console.error("Error al obtener el plan:", error);
-    return null;
-  }
-}
-
 const invalidateBusiness = (businessId: string) => {
-  updateTag(CACHE_TAGS.BUSINESSES);
-  updateTag(CACHE_TAGS.PUBLIC_BUSINESSES);
-  updateTag(`business-${businessId}`);
+  updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+  updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
 };
 
 const PlanTypeSchema = z.enum(["FREE", "BASIC", "PREMIUM"]);

@@ -10,13 +10,14 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { db, schema } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { TrialColumns } from "./components/trial-columns";
 import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
 
 async function getTrialsAndActiveCount() {
   "use cache";
   cacheLife("hours");
-  cacheTag("trials-page");
+  cacheTag(CACHE_TAGS.ADMIN.TRIALS.GET_ALL);
 
   const now = new Date();
 

@@ -18,7 +18,7 @@ export async function getLogs(
   currentPage: number;
 }> {
   "use cache";
-  cacheTag(CACHE_TAGS.ADMIN_LOGS);
+  cacheTag(CACHE_TAGS.ADMIN.LOGS.GET_ALL);
 
   const skip = (page - 1) * limit;
 

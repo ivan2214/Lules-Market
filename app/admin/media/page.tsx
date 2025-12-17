@@ -1,12 +1,13 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { MediaClient } from "./components/media-client";
 
 const getImages = async (page?: string, limit?: string) => {
   "use cache";
   cacheLife("hours");
-  cacheTag("media-page");
+  cacheTag(CACHE_TAGS.ADMIN.MEDIA.GET_ALL);
   return await db.query.image.findMany({
     limit: limit ? Number(limit) : 10,
     offset: page ? Number(page) * (limit ? Number(limit) : 10) : 0,
