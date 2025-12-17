@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db/types";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";

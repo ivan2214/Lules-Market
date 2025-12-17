@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Image } from "@/db";
+import type { Image } from "@/db/types";
 
 type MediaClientProps = {
   images: Image[];

@@ -7,7 +7,7 @@ import { Suspense, useState } from "react";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { AdminWithRelations } from "@/db";
+import type { AdminWithRelations } from "@/db/types";
 import { AdminDeleteAlertDialog } from "./admin-delete-alert-dialog";
 
 function AdminColumnsInner({ admins }: { admins: AdminWithRelations[] }) {

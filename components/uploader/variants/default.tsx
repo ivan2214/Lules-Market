@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import type { ImageInsert } from "@/db";
+import type { ImageInsert } from "@/db/types";
 import { cn } from "@/lib/utils";
 import { formatFileSize, isImage } from "../uploader.helpers";
 import type { VariantCommonProps } from "./types";

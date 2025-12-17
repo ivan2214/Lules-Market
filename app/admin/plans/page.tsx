@@ -17,7 +17,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { db, type Plan } from "@/db";
+import { db } from "@/db";
+import type { Plan } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { formatCurrency } from "@/utils/format";
 import { PlanClient } from "./components/plan-client";

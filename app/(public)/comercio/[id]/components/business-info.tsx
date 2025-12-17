@@ -22,7 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { SimilarBusinesses } from "./similar-businesses";

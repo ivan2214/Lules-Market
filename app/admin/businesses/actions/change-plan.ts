@@ -3,7 +3,8 @@
 import { addDays } from "date-fns";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
-import { db, type PlanType, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { PlanType } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 
 interface ChangePlanParams {

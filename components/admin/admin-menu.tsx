@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { AdminWithRelations } from "@/db";
+import type { AdminWithRelations } from "@/db/types";
 import { signOut } from "@/lib/auth-client";
 import { Button } from "../ui/button";
 

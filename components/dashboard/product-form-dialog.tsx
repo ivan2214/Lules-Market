@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { CategoryWithRelations, ProductWithRelations } from "@/db";
+import type { CategoryWithRelations, ProductWithRelations } from "@/db/types";
 import { orpcTanstack } from "@/lib/orpc";
 import { Uploader } from "../uploader/uploader";
 

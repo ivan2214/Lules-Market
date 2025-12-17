@@ -1,7 +1,8 @@
 import { ORPCError } from "@orpc/server";
 import { and, count, eq, gte, lt } from "drizzle-orm";
 import { z } from "zod";
-import { db, type Product, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { Product } from "@/db/types";
 import { businessAuthorized } from "./middlewares/authorized";
 
 const AnalyticsPeriodSchema = z.enum(["7d", "30d", "90d"]).default("30d");

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 
 type Props = {
   businesses: BusinessWithRelations[];

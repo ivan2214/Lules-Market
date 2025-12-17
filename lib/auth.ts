@@ -3,13 +3,13 @@ import { createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
 import { nextCookies } from "better-auth/next-js";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
 import {
   admin,
   business,
   emailVerificationToken,
   user as userDrizzle,
 } from "@/db/schema";
+import { db } from "@/db/types";
 import { env } from "@/env";
 import { sendEmail } from "./email";
 

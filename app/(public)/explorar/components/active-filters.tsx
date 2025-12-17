@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Business } from "@/db";
+import type { Business } from "@/db/types";
 import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
 
 type ActiveFiltersProps = {

@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 
 type BusinessCardProps = { business: BusinessWithRelations };
 

@@ -3,8 +3,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import z from "zod";
 import { deleteS3Object } from "@/app/actions/s3";
-import type { Product, ProductWithRelations } from "@/db";
 import { db, schema } from "@/db";
+import type { Product, ProductWithRelations } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { businessAuthorized } from "./middlewares/authorized";
 import {

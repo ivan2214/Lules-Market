@@ -50,7 +50,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { BusinessWithRelations, PlanType } from "@/db";
+import type { BusinessWithRelations, PlanType } from "@/db/types";
 import { Field, FieldContent, FieldDescription, FieldLabel } from "../ui/field";
 import { Spinner } from "../ui/spinner";
 

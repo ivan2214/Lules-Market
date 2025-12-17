@@ -1,4 +1,4 @@
-import type { ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db/types";
 import { ProductCard } from "./product-card";
 
 export function ProductList({

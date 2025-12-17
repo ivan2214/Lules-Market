@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { db, type Log, type LogInsert, type PlanInsert } from "@/db";
 import { plan, log as schemaLog } from "@/db/schema";
+import type { Log, LogInsert, PlanInsert } from "@/db/types";
+import { db } from "@/db/types";
 import { adminAuthorized } from "./middlewares/authorized";
 
 export const createLog = adminAuthorized

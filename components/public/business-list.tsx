@@ -1,4 +1,4 @@
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 import { BusinessCard } from "./business-card";
 
 export const BusinessList = ({

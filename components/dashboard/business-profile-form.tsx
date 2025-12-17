@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { BusinessWithRelations, ImageInsert } from "@/db";
+import type { BusinessWithRelations, ImageInsert } from "@/db/types";
 import { orpc } from "@/lib/orpc";
 import { Uploader } from "../uploader/uploader";
 

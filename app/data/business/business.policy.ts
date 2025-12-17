@@ -1,4 +1,4 @@
-import type { PlanType } from "@/db";
+import type { PlanType } from "@/db/types";
 import "server-only";
 
 type PolicyUser = {

@@ -1,4 +1,4 @@
-import type { ImageInsert } from "@/db";
+import type { ImageInsert } from "@/db/types";
 
 export interface UploaderProps {
   variant?: "default" | "minimal" | "avatar";

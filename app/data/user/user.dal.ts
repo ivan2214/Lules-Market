@@ -1,7 +1,8 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { cacheLife } from "next/cache";
-import { db, type ProfileWithRelations, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { ProfileWithRelations } from "@/db/types";
 
 export async function getPublicProfile(
   userId: string,

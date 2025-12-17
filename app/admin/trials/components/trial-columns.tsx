@@ -7,7 +7,7 @@ import { Suspense, useState } from "react";
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { TrialWithRelations } from "@/db";
+import type { TrialWithRelations } from "@/db/types";
 import { TrialExtendDialog } from "./trial-extend-dialog";
 import { TrialFinishAlertDialog } from "./trial-finish-alert-dialog";
 

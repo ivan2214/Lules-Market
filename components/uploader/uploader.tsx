@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { type FileRejection, useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import type { ImageInsert } from "@/db";
+import type { ImageInsert } from "@/db/types";
 import { useS3Uploader } from "@/hooks/use-s3-uploader";
 import { canUploadMoreFiles, isValueArray } from "./uploader.helpers";
 // Tipos y helpers extraídos a módulos separados para modularidad.

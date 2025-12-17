@@ -19,7 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import type { CategoryWithRelations, ProductWithRelations } from "@/db";
+import type { CategoryWithRelations, ProductWithRelations } from "@/db/types";
 import { orpcTanstack } from "@/lib/orpc";
 import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";

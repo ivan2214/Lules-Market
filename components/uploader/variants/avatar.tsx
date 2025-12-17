@@ -14,7 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import type { ImageInsert } from "@/db";
+import type { ImageInsert } from "@/db/types";
 import { cn } from "@/lib/utils";
 import type { VariantCommonProps } from "./types";
 

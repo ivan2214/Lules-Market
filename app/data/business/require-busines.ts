@@ -3,8 +3,8 @@ import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { cache } from "react";
-import type { BusinessWithRelations } from "@/db";
 import { db, schema } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 import { requireUser } from "../user/require-user";
 
 export const requireBusiness = cache(async () => {

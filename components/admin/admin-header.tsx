@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { AdminWithRelations } from "@/db";
+import type { AdminWithRelations } from "@/db/types";
 import { AdminMenu } from "./admin-menu";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminMenuSkeleton } from "./skeletons/admin-menu-skeleton";

@@ -1,7 +1,7 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
-import type { Image } from "@/db";
+import type { Image } from "@/db/types";
 
 type Props = {
   name: string;

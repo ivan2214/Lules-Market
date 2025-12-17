@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { db } from "@/db";
+import { db } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { AdminColumns } from "./components/admin-columns";
 import { AdminCreateDialog } from "./components/admin-create-dialog";

@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { Plan, PlanInsert, PlanType } from "@/db";
+import type { Plan, PlanInsert, PlanType } from "@/db/types";
 import { orpcTanstack } from "@/lib/orpc";
 
 export const planFormSchema = z.object({

@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Activity, startTransition, useEffect, useRef, useState } from "react";
-import type { ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db/types";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";

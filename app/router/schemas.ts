@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { LogInsert } from "@/db";
+import type { LogInsert } from "@/db/types";
 
 // ==========================================
 // SHARED SCHEMAS

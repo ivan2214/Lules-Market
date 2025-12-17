@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { Badge } from "../ui/badge";
 import {

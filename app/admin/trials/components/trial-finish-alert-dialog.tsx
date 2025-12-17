@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { TrialWithRelations } from "@/db";
+import type { TrialWithRelations } from "@/db/types";
 
 export const TrialFinishAlertDialog = ({
   onOpenChange,

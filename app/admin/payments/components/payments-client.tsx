@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { PaymentWithRelations, WebhookEvent } from "@/db";
+import type { PaymentWithRelations, WebhookEvent } from "@/db/types";
 import type { PaymentStatusMP } from "@/types";
 
 const getProcessedBadge = (processed: boolean) => {

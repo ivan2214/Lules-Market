@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import z from "zod";
-import { db, schema, type User } from "@/db";
+import { db, schema } from "@/db";
+import type { User } from "@/db/types";
 import { authorizedLogged } from "./middlewares/authorized";
 import { AccountUpdateSchema } from "./schemas";
 

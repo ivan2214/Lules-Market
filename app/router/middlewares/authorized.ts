@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
 import { admin, business } from "@/db/schema";
+import { db } from "@/db/types";
 import { authed } from "./auth";
 
 export const authorizedLogged = authed;

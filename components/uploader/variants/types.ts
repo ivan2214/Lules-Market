@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import type { ImageInsert } from "@/db";
+import type { ImageInsert } from "@/db/types";
 
 export type VariantCommonProps = {
   id?: string | undefined;

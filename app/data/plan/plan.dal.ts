@@ -1,7 +1,8 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 import { cacheTag } from "next/cache";
-import { db, type Plan, type PlanType, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { Plan, PlanType } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 
 export async function getAll(): Promise<Plan[]> {

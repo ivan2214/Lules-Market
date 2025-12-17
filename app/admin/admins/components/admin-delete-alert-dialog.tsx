@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { AdminWithRelations } from "@/db";
+import type { AdminWithRelations } from "@/db/types";
 
 type AdminDeleteAlertDialogProps = {
   open: boolean;

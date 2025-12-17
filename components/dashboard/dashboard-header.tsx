@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { BusinessWithRelations } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 import { UserMenu } from "../navigation/user-menu";
 import { DashboardSidebar } from "./dashboard-sidebar";
 

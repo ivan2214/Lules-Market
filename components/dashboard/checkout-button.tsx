@@ -5,7 +5,7 @@ import { AlertTriangleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import type { PlanType } from "@/db";
+import type { PlanType } from "@/db/types";
 import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 

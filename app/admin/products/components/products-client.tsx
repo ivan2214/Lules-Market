@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db/types";
 import { mainImage } from "@/utils/main-image";
 
 type ProductsClientProps = {

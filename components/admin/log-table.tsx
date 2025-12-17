@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Log } from "@/db";
+import type { Log } from "@/db/types";
 import { orpc } from "@/lib/orpc";
 import {
   AlertDialog,

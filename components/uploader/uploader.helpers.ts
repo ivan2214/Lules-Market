@@ -1,6 +1,6 @@
 // Helpers extraídos del componente original para mejorar modularidad
 
-import type { ImageInsert } from "@/db";
+import type { ImageInsert } from "@/db/types";
 
 /**
  * Formatea bytes a una representación legible.

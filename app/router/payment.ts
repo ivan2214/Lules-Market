@@ -2,13 +2,8 @@ import { ORPCError } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { z } from "zod";
-import {
-  type CurrentPlan,
-  db,
-  type Payment,
-  type PaymentWithRelations,
-  schema,
-} from "@/db";
+import { db, schema } from "@/db";
+import type { CurrentPlan, Payment, PaymentWithRelations } from "@/db/types";
 import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";

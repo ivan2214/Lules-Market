@@ -21,7 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db/types";
 
 interface ProductActionsProps {
   product: ProductWithRelations;

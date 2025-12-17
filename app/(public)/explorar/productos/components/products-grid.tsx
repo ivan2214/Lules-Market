@@ -1,5 +1,5 @@
 import { ProductCard } from "@/components/public/product-card";
-import type { ProductWithRelations } from "@/db";
+import type { ProductWithRelations } from "@/db/types";
 
 type ProductsGridProps = {
   products: ProductWithRelations[];
