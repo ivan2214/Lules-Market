@@ -102,6 +102,7 @@
     "@types/pg": "8.16.0",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
+    "@typescript/analyze-trace": "^0.10.1",
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "0.31.8",
     "husky": "9.1.7",

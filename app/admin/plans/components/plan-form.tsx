@@ -80,7 +80,7 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
   });
 
   const { mutate, isPending } = useMutation(
-    orpcTanstack.admin.plans.createPlan.mutationOptions({
+    orpcTanstack.admin.createPlan.mutationOptions({
       onSuccess: () => {
         form.reset();
       },

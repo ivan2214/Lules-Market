@@ -7,7 +7,12 @@ import type React from "react";
 import { type HTMLAttributes, useState } from "react";
 import { Controller, Form, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ProductCreateSchema, ProductUpdateSchema } from "@/app/router/schemas";
+import {
+  type ProductCreateInput,
+  ProductCreateSchema,
+  type ProductUpdateInput,
+  ProductUpdateSchema,
+} from "@/app/router/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -61,9 +66,9 @@ export function ProductFormDialog({
   const queryClient = useQueryClient();
 
   const createProductMutation = useMutation(
-    orpcTanstack.products.create.mutationOptions({
-      onSuccess: (newTodo) => {
-        toast.success(`Producto "${newTodo.title}" creado exitosamente!`);
+    orpcTanstack.products.createProduct.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Producto "${data.product.name}" creado exitosamente!`);
 
         // Invalidate channel queries to refetch the list
         queryClient.invalidateQueries({
@@ -78,9 +83,11 @@ export function ProductFormDialog({
   );
 
   const updateProductMutation = useMutation(
-    orpcTanstack.products.update.mutationOptions({
-      onSuccess: (newTodo) => {
-        toast.success(`Producto "${newTodo.title}" actualizado exitosamente!`);
+    orpcTanstack.products.updateProduct.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(
+          `Producto "${data.product.name}" actualizado exitosamente!`,
+        );
 
         // Invalidate channel queries to refetch the list
         queryClient.invalidateQueries({
@@ -96,43 +103,45 @@ export function ProductFormDialog({
     }),
   );
 
-  const defaultValues = product?.id
-    ? {
-        productId: product.id,
-        name: product.name,
-        description: product.description || "",
-        price: product.price || 0,
-        category: product.category,
-        images: product?.images?.map((img) => ({
-          url: img.url,
-          key: img.key,
-          name: img.name ?? undefined,
-          isMainImage: img.isMainImage,
-          size: img.size ?? undefined,
-        })),
-        active: product.active,
-        featured: product.featured,
-      }
-    : {
-        name: "",
-        description: "",
-        price: 0,
-        images: [],
-        active: true,
-        featured: false,
-      };
+  const defaultValues: Partial<ProductCreateInput | ProductUpdateInput> =
+    product?.id
+      ? {
+          productId: product.id,
+          name: product.name,
+          description: product.description || "",
+          price: product.price || 0,
+          category: product.category?.value || "",
+          images:
+            product?.images?.map((img) => ({
+              url: img.url,
+              key: img.key,
+              name: img.name ?? "",
+              isMainImage: img.isMainImage,
+              size: img.size ?? 0,
+            })) ?? [],
+          active: product.active,
+          featured: product.featured,
+        }
+      : {
+          name: "",
+          description: "",
+          price: 0,
+          images: [],
+          active: true,
+          featured: false,
+        };
   const schema = product ? ProductUpdateSchema : ProductCreateSchema;
 
-  const form = useForm<typeof schema>({
+  const form = useForm<ProductCreateInput | ProductUpdateInput>({
     defaultValues,
     resolver: zodResolver(schema),
   });
 
   const execute = form.handleSubmit((data) => {
     if (product) {
-      updateProductMutation.mutate(data);
+      updateProductMutation.mutate(data as ProductUpdateInput);
     } else {
-      createProductMutation.mutate(data);
+      createProductMutation.mutate(data as ProductCreateInput);
     }
   });
 
@@ -271,7 +280,7 @@ export function ProductFormDialog({
                             <div className="flex items-center gap-2">
                               <input
                                 type="checkbox"
-                                checked={field.value?.value === value}
+                                checked={field.value === value}
                                 readOnly
                               />
                               {label}

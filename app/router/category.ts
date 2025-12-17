@@ -1,7 +1,7 @@
 import { os } from "@orpc/server";
 import z from "zod";
+import { db } from "@/db";
 import type { CategoryWithRelations } from "@/db/types";
-import { db } from "@/db/types";
 
 export const listAllCategories = os
   .route({

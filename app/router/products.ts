@@ -1,9 +1,9 @@
 import { os } from "@orpc/server";
 import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
 import { z } from "zod";
+import { db } from "@/db";
 import { product, category as schemaCategory } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
-import { db } from "@/db/types";
 
 export const recentProducts = os
   .route({

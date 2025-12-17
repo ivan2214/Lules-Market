@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { db } from "@/db/types";
+import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { MediaClient } from "./components/media-client";
 

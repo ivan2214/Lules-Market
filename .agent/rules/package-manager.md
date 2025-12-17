@@ -2,4 +2,4 @@
 trigger: always_on
 ---
 
-use pnpm
+use pnpm and pnpm dlx

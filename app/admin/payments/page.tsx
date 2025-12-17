@@ -2,7 +2,7 @@ import { Download } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { db } from "@/db/types";
+import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { PaymentsClient } from "./components/payments-client";
 
