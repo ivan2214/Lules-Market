@@ -118,7 +118,7 @@ const StatRow = ({
     <span className="font-medium text-muted-foreground">{label}</span>
     <Badge
       variant={variant}
-      className="pointer-events-none h-5 min-w-[2rem] justify-center px-1.5"
+      className="pointer-events-none h-5 min-w-8 justify-center px-1.5"
     >
       {value}
     </Badge>

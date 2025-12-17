@@ -18,7 +18,7 @@ export const router = {
   },
   business: {
     // Public
-    businessRoute,
+    ...businessRoute,
     // Private
     ...businessPrivateRoute,
   },

@@ -1,8 +1,9 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { Edit, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -35,28 +36,23 @@ export function ProductCard({
   canFeature = false,
   categories,
 }: ProductCardProps) {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function handleDelete() {
-    setLoading(true);
-    try {
-      const result = await orpcTanstack.products.delete.mutationOptions({
-        productId: product.id,
-      });
-      if (result) {
+  const { mutate, isPending } = useMutation(
+    orpcTanstack.products.deleteProduct.mutationOptions({
+      onSuccess() {
         toast.success("Producto eliminado");
         router.refresh();
-      } else {
-        toast.error(result || "Error al eliminar el producto");
-      }
-    } catch (error) {
-      console.error(" Error deleting product:", error);
-      toast.error("Error inesperado");
-    } finally {
-      setLoading(false);
-    }
-  }
+      },
+      onError(error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Error al eliminar el producto",
+        );
+      },
+    }),
+  );
 
   return (
     <Card>
@@ -123,7 +119,7 @@ export function ProductCard({
         />
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" disabled={loading}>
+            <Button variant="outline" size="sm" disabled={isPending}>
               <Trash2 className="h-4 w-4" />
             </Button>
           </AlertDialogTrigger>
@@ -138,7 +134,7 @@ export function ProductCard({
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction
-                onClick={handleDelete}
+                onClick={() => mutate({ productId: product.id })}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 Eliminar
