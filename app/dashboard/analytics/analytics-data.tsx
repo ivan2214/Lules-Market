@@ -26,22 +26,10 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
   try {
     // Get business and subscription info
     const { currentBusiness } = await getCurrentBusiness();
-
-    if (!currentBusiness) {
-      console.error("Business not found");
-      return (
-        <AnalyticsContent
-          period={period}
-          data={DEFAULT_ANALYTICS}
-          hasStatistics={false}
-        />
-      );
-    }
-
     const currentPlan = currentBusiness.currentPlan;
 
-    // If no stats available, return early with default data
-    if (!currentPlan) {
+    if (!currentBusiness || !currentPlan) {
+      console.error("Business not found");
       return (
         <AnalyticsContent
           period={period}
