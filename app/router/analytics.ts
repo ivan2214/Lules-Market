@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/server";
 import { and, count, eq, gte, lt } from "drizzle-orm";
 import { z } from "zod";
-import { db, schema } from "@/db";
+import { db, type Product, schema } from "@/db";
 import { businessAuthorized } from "./middlewares/authorized";
 
 const AnalyticsPeriodSchema = z.enum(["7d", "30d", "90d"]).default("30d");
@@ -92,6 +92,20 @@ export const getStats = businessAuthorized
   .input(
     z.object({
       period: AnalyticsPeriodSchema.optional(),
+    }),
+  )
+  .output(
+    z.object({
+      totalViews: z.number(),
+      productViews: z.number(),
+      businessViews: z.number(),
+      dailyViews: z.array(z.object({ date: z.string(), views: z.number() })),
+      topProducts: z.array(
+        z.object({ id: z.string(), name: z.string(), count: z.number() }),
+      ),
+      topReferrers: z.array(
+        z.object({ referrer: z.string(), count: z.number() }),
+      ),
     }),
   )
   .handler(async ({ context, input }) => {
@@ -208,6 +222,13 @@ export const getProductStats = businessAuthorized
     z.object({
       productId: z.string(),
       period: AnalyticsPeriodSchema.optional(),
+    }),
+  )
+  .output(
+    z.object({
+      product: z.custom<Product>(),
+      totalViews: z.number(),
+      dailyViews: z.array(z.object({ date: z.string(), views: z.number() })),
     }),
   )
   .handler(async ({ context, input }) => {

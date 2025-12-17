@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import z from "zod";
-import { db, schema } from "@/db";
+import { db, schema, type User } from "@/db";
 import { authorizedLogged } from "./middlewares/authorized";
 import { AccountUpdateSchema } from "./schemas";
 
@@ -12,6 +12,7 @@ export const updateAccount = authorizedLogged
     tags: ["Settings"],
   })
   .input(AccountUpdateSchema)
+  .output(z.custom<User>())
   .handler(async ({ context, input }) => {
     const { user } = context;
 

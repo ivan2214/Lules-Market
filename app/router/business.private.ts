@@ -3,7 +3,7 @@ import { desc, eq, inArray } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { z } from "zod";
 import { deleteS3Object } from "@/app/actions/s3";
-import { type Business, db, schema } from "@/db";
+import { type Business, db, type ProductWithRelations, schema } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { authorizedLogged, businessAuthorized } from "./middlewares/authorized";
 import { BusinessSetupSchema, BusinessUpdateSchema } from "./schemas";
@@ -28,6 +28,12 @@ export const businessSetup = authorizedLogged
     tags: ["Business"],
   })
   .input(BusinessSetupSchema)
+  .output(
+    z.object({
+      success: z.boolean(),
+      business: z.custom<Business>(),
+    }),
+  )
   .handler(async ({ context, input }) => {
     const { user } = context;
 
@@ -258,6 +264,11 @@ export const deleteBusiness = businessAuthorized
     summary: "Delete business",
     tags: ["Business"],
   })
+  .output(
+    z.object({
+      success: z.boolean(),
+    }),
+  )
   .handler(async ({ context }) => {
     const { business: currentBusiness } = context;
 
@@ -359,6 +370,7 @@ export const getMyBusinessProducts = businessAuthorized
       offset: z.number().default(0),
     }),
   )
+  .output(z.array(z.custom<ProductWithRelations>()))
   .handler(async ({ context, input }) => {
     const { business: currentBusiness } = context;
 

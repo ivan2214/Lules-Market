@@ -1,7 +1,9 @@
 import { ORPCError } from "@orpc/server";
 import { and, eq, inArray } from "drizzle-orm";
 import { updateTag } from "next/cache";
+import z from "zod";
 import { deleteS3Object } from "@/app/actions/s3";
+import type { Product, ProductWithRelations } from "@/db";
 import { db, schema } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { businessAuthorized } from "./middlewares/authorized";
@@ -55,6 +57,12 @@ export const createProduct = businessAuthorized
     tags: ["Products"],
   })
   .input(ProductCreateSchema)
+  .output(
+    z.object({
+      success: z.boolean(),
+      product: z.custom<Product>(),
+    }),
+  )
   .handler(async ({ context, input }) => {
     const { business: currentBusiness } = context;
 
@@ -168,6 +176,12 @@ export const updateProduct = businessAuthorized
     tags: ["Products"],
   })
   .input(ProductUpdateSchema)
+  .output(
+    z.object({
+      success: z.boolean(),
+      product: z.custom<Product>(),
+    }),
+  )
   .handler(async ({ context, input }) => {
     const { business: currentBusiness } = context;
     const { productId, ...data } = input;
@@ -288,6 +302,11 @@ export const deleteProduct = businessAuthorized
     tags: ["Products"],
   })
   .input(ProductDeleteSchema)
+  .output(
+    z.object({
+      success: z.boolean(),
+    }),
+  )
   .handler(async ({ context, input }) => {
     const { business: currentBusiness } = context;
     const { productId } = input;
@@ -332,6 +351,7 @@ export const listProductsByBusinessId = businessAuthorized
     summary: "Listar productos por negocio",
     tags: ["Products"],
   })
+  .output(z.array(z.custom<ProductWithRelations>()))
   .handler(async ({ context }) => {
     const { business: currentBusiness } = context;
 
