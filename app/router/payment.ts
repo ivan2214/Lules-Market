@@ -2,7 +2,13 @@ import { ORPCError } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { z } from "zod";
-import { type CurrentPlan, db, type PaymentWithRelations, schema } from "@/db";
+import {
+  type CurrentPlan,
+  db,
+  type Payment,
+  type PaymentWithRelations,
+  schema,
+} from "@/db";
 import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
@@ -160,6 +166,7 @@ export const cancel = businessAuthorized
     summary: "Cancel a plan",
     tags: ["Payment"],
   })
+  .output(z.custom<CurrentPlan>())
   .handler(async ({ context }) => {
     const { business: currentBusiness } = context;
 
@@ -190,6 +197,7 @@ export const history = businessAuthorized
     summary: "Get payment history",
     tags: ["Payment"],
   })
+  .output(z.array(z.custom<Payment>()))
   .handler(async ({ context }) => {
     const { business: currentBusiness } = context;
 
@@ -213,6 +221,7 @@ export const startTrial = businessAuthorized
       plan: PlanTypeSchema.default("PREMIUM"),
     }),
   )
+  .output(z.object({ message: z.string(), expiresAt: z.date() }))
   .handler(async ({ context, input }) => {
     const { business: currentBusiness } = context;
     const { plan } = input;
@@ -284,6 +293,7 @@ export const failure = businessAuthorized
       paymentIdDB: z.string(),
     }),
   )
+  .output(z.void())
   .handler(async ({ context, input }) => {
     const { business: _currentBusiness } = context;
     const { paymentIdDB } = input;
@@ -353,6 +363,7 @@ export const success = businessAuthorized
       paymentIdDB: z.string(),
     }),
   )
+  .output(z.custom<PaymentWithRelations>().nullable())
   .handler(async ({ context, input }) => {
     const { business: _currentBusiness } = context;
     const { paymentIdMP, paymentIdDB } = input;
