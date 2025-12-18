@@ -74,55 +74,58 @@ export function BusinessActions({
 
   const handleBan = (businessId: string) => {
     startTransition(async () => {
-      bannedBusiness(businessId)
-        .then((res) => {
-          res.ok
-            ? toast.success(`El comercio ${business?.name} fue baneado`)
-            : toast.error(res.error);
-        })
-        .catch((error) =>
-          toast.error("Ocurrio un error", {
-            description() {
-              return JSON.stringify(error);
-            },
-          }),
+      try {
+        const [error, _data] = await bannedBusiness({ businessId });
+        if (error) {
+          toast.error(
+            error.message || "Ocurrió un error al banear el comercio",
+          );
+        } else {
+          toast.success(`El comercio ${business?.name} fue baneado`);
+        }
+      } catch (err) {
+        toast.error(
+          `${err instanceof Error ? err.message : "Ocurrió un error inesperado"}`,
         );
+      }
     });
   };
 
   const handleUnban = (businessId: string) => {
     startTransition(async () => {
-      unbannedBusiness(businessId)
-        .then((res) => {
-          res.ok
-            ? toast.info(`El comercio ${business?.name} fue desbaneado`)
-            : toast.error(res.error);
-        })
-        .catch((error) =>
-          toast.error("Ocurrio un error", {
-            description() {
-              return JSON.stringify(error);
-            },
-          }),
+      try {
+        const [error, _data] = await unbannedBusiness({ businessId });
+        if (error) {
+          toast.error(
+            error.message || "Ocurrió un error al desbanear el comercio",
+          );
+        } else {
+          toast.info(`El comercio ${business?.name} fue desbaneado`);
+        }
+      } catch (err) {
+        toast.error(
+          `${err instanceof Error ? err.message : "Ocurrió un error inesperado"}`,
         );
+      }
     });
   };
 
   const handleChangePlan = () => {
     startTransition(async () => {
       try {
-        const res = await changePlan({
+        const [error, data] = await changePlan({
           businessId: business.id,
           planType: selectedPlan,
           isTrial,
           trialDays: 30, // podes parametrizar
           planDurationDays: 30, // duración default del plan pagado
         });
-        if (res.ok) {
-          toast.success(res.message || "Plan actualizado correctamente");
-          setShowPlanDialog(false);
+
+        if (error) {
+          toast.error(error.message || "Error al cambiar el plan");
         } else {
-          toast.error(res.message || "Error al cambiar el plan");
+          toast.success(data?.message || "Plan actualizado correctamente");
+          setShowPlanDialog(false);
         }
       } catch (error) {
         toast.error("Ocurrió un error", { description: JSON.stringify(error) });

@@ -24,14 +24,19 @@ export const ClearCacheDb = ({
   const [isPending, startTransition] = useTransition();
 
   const handleClearUsers = () => {
-    startTransition(() => {
-      clearUsersCache().then((res) => {
-        if (res?.error) {
-          toast.error(res.error);
+    startTransition(async () => {
+      try {
+        const [error] = await clearUsersCache();
+        if (error) {
+          toast.error(error.message || "Error al purgar caché");
         } else {
           toast.success("Caché de usuarios purgada");
         }
-      });
+      } catch (error) {
+        toast.error(
+          `${error instanceof Error ? error.message : "Ocurrió un error inesperado"}`,
+        );
+      }
     });
   };
 
