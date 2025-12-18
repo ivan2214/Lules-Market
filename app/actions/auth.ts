@@ -11,7 +11,7 @@ import {
 import { db, schema } from "@/db";
 import { auth, syncUserRole } from "@/lib/auth";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { getUserByEmail } from "../data/user/utils";
+import { orpc } from "@/lib/orpc";
 
 // ============================================================================
 // BUSINESS SIGN IN
@@ -24,7 +24,7 @@ const businessSignInProcedure = os
 
     try {
       // Verificar si existe el usuario
-      const existingUser = await getUserByEmail(email);
+      const existingUser = await orpc.user.getUserByEmail({ email });
       if (!existingUser) {
         throw new Error("El usuario no existe.");
       }

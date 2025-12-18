@@ -87,4 +87,11 @@ export const CACHE_TAGS = {
   DEV_TOOLS: {
     GET_ALL: "dev-tools",
   },
+
+  USER: {
+    GET_PUBLIC_PROFILE: (userId: string) => `user-get-public-profile-${userId}`,
+    GET_BY_EMAIL: (email: string) => `user-get-by-email-${email}`,
+    GET_BY_ID: (id: string | undefined) =>
+      id ? `user-get-by-id-${id}` : "user-get-by-id-undefined",
+  },
 } as const;

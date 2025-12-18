@@ -16,7 +16,7 @@ export const DesktopMenu = () => {
             variant={pathname === item.href ? "secondary" : "ghost"}
             className={cn("gap-2", pathname === item.href && "bg-secondary")}
           >
-            <item.icon className="h-4 w-4" />
+            {item.icon && <item.icon className="h-4 w-4" />}
             {item.name}
           </Button>
         </Link>

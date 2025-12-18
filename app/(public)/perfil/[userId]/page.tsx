@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPublicProfile } from "@/app/data/user/user.dal";
+import { orpc } from "@/lib/orpc";
 import { ProfileHeader } from "./components/profile-header";
 
 interface PageProps {
@@ -11,7 +11,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { userId } = await params;
-  const profile = await getPublicProfile(userId);
+  const profile = await orpc.user.getPublicProfile({ userId });
 
   if (!profile) {
     return {
@@ -27,7 +27,7 @@ export async function generateMetadata({
 
 export default async function ProfilePage({ params }: PageProps) {
   const { userId } = await params;
-  const profile = await getPublicProfile(userId);
+  const profile = await orpc.user.getPublicProfile({ userId });
 
   if (!profile) {
     notFound();

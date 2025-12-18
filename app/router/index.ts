@@ -8,8 +8,10 @@ import { planRoute } from "./plan";
 import { productsRoute } from "./products";
 import { productsPrivateRoute } from "./products.private";
 import { settingsRoute } from "./settings";
+import { userRoute } from "./user";
 
 export const router = {
+  user: userRoute,
   plan: planRoute,
   category: categoryRoute,
   admin: adminRoute,
