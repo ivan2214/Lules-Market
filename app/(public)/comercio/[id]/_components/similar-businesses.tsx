@@ -17,32 +17,43 @@ export function SimilarBusinesses({ businesses }: Props) {
   if (!businesses.length) return null;
 
   return (
-    <Card>
+    <Card className="shadow-md">
       <CardHeader>
-        <CardTitle>Comercios similares</CardTitle>
+        <CardTitle className="text-xl md:text-2xl">
+          Comercios Similares
+        </CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-10 md:gap-2">
+      <CardContent className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
         {businesses.map((business) => (
-          <Link key={business.id} href={`/comercio/${business.id}`}>
-            <div className="h-full overflow-hidden rounded-lg border transition-all hover:border-border hover:shadow-lg">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-2">
-                <div className="aspect-video h-full md:col-span-1 md:aspect-square">
+          <Link
+            key={business.id}
+            href={`/comercio/${business.id}`}
+            className="group"
+          >
+            <div className="h-full overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-lg">
+              <div className="flex gap-4 p-4">
+                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg md:h-24 md:w-24">
                   <ImageWithSkeleton
-                    src={business.logo?.url || "/placeholder.svg"}
+                    src={
+                      business.logo?.url ||
+                      "/placeholder.svg?height=100&width=100&query=business+logo"
+                    }
                     alt={business.name}
-                    className="h-full w-full object-cover transition-transform hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
-                <div className="flex flex-col justify-between px-2 py-3 md:col-span-2 md:p-2">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <h2 className="line-clamp-1 font-semibold text-base md:text-lg">
+                <div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
+                  <div className="flex flex-wrap items-start gap-2">
+                    <h3 className="line-clamp-1 font-semibold text-base leading-snug">
                       {business.name}
-                    </h2>
-                    <Badge variant="secondary" className="shrink-0 text-xs">
-                      {business.category?.label}
-                    </Badge>
+                    </h3>
+                    {business.category?.label && (
+                      <Badge variant="secondary" className="shrink-0 text-xs">
+                        {business.category.label}
+                      </Badge>
+                    )}
                   </div>
-                  <p className="line-clamp-2 text-muted-foreground text-xs md:text-sm">
+                  <p className="line-clamp-2 text-muted-foreground text-sm leading-relaxed">
                     {business.description}
                   </p>
                 </div>

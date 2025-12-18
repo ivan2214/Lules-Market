@@ -10,6 +10,7 @@ import {
   Share2,
 } from "lucide-react";
 import Link from "next/link";
+import type React from "react";
 import { ImageWithSkeleton } from "@/app/shared/components/image-with-skeleton";
 import { Badge } from "@/app/shared/components/ui/badge";
 import { Button } from "@/app/shared/components/ui/button";
@@ -39,51 +40,81 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
 
   return (
     <main className="container px-4 py-4 md:py-8">
-      {/* Hero Section with Image Carousel */}
-      <div className="mb-6 md:mb-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="w-full">
-            <div className="aspect-4/3 overflow-hidden rounded-xl md:aspect-video md:rounded-2xl">
+      <div className="mb-8 md:mb-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="relative w-full">
+            <div className="aspect-video overflow-hidden rounded-2xl shadow-xl md:aspect-21/9">
               <ImageWithSkeleton
-                src={business?.coverImage?.url || "/placeholder.svg"}
-                alt={`${business?.name} - Imagen principal`}
+                src={
+                  business?.coverImage?.url ||
+                  "/placeholder.svg?height=600&width=1400&query=business+cover"
+                }
+                alt={`${business?.name} - Imagen de portada`}
                 className="h-full w-full object-cover"
               />
             </div>
+            {/* Logo overlay */}
+            {business?.logo?.url && (
+              <div className="absolute bottom-0 left-6 translate-y-1/2 md:left-8">
+                <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-4 border-background bg-background shadow-xl md:h-32 md:w-32">
+                  <ImageWithSkeleton
+                    src={business.logo.url || "/placeholder.svg"}
+                    alt={`${business.name} - Logo`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Business Header */}
-      <div className="mb-6 grid gap-4 md:mb-8 md:gap-6 lg:grid-cols-3">
-        <div className="flex flex-col gap-4 lg:col-span-2">
-          <Card>
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle className="text-lg md:text-xl">
-                {business?.name}
-              </CardTitle>
-              <div className="flex gap-2">
-                <Button variant="outline" size="icon">
-                  <Heart className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Share2 className="h-4 w-4" />
-                </Button>
+      <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
+        <div className="flex flex-col gap-6 md:gap-8 lg:col-span-2">
+          <Card className="shadow-md">
+            <CardHeader>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-2xl md:text-3xl">
+                      {business?.name}
+                    </CardTitle>
+                    {business?.category?.label && (
+                      <Badge variant="secondary" className="text-sm">
+                        {business.category.label}
+                      </Badge>
+                    )}
+                  </div>
+                  <CardDescription className="text-base leading-relaxed">
+                    {business?.description}
+                  </CardDescription>
+                </div>
+                <div className="flex shrink-0 gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 bg-transparent"
+                  >
+                    <Heart className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 bg-transparent"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <CardDescription>{business?.description}</CardDescription>
-            </CardContent>
             {business.tags && business.tags.length > 0 && (
-              <CardFooter className="flex flex-col items-start gap-4">
-                <CardTitle>Características destacadas:</CardTitle>
+              <CardFooter className="flex flex-col items-start gap-3 border-t pt-6">
+                <p className="font-semibold text-sm">
+                  Características destacadas
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {business.tags.map((feature: string) => (
-                    <Badge
-                      key={feature}
-                      variant="secondary"
-                      className="text-xs"
-                    >
+                    <Badge key={feature} variant="outline" className="text-sm">
                       {feature}
                     </Badge>
                   ))}
@@ -91,149 +122,166 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
               </CardFooter>
             )}
           </Card>
-          {/* Productos destacados */}
-          {products?.length && (
-            <Card>
+
+          {products && products.length > 0 && (
+            <Card className="shadow-md">
               <CardHeader>
-                <CardTitle className="text-lg md:text-xl">
+                <CardTitle className="text-xl md:text-2xl">
                   Productos Destacados
                 </CardTitle>
-                <CardDescription className="text-xs md:text-sm">
-                  Algunos de nuestros productos más populares
+                <CardDescription>
+                  Explora nuestra selección de productos
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
+              <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
                 {products.map((product) => (
-                  <div
+                  <Link
                     key={product.id}
-                    className="w-full overflow-hidden rounded-md border"
+                    href={`/producto/${product.id}`}
+                    className="group"
                   >
-                    <header>
-                      <ImageWithSkeleton
-                        src={mainImage(product.images) || "/placeholder.svg"}
-                        alt={product.name}
-                        className="h-48 w-full object-cover"
-                      />
-                    </header>
-                    <article className="items-start1 flex flex-col justify-between gap-5 p-4">
-                      <h2 className="font-semibold text-base md:text-lg">
-                        {product.name}
-                      </h2>
-                      <p className="line-clamp-5 overflow-hidden font-extralight text-muted-foreground text-sm md:text-base">
-                        {product.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-muted-foreground text-sm md:text-base">
-                          {formatCurrency(product.price || 0, "ARS")}
-                        </span>
-                        <Button
-                          size="sm"
-                          className="text-xs md:text-sm"
-                          asChild
-                        >
-                          <Link href={`/producto/${product.id}`}>
-                            Ver producto
-                          </Link>
-                        </Button>
+                    <div className="h-full overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-lg">
+                      <div className="aspect-square overflow-hidden">
+                        <ImageWithSkeleton
+                          src={
+                            mainImage(product.images) ||
+                            "/placeholder.svg?height=400&width=400&query=product"
+                          }
+                          alt={product.name}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
                       </div>
-                    </article>
-                  </div>
+                      <div className="flex flex-col gap-3 p-4">
+                        <h3 className="line-clamp-2 font-semibold text-base leading-snug">
+                          {product.name}
+                        </h3>
+                        <p className="line-clamp-2 text-muted-foreground text-sm leading-relaxed">
+                          {product.description}
+                        </p>
+                        <div className="mt-auto flex items-center justify-between pt-2">
+                          <span className="font-bold text-lg text-primary">
+                            {formatCurrency(product.price || 0, "ARS")}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            Ver más
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 ))}
               </CardContent>
             </Card>
           )}
-          {/* similar business */}
+
+          {/* Similar businesses */}
           {similarBusinesses && similarBusinesses.length > 0 && (
             <SimilarBusinesses businesses={similarBusinesses} />
           )}
         </div>
 
-        <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-          {/* Contact Card */}
-          <Card className="h-fit">
+        <div className="space-y-6 lg:sticky lg:top-4 lg:self-start">
+          <Card className="shadow-md">
             <CardHeader>
-              <CardTitle className="text-lg md:text-xl">
-                Información de Contacto
-              </CardTitle>
+              <CardTitle className="text-xl">Información de Contacto</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 md:space-y-4">
-              <div className="flex items-start gap-2 md:gap-3">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                <div>
-                  <p className="font-medium text-sm md:text-base">Dirección</p>
-                  <p className="text-muted-foreground text-xs md:text-sm">
+            <CardContent className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <MapPin className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">Dirección</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     {business?.address}
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-2 md:gap-3">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                <div>
-                  <p className="font-medium text-sm md:text-base">Teléfono</p>
+
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <Phone className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">Teléfono</p>
                   <a
                     href={`tel:${business?.phone}`}
-                    className="text-primary text-xs hover:underline md:text-sm"
+                    className="text-primary text-sm hover:underline"
                   >
                     {business?.phone}
                   </a>
                 </div>
               </div>
-              <div className="flex items-start gap-2 md:gap-3">
-                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                <div>
-                  <p className="font-medium text-sm md:text-base">Email</p>
+
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <Mail className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">Email</p>
                   <a
                     href={`mailto:${business?.email}`}
-                    className="break-all text-primary text-xs hover:underline md:text-sm"
+                    className="break-all text-primary text-sm hover:underline"
                   >
                     {business?.email}
                   </a>
                 </div>
               </div>
+
               {business?.website && (
-                <div className="flex items-start gap-2 md:gap-3">
-                  <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                  <div>
-                    <p className="font-medium text-sm md:text-base">
-                      Sitio web
-                    </p>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <ExternalLink className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">Sitio web</p>
                     <a
                       href={`https://${business?.website}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="break-all text-primary text-xs hover:underline md:text-sm"
+                      className="break-all text-primary text-sm hover:underline"
                     >
                       {business?.website}
                     </a>
                   </div>
                 </div>
               )}
+
               {business?.whatsapp && (
-                <div className="flex items-start gap-2 md:gap-3">
-                  <MessageSquare className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                  <div>
-                    <p className="font-medium text-sm md:text-base">WhatsApp</p>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">WhatsApp</p>
                     <a
                       href={`https://wa.me/${business?.whatsapp}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary text-xs hover:underline md:text-sm"
+                      className="text-primary text-sm hover:underline"
                     >
                       {business?.whatsapp}
                     </a>
                   </div>
                 </div>
               )}
+
               {business?.facebook && (
-                <div className="flex items-start gap-2 md:gap-3">
-                  <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                  <div>
-                    <p className="font-medium text-sm md:text-base">Facebook</p>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <ExternalLink className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">Facebook</p>
                     <a
                       href={`https://www.facebook.com/${business?.facebook}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="break-all text-primary text-xs hover:underline md:text-sm"
+                      className="break-all text-primary text-sm hover:underline"
                     >
                       {business?.facebook}
                     </a>
@@ -242,17 +290,17 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
               )}
 
               {business?.instagram && (
-                <div className="flex items-start gap-2 md:gap-3">
-                  <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:mt-1 md:h-5 md:w-5" />
-                  <div>
-                    <p className="font-medium text-sm md:text-base">
-                      Instagram
-                    </p>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <ExternalLink className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">Instagram</p>
                     <a
                       href={`https://www.instagram.com/${business?.instagram}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="break-all text-primary text-xs hover:underline md:text-sm"
+                      className="break-all text-primary text-sm hover:underline"
                     >
                       {business?.instagram}
                     </a>
@@ -260,14 +308,15 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
                 </div>
               )}
             </CardContent>
-            <CardFooter className="flex-col gap-2">
-              <Button className="w-full text-sm md:text-base">
+            <CardFooter className="flex-col gap-3 border-t pt-6">
+              <Button className="w-full shadow-sm" size="lg">
                 <Phone className="mr-2 h-4 w-4" />
                 Llamar ahora
               </Button>
               <Button
                 variant="outline"
-                className="w-full bg-transparent text-sm md:text-base"
+                className="w-full bg-transparent"
+                size="lg"
               >
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Enviar mensaje

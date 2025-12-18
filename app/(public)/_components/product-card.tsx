@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/app/shared/components/ui/card";
 import type { ProductWithRelations } from "@/db/types";
-import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 
@@ -18,43 +17,33 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  // Safe access to nested plan data
   const planType = product.business?.currentPlan?.plan?.type || "FREE";
   const isPremium = planType === "PREMIUM";
-  const isBasic = planType === "BASIC";
 
   return (
     <Card
       key={product.id}
-      className={cn(
-        "h-full overflow-hidden border p-0 transition-all duration-300 hover:shadow-xl",
-        isPremium &&
-          "border-yellow-500/20 bg-linear-to-b from-yellow-500/5 to-background hover:border-yellow-500/40 hover:shadow-yellow-500/10",
-        isBasic &&
-          "border-blue-500/20 hover:border-blue-500/40 hover:shadow-blue-500/10",
-        !isPremium && !isBasic && "hover:border-primary/50",
-      )}
+      className="group hover:-translate-y-1 h-full overflow-hidden border p-0 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl"
     >
-      {/* Image Container */}
       <Link href={`/producto/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        <div className="relative aspect-4/3 overflow-hidden bg-muted">
           <ImageWithSkeleton
-            src={mainImage(product.images)}
+            src={mainImage(product.images) || "/placeholder.svg"}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
           {isPremium && (
-            <div className="absolute top-2 right-2">
-              <Badge className="border-none bg-yellow-500 text-white shadow-sm hover:bg-yellow-600">
+            <div className="absolute top-3 right-3">
+              <Badge className="border-none bg-linear-to-r from-yellow-500 to-yellow-600 text-white shadow-lg hover:from-yellow-600 hover:to-yellow-700">
                 Destacado
               </Badge>
             </div>
           )}
           {product.category && (
-            <div className="absolute bottom-2 left-2">
+            <div className="absolute bottom-3 left-3">
               <Badge
                 variant="secondary"
-                className="bg-background/80 font-medium text-[10px] backdrop-blur-sm"
+                className="bg-background/90 font-medium text-xs backdrop-blur-md"
               >
                 {product.category.label}
               </Badge>
@@ -62,65 +51,56 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </Link>
-      <CardContent className="p-4 pt-3">
-        <CardTitle className="5rem] line-clamp-2 min-h-10 font-semibold text-base leading-tight tracking-tight transition-colors group-hover:text-primary">
+      <CardContent className="p-5">
+        <CardTitle className="line-clamp-2 min-h-12 font-semibold text-lg leading-snug tracking-tight transition-colors group-hover:text-primary">
           {product.name}
         </CardTitle>
 
-        <div className="mt-3 flex items-baseline gap-1">
-          <span className="font-bold text-primary text-xl">
+        <div className="mt-4 flex items-baseline gap-2">
+          <span className="font-bold text-2xl text-primary">
             {formatCurrency(product.price || 0, "ARS")}
           </span>
           {isPremium && (
-            <span className="font-medium text-[10px] text-muted-foreground uppercase tracking-wider">
+            <span className="font-semibold text-xs text-yellow-600 uppercase tracking-wide dark:text-yellow-400">
               Oferta
             </span>
           )}
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
-        <div className="flex items-center justify-between text-muted-foreground text-xs">
-          <div className="flex items-center gap-1.5 overflow-hidden">
-            <div
-              className={cn(
-                "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted",
-                isPremium &&
-                  "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-                isBasic &&
-                  "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-              )}
-            >
+      <CardFooter className="flex-col gap-3 p-5 pt-0">
+        <div className="flex w-full items-center justify-between">
+          <Link
+            href={`/comercio/${product.business?.id}`}
+            className="flex min-w-0 flex-1 items-center gap-2.5 overflow-hidden transition-transform hover:scale-105"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 bg-muted">
               <ImageWithSkeleton
                 src={product.business?.logo?.url || ""}
                 alt={product.business?.name || "Comercio Local"}
-                className="aspect-square h-full w-full rounded-full object-cover object-center"
+                className="h-full w-full object-cover"
               />
             </div>
-            <span
-              className={cn(
-                "truncate font-medium",
-                isPremium && "text-yellow-700 dark:text-yellow-400",
-                isBasic && "text-blue-700 dark:text-blue-400",
-              )}
-            >
+            <span className="truncate font-semibold text-sm">
               {product.business?.name || "Comercio Local"}
             </span>
-          </div>
+          </Link>
           {(product.business?.verified || isPremium) && (
-            <div title="Verificado" className="text-primary">
-              <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
-                Verificado
-              </Badge>
-            </div>
+            <Badge
+              variant="secondary"
+              className="h-5 shrink-0 px-2 text-[10px]"
+            >
+              Verificado
+            </Badge>
           )}
         </div>
         <Button
-          className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground"
+          asChild
+          className="h-10 w-full bg-transparent font-semibold transition-all group-hover:shadow-lg"
           variant="outline"
           size="sm"
         >
-          Ver detalles
+          <Link href={`/producto/${product.id}`}>Ver detalles</Link>
         </Button>
       </CardFooter>
     </Card>
