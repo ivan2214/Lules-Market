@@ -117,7 +117,7 @@ export function LogTable({
       {/* Filtros */}
       <div className="flex flex-col gap-4 md:flex-row">
         <Input
-          placeholder="Buscar por acciÃ³n, usuario, etc."
+          placeholder="Buscar por acción, usuario, etc."
           value={filters.search}
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, search: e.target.value }))
@@ -150,7 +150,7 @@ export function LogTable({
           }
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="AcciÃ³n" />
+            <SelectValue placeholder="Acción" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todas</SelectItem>
@@ -181,7 +181,7 @@ export function LogTable({
                   Estas seguro de eliminar todos los registros?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Esta acciÃ³n no se puede deshacer. Es permanente.
+                  Esta acción no se puede deshacer. Es permanente.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -205,7 +205,7 @@ export function LogTable({
           <TableHeader>
             <TableRow>
               <TableHead>Timestamp</TableHead>
-              <TableHead>AcciÃ³n</TableHead>
+              <TableHead>Acción</TableHead>
 
               <TableHead>Tipo Entidad</TableHead>
               <TableHead>ID Entidad</TableHead>
@@ -251,7 +251,7 @@ export function LogTable({
         </Table>
       </div>
 
-      {/* PaginaciÃ³n */}
+      {/* Paginación */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
@@ -277,7 +277,7 @@ export function LogTable({
           <DialogHeader>
             <DialogTitle>Detalles del Log</DialogTitle>
             <DialogDescription>
-              AquÃ­ puedes ver los detalles completos del log seleccionado.
+              Aquí puedes ver los detalles completos del log seleccionado.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">

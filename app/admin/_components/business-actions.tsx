@@ -83,14 +83,14 @@ export function BusinessActions({
         const [error, _data] = await bannedBusiness({ businessId });
         if (error) {
           toast.error(
-            error.message || "OcurriÃ³ un error al banear el comercio",
+            error.message || "Ocurrió un error al banear el comercio",
           );
         } else {
           toast.success(`El comercio ${business?.name} fue baneado`);
         }
       } catch (err) {
         toast.error(
-          `${err instanceof Error ? err.message : "OcurriÃ³ un error inesperado"}`,
+          `${err instanceof Error ? err.message : "Ocurrió un error inesperado"}`,
         );
       }
     });
@@ -102,14 +102,14 @@ export function BusinessActions({
         const [error, _data] = await unbannedBusiness({ businessId });
         if (error) {
           toast.error(
-            error.message || "OcurriÃ³ un error al desbanear el comercio",
+            error.message || "Ocurrió un error al desbanear el comercio",
           );
         } else {
           toast.info(`El comercio ${business?.name} fue desbaneado`);
         }
       } catch (err) {
         toast.error(
-          `${err instanceof Error ? err.message : "OcurriÃ³ un error inesperado"}`,
+          `${err instanceof Error ? err.message : "Ocurrió un error inesperado"}`,
         );
       }
     });
@@ -123,7 +123,7 @@ export function BusinessActions({
           planType: selectedPlan,
           isTrial,
           trialDays: 30, // podes parametrizar
-          planDurationDays: 30, // duraciÃ³n default del plan pagado
+          planDurationDays: 30,
         });
 
         if (error) {
@@ -133,7 +133,7 @@ export function BusinessActions({
           setShowPlanDialog(false);
         }
       } catch (error) {
-        toast.error("OcurriÃ³ un error", {
+        toast.error("Ocurrió un error", {
           description: JSON.stringify(error),
         });
       }
@@ -197,7 +197,7 @@ export function BusinessActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Â¿Banear negocio?</AlertDialogTitle>
             <AlertDialogDescription>
-              EstÃ¡s a punto de banear {business.name}. El negocio no serÃ¡
+              Estás a punto de banear {business.name}. El negocio no será
               visible en la plataforma.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -218,7 +218,7 @@ export function BusinessActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Â¿Desbanear negocio?</AlertDialogTitle>
             <AlertDialogDescription>
-              EstÃ¡s a punto de desbanear {business.name}. El negocio serÃ¡
+              Estás a punto de desbanear {business.name}. El negocio será
               visible nuevamente.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -261,8 +261,8 @@ export function BusinessActions({
             <FieldContent>
               <FieldLabel htmlFor="trial">Activar trial</FieldLabel>
               <FieldDescription>
-                Marcar si querÃ©s que este plan sea un perÃ­odo de prueba. Solo
-                disponible si el plan actual estÃ¡ activo.
+                Marcar si quieres que este plan sea un período de prueba. Solo
+                disponible si el plan actual está activo.
               </FieldDescription>
             </FieldContent>
             <Switch

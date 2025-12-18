@@ -17,7 +17,7 @@ export function RecentProducts() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="font-bold text-3xl">Productos Recientes</h2>
-          <p className="text-muted-foreground">Ãšltimos productos publicados</p>
+          <p className="text-muted-foreground">Últimos productos publicados</p>
         </div>
         <Button variant="ghost" className="gap-2" asChild>
           <Link href="/explorar/productos">

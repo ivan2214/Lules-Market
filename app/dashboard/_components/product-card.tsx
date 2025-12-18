@@ -127,7 +127,7 @@ export function ProductCard({
             <AlertDialogHeader>
               <AlertDialogTitle>Â¿Eliminar producto?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esta acciÃ³n no se puede deshacer. El producto serÃ¡ eliminado
+                Esta acción no se puede deshacer. El producto será eliminado
                 permanentemente.
               </AlertDialogDescription>
             </AlertDialogHeader>

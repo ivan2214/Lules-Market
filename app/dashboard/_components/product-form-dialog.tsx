@@ -169,9 +169,9 @@ export function ProductFormDialog({
           </DialogTitle>
           <DialogDescription>
             {isViewMode
-              ? "Consulta la informaciÃ³n detallada de tu producto"
+              ? "Consulta la información detallada de tu producto"
               : product
-                ? "Actualiza la informaciÃ³n de tu producto"
+                ? "Actualiza la información de tu producto"
                 : "Completa los datos para crear un nuevo producto"}
           </DialogDescription>
         </DialogHeader>
@@ -208,13 +208,13 @@ export function ProductFormDialog({
                 )}
               />
 
-              {/* DescripciÃ³n */}
+              {/* Descripción */}
               <Controller
                 name="description"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>DescripciÃ³n</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Descripción</FieldLabel>
                     <Textarea
                       {...field}
                       id={field.name}
@@ -254,15 +254,15 @@ export function ProductFormDialog({
                 )}
               />
 
-              {/* CategorÃ­a */}
+              {/* Categoría */}
               <Controller
                 name="category"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>CategorÃ­as</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Categoría</FieldLabel>
                     <FieldDescription>
-                      Selecciona una o varias categorÃ­as
+                      Selecciona una o varias categorías
                     </FieldDescription>
 
                     <Select
@@ -272,7 +272,7 @@ export function ProductFormDialog({
                       disabled={isViewMode || pending}
                     >
                       <SelectTrigger className="min-w-[200px]">
-                        <SelectValue placeholder="Seleccionar categorÃ­as" />
+                        <SelectValue placeholder="Seleccionar categoría" />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map(({ id, label, value }) => (
@@ -355,13 +355,13 @@ export function ProductFormDialog({
                 )}
               />
 
-              {/* ImÃ¡genes */}
+              {/* Imágenes */}
               <Controller
                 name="images"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={!!fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>ImÃ¡genes</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Imágenes</FieldLabel>
                     <Uploader
                       folder="products"
                       onChange={(value) => {
@@ -376,7 +376,7 @@ export function ProductFormDialog({
                         }));
                         field.onChange(images);
                       }}
-                      placeholder="Sube 1 imagen o mÃ¡ximo 4"
+                      placeholder="Sube 1 imagen o máximo 4"
                       maxSize={1024 * 1024 * 5}
                       maxFiles={4}
                       value={field.value}

@@ -158,7 +158,7 @@ export function BusinessProfileForm({
           )}
         />
 
-        {/* CategorÃ­a */}
+        {/* Categoría */}
         <Controller
           name="category"
           control={form.control}
@@ -200,14 +200,14 @@ export function BusinessProfileForm({
         />
       </FieldGroup>
 
-      {/* DescripciÃ³n */}
+      {/* Descripción */}
       <Controller
         name="description"
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldContent>
-              <FieldLabel htmlFor={field.name}>DescripciÃ³n</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Descripción</FieldLabel>
             </FieldContent>
             <Textarea
               id={field.name}
@@ -225,16 +225,16 @@ export function BusinessProfileForm({
       />
 
       <FieldGroup className="grid gap-6 md:grid-cols-2">
-        {/* DirecciÃ³n */}
+        {/* Dirección */}
         <Controller
           name="address"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>DirecciÃ³n</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Dirección</FieldLabel>
                 <FieldDescription>
-                  Ingresa la direcciÃ³n del negocio
+                  Ingresa la dirección del negocio
                 </FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -253,16 +253,16 @@ export function BusinessProfileForm({
           )}
         />
 
-        {/* TelÃ©fono */}
+        {/* Teléfono */}
         <Controller
           name="phone"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>TelÃ©fono</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Teléfono</FieldLabel>
                 <FieldDescription>
-                  Ingresa el nÃºmero de telÃ©fono del negocio
+                  Ingresa el número de teléfono del negocio
                 </FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -389,9 +389,9 @@ export function BusinessProfileForm({
         </FieldGroup>
       </div>
 
-      {/* ImÃ¡genes */}
+      {/* Imágenes */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-lg">ImÃ¡genes</h3>
+        <h3 className="font-semibold text-lg">Imágenes</h3>
         <FieldGroup className="flex items-center justify-evenly">
           <Controller
             name="logo"
@@ -454,7 +454,7 @@ export function BusinessProfileForm({
                         : null,
                     );
                   }}
-                  placeholder="SubÃ­ tu imagen de portada"
+                  placeholder="Subí tu imagen de portada"
                   maxSize={1024 * 1024 * 5}
                   maxFiles={1}
                   value={field.value}

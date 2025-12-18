@@ -39,7 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </CardTitle>
           <CardDescription className="text-xs">
-            {product.business?.name || "AnÃ³nimo"}
+            {product.business?.name || "Anónimo"}
           </CardDescription>
         </CardHeader>
         <CardFooter className="p-4 pt-0">
