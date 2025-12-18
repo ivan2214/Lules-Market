@@ -1,10 +1,15 @@
 import { Download } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/app/shared/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
 import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { PaymentsClient } from "./components/payments-client";
+import { PaymentsClient } from "./_components/payments-client";
 
 export default async function PaymentsPage() {
   "use cache";

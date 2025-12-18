@@ -1,10 +1,10 @@
 import { Home, Search } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/shared/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-background to-muted px-4">
       <div className="max-w-md space-y-6 text-center">
         <div className="space-y-2">
           <h1 className="font-bold text-9xl text-primary">404</h1>

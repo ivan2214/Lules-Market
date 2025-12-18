@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { orpc } from "@/lib/orpc";
-import { ProfileHeader } from "./components/profile-header";
+import { ProfileHeader } from "./_components/profile-header";
 
 interface PageProps {
   params: Promise<{ userId: string }>;

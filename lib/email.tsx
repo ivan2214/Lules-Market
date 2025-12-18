@@ -1,6 +1,6 @@
-import { render } from "@react-email/components";
+﻿import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
-import { EmailTemplate } from "@/components/email-template";
+import { EmailTemplate } from "@/app/shared/components/email-template";
 import { env } from "@/env";
 
 export const transporter = nodemailer.createTransport({

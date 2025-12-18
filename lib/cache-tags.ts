@@ -61,11 +61,13 @@ export const CACHE_TAGS = {
     },
     PROFILE: (businessId: string) => `business-profile-get-by-id-${businessId}`,
     PRODUCTS: "business-products",
+    GET_FEATURED: "business-featured",
   },
 
   PRODUCT: {
     GET_ALL: "products",
     GET_BY_ID: (id: string) => `product-${id}`,
+    GET_RECENT: "products-recent",
   },
 
   CATEGORY: {

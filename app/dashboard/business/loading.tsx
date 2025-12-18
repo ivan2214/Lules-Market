@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/app/shared/components/ui/card";
+import { Label } from "@/app/shared/components/ui/label";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 
 export default function BusinessLoading() {
   return (

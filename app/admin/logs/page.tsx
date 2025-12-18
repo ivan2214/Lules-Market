@@ -2,8 +2,13 @@ import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import type { Metadata } from "next";
 import { cacheTag } from "next/cache";
 import { Suspense } from "react";
-import { LogTable } from "@/components/admin/log-table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LogTable } from "@/app/admin/_components/log-table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
 import { db, schema } from "@/db";
 import type { Log } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";

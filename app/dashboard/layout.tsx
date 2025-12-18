@@ -1,9 +1,9 @@
 import type React from "react";
 import { Suspense } from "react";
-import { DashboardHeaderWrapper } from "@/components/dashboard/dashboard-header-wrapper";
-import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
-import { DashboardHeaderSkeleton } from "@/components/skeletons/dashboard-header-skeleton";
-import { DashboardSidebarSkeleton } from "@/components/skeletons/dashboard-sidebar-skeleton";
+import { DashboardHeaderWrapper } from "@/app/dashboard/_components/dashboard-header-wrapper";
+import { DashboardSidebar } from "@/app/dashboard/_components/dashboard-sidebar";
+import { DashboardHeaderSkeleton } from "@/app/shared/components/skeletons/dashboard-header-skeleton";
+import { DashboardSidebarSkeleton } from "@/app/shared/components/skeletons/dashboard-sidebar-skeleton";
 
 export default async function DashboardLayout({
   children,

@@ -4,7 +4,7 @@ import { Inter, Poppins } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/app/shared/components/ui/sonner";
 import { Providers } from "@/lib/providers";
 
 const inter = Inter({

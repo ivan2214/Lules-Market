@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { AuthHeader } from "@/components/auth/auth-header";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { AuthHeader } from "@/app/auth/_components/auth-header";
+import { Alert, AlertDescription } from "@/app/shared/components/ui/alert";
+import { Badge } from "@/app/shared/components/ui/badge";
+import { Button } from "@/app/shared/components/ui/button";
+import { Card, CardContent } from "@/app/shared/components/ui/card";
 import {
   Form,
   FormControl,
@@ -18,8 +18,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/app/shared/components/ui/form";
+import { Input } from "@/app/shared/components/ui/input";
 import { forgetPassword } from "@/lib/auth-client";
 
 const forgotPasswordSchema = z.object({

@@ -1,0 +1,99 @@
+"use client";
+
+import type { ColumnDef } from "@tanstack/react-table";
+import { Trash2 } from "lucide-react";
+import { Suspense, useState } from "react";
+
+import { DataTable } from "@/app/shared/components/table/data-table";
+import { Badge } from "@/app/shared/components/ui/badge";
+import { Button } from "@/app/shared/components/ui/button";
+import type { AdminWithRelations } from "@/db/types";
+import { AdminDeleteAlertDialog } from "./admin-delete-alert-dialog";
+
+function AdminColumnsInner({ admins }: { admins: AdminWithRelations[] }) {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState<AdminWithRelations | null>(
+    null,
+  );
+
+  const onOpenChangeAdminFinishAlertDialog = (value: boolean) => {
+    setDeleteDialogOpen(value);
+  };
+
+  const columns: ColumnDef<AdminWithRelations>[] = [
+    {
+      accessorKey: "name",
+      header: "Nombre",
+      cell: ({ row }) => (
+        <div>
+          <div className="font-medium">{row.original.user?.name}</div>
+          <div className="text-muted-foreground text-sm">
+            {row.original.user?.email}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "permissions",
+      header: "Permisos",
+      cell: ({ row }) => (
+        <div className="flex flex-wrap gap-1">
+          {row.original.permissions?.includes("ALL") ? (
+            <Badge>Todos los permisos</Badge>
+          ) : (
+            row.original.permissions?.map((perm) => (
+              <Badge key={perm} variant="outline">
+                {perm.replace("_", " ")}
+              </Badge>
+            ))
+          )}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Fecha de Creación",
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("es-AR"),
+    },
+    {
+      id: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setSelectedAdmin(row.original);
+            setDeleteDialogOpen(true);
+          }}
+        >
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      ),
+    },
+  ];
+  return (
+    <>
+      <DataTable
+        data={admins}
+        columns={columns}
+        searchPlaceholder="Buscar por negocio..."
+      />
+
+      <AdminDeleteAlertDialog
+        onOpenChange={onOpenChangeAdminFinishAlertDialog}
+        open={deleteDialogOpen}
+        selectedAdmin={selectedAdmin}
+      />
+    </>
+  );
+}
+
+export function AdminColumns({ admins }: { admins: AdminWithRelations[] }) {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <AdminColumnsInner admins={admins} />
+    </Suspense>
+  );
+}

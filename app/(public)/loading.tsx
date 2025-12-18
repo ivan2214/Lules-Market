@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { DynamicStatsSkeletons } from "@/components/sections/dynamic-stats";
-import { FeaturedBusinessesSkeletons } from "@/components/sections/featured-businesses";
-import { RecentProductsSkeletons } from "@/components/sections/recent-products";
-import { Button } from "@/components/ui/button";
+import { DynamicStatsSkeletons } from "@/app/(public)/_components/sections/dynamic-stats";
+import { FeaturedBusinessesSkeletons } from "@/app/(public)/_components/sections/featured-businesses";
+import { RecentProductsSkeletons } from "@/app/(public)/_components/sections/recent-products";
+import { Button } from "@/app/shared/components/ui/button";
 
 export default function Loading() {
   return (

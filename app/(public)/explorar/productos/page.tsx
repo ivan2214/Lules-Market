@@ -1,9 +1,9 @@
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { ActiveFilters } from "../components/active-filters";
-import { ResultsCountAndLimitSelector } from "../components/results-count-and-limit-selector";
-import { SearchAndFilters } from "../components/search-and-filters";
-import { ProductsGrid } from "./components/products-grid";
+import { ActiveFilters } from "../_components/active-filters";
+import { ResultsCountAndLimitSelector } from "../_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "../_components/search-and-filters";
+import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {
   search?: string;

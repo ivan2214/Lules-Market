@@ -5,10 +5,10 @@ import type { Metadata } from "next";
 
 import Link from "next/link";
 import { Suspense } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/app/shared/components/ui/badge";
+import { Button } from "@/app/shared/components/ui/button";
+import { Card, CardContent } from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 
 import type { Plan } from "@/db/types";
 import { orpc } from "@/lib/orpc";

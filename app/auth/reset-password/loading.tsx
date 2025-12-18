@@ -1,7 +1,12 @@
 import Link from "next/link";
-import { AuthHeader } from "@/components/auth/auth-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { AuthHeader } from "@/app/auth/_components/auth-header";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 export default function Loading() {
   return (
     <div className="w-full max-w-md space-y-8">

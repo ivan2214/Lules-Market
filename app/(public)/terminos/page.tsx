@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { PublicFooter } from "@/components/public/footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PublicFooter } from "@/app/(public)/_components/footer";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Términos y Condiciones - Lules Market",

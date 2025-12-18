@@ -1,6 +1,6 @@
-import { AuthHeader } from "@/components/auth/auth-header";
-import { Card, CardContent } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
+import { AuthHeader } from "@/app/auth/_components/auth-header";
+import { Card, CardContent } from "@/app/shared/components/ui/card";
+import { Spinner } from "@/app/shared/components/ui/spinner";
 
 export default function Loading() {
   return (

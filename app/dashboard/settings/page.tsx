@@ -1,15 +1,15 @@
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
+import { AccountSettingsForm } from "@/app/dashboard/_components/account-settings-form";
+import { DangerZone } from "@/app/dashboard/_components/danger-zone";
 import { getCurrentUser } from "@/app/data/user/require-user";
-import { AccountSettingsForm } from "@/components/dashboard/account-settings-form";
-import { DangerZone } from "@/components/dashboard/danger-zone";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 
 export default async function SettingsPage() {
   await connection();

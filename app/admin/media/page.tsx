@@ -1,8 +1,13 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
 import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { MediaClient } from "./components/media-client";
+import { MediaClient } from "./_components/media-client";
 
 const getImages = async (page?: string, limit?: string) => {
   "use cache";

@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { SignUpForm } from "@/components/auth/signup-form";
-import { SignUpFormSkeleton } from "@/components/skeletons/sign-up-form-skeleton";
+import { SignUpForm } from "@/app/auth/_components/signup-form";
+import { SignUpFormSkeleton } from "@/app/shared/components/skeletons/sign-up-form-skeleton";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 
 export default function SignUpPage() {
   return (

@@ -1,6 +1,6 @@
 "use server";
 
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { APIError } from "better-auth";
 import { eq } from "drizzle-orm";
 import { revalidatePath, updateTag } from "next/cache";
@@ -169,17 +169,18 @@ const businessSignUpProcedure = os
       if (error instanceof APIError) {
         switch (error.status) {
           case "CONFLICT":
-            throw new Error("Email ya registrado.");
+            throw new ORPCError("Email ya registrado.");
           case "UNPROCESSABLE_ENTITY":
           case "UNAUTHORIZED":
-            throw new Error("Email o contraseña incorrectos.");
+            throw new ORPCError("Email o contraseña incorrectos.");
           case "FORBIDDEN":
-            throw new Error("Confirmar tu cuenta antes de ingresar.");
+            throw new ORPCError("Confirmar tu cuenta antes de ingresar.");
           case "BAD_REQUEST":
-            throw new Error("Email inválido.");
+            throw new ORPCError("Email inválido.");
           case "INTERNAL_SERVER_ERROR":
+            throw new ORPCError("Error al crear el usuario.");
           default:
-            throw new Error("Algo salió mal.");
+            throw new ORPCError("Algo salió mal.");
         }
       }
 

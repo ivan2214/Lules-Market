@@ -1,14 +1,14 @@
 import { Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
+import { Spinner } from "@/app/shared/components/ui/spinner";
 
 export default function Loading() {
   return (

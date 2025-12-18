@@ -3,16 +3,16 @@ import { ArrowLeft, Check, InfinityIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { CheckoutButton } from "@/components/dashboard/checkout-button";
-import { Button } from "@/components/ui/button";
+import { CheckoutButton } from "@/app/dashboard/_components/checkout-button";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 import { db, schema } from "@/db";
 import type { PlanType } from "@/db/types";
 

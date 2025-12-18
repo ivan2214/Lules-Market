@@ -1,0 +1,483 @@
+﻿"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  type BusinessUpdateInput,
+  BusinessUpdateSchema,
+} from "@/app/router/schemas";
+import { Button } from "@/app/shared/components/ui/button";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/app/shared/components/ui/field";
+import { Input } from "@/app/shared/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/shared/components/ui/select";
+import { Textarea } from "@/app/shared/components/ui/textarea";
+import { Uploader } from "@/app/shared/components/uploader/uploader";
+import type { BusinessWithRelations, ImageInsert } from "@/db/types";
+import { orpc } from "@/lib/orpc";
+
+interface BusinessProfileFormProps {
+  business: BusinessWithRelations;
+  categories: { label: string; value: string }[];
+}
+
+export function BusinessProfileForm({
+  business,
+  categories,
+}: BusinessProfileFormProps) {
+  const defaultValues: BusinessUpdateInput = business.id
+    ? {
+        name: business.name ?? "",
+        description: business.description ?? "",
+        address: business.address ?? "",
+        phone: business.phone ?? "",
+        email: business.email ?? "",
+        website: business.website ?? "",
+
+        whatsapp: business.whatsapp ?? "",
+        facebook: business.facebook ?? "",
+        instagram: business.instagram ?? "",
+
+        category: business.category?.value ?? "",
+        coverImage: business.coverImage
+          ? {
+              ...business.coverImage,
+              name: business.coverImage.name ?? "",
+              size: business.coverImage.size ?? 0,
+            }
+          : {
+              url: "",
+              key: "",
+              name: "",
+              isMainImage: false,
+              size: 0,
+            },
+        logo: business.logo
+          ? {
+              ...business.logo,
+              name: business.logo.name ?? "",
+              size: business.logo.size ?? 0,
+            }
+          : {
+              url: "",
+              key: "",
+              name: "",
+              isMainImage: false,
+              size: 0,
+            },
+      }
+    : {
+        name: "",
+        description: "",
+        address: "",
+        phone: "",
+        email: "",
+        website: "",
+
+        whatsapp: "",
+        facebook: "",
+        instagram: "",
+
+        category: "",
+        coverImage: {
+          url: "",
+          key: "",
+          name: "",
+          isMainImage: false,
+          size: 0,
+        },
+        logo: {
+          url: "",
+          key: "",
+          name: "",
+          isMainImage: false,
+          size: 0,
+        },
+      };
+
+  const form = useForm<BusinessUpdateInput>({
+    resolver: zodResolver(BusinessUpdateSchema),
+    defaultValues,
+  });
+
+  const [pending, startTransition] = useTransition();
+
+  const onSubmit = async (data: BusinessUpdateInput) => {
+    startTransition(async () => {
+      await orpc.business.update(data);
+    });
+  };
+
+  return (
+    <form
+      id="business-profile-form"
+      className="space-y-6"
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
+      <FieldGroup className="grid gap-6 md:grid-cols-2">
+        {/* Nombre */}
+        <Controller
+          name="name"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
+                <FieldDescription>
+                  Ingresa el nombre del negocio
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <Input
+                id={field.name}
+                value={field.value ?? ""}
+                onBlur={field.onBlur}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder="Nombre del negocio"
+                aria-invalid={fieldState.invalid}
+                disabled={pending}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        {/* CategorÃ­a */}
+        <Controller
+          name="category"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field orientation="vertical" data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>CategorÃ­a</FieldLabel>
+                <FieldDescription>
+                  Selecciona la categorÃ­a del negocio
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+
+              <Select
+                value={field.value.toLocaleLowerCase() || ""}
+                onValueChange={(val) => field.onChange(val)}
+                disabled={pending}
+                aria-invalid={fieldState.invalid}
+              >
+                <SelectTrigger id="category" className="min-w-[120px]">
+                  <SelectValue placeholder="Seleccionar categorÃ­a" />
+                </SelectTrigger>
+                <SelectContent position="item-aligned">
+                  <SelectItem value="none">Seleccionar categorÃ­a</SelectItem>
+                  <SelectSeparator />
+                  {categories.map(({ label, value }) => (
+                    <SelectItem key={value} value={value.toLowerCase()}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      {/* DescripciÃ³n */}
+      <Controller
+        name="description"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldContent>
+              <FieldLabel htmlFor={field.name}>DescripciÃ³n</FieldLabel>
+            </FieldContent>
+            <Textarea
+              id={field.name}
+              value={field.value ?? ""}
+              onBlur={field.onBlur}
+              onChange={(e) => field.onChange(e.target.value)}
+              placeholder="Describe tu negocio..."
+              className="min-h-[120px] resize-none"
+              aria-invalid={fieldState.invalid}
+              disabled={pending}
+            />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      <FieldGroup className="grid gap-6 md:grid-cols-2">
+        {/* DirecciÃ³n */}
+        <Controller
+          name="address"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>DirecciÃ³n</FieldLabel>
+                <FieldDescription>
+                  Ingresa la direcciÃ³n del negocio
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <Input
+                id={field.name}
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder="Calle 123, Ciudad"
+                aria-invalid={fieldState.invalid}
+                disabled={pending}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        {/* TelÃ©fono */}
+        <Controller
+          name="phone"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>TelÃ©fono</FieldLabel>
+                <FieldDescription>
+                  Ingresa el nÃºmero de telÃ©fono del negocio
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <Input
+                id={field.name}
+                type="tel"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder="+54 11 1234-5678"
+                aria-invalid={fieldState.invalid}
+                disabled={pending}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      <FieldGroup className="grid gap-6 md:grid-cols-2">
+        {/* Email */}
+        <Controller
+          name="email"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <FieldDescription>
+                  Ingresa el email del negocio
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <Input
+                id={field.name}
+                type="email"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder="contacto@negocio.com"
+                aria-invalid={fieldState.invalid}
+                disabled={pending}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        {/* Website */}
+        <Controller
+          name="website"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor={field.name}>Sitio Web</FieldLabel>
+                <FieldDescription>
+                  Ingresa el sitio web del negocio
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <Input
+                id={field.name}
+                type="url"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder="https://minegocio.com"
+                aria-invalid={fieldState.invalid}
+                disabled={pending}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      {/* Redes Sociales */}
+      <div className="space-y-4">
+        <h3 className="font-semibold text-lg">Redes Sociales</h3>
+        <FieldGroup className="grid gap-6 md:grid-cols-3">
+          {["whatsapp", "instagram", "facebook"].map((name) => (
+            <Controller
+              key={name}
+              name={name as "whatsapp" | "instagram" | "facebook"}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldContent>
+                    <FieldLabel htmlFor={field.name}>
+                      {name === "whatsapp"
+                        ? "WhatsApp"
+                        : name[0].toUpperCase() + name.slice(1)}
+                    </FieldLabel>
+                    <FieldDescription>
+                      {name === "whatsapp"
+                        ? "Ingresa el nÃºmero de WhatsApp del negocio"
+                        : `Ingresa el nombre de usuario de ${name}`}
+                    </FieldDescription>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </FieldContent>
+                  <Input
+                    id={field.name}
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    placeholder={
+                      name === "whatsapp" ? "+54 11 1234-5678" : "@minegocio"
+                    }
+                    aria-invalid={fieldState.invalid}
+                    disabled={pending}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          ))}
+        </FieldGroup>
+      </div>
+
+      {/* ImÃ¡genes */}
+      <div className="space-y-4">
+        <h3 className="font-semibold text-lg">ImÃ¡genes</h3>
+        <FieldGroup className="flex items-center justify-evenly">
+          <Controller
+            name="logo"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
+                <Uploader
+                  folder="business/logos"
+                  onChange={(files: ImageInsert | ImageInsert[] | null) => {
+                    const isArray = Array.isArray(files);
+                    const file = isArray ? files[0] : files;
+                    field.onChange(
+                      file
+                        ? {
+                            url: file.url,
+                            key: file.key,
+                            isMainImage: file.isMainImage ?? false,
+                            name: file.name ?? null,
+                            size: file.size ?? null,
+                          }
+                        : null,
+                    );
+                  }}
+                  variant="avatar"
+                  placeholder="SubÃ­ tu logo"
+                  maxSize={1024 * 1024 * 5}
+                  maxFiles={1}
+                  value={field.value}
+                  disabled={fieldState.invalid || pending}
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="coverImage"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Imagen de Portada</FieldLabel>
+                <Uploader
+                  folder="business/covers"
+                  onChange={(files: ImageInsert | ImageInsert[] | null) => {
+                    const isArray = Array.isArray(files);
+                    const file = isArray ? files[0] : files;
+                    field.onChange(
+                      file
+                        ? {
+                            url: file.url,
+                            key: file.key,
+                            isMainImage: file.isMainImage ?? false,
+                            name: file.name ?? null,
+                            size: file.size ?? null,
+                          }
+                        : null,
+                    );
+                  }}
+                  placeholder="SubÃ­ tu imagen de portada"
+                  maxSize={1024 * 1024 * 5}
+                  maxFiles={1}
+                  value={field.value}
+                  disabled={fieldState.invalid || pending}
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        </FieldGroup>
+      </div>
+
+      <div className="flex justify-end gap-4">
+        <Button type="button" variant="outline" disabled={pending}>
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={pending}>
+          Guardar Cambios
+        </Button>
+      </div>
+    </form>
+  );
+}

@@ -5,11 +5,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { AdminColumns } from "./components/admin-columns";
-import { AdminCreateDialog } from "./components/admin-create-dialog";
+import { AdminColumns } from "./_components/admin-columns";
+import { AdminCreateDialog } from "./_components/admin-create-dialog";
 
 async function getAdmins() {
   "use cache";

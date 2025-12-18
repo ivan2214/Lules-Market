@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { Navigation } from "@/components/navigation";
-import { PublicFooter } from "@/components/public/footer";
+import { PublicFooter } from "@/app/(public)/_components/footer";
+import { Navigation } from "@/app/shared/components/navigation";
 
 interface AuthLayoutProps {
   children: ReactNode;

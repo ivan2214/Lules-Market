@@ -1,13 +1,13 @@
+import { PlanCard } from "@/app/dashboard/_components/plan-card";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
-import { PlanCard } from "@/components/dashboard/plan-card";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/app/shared/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { orpc } from "@/lib/orpc";
 import { formatCurrency } from "@/utils/format";
 

@@ -1,13 +1,12 @@
+import { BusinessProfileForm } from "@/app/dashboard/_components/business-profile-form";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
-
-import { BusinessProfileForm } from "@/components/dashboard/business-profile-form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { orpc } from "@/lib/orpc";
 
 export default async function BusinessPage() {

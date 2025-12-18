@@ -1,11 +1,11 @@
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { ProductCard } from "@/app/dashboard/_components/product-card";
+import { ProductFormDialog } from "@/app/dashboard/_components/product-form-dialog";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
-import { ProductCard } from "@/components/dashboard/product-card";
-import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 import { orpc } from "@/lib/orpc";
 
 async function ProductsContent() {

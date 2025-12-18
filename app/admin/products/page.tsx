@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { ProductsClient } from "./components/products-client";
+import { ProductsClient } from "./_components/products-client";
 
 export default async function ProductsPage() {
   "use cache";

@@ -2,14 +2,14 @@ import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { orpc } from "@/lib/orpc";
 import type { MercadoPagoCallbackParams } from "@/types";
 

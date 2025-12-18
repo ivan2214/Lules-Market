@@ -1,16 +1,16 @@
 import { connection } from "next/server";
-import { GridAnalytics } from "@/components/admin/grid-analytics";
-import { GridPayments } from "@/components/admin/grid-payments";
-import { GridPlansDistribution } from "@/components/admin/grid-plans-distribution";
-import { GridStats } from "@/components/admin/grid-stats";
-import { TrialStat } from "@/components/admin/stats-trial";
+import { GridAnalytics } from "@/app/admin/_components/grid-analytics";
+import { GridPayments } from "@/app/admin/_components/grid-payments";
+import { GridPlansDistribution } from "@/app/admin/_components/grid-plans-distribution";
+import { GridStats } from "@/app/admin/_components/grid-stats";
+import { TrialStat } from "@/app/admin/_components/stats-trial";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 
