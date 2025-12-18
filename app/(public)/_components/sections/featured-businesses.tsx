@@ -2,6 +2,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/app/shared/components/ui/badge";
 import { Button } from "@/app/shared/components/ui/button";
 import { Card, CardHeader } from "@/app/shared/components/ui/card";
 import { orpcTanstack } from "@/lib/orpc";
@@ -16,12 +17,22 @@ export function FeaturedBusinesses() {
     <section className="mb-12">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-3xl">Comercios Destacados</h2>
+          <Badge
+            variant="secondary"
+            className="inline-block font-medium text-primary text-sm"
+          >
+            Destacados
+          </Badge>
+          <h2 className="font-bold text-3xl">Comercios que inspiran</h2>
           <p className="text-muted-foreground">
-            Los mejores negocios de tu comunidad
+            Negocios locales comprometidos con la calidad y el servicio.
           </p>
         </div>
-        <Button variant="ghost" className="gap-2" asChild>
+        <Button
+          variant="outline"
+          className="group gap-2 border-primary/20 bg-background hover:border-primary/50"
+          asChild
+        >
           <Link href="/explorar/comercios">
             Ver todos
             <ArrowRight className="h-4 w-4" />

@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   Heart,
+  Package,
   Search,
   Store,
   TrendingUp,
@@ -80,38 +81,34 @@ export default async function HomePage() {
   return (
     <main className="container mx-auto px-4 py-8 lg:p-0">
       {/* Hero Section */}
-      <section className="relative mb-16 overflow-hidden rounded-3xl bg-linear-to-br from-primary/95 via-primary/80 to-accent/90 px-6 py-20 text-center text-primary-foreground shadow-2xl md:px-12 md:py-32">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.4%22%3E%3Ccircle%20cx%3D%221%22%20cy%3D%221%22%20r%3D%221%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-10 mix-blend-overlay" />
+      <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
+        {/* Side glows */}
+        <div className="-translate-y-1/2 -translate-x-1/3 absolute top-1/2 left-0 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[140px]" />
+        <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
         <div className="relative mx-auto max-w-4xl space-y-8">
           <h1 className="text-balance font-extrabold text-4xl tracking-tight drop-shadow-sm md:text-6xl lg:text-7xl">
             Conecta con tu comunidad local
           </h1>
-          <p className="mx-auto max-w-2xl text-balance text-lg text-primary-foreground/90 md:text-2xl">
+          <p className="mx-auto max-w-2xl text-balance text-lg text-muted-foreground md:text-2xl">
             La plataforma donde los comercios de Lules brillan. Descubre
             productos únicos, apoya a tus vecinos y encuentra todo lo que
             necesitas cerca de casa.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
-              size="lg"
-              variant="secondary"
-              className="group h-14 min-w-[200px] gap-2 font-semibold text-lg shadow-lg transition-all hover:scale-105"
+              className="group gap-2 font-semibold shadow-lg transition-all hover:scale-105"
               asChild
             >
               <Link href="/explorar/comercios">
-                <Search className="h-5 w-5" />
+                <Store className="h-5 w-5" />
                 Explorar Comercios
               </Link>
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-14 min-w-[200px] gap-2 border-primary-foreground/30 bg-black/10 font-semibold text-lg text-primary-foreground backdrop-blur-sm transition-all hover:bg-black/20 hover:text-white"
-              asChild
-            >
+            <Button variant="outline" asChild>
               <Link href="/explorar/productos">
+                <Package className="h-5 w-5" />
                 Ver Productos
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="ml-4 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
@@ -126,17 +123,6 @@ export default async function HomePage() {
 
         {/* Featured Businesses */}
         <div className="mb-24">
-          <div className="mb-10 text-center">
-            <span className="mb-2 inline-block rounded-full bg-primary/10 px-4 py-1.5 font-medium text-primary text-sm">
-              Destacados
-            </span>
-            <h2 className="mb-4 text-balance font-bold text-3xl tracking-tight md:text-5xl">
-              Comercios que inspiran
-            </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground text-xl">
-              Negocios locales comprometidos con la calidad y el servicio.
-            </p>
-          </div>
           <FeaturedBusinesses />
         </div>
       </HydrateClient>
@@ -145,7 +131,7 @@ export default async function HomePage() {
       <section className="mb-24 grid gap-12 lg:grid-cols-2 lg:items-center">
         <div className="space-y-8">
           <div>
-            <span className="mb-2 inline-block rounded-full bg-accent/10 px-4 py-1.5 font-medium text-accent-foreground text-sm">
+            <span className="mb-2 inline-block bg-accent/10 px-4 py-1.5 font-medium text-accent-foreground text-sm">
               Para Clientes
             </span>
             <h2 className="mb-4 text-balance font-bold text-3xl tracking-tight md:text-5xl">
@@ -213,36 +199,14 @@ export default async function HomePage() {
 
       {/* Recent Products */}
       <HydrateClient client={queryClient}>
-        <div className="mb-24 rounded-3xl bg-muted/30 px-6 py-16 md:px-12">
-          <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <div>
-              <h2 className="mb-2 font-bold text-3xl tracking-tight md:text-4xl">
-                Novedades Recientes
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Los últimos productos agregados por nuestros comercios.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              className="group h-12 gap-2 rounded-full border-primary/20 bg-background hover:border-primary/50"
-              asChild
-            >
-              <Link href="/explorar/productos">
-                Ver todo el catálogo
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-          <RecentProducts />
-        </div>
+        <RecentProducts />
       </HydrateClient>
 
       {/* For Businesses Call to Action */}
-      <section className="relative overflow-hidden rounded-3xl bg-slate-900 px-6 py-20 text-center text-white shadow-2xl md:px-12 md:py-32">
-        {/* Background Gradients/Effects */}
-        <div className="-translate-y-1/2 -translate-x-1/2 absolute top-0 left-0 h-64 w-64 rounded-full bg-primary/30 blur-3xl" />
-        <div className="absolute right-0 bottom-0 h-80 w-80 translate-x-1/3 translate-y-1/3 rounded-full bg-accent/20 blur-3xl" />
+      <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
+        {/* Side glows */}
+        <div className="-translate-y-1/2 -translate-x-1/3 absolute top-1/2 left-0 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[140px]" />
+        <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
 
         <div className="relative mx-auto max-w-4xl space-y-8">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
@@ -252,7 +216,7 @@ export default async function HomePage() {
           <h2 className="text-balance font-bold text-3xl tracking-tight md:text-5xl">
             Lleva tu negocio al siguiente nivel digital
           </h2>
-          <p className="mx-auto max-w-2xl text-balance text-lg text-slate-300 md:text-xl">
+          <p className="mx-auto max-w-2xl text-balance text-lg text-muted-foreground md:text-xl">
             No te quedes fuera. Únete a la plataforma líder de comercio local y
             empieza a vender más hoy mismo. Planes diseñados para crecer
             contigo.
@@ -260,20 +224,20 @@ export default async function HomePage() {
 
           <div className="grid gap-8 pt-8 md:grid-cols-3">
             <div className="space-y-2">
-              <h3 className="font-bold text-white text-xl">Visibilidad</h3>
-              <p className="text-slate-400">
+              <h3 className="font-bold text-xl">Visibilidad</h3>
+              <p className="text-muted-foreground">
                 Aparece en búsquedas locales y destaca ante miles de vecinos.
               </p>
             </div>
             <div className="space-y-2">
-              <h3 className="font-bold text-white text-xl">Catálogo Online</h3>
-              <p className="text-slate-400">
+              <h3 className="font-bold text-xl">Catálogo Online</h3>
+              <p className="text-muted-foreground">
                 Sube tus productos fácilmente y compártelos en redes sociales.
               </p>
             </div>
             <div className="space-y-2">
-              <h3 className="font-bold text-white text-xl">Estadísticas</h3>
-              <p className="text-slate-400">
+              <h3 className="font-bold text-xl">Estadísticas</h3>
+              <p className="text-muted-foreground">
                 Conoce qué productos gustan más y optimiza tus ventas.
               </p>
             </div>
@@ -281,8 +245,7 @@ export default async function HomePage() {
 
           <div className="pt-8">
             <Button
-              size="lg"
-              className="h-14 min-w-[240px] gap-2 rounded-full text-lg shadow-primary/20 shadow-xl transition-all hover:scale-105"
+              className="gap-2 shadow-primary/20 shadow-xl transition-all hover:scale-105"
               asChild
             >
               <Link href="/auth/business-setup">
@@ -290,8 +253,9 @@ export default async function HomePage() {
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </Button>
-            <p className="mt-4 text-slate-400 text-sm">
-              No requiere tarjeta de crédito • Cancelación en cualquier momento
+            <p className="mt-4 text-muted-foreground text-sm">
+              Pago por suscripción mensual • Cancelación en cualquier momento
+              desde Mercado Pago
             </p>
           </div>
         </div>
