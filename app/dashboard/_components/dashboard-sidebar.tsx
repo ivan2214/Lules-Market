@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/app/shared/components/ui/button";
+import { Separator } from "@/app/shared/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -36,7 +37,7 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
           <span>Mi Comercio</span>
         </Link>
       </div>
-      <nav className="flex-1 px-3 lg:py-4">
+      <nav className="flex-1 px-3 lg:pt-4">
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -57,8 +58,9 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
           );
         })}
       </nav>
+      <Separator className="my-4" />
       <div className="mt-auto w-full px-3">
-        <Button asChild className="w-full">
+        <Button variant="secondary" asChild className="w-full">
           <Link href="/">Volver al inicio</Link>
         </Button>
       </div>
