@@ -1,7 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
-import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
+import { Spinner } from "@/app/shared/components/ui/spinner";
+import { TrialCreateFormDialog } from "./_components/trial-create-form-dialog";
 
 export default function Loading() {
   return (

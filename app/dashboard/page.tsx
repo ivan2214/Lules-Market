@@ -1,9 +1,14 @@
 import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
-import { ProductFormDialog } from "@/components/dashboard/product-form-dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProductFormDialog } from "@/app/dashboard/_components/product-form-dialog";
+import { Button } from "@/app/shared/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/shared/components/ui/card";
 import { orpc } from "@/lib/orpc";
 import { getCurrentBusiness } from "../data/business/require-busines";
 

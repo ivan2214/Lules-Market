@@ -1,13 +1,13 @@
 import { connection } from "next/server";
+import { BusinessSetupForm } from "@/app/auth/_components/business-setup-form";
 import { requireUser } from "@/app/data/user/require-user";
-import { BusinessSetupForm } from "@/components/auth/business-setup-form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { orpc } from "@/lib/orpc";
 
 export default async function BusinessSetup() {

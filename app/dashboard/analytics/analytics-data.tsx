@@ -1,7 +1,6 @@
+import { AnalyticsContent } from "@/app/dashboard/_components/analytics/analytics-content";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import type { AnalyticsPeriod } from "@/app/router/analytics";
-
-import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
 import { orpc } from "@/lib/orpc";
 
 type AnalyticsData = {

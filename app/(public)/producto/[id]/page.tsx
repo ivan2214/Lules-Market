@@ -13,21 +13,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { ProductSchema } from "@/components/structured-data";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ProductSchema } from "@/app/shared/components/structured-data";
+import { Badge } from "@/app/shared/components/ui/badge";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import { orpc } from "@/lib/orpc";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
-import { ProductImages } from "./components/product-images";
-import { ProductViewTracker } from "./components/product-view-tracker";
+import { ProductImages } from "./_components/product-images";
+import { ProductViewTracker } from "./_components/product-view-tracker";
 
 type Props = {
   params: Promise<{ id: string }>;

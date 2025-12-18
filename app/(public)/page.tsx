@@ -2,10 +2,10 @@ import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
-import { DynamicStats } from "@/components/sections/dynamic-stats";
-import { FeaturedBusinesses } from "@/components/sections/featured-businesses";
-import { RecentProducts } from "@/components/sections/recent-products";
-import { Button } from "@/components/ui/button";
+import { DynamicStats } from "@/app/(public)/_components/sections/dynamic-stats";
+import { FeaturedBusinesses } from "@/app/(public)/_components/sections/featured-businesses";
+import { RecentProducts } from "@/app/(public)/_components/sections/recent-products";
+import { Button } from "@/app/shared/components/ui/button";
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 

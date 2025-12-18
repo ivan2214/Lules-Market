@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { BusinessesClient } from "./components/businesses-client";
+import { BusinessesClient } from "./_components/businesses-client";
 
 export default async function BusinessesPage() {
   "use cache";

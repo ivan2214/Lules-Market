@@ -1,4 +1,4 @@
-import { PeriodSelector } from "@/components/dashboard/period-selector";
+import { PeriodSelector } from "@/app/dashboard/_components/period-selector";
 import { AnalyticsData } from "./analytics-data";
 
 type SearchParams = Promise<{ period?: "7d" | "30d" | "90d" }>;

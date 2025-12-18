@@ -5,10 +5,10 @@ import type { Metadata } from "next";
 
 import Link from "next/link";
 import { Suspense } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/app/shared/components/ui/badge";
+import { Button } from "@/app/shared/components/ui/button";
+import { Card, CardContent } from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 
 import type { Plan } from "@/db/types";
 import { orpc } from "@/lib/orpc";
@@ -131,7 +131,7 @@ const PlanPricingPreviewSkeleton = () => {
 };
 
 export default async function ForBusinessPage() {
-  const plans = await orpc.admin.getAllPlans();
+  const plans = await orpc.plan.getAllPlans();
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">

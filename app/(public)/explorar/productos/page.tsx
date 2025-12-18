@@ -1,11 +1,9 @@
-import { Suspense } from "react";
-import EmptyStateSearch from "@/components/empty-state/empty-state-search";
-import { LimitSelector } from "@/components/shared/limit-selector";
-import { PaginationControls } from "@/components/shared/pagination-controls";
-import { orpc } from "@/lib/orpc";
-import { ActiveFilters } from "../components/active-filters";
-import { SearchAndFilters } from "../components/search-and-filters";
-import { ProductsGrid, ProductsGridSkeleton } from "./components/products-grid";
+import { orpcTanstack } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { ActiveFilters } from "../_components/active-filters";
+import { ResultsCountAndLimitSelector } from "../_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "../_components/search-and-filters";
+import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {
   search?: string;
@@ -26,20 +24,26 @@ export default async function ProductosPage({
 
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
+  const queryClient = getQueryClient();
 
-  const { products, total } = await orpc.products.listAllProducts({
-    category,
-    search,
-    sort: sortBy,
-    limit: currentLimit,
-    page: currentPage,
-    businessId,
-  });
+  queryClient.prefetchQuery(
+    orpcTanstack.products.listAllProducts.queryOptions({
+      input: {
+        category,
+        search,
+        sort: sortBy,
+        limit: currentLimit,
+        page: currentPage,
+        businessId,
+      },
+    }),
+  );
 
-  const totalPages = Math.ceil(total / currentLimit);
-  const categories = await orpc.category.listAllCategories();
+  queryClient.prefetchQuery(
+    orpcTanstack.business.listAllBusinesses.queryOptions(),
+  );
 
-  const { businesses } = await orpc.business.listAllBusinesses();
+  const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 
   return (
     <>
@@ -52,15 +56,10 @@ export default async function ProductosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters
-        categories={categories}
-        businesses={businesses}
-        params={await searchParams}
-        typeExplorer="productos"
-      />
+      <SearchAndFilters params={await searchParams} typeExplorer="productos" />
 
       {/* ACTIVE FILTERS */}
-      {!!(await searchParams) && (
+      {hasFilters && (
         <ActiveFilters
           typeExplorer="productos"
           params={{
@@ -71,41 +70,27 @@ export default async function ProductosPage({
             limit,
             sortBy,
           }}
-          businesses={businesses}
         />
       )}
 
       {/* Results Count and Limit Selector */}
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">
-          Mostrando {products.length} de {total} productos
-        </p>
-        <LimitSelector currentLimit={currentLimit} total={total} />
-      </div>
+      <ResultsCountAndLimitSelector
+        typeExplorer="productos"
+        currentLimit={currentLimit}
+      />
 
       {/* Products Grid */}
-      {products.length > 0 ? (
-        <>
-          <Suspense
-            key={JSON.stringify(await searchParams)}
-            fallback={<ProductsGridSkeleton />}
-          >
-            <ProductsGrid products={products} />
-          </Suspense>
-          <div className="mt-8 flex justify-center">
-            <PaginationControls
-              totalPages={totalPages}
-              currentPage={currentPage}
-            />
-          </div>
-        </>
-      ) : (
-        <EmptyStateSearch
-          title="No se encontraron productos"
-          description="Por favor, intenta con otros filtros."
-          typeExplorer="productos"
+      <HydrateClient client={queryClient}>
+        <ProductsGrid
+          hasFilters={hasFilters}
+          currentLimit={currentLimit}
+          currentPage={currentPage}
+          search={search}
+          category={category}
+          businessId={businessId}
+          sort={sortBy}
         />
-      )}
+      </HydrateClient>
     </>
   );
 }

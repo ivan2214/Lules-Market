@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { LocalBusinessSchema } from "@/components/structured-data";
-import { Button } from "@/components/ui/button";
+import { LocalBusinessSchema } from "@/app/shared/components/structured-data";
+import { Button } from "@/app/shared/components/ui/button";
 import { orpc } from "@/lib/orpc";
-import { BusinessInfo } from "./components/business-info";
-import { BusinessViewTracker } from "./components/business-view-tracker";
+import { BusinessInfo } from "./_components/business-info";
+import { BusinessViewTracker } from "./_components/business-view-tracker";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -143,7 +143,7 @@ export default async function BusinessPage({
   const similarBusinesses =
     business.category &&
     (await orpc.business.listAllBusinessesByCategories({
-      category: business.category,
+      category: business.category.value,
     }));
 
   return (

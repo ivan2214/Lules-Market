@@ -1,12 +1,9 @@
-import { Suspense } from "react";
-
-import EmptyStateSearch from "@/components/empty-state/empty-state-search";
-import { LimitSelector } from "@/components/shared/limit-selector";
-import { PaginationControls } from "@/components/shared/pagination-controls";
-import { orpc } from "@/lib/orpc";
-import { ActiveFilters } from "../components/active-filters";
-import { SearchAndFilters } from "../components/search-and-filters";
-import { BusinessGrid, BusinessGridSkeleton } from "./components/business-grid";
+import { orpcTanstack } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { ActiveFilters } from "../_components/active-filters";
+import { ResultsCountAndLimitSelector } from "../_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "../_components/search-and-filters";
+import { BusinessGrid } from "./_components/business-grid";
 
 type SearchParams = {
   search?: string;
@@ -26,16 +23,25 @@ export default async function ComerciosPage({
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
 
-  const { businesses, total } = await orpc.business.listAllBusinesses({
-    category,
-    search,
-    sortBy,
-    limit: currentLimit,
-    page: currentPage,
-  });
+  const queryClient = getQueryClient();
 
-  const totalPages = Math.ceil(total / currentLimit);
-  const categories = await orpc.category.listAllCategories();
+  queryClient.prefetchQuery(
+    orpcTanstack.business.listAllBusinesses.queryOptions({
+      input: {
+        category,
+        search,
+        sortBy,
+        limit: currentLimit,
+        page: currentPage,
+      },
+    }),
+  );
+
+  queryClient.prefetchQuery(
+    orpcTanstack.category.listAllCategories.queryOptions(),
+  );
+
+  const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 
   return (
     <>
@@ -48,15 +54,10 @@ export default async function ComerciosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters
-        categories={categories}
-        businesses={businesses}
-        typeExplorer="comercios"
-        params={await searchParams}
-      />
+      <SearchAndFilters typeExplorer="comercios" params={await searchParams} />
 
       {/* ACTIVE FILTERS */}
-      {!!(await searchParams) && (
+      {hasFilters && (
         <ActiveFilters
           typeExplorer="comercios"
           params={{
@@ -66,41 +67,25 @@ export default async function ComerciosPage({
             limit,
             sortBy,
           }}
-          businesses={businesses}
         />
       )}
 
       {/* Results Count and Limit Selector */}
-      <div className="mb-4 flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">
-          Mostrando {businesses.length} de {total} comercios
-        </p>
-        <LimitSelector currentLimit={currentLimit} total={total} />
-      </div>
+      <ResultsCountAndLimitSelector
+        typeExplorer="comercios"
+        currentLimit={currentLimit}
+      />
 
-      {/* Businesses Grid */}
-      {businesses.length > 0 ? (
-        <>
-          <Suspense
-            key={JSON.stringify(await searchParams)}
-            fallback={<BusinessGridSkeleton />}
-          >
-            <BusinessGrid businesses={businesses} />
-          </Suspense>
-          <div className="mt-8 flex justify-center">
-            <PaginationControls
-              totalPages={totalPages}
-              currentPage={currentPage}
-            />
-          </div>
-        </>
-      ) : (
-        <EmptyStateSearch
-          title="No se encontraron comercios"
-          description="Por favor, intenta con otros filtros."
-          typeExplorer="comercios"
+      <HydrateClient client={queryClient}>
+        <BusinessGrid
+          currentLimit={currentLimit}
+          currentPage={currentPage}
+          hasFilters={hasFilters}
+          search={search}
+          category={category}
+          sortBy={sortBy}
         />
-      )}
+      </HydrateClient>
     </>
   );
 }

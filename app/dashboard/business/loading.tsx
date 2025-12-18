@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/app/shared/components/ui/card";
+import { Label } from "@/app/shared/components/ui/label";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 
 export default function BusinessLoading() {
   return (
@@ -20,6 +20,34 @@ export default function BusinessLoading() {
           Administra la información pública de tu negocio
         </p>
       </div>
+
+      {/* Share Link Skeleton */}
+      <Card>
+        <CardHeader>
+          <Skeleton className="mb-2 h-6 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-10" />
+              <Skeleton className="h-10 w-10" />
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-4 rounded-lg border p-6 sm:flex-row sm:justify-between">
+            <div className="w-full space-y-1">
+              <Skeleton className="mb-2 h-5 w-32" />
+              <Skeleton className="mb-4 h-4 w-48" />
+              <Skeleton className="h-10 w-32" />
+            </div>
+            <div className="rounded-lg bg-white p-4 shadow-sm">
+              <Skeleton className="h-[150px] w-[150px]" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

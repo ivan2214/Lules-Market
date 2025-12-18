@@ -1,5 +1,5 @@
-import { VerifyStatus } from "@/components/auth/verify-status";
-import { VerifyTokenForm } from "@/components/auth/verify-token-form";
+import { VerifyStatus } from "@/app/auth/_components/verify-status";
+import { VerifyTokenForm } from "@/app/auth/_components/verify-token-form";
 
 interface VerifyPageProps {
   searchParams: Promise<{

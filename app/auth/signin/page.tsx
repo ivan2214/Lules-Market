@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { SignInForm } from "@/components/auth/signin-form";
-import { SignInFormSkeleton } from "@/components/skeletons/sign-in-form-skeleton";
+import { SignInForm } from "@/app/auth/_components/signin-form";
+import { SignInFormSkeleton } from "@/app/shared/components/skeletons/sign-in-form-skeleton";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 
 export default function SignInPage() {
   return (

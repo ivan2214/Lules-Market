@@ -1,73 +1,94 @@
 "use server";
 
+import { os } from "@orpc/server";
 import { addDays } from "date-fns";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
+import { z } from "zod";
 import { db, schema } from "@/db";
-import type { PlanType } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 
-interface ChangePlanParams {
-  businessId: string;
-  planType: PlanType;
-  isTrial?: boolean; // true si se quiere activar un trial
-  trialDays?: number; // duración del trial (default 30 días)
-  planDurationDays?: number; // duración del plan pagado (default 30 días)
-}
+const ChangePlanInputSchema = z.object({
+  businessId: z.string(),
+  planType: z.enum(["FREE", "BASIC", "PREMIUM"]),
+  isTrial: z.boolean().optional().default(false),
+  trialDays: z.number().optional().default(30),
+  planDurationDays: z.number().optional().default(30),
+});
 
-export const changePlan = async ({
-  businessId,
-  planType,
-  isTrial = false,
-  trialDays = 30,
-  planDurationDays = 30,
-}: ChangePlanParams): Promise<{ ok: boolean; message?: string }> => {
-  try {
-    // Buscamos el plan
-    const plan = await db.query.plan.findFirst({
-      where: eq(schema.plan.type, planType),
-    });
-    if (!plan) return { ok: false, message: "Plan no encontrado" };
+export const changePlan = os
+  .input(ChangePlanInputSchema)
+  .handler(async ({ input }) => {
+    const {
+      businessId,
+      planType,
+      isTrial = false,
+      trialDays = 30,
+      planDurationDays = 30,
+    } = input;
 
-    // Buscamos el negocio
-    const business = await db.query.business.findFirst({
-      where: eq(schema.business.id, businessId),
-      with: { currentPlan: true, trial: true },
-    });
-    if (!business) return { ok: false, message: "Comercio no encontrado" };
-
-    const now = new Date();
-
-    if (isTrial) {
-      // Solo se permite trial si el plan actual está activo
-      if (business.currentPlan?.planStatus !== "ACTIVE") {
-        return {
-          ok: false,
-          message:
-            "El comercio no tiene un plan activo para convertir en trial",
-        };
-      }
-
-      const expiresAt = addDays(now, trialDays);
-
-      // Desactivar cualquier trial activo
-      if (business.trial?.isActive) {
-        await db
-          .update(schema.trial)
-          .set({ isActive: false })
-          .where(eq(schema.trial.businessId, businessId));
-      }
-
-      // Crear nuevo trial
-      await db.insert(schema.trial).values({
-        businessId,
-        plan: planType,
-        activatedAt: now,
-        expiresAt,
-        isActive: true,
+    try {
+      // Buscamos el plan
+      const plan = await db.query.plan.findFirst({
+        where: eq(schema.plan.type, planType),
       });
+      if (!plan) throw new Error("Plan no encontrado");
 
-      // Actualizar el plan actual del negocio
+      // Buscamos el negocio
+      const business = await db.query.business.findFirst({
+        where: eq(schema.business.id, businessId),
+        with: { currentPlan: true, trial: true },
+      });
+      if (!business) throw new Error("Comercio no encontrado");
+
+      const now = new Date();
+
+      if (isTrial) {
+        // Solo se permite trial si el plan actual está activo
+        if (business.currentPlan?.planStatus !== "ACTIVE") {
+          throw new Error(
+            "El comercio no tiene un plan activo para convertir en trial",
+          );
+        }
+
+        const expiresAt = addDays(now, trialDays);
+
+        // Desactivar cualquier trial activo
+        if (business.trial?.isActive) {
+          await db
+            .update(schema.trial)
+            .set({ isActive: false })
+            .where(eq(schema.trial.businessId, businessId));
+        }
+
+        // Crear nuevo trial
+        await db.insert(schema.trial).values({
+          businessId,
+          plan: planType,
+          activatedAt: now,
+          expiresAt,
+          isActive: true,
+        });
+
+        // Actualizar el plan actual del negocio
+        await db
+          .update(schema.currentPlan)
+          .set({
+            planType,
+            planStatus: "ACTIVE",
+            expiresAt,
+          })
+          .where(eq(schema.currentPlan.businessId, businessId));
+
+        updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
+        updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+
+        return { ok: true, message: "Trial activado correctamente" };
+      }
+
+      // Caso plan pagado / cambio normal de plan
+      const expiresAt = addDays(now, planDurationDays);
+
       await db
         .update(schema.currentPlan)
         .set({
@@ -77,26 +98,16 @@ export const changePlan = async ({
         })
         .where(eq(schema.currentPlan.businessId, businessId));
 
-      return { ok: true, message: "Trial activado correctamente" };
+      updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
+      updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+
+      return { ok: true, message: "Plan actualizado correctamente" };
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(`Ocurrió un error: ${error}`);
     }
-
-    // Caso plan pagado / cambio normal de plan
-    const expiresAt = addDays(now, planDurationDays);
-
-    await db
-      .update(schema.currentPlan)
-      .set({
-        planType,
-        planStatus: "ACTIVE",
-        expiresAt,
-      })
-      .where(eq(schema.currentPlan.businessId, businessId));
-
-    return { ok: true, message: "Plan actualizado correctamente" };
-  } catch (error) {
-    return { ok: false, message: `Ocurrió un error: ${error}` };
-  } finally {
-    updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
-    updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
-  }
-};
+  })
+  .actionable();

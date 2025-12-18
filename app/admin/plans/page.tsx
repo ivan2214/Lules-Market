@@ -1,14 +1,14 @@
 import { Check, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/app/shared/components/ui/badge";
+import { Button } from "@/app/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/app/shared/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -16,11 +16,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/app/shared/components/ui/dialog";
 import { orpc } from "@/lib/orpc";
 import { formatCurrency } from "@/utils/format";
-import { PlanClient } from "./components/plan-client";
-import { PlanForm } from "./components/plan-form";
+import { PlanClient } from "./_components/plan-client";
+import { PlanForm } from "./_components/plan-form";
 
 export default async function PlansPage() {
   const plans = await orpc.admin.getAllPlans();

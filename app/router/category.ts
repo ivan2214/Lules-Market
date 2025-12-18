@@ -1,7 +1,8 @@
+import "server-only";
 import { os } from "@orpc/server";
 import z from "zod";
-import { db } from "@/db";
 import type { CategoryWithRelations } from "@/db/types";
+import { listAllCategoriesCache } from "./cache-functions/category";
 
 export const listAllCategories = os
   .route({
@@ -13,11 +14,7 @@ export const listAllCategories = os
   })
   .output(z.array(z.custom<CategoryWithRelations>()))
   .handler(async () => {
-    const categories = await db.query.category.findMany({
-      with: {
-        products: true,
-      },
-    });
+    const categories = await listAllCategoriesCache();
 
     return categories;
   });

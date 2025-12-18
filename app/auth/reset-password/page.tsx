@@ -1,5 +1,5 @@
-import { InvalidTokenState } from "@/components/auth/invalid-token-state";
-import { ResetPasswordForm } from "@/components/auth/reset-password-form";
+import { InvalidTokenState } from "@/app/auth/_components/invalid-token-state";
+import { ResetPasswordForm } from "@/app/auth/_components/reset-password-form";
 
 interface ResetPasswordPageProps {
   searchParams: Promise<{

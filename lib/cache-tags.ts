@@ -61,11 +61,13 @@ export const CACHE_TAGS = {
     },
     PROFILE: (businessId: string) => `business-profile-get-by-id-${businessId}`,
     PRODUCTS: "business-products",
+    GET_FEATURED: "business-featured",
   },
 
   PRODUCT: {
     GET_ALL: "products",
     GET_BY_ID: (id: string) => `product-${id}`,
+    GET_RECENT: "products-recent",
   },
 
   CATEGORY: {
@@ -86,5 +88,12 @@ export const CACHE_TAGS = {
 
   DEV_TOOLS: {
     GET_ALL: "dev-tools",
+  },
+
+  USER: {
+    GET_PUBLIC_PROFILE: (userId: string) => `user-get-public-profile-${userId}`,
+    GET_BY_EMAIL: (email: string) => `user-get-by-email-${email}`,
+    GET_BY_ID: (id: string | undefined) =>
+      id ? `user-get-by-id-${id}` : "user-get-by-id-undefined",
   },
 } as const;

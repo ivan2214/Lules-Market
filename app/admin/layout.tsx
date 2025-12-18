@@ -1,8 +1,8 @@
 import type React from "react";
 import { Suspense } from "react";
-import { AdminHeaderWrapper } from "@/components/admin/admin-header-wrapper";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { AdminHeaderSkeleton } from "@/components/admin/skeletons/admin-header-skeleton";
+import { AdminHeaderWrapper } from "@/app/admin/_components/admin-header-wrapper";
+import { AdminSidebar } from "@/app/admin/_components/admin-sidebar";
+import { AdminHeaderSkeleton } from "@/app/admin/_components/skeletons/admin-header-skeleton";
 
 export default async function AdminLayout({
   children,

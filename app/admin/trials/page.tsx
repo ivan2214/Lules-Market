@@ -7,12 +7,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/app/shared/components/ui/card";
+import { Skeleton } from "@/app/shared/components/ui/skeleton";
 import { db, schema } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { TrialColumns } from "./components/trial-columns";
-import { TrialCreateFormDialog } from "./components/trial-create-form-dialog";
+import { TrialColumns } from "./_components/trial-columns";
+import { TrialCreateFormDialog } from "./_components/trial-create-form-dialog";
 
 async function getTrialsAndActiveCount() {
   "use cache";
