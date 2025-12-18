@@ -16,7 +16,7 @@ export default async function SubscriptionPage() {
 
   const payments = await orpc.payment.history();
 
-  const plans = await orpc.admin.getAllPlans();
+  const plans = await orpc.plan.getAllPlans();
 
   return (
     <div className="space-y-8">
