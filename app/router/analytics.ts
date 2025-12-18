@@ -1,20 +1,18 @@
 import "server-only";
-import { ORPCError } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
+import { startOfMonth, subMonths } from "date-fns";
 import { and, count, eq, gte, lt } from "drizzle-orm";
+import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
+import { business, product } from "@/db/schema";
 import type { Product } from "@/db/types";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { businessAuthorized } from "./middlewares/authorized";
 
 const AnalyticsPeriodSchema = z.enum(["7d", "30d", "90d"]).default("30d");
 
 export type AnalyticsPeriod = z.infer<typeof AnalyticsPeriodSchema>;
-
-import { os } from "@orpc/server";
-import { startOfMonth, subMonths } from "date-fns";
-import { cacheLife, cacheTag } from "next/cache";
-import { business, product } from "@/db/schema";
-import { CACHE_TAGS } from "@/lib/cache-tags";
 
 async function getHomePageStatsCached() {
   "use cache";
