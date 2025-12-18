@@ -29,7 +29,7 @@ export default async function ProductosPage({
   queryClient.prefetchQuery(
     orpcTanstack.products.listAllProducts.queryOptions({
       input: {
-        category: decodeURIComponent(category || ""),
+        category,
         search,
         sort: sortBy,
         limit: currentLimit,
@@ -64,7 +64,7 @@ export default async function ProductosPage({
           typeExplorer="productos"
           params={{
             search,
-            category: decodeURIComponent(category || ""),
+            category,
             page,
             businessId,
             limit,
@@ -86,7 +86,7 @@ export default async function ProductosPage({
           currentLimit={currentLimit}
           currentPage={currentPage}
           search={search}
-          category={decodeURIComponent(category || "")}
+          category={category}
           businessId={businessId}
           sort={sortBy}
         />

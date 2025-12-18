@@ -133,7 +133,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <CategoryPills
               typeExplorer={typeExplorer}
               categories={categories}
-              category={decodeURIComponent(category || "")}
+              category={category || ""}
             />
           </section>
 

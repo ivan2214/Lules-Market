@@ -35,9 +35,7 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
         <Link href={createUrl({ category: undefined })}>Todo</Link>
       </Badge>
       {categories.map((cat) => {
-        const isActive =
-          category?.toLowerCase() ===
-          decodeURIComponent(cat.value.toLowerCase());
+        const isActive = category?.toLowerCase() === cat.value.toLowerCase();
         return (
           <Badge
             key={cat.id}
@@ -45,9 +43,7 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
             className="cursor-pointer px-4 py-2"
             asChild
           >
-            <Link href={createUrl({ category: encodeURIComponent(cat.value) })}>
-              {cat.value}
-            </Link>
+            <Link href={createUrl({ category: cat.value })}>{cat.value}</Link>
           </Badge>
         );
       })}

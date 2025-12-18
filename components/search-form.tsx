@@ -27,7 +27,7 @@ export const SearchForm = () => {
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (search.trim()) {
-      router.push(`/explorar/productos?search=${encodeURIComponent(search)}`);
+      router.push(`/explorar/productos?search=${search}`);
     }
   }
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

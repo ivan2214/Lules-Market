@@ -22,14 +22,13 @@ export default async function ComerciosPage({
 
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
-  const categoryDecoded = decodeURIComponent(category || "");
 
   const queryClient = getQueryClient();
 
   queryClient.prefetchQuery(
     orpcTanstack.business.listAllBusinesses.queryOptions({
       input: {
-        category: categoryDecoded,
+        category,
         search,
         sortBy,
         limit: currentLimit,
@@ -63,7 +62,7 @@ export default async function ComerciosPage({
           typeExplorer="comercios"
           params={{
             search,
-            category: categoryDecoded,
+            category,
             page,
             limit,
             sortBy,
@@ -83,7 +82,7 @@ export default async function ComerciosPage({
           currentPage={currentPage}
           hasFilters={hasFilters}
           search={search}
-          category={categoryDecoded}
+          category={category}
           sortBy={sortBy}
         />
       </HydrateClient>
