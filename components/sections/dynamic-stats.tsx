@@ -1,9 +1,7 @@
-import { startOfMonth, subMonths } from "date-fns";
-import { and, count, eq, gte, lt } from "drizzle-orm";
+"use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, Store } from "lucide-react";
-import { connection } from "next/server";
-import { db } from "@/db";
-import { business, product } from "@/db/schema";
+import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
@@ -12,67 +10,24 @@ function calcTrend(current: number, previous: number) {
   return ((current - previous) / previous) * 100;
 }
 
-export async function DynamicStats() {
-  // ✅ CRITICAL: Call connection() BEFORE new Date() to mark as dynamic
-  await connection();
-
-  const now = new Date();
-  const startThisMonth = startOfMonth(now);
-  const startLastMonth = startOfMonth(subMonths(now, 1));
-  const endLastMonth = startThisMonth;
-  const [
-    activeBusinessesTotal,
-    activeBusinessesLastMonth,
-    productsTotal,
-    productsLastMonth,
-  ] = await Promise.all([
-    // Total de negocios activos
-    db
-      .select({ count: count() })
-      .from(business)
-      .where(and(eq(business.isActive, true), eq(business.isBanned, false))),
-    // Negocios activos creados el mes pasado
-    db
-      .select({ count: count() })
-      .from(business)
-      .where(
-        and(
-          eq(business.isActive, true),
-          eq(business.isBanned, false),
-          gte(business.createdAt, startLastMonth),
-          lt(business.createdAt, endLastMonth),
-        ),
-      ),
-    // Total de productos activos
-    db
-      .select({ count: count() })
-      .from(product)
-      .where(and(eq(product.active, true), eq(product.isBanned, false))),
-    // Productos activos creados el mes pasado
-    db
-      .select({ count: count() })
-      .from(product)
-      .where(
-        and(
-          eq(product.active, true),
-          eq(product.isBanned, false),
-          gte(product.createdAt, startLastMonth),
-          lt(product.createdAt, endLastMonth),
-        ),
-      ),
-  ]);
+export function DynamicStats() {
+  const {
+    data: {
+      activeBusinessesTotal,
+      activeBusinessesLastMonth,
+      productsTotal,
+      productsLastMonth,
+    },
+  } = useSuspenseQuery(orpcTanstack.analytics.getHomePageStats.queryOptions());
 
   const stats = {
     businesses: {
-      value: activeBusinessesTotal[0].count,
-      trend: calcTrend(
-        activeBusinessesTotal[0].count,
-        activeBusinessesLastMonth[0].count,
-      ),
+      value: activeBusinessesTotal,
+      trend: calcTrend(activeBusinessesTotal, activeBusinessesLastMonth),
     },
     products: {
-      value: productsTotal[0].count,
-      trend: calcTrend(productsTotal[0].count, productsLastMonth[0].count),
+      value: productsTotal,
+      trend: calcTrend(productsTotal, productsLastMonth),
     },
   };
 
@@ -122,7 +77,7 @@ export async function DynamicStats() {
   );
 }
 
-export function StatsSkeletons() {
+export function DynamicStatsSkeletons() {
   return (
     <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {[1, 2, 3, 4].map((i) => (

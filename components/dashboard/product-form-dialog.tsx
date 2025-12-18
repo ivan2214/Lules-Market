@@ -1,19 +1,18 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import type React from "react";
-import { type HTMLAttributes, useMemo, useState } from "react";
-import { Controller, Form } from "react-hook-form";
+import { type HTMLAttributes, useState } from "react";
+import { Controller, Form, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import {
-  createProductAction,
-  updateProductAction,
-} from "@/app/actions/product.action";
-import type { CategoryDTO } from "@/app/data/category/category.dto";
-import {
-  ProductCreateInputSchema,
-  type ProductDTO,
-} from "@/app/data/product/product.dto";
+  type ProductCreateInput,
+  ProductCreateSchema,
+  type ProductUpdateInput,
+  ProductUpdateSchema,
+} from "@/app/router/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,16 +41,17 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useAction } from "@/hooks/use-action";
+import type { CategoryWithRelations, ProductWithRelations } from "@/db/types";
+import { orpcTanstack } from "@/lib/orpc";
 import { Uploader } from "../uploader/uploader";
 
 interface ProductFormDialogProps {
   canFeature: boolean;
-  product?: ProductDTO;
+  product?: ProductWithRelations;
   trigger?: React.ReactNode;
   className?: HTMLAttributes<"button">["className"];
   isViewMode?: boolean;
-  categories: CategoryDTO[];
+  categories: CategoryWithRelations[];
 }
 
 export function ProductFormDialog({
@@ -62,54 +62,91 @@ export function ProductFormDialog({
   categories,
 }: ProductFormDialogProps) {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
-  const actionOptions = useMemo(
-    () => ({
-      showToasts: true,
-      onSuccess() {
-        setOpen(false);
-        router.refresh();
+  const queryClient = useQueryClient();
+
+  const createProductMutation = useMutation(
+    orpcTanstack.products.createProduct.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Producto "${data.product.name}" creado exitosamente!`);
+
+        // Invalidate channel queries to refetch the list
+        queryClient.invalidateQueries({
+          queryKey: orpcTanstack.products.listAllProducts.queryKey(),
+        });
+      },
+      onError: () => {
+        // Generic error fallback
+        toast.error("Error al crear el producto. Por favor, intenta de nuevo.");
       },
     }),
-    [router],
   );
 
-  const action = product ? updateProductAction : createProductAction;
+  const updateProductMutation = useMutation(
+    orpcTanstack.products.updateProduct.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(
+          `Producto "${data.product.name}" actualizado exitosamente!`,
+        );
 
-  const defaultValues = product?.id
-    ? {
-        productId: product.id,
-        name: product.name,
-        description: product.description || "",
-        price: product.price || 0,
-        categories: product.category,
-        images: product?.images?.map((img) => ({
-          url: img.url,
-          key: img.key,
-          name: img.name ?? undefined,
-          isMainImage: img.isMainImage,
-          size: img.size ?? undefined,
-        })),
-        active: product.active,
-        featured: product.featured,
-      }
-    : {
-        name: "",
-        description: "",
-        price: 0,
-        categories: [],
-        images: [],
-        active: true,
-        featured: false,
-      };
+        // Invalidate channel queries to refetch the list
+        queryClient.invalidateQueries({
+          queryKey: orpcTanstack.products.listAllProducts.queryKey(),
+        });
+      },
+      onError: () => {
+        // Generic error fallback
+        toast.error(
+          "Error al actualizar el producto. Por favor, intenta de nuevo.",
+        );
+      },
+    }),
+  );
 
-  const { execute, form, pending } = useAction({
-    action,
-    formSchema: ProductCreateInputSchema,
+  const defaultValues: Partial<ProductCreateInput | ProductUpdateInput> =
+    product?.id
+      ? {
+          productId: product.id,
+          name: product.name,
+          description: product.description || "",
+          price: product.price || 0,
+          category: product.category?.value || "",
+          images:
+            product?.images?.map((img) => ({
+              url: img.url,
+              key: img.key,
+              name: img.name ?? "",
+              isMainImage: img.isMainImage,
+              size: img.size ?? 0,
+            })) ?? [],
+          active: product.active,
+          featured: product.featured,
+        }
+      : {
+          name: "",
+          description: "",
+          price: 0,
+          images: [],
+          active: true,
+          featured: false,
+        };
+  const schema = product ? ProductUpdateSchema : ProductCreateSchema;
+
+  const form = useForm<ProductCreateInput | ProductUpdateInput>({
     defaultValues,
-    options: actionOptions,
+    resolver: zodResolver(schema),
   });
+
+  const execute = form.handleSubmit((data) => {
+    if (product) {
+      updateProductMutation.mutate(data as ProductUpdateInput);
+    } else {
+      createProductMutation.mutate(data as ProductCreateInput);
+    }
+  });
+
+  const pending =
+    createProductMutation.isPending || updateProductMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -243,7 +280,7 @@ export function ProductFormDialog({
                             <div className="flex items-center gap-2">
                               <input
                                 type="checkbox"
-                                checked={field.value?.includes(value)}
+                                checked={field.value === value}
                                 readOnly
                               />
                               {label}

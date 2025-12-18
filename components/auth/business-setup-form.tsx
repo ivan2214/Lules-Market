@@ -1,8 +1,13 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { businessSetupAction } from "@/app/actions/business-actions";
-import { BusinessSetupInputSchema } from "@/app/data/business/business.dto";
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import {
+  type BusinessSetupInput,
+  BusinessSetupSchema,
+} from "@/app/router/schemas";
 import { BusinessBasicInfo } from "@/components/auth/business-setup/business-basic-info";
 import { BusinessContactInfo } from "@/components/auth/business-setup/business-contact-info";
 import { BusinessMediaInfo } from "@/components/auth/business-setup/business-media-info";
@@ -10,7 +15,7 @@ import { BusinessSocialInfo } from "@/components/auth/business-setup/business-so
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Form } from "@/components/ui/form";
-import { useAction } from "@/hooks/use-action";
+import { orpc } from "@/lib/orpc";
 
 export function BusinessSetupForm({
   categories,
@@ -44,18 +49,26 @@ export function BusinessSetupForm({
     },
   };
 
-  const { execute, pending, form } = useAction({
-    action: businessSetupAction,
-    formSchema: BusinessSetupInputSchema,
+  const [pending, startTransition] = useTransition();
+
+  const form = useForm<BusinessSetupInput>({
     defaultValues,
-    options: {
-      showToasts: true,
-    },
+    resolver: zodResolver(BusinessSetupSchema),
   });
+
+  const onSubmit = async (data: BusinessSetupInput) => {
+    startTransition(async () => {
+      await orpc.business.setup(data);
+    });
+  };
 
   return (
     <Form {...form}>
-      <form id="business-setup-form" className="space-y-8" onSubmit={execute}>
+      <form
+        id="business-setup-form"
+        className="space-y-8"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         {/* Nombre y Categoría */}
         <FieldGroup className="grid gap-6 md:grid-cols-2">
           <BusinessBasicInfo categories={categories} pending={pending} />

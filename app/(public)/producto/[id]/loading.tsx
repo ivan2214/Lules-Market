@@ -16,7 +16,7 @@ export default function ProductDetailLoading() {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <Skeleton
                     key={i.toString()}
-                    className="h-20 w-20 flex-shrink-0 rounded-md"
+                    className="h-20 w-20 shrink-0 rounded-md"
                   />
                 ))}
               </div>

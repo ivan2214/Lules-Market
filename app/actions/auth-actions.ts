@@ -12,6 +12,7 @@ import {
 import { db, schema } from "@/db";
 import type { ActionResult } from "@/hooks/use-action";
 import { auth, syncUserRole } from "@/lib/auth";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { getUserByEmail } from "../data/user/utils";
 
 export async function businessSignInAction(
@@ -202,19 +203,6 @@ export const businessSignUpAction = async (
       errorMessage: "Error al iniciar sesión",
     };
   } finally {
-    updateTag("dev-tools");
+    updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
   }
 };
-
-/* export async function verifyEmail(input: {
-  token: string;
-}): Promise<ActionResult> {
-  // TODO: Implement with Drizzle when needed
-}
- */
-/* export async function resendVerificationEmail(input: {
-  email: string;
-}): Promise<ActionResult> {
-  // TODO: Implement with Drizzle when needed
-}
- */

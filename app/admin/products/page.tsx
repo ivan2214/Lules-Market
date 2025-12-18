@@ -1,11 +1,12 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { ProductsClient } from "./components/products-client";
 
 export default async function ProductsPage() {
   "use cache";
   cacheLife("hours");
-  cacheTag("products-page");
+  cacheTag(CACHE_TAGS.ADMIN.PRODUCTS.GET_ALL);
   const products = await db.query.product.findMany({
     with: {
       images: true,

@@ -1,5 +1,3 @@
-import { getPlans } from "@/app/actions/plan-actions";
-import { getSubscriptionHistory } from "@/app/actions/subscription-actions";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -10,13 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { orpc } from "@/lib/orpc";
+import { formatCurrency } from "@/utils/format";
 
 export default async function SubscriptionPage() {
   const { currentBusiness } = await getCurrentBusiness();
 
-  const payments = await getSubscriptionHistory();
+  const payments = await orpc.payment.history();
 
-  const plans = await getPlans();
+  const plans = await orpc.admin.getAllPlans();
 
   return (
     <div className="space-y-8">
@@ -106,7 +106,7 @@ export default async function SubscriptionPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">
-                      ${payment.amount.toLocaleString()}
+                      {formatCurrency(payment.amount, "ARS")}
                     </p>
                     <Badge
                       variant={

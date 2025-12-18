@@ -21,7 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { Business, Category } from "@/db";
+import type { Business, Category } from "@/db/types";
 import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
 import { BusinessesPills } from "./businesses-pills";
 import { CategoryPills } from "./category-pills";

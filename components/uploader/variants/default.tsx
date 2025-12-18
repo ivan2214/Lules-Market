@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, File, StarIcon, Upload, X } from "lucide-react";
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
+
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import {
   AlertDialog,
@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import type { ImageInsert } from "@/db/types";
 import { cn } from "@/lib/utils";
 import { formatFileSize, isImage } from "../uploader.helpers";
 import type { VariantCommonProps } from "./types";
@@ -276,16 +277,14 @@ export function DefaultVariant(props: VariantCommonProps) {
         value &&
         !Array.isArray(value) && (
           <div className="space-y-2">
-            <Card key={(value as ImageCreateInput).key}>
+            <Card key={(value as ImageInsert).key}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  {isImage(value as ImageCreateInput) ? (
+                  {isImage(value as ImageInsert) ? (
                     <div className="relative h-12 w-12 overflow-hidden rounded bg-gray-100">
                       <ImageWithSkeleton
-                        src={
-                          (value as ImageCreateInput).url || "/placeholder.svg"
-                        }
-                        alt={(value as ImageCreateInput).name || "Imagen"}
+                        src={(value as ImageInsert).url || "/placeholder.svg"}
+                        alt={(value as ImageInsert).name || "Imagen"}
                         className="object-cover"
                       />
                     </div>
@@ -297,13 +296,11 @@ export function DefaultVariant(props: VariantCommonProps) {
 
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium text-sm">
-                      {(value as ImageCreateInput).name || "Archivo"}
+                      {(value as ImageInsert).name || "Archivo"}
                     </p>
-                    {(value as ImageCreateInput).size != null && (
+                    {(value as ImageInsert).size != null && (
                       <p className="text-gray-500 text-xs">
-                        {formatFileSize(
-                          (value as ImageCreateInput).size as number,
-                        )}
+                        {formatFileSize((value as ImageInsert).size as number)}
                       </p>
                     )}
                   </div>
@@ -320,9 +317,7 @@ export function DefaultVariant(props: VariantCommonProps) {
                       type="button"
                       variant="ghost"
                       size="icon"
-                      onClick={() =>
-                        removeFile((value as ImageCreateInput).key)
-                      }
+                      onClick={() => removeFile((value as ImageInsert).key)}
                       disabled={disabled}
                     >
                       <X className="h-4 w-4" />

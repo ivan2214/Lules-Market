@@ -2,15 +2,6 @@
 
 import type { icons } from "lucide-react";
 
-export interface Analytics {
-  id: string;
-  businessId?: string;
-  productId?: string;
-  type: "product_view" | "business_view" | "contact_click";
-  metadata?: Record<string, unknown>;
-  createdAt: Date;
-}
-
 export interface PlanLimits {
   maxProducts: number;
   canFeatureProducts: boolean;

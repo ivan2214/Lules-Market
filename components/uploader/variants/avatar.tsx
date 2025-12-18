@@ -1,7 +1,6 @@
 "use client";
 
 import { Upload, X } from "lucide-react";
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import {
   AlertDialog,
@@ -15,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import type { ImageInsert } from "@/db/types";
 import { cn } from "@/lib/utils";
 import type { VariantCommonProps } from "./types";
 
@@ -35,7 +35,7 @@ export function AvatarVariant(props: VariantCommonProps) {
     <div className={cn("space-y-2", className)}>
       {!uploading?.isLoading &&
       !uploading?.isDeleting &&
-      !(value as ImageCreateInput)?.url ? (
+      !(value as ImageInsert)?.url ? (
         <div
           {...getRootProps()}
           className={cn(
@@ -55,8 +55,8 @@ export function AvatarVariant(props: VariantCommonProps) {
       ) : (
         <div className="group relative h-32 w-32">
           <ImageWithSkeleton
-            src={(value as ImageCreateInput).url || "/placeholder.svg"}
-            alt={(value as ImageCreateInput).name || "Avatar"}
+            src={(value as ImageInsert).url || "/placeholder.svg"}
+            alt={(value as ImageInsert).name || "Avatar"}
             className="aspect-square h-full min-h-32 w-full min-w-32 rounded-full border-4 border-gray-200 object-cover object-center"
           />
           <AlertDialog>
@@ -85,7 +85,7 @@ export function AvatarVariant(props: VariantCommonProps) {
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive text-white hover:bg-destructive/90"
-                  onClick={() => removeFile((value as ImageCreateInput).key)}
+                  onClick={() => removeFile((value as ImageInsert).key)}
                 >
                   Eliminar
                 </AlertDialogAction>

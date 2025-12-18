@@ -4,7 +4,7 @@ import { Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { deleteBusinessAction } from "@/app/actions/business-actions";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth-client";
+import { orpc } from "@/lib/orpc";
 
 export function DangerZone() {
   const router = useRouter();
@@ -25,7 +26,8 @@ export function DangerZone() {
 
   const handleDeleteAccount = () => {
     startTransition(async () => {
-      const { errorMessage, successMessage } = await deleteBusinessAction();
+      const { errorMessage, successMessage } =
+        await orpc.settings.deleteAccount();
       if (successMessage) {
         toast.success(successMessage);
         signOut();

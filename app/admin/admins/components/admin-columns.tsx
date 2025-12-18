@@ -3,21 +3,24 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Trash2 } from "lucide-react";
 import { Suspense, useState } from "react";
-import type { AdminDTO } from "@/app/data/admin/admin.dto";
+
 import { DataTable } from "@/components/table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { AdminWithRelations } from "@/db/types";
 import { AdminDeleteAlertDialog } from "./admin-delete-alert-dialog";
 
-function AdminColumnsInner({ admins }: { admins: AdminDTO[] }) {
+function AdminColumnsInner({ admins }: { admins: AdminWithRelations[] }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedAdmin, setSelectedAdmin] = useState<AdminDTO | null>(null);
+  const [selectedAdmin, setSelectedAdmin] = useState<AdminWithRelations | null>(
+    null,
+  );
 
   const onOpenChangeAdminFinishAlertDialog = (value: boolean) => {
     setDeleteDialogOpen(value);
   };
 
-  const columns: ColumnDef<AdminDTO>[] = [
+  const columns: ColumnDef<AdminWithRelations>[] = [
     {
       accessorKey: "name",
       header: "Nombre",
@@ -87,7 +90,7 @@ function AdminColumnsInner({ admins }: { admins: AdminDTO[] }) {
   );
 }
 
-export function AdminColumns({ admins }: { admins: AdminDTO[] }) {
+export function AdminColumns({ admins }: { admins: AdminWithRelations[] }) {
   return (
     <Suspense fallback={<div>Cargando...</div>}>
       <AdminColumnsInner admins={admins} />

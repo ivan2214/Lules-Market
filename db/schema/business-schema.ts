@@ -95,11 +95,10 @@ export const plan = pgTable("plan", {
   hasStatistics: boolean("has_statistics").default(false).notNull(),
   canFeatureProducts: boolean("can_feature_products").default(false).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
+    .$onUpdate(() => new Date()),
 });
 
 export const trial = pgTable("trial", {

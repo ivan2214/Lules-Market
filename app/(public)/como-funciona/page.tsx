@@ -1,7 +1,6 @@
 import { BarChart3, QrCode, Star, Store, Users, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicFooter } from "@/components/public/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -105,7 +104,7 @@ export default function ComoFuncionaPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Store className="h-6 w-6 text-primary" />
                 </div>
                 <div className="space-y-2">
@@ -125,7 +124,7 @@ export default function ComoFuncionaPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Users className="h-6 w-6 text-primary" />
                 </div>
                 <div className="space-y-2">
@@ -144,7 +143,7 @@ export default function ComoFuncionaPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Star className="h-6 w-6 text-primary" />
                 </div>
                 <div className="space-y-2">
@@ -161,7 +160,7 @@ export default function ComoFuncionaPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <BarChart3 className="h-6 w-6 text-primary" />
                 </div>
                 <div className="space-y-2">
@@ -180,7 +179,7 @@ export default function ComoFuncionaPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <QrCode className="h-6 w-6 text-primary" />
                 </div>
                 <div className="space-y-2">
@@ -200,7 +199,7 @@ export default function ComoFuncionaPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Zap className="h-6 w-6 text-primary" />
                 </div>
                 <div className="space-y-2">
@@ -231,7 +230,6 @@ export default function ComoFuncionaPage() {
           </Button>
         </div>
       </div>
-      <PublicFooter />
     </div>
   );
 }

@@ -1,9 +1,11 @@
+import "@/lib/orpc.server"; // prerendering for ssr
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "@/lib/providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +45,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="mx-auto font-sans antialiased">
-        {children}
+        <Providers>{children}</Providers>
         {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
         <Toaster />
         <Analytics />

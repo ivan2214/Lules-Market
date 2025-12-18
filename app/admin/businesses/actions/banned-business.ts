@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 import { checkAdminPermission } from "@/app/actions/check-admin-permission";
 import { getCurrentAdmin } from "@/app/data/admin/admin.require";
 import { db, schema } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 
 export const bannedBusiness = async (
   businessId: string,
@@ -95,7 +96,8 @@ export const bannedBusiness = async (
       error: `Error crítico al banear comercio:${error}`,
     };
   } finally {
-    updateTag("business-page");
+    updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
+    updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
   }
 };
 
@@ -173,6 +175,7 @@ export const unbannedBusiness = async (
       error: `Error crítico al desbanear comercio: ${error}`,
     };
   } finally {
-    updateTag("business-page");
+    updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
+    updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
   }
 };

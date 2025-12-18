@@ -3,7 +3,6 @@
 import { Menu, Store } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useState } from "react";
-import type { AdminDTO } from "@/app/data/admin/admin.dto";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,11 +10,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import type { AdminWithRelations } from "@/db/types";
 import { AdminMenu } from "./admin-menu";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminMenuSkeleton } from "./skeletons/admin-menu-skeleton";
 
-export function AdminHeader({ admin }: { admin: AdminDTO }) {
+export function AdminHeader({ admin }: { admin: AdminWithRelations }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {

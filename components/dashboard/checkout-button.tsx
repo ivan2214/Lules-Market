@@ -1,50 +1,58 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { AlertTriangleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
-import { createPaymentPreference } from "@/app/actions/subscription-actions";
 import { Button } from "@/components/ui/button";
-import type { PlanType } from "@/db";
+import type { PlanType } from "@/db/types";
+import { orpcTanstack } from "@/lib/orpc";
+import { cn } from "@/lib/utils";
 
 interface CheckoutButtonProps {
   plan: PlanType;
 }
 
 export function CheckoutButton({ plan }: CheckoutButtonProps) {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function handleCheckout() {
-    setLoading(true);
-    try {
-      const { initPoint } = await createPaymentPreference(plan);
+  const { mutate, isPending, error, isError } = useMutation(
+    orpcTanstack.payment.createPreference.mutationOptions({
+      onSuccess(data) {
+        const { initPoint } = data;
 
-      // In development, use sandbox
-      const checkoutUrl = initPoint;
+        if (initPoint) {
+          router.push(initPoint);
+        }
 
-      if (checkoutUrl) {
-        router.push(checkoutUrl);
-      }
-    } catch (error) {
-      console.error(" Error creating preference:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Error al procesar el pago",
-      );
-      setLoading(false);
-    }
-  }
+        toast.success("Pago iniciado");
+      },
+      onError(error) {
+        toast.error(
+          error instanceof Error ? error.message : "Error al procesar el pago",
+        );
+      },
+    }),
+  );
+
+  const handleCheckout = () => {
+    const planType = plan;
+    mutate({ planType });
+  };
 
   return (
     <Button
       onClick={handleCheckout}
-      disabled={loading}
+      disabled={isPending || !!isError}
       size="lg"
-      className="w-full"
+      className={cn("w-full", isPending && "cursor-not-allowed opacity-50")}
+      variant={isError ? "destructive" : "default"}
     >
-      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      Continuar al Pago
+      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {isPending && "Procesando..."}
+      {!isPending && !isError && "Continuar al Pago"}
+      {!isPending && isError && <AlertTriangleIcon className="mr-2 h-4 w-4" />}
+      {!isPending && isError && error.message}
     </Button>
   );
 }

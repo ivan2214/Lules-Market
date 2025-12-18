@@ -9,8 +9,8 @@
 import { faker } from "@faker-js/faker";
 import { addDays, addMonths, subMonths } from "date-fns";
 import { eq, sql } from "drizzle-orm";
-
-import { db, type PlanInsert } from "@/db";
+import { db } from "@/db";
+import type { PlanInsert } from "@/db/types";
 import { auth } from "@/lib/auth";
 import * as schema from "./schema";
 

@@ -31,7 +31,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Plan } from "@/db";
+import type { Plan } from "@/db/types";
 import { PlanForm } from "./plan-form";
 
 type PlanClientProps = {

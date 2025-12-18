@@ -12,10 +12,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import {
-  getPublicProduct,
-  getPublicProducts,
-} from "@/app/actions/public-actions";
+
 import { ProductSchema } from "@/components/structured-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { orpc } from "@/lib/orpc";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
 import { ProductImages } from "./components/product-images";
@@ -38,7 +36,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
-  const product = await getPublicProduct(id);
+  const { product } = await orpc.products.getProductById({ id });
 
   if (!product) {
     notFound();
@@ -125,7 +123,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const { products } = await getPublicProducts();
+  const { products } = await orpc.products.listAllProducts();
 
   if (!products.length) {
     return [{ id: "default" }]; // fallback para que el build no falle
@@ -136,7 +134,7 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const product = await getPublicProduct(id);
+  const { product } = await orpc.products.getProductById({ id });
 
   if (!product) {
     notFound();

@@ -3,7 +3,9 @@
 import { addDays } from "date-fns";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
-import { db, type PlanType, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { PlanType } from "@/db/types";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 
 interface ChangePlanParams {
   businessId: string;
@@ -94,6 +96,7 @@ export const changePlan = async ({
   } catch (error) {
     return { ok: false, message: `Ocurrió un error: ${error}` };
   } finally {
-    updateTag("business-page");
+    updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
+    updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
   }
 };

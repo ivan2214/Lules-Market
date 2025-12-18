@@ -1,7 +1,7 @@
 "use client";
 
 import { Upload, X } from "lucide-react";
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
+
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import {
   AlertDialog,
@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import type { ImageInsert } from "@/db/types";
 import { cn } from "@/lib/utils";
 import { isImage } from "../uploader.helpers";
 import type { VariantCommonProps } from "./types";
@@ -95,21 +96,21 @@ export function MinimalVariant(props: VariantCommonProps) {
         value.url !== "" && (
           <div className="space-y-1">
             <div
-              key={(value as ImageCreateInput).key}
+              key={(value as ImageInsert).key}
               className="flex items-center justify-between rounded bg-gray-50 p-2"
             >
               <div className="flex items-center justify-start gap-2">
-                {isImage(value as ImageCreateInput) && (
+                {isImage(value as ImageInsert) && (
                   <div className="h-12 w-12">
                     <ImageWithSkeleton
                       src={value.url}
-                      alt={(value as ImageCreateInput).name}
+                      alt={(value as ImageInsert).name || "Archivo"}
                       className="aspect-square h-full w-full rounded object-cover object-center"
                     />
                   </div>
                 )}
                 <span className="truncate text-sm">
-                  {(value as ImageCreateInput).name || "Archivo"}
+                  {(value as ImageInsert).name || "Archivo"}
                 </span>
               </div>
               <div>
@@ -138,9 +139,7 @@ export function MinimalVariant(props: VariantCommonProps) {
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
                         className="bg-destructive text-white hover:bg-destructive/90"
-                        onClick={() =>
-                          removeFile((value as ImageCreateInput).key)
-                        }
+                        onClick={() => removeFile((value as ImageInsert).key)}
                       >
                         Eliminar
                       </AlertDialogAction>

@@ -1,10 +1,10 @@
-import type { CategoryDTO } from "@/app/data/category/category.dto";
 import { Badge } from "@/components/ui/badge";
+import type { CategoryWithRelations } from "@/db/types";
 
 type Props = {
   name: string;
   price?: number | null;
-  categories: CategoryDTO[];
+  categories: CategoryWithRelations[];
   description?: string | null;
 };
 

@@ -1,12 +1,8 @@
 import { Suspense } from "react";
-import {
-  getCategories,
-  getPublicBusinesses,
-  getPublicProducts,
-} from "@/app/actions/public-actions";
 import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
+import { orpc } from "@/lib/orpc";
 import { ActiveFilters } from "../components/active-filters";
 import { SearchAndFilters } from "../components/search-and-filters";
 import { ProductsGrid, ProductsGridSkeleton } from "./components/products-grid";
@@ -31,20 +27,19 @@ export default async function ProductosPage({
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
 
-  const { products, total } = await getPublicProducts({
+  const { products, total } = await orpc.products.listAllProducts({
     category,
     search,
-    sortBy,
+    sort: sortBy,
     limit: currentLimit,
     page: currentPage,
-
     businessId,
   });
 
   const totalPages = Math.ceil(total / currentLimit);
-  const categories = await getCategories();
+  const categories = await orpc.category.listAllCategories();
 
-  const { businesses } = await getPublicBusinesses();
+  const { businesses } = await orpc.business.listAllBusinesses();
 
   return (
     <>

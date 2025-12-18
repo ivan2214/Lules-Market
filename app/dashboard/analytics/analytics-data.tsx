@@ -1,8 +1,8 @@
-import { getAnalytics } from "@/app/data/analytics/analytics.dal";
-import type { AnalyticsPeriod } from "@/app/data/analytics/analytics.dto";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
+import type { AnalyticsPeriod } from "@/app/router/analytics";
 
 import { AnalyticsContent } from "@/components/dashboard/analytics/analytics-content";
+import { orpc } from "@/lib/orpc";
 
 type AnalyticsData = {
   totalViews: number;
@@ -26,22 +26,10 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
   try {
     // Get business and subscription info
     const { currentBusiness } = await getCurrentBusiness();
-
-    if (!currentBusiness) {
-      console.error("Business not found");
-      return (
-        <AnalyticsContent
-          period={period}
-          data={DEFAULT_ANALYTICS}
-          hasStatistics={false}
-        />
-      );
-    }
-
     const currentPlan = currentBusiness.currentPlan;
 
-    // If no stats available, return early with default data
-    if (!currentPlan) {
+    if (!currentBusiness || !currentPlan) {
+      console.error("Business not found");
       return (
         <AnalyticsContent
           period={period}
@@ -54,7 +42,9 @@ export async function AnalyticsData({ period }: { period: AnalyticsPeriod }) {
     // Fetch analytics data
     let data: AnalyticsData;
     try {
-      const analytics = await getAnalytics(period, currentBusiness.id);
+      const analytics = await orpc.analytics.getStats({
+        period,
+      });
       data = {
         totalViews: analytics?.totalViews ?? 0,
         productViews: analytics?.productViews ?? 0,

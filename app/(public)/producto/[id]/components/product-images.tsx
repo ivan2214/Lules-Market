@@ -8,7 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import type { Image } from "@/db";
+import type { Image } from "@/db/types";
 
 type Props = {
   images?: Image[] | null;

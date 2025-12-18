@@ -1,8 +1,9 @@
 "use client";
 
-import { Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { Controller, type Resolver, useForm } from "react-hook-form";
 import z from "zod";
-import { createPlan } from "@/app/data/admin/admin.dal";
 import TagsField from "@/components/tags-field";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
@@ -30,8 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { Plan, PlanType } from "@/db";
-import { useAction } from "@/hooks/use-action";
+import type { Plan, PlanInsert, PlanType } from "@/db/types";
+import { orpcTanstack } from "@/lib/orpc";
 
 export const planFormSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
@@ -40,7 +41,10 @@ export const planFormSchema = z.object({
     .string()
     .min(10, "La descripción debe tener al menos 10 caracteres"),
   price: z.coerce.number().min(0, "El precio debe ser mayor o igual a 0"),
-  discount: z.coerce.number().min(0, "El descuento debe ser mayor o igual a 0"),
+  discount: z.coerce
+    .number()
+    .min(0, "El descuento debe ser mayor o igual a 0")
+    .optional(),
   maxProducts: z.coerce
     .number()
     .min(0, "El número máximo de productos debe ser mayor o igual a 0"),
@@ -50,10 +54,10 @@ export const planFormSchema = z.object({
   features: z
     .array(z.string())
     .min(1, "Debe seleccionar al menos una característica"),
-  hasStatistics: z.boolean(),
-  canFeatureProducts: z.boolean(),
-  isActive: z.boolean(),
-});
+  hasStatistics: z.boolean().optional(),
+  canFeatureProducts: z.boolean().optional(),
+  isActive: z.boolean().optional(),
+}) satisfies z.ZodType<PlanInsert>;
 
 export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
   const defaultValues = selectedPlan || {
@@ -69,17 +73,30 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
     hasStatistics: false,
     isActive: false,
   };
-  const { execute, pending, form } = useAction({
-    action: createPlan,
+
+  const form = useForm<PlanInsert>({
+    resolver: zodResolver(planFormSchema) as Resolver<PlanInsert>,
     defaultValues,
-    formSchema: planFormSchema,
-    options: {
-      showToasts: true,
-    },
   });
 
+  const { mutate, isPending } = useMutation(
+    orpcTanstack.admin.createPlan.mutationOptions({
+      onSuccess: () => {
+        form.reset();
+      },
+    }),
+  );
+
+  const onSubmit = (data: PlanInsert) => {
+    mutate(data);
+  };
+
   return (
-    <form id="plan-create" onSubmit={execute} className="grid gap-4">
+    <form
+      id="plan-create"
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="grid gap-4"
+    >
       <FieldGroup className="grid grid-cols-2 gap-4">
         <Controller
           name="name"
@@ -320,11 +337,11 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
       <DialogFooter>
         <Field>
           <DialogClose asChild>
-            <Button disabled={pending} variant="outline">
+            <Button disabled={isPending} variant="outline">
               Cancelar
             </Button>
           </DialogClose>
-          <Button disabled={pending} type="submit">
+          <Button disabled={isPending} type="submit">
             Guardar
           </Button>
         </Field>

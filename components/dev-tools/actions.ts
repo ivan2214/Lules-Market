@@ -2,6 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { db, schema } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 
 export const clearUsersCache = async () => {
   try {
@@ -13,7 +14,7 @@ export const clearUsersCache = async () => {
     await db.delete(schema.admin);
     await db.delete(schema.business);
     await db.delete(schema.user);
-    updateTag("dev-tools");
+    updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
   } catch (error) {
     console.error("Error al borrar usuarios", error);
     return {
