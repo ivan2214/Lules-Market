@@ -1,7 +1,6 @@
 import { MapPin, Store, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicFooter } from "@/app/(public)/_components/footer";
 import { Button } from "@/app/shared/components/ui/button";
 import { Card, CardContent } from "@/app/shared/components/ui/card";
 
@@ -100,7 +99,6 @@ export default function QueEsPage() {
           </div>
         </div>
       </div>
-      <PublicFooter />
     </div>
   );
 }

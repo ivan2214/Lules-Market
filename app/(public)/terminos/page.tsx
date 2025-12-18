@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PublicFooter } from "@/app/(public)/_components/footer";
 import { Badge } from "@/app/shared/components/ui/badge";
 import {
   Card,
@@ -186,7 +185,6 @@ export default function TerminosPage() {
           </CardContent>
         </Card>
       </div>
-      <PublicFooter />
     </div>
   );
 }

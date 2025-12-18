@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PublicFooter } from "@/app/(public)/_components/footer";
 import {
   Card,
   CardContent,
@@ -131,7 +130,6 @@ export default function CookiesPage() {
           </CardContent>
         </Card>
       </div>
-      <PublicFooter />
     </div>
   );
 }

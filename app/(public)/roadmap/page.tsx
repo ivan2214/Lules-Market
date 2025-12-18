@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicFooter } from "@/app/(public)/_components/footer";
 import { Badge } from "@/app/shared/components/ui/badge";
 import { Button } from "@/app/shared/components/ui/button";
 import {
@@ -157,7 +156,6 @@ export default function RoadmapPage() {
           </Button>
         </div>
       </div>
-      <PublicFooter />
     </div>
   );
 }
