@@ -6,7 +6,13 @@ import { useState } from "react";
 import { navigation } from "@/lib/constants";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
 export const MobileMenu = ({
   isLoggedIn = false,
@@ -27,9 +33,15 @@ export const MobileMenu = ({
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-80">
-        <div className="flex flex-col gap-4 py-4">
-          <nav className="mt-10 flex flex-col gap-1">
+      <SheetContent side="right" className="w-80 gap-0">
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
+
+        <Separator orientation="horizontal" className="my-0" />
+
+        <div className="flex flex-col gap-4">
+          <nav className="flex flex-col gap-1">
             {navigation.map((item) => (
               <Button
                 key={item.href}
@@ -39,14 +51,14 @@ export const MobileMenu = ({
                 onClick={() => setOpen(false)}
               >
                 <Link href={item.href}>
-                  <item.icon className="h-4 w-4" />
+                  {item.icon && <item.icon className="h-4 w-4" />}
                   {item.name}
                 </Link>
               </Button>
             ))}
           </nav>
 
-          <Separator orientation="horizontal" className="my-2" />
+          <Separator orientation="horizontal" className="my-0" />
 
           {!isLoggedIn && (
             <div className="w-full px-10">
