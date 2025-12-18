@@ -76,7 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 bg-muted">
               <ImageWithSkeleton
-                src={product.business?.logo?.url || ""}
+                src={product.business?.logo?.url || "/placeholder.svg"}
                 alt={product.business?.name || "Comercio Local"}
                 className="h-full w-full object-cover"
               />
