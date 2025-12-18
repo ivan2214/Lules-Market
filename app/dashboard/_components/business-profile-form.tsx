@@ -165,9 +165,9 @@ export function BusinessProfileForm({
           render={({ field, fieldState }) => (
             <Field orientation="vertical" data-invalid={fieldState.invalid}>
               <FieldContent>
-                <FieldLabel htmlFor={field.name}>CategorÃ­a</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Categoría</FieldLabel>
                 <FieldDescription>
-                  Selecciona la categorÃ­a del negocio
+                  Selecciona la categoría del negocio
                 </FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -181,10 +181,10 @@ export function BusinessProfileForm({
                 aria-invalid={fieldState.invalid}
               >
                 <SelectTrigger id="category" className="min-w-[120px]">
-                  <SelectValue placeholder="Seleccionar categorÃ­a" />
+                  <SelectValue placeholder="Seleccionar categoría" />
                 </SelectTrigger>
                 <SelectContent position="item-aligned">
-                  <SelectItem value="none">Seleccionar categorÃ­a</SelectItem>
+                  <SelectItem value="none">Seleccionar categoría</SelectItem>
                   <SelectSeparator />
                   {categories.map(({ label, value }) => (
                     <SelectItem key={value} value={value.toLowerCase()}>
@@ -362,7 +362,7 @@ export function BusinessProfileForm({
                     </FieldLabel>
                     <FieldDescription>
                       {name === "whatsapp"
-                        ? "Ingresa el nÃºmero de WhatsApp del negocio"
+                        ? "Ingresa el número de WhatsApp del negocio"
                         : `Ingresa el nombre de usuario de ${name}`}
                     </FieldDescription>
                     {fieldState.invalid && (
@@ -417,7 +417,7 @@ export function BusinessProfileForm({
                     );
                   }}
                   variant="avatar"
-                  placeholder="SubÃ­ tu logo"
+                  placeholder="Subí tu logo"
                   maxSize={1024 * 1024 * 5}
                   maxFiles={1}
                   value={field.value}

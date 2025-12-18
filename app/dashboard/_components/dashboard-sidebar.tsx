@@ -17,9 +17,9 @@ const navigation = [
   { name: "Inicio", href: "/dashboard", icon: LayoutDashboard },
   { name: "Productos", href: "/dashboard/products", icon: Package },
   { name: "Mi Negocio", href: "/dashboard/business", icon: Store },
-  { name: "EstadÃ­sticas", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "SuscripciÃ³n", href: "/dashboard/subscription", icon: CreditCard },
-  { name: "ConfiguraciÃ³n", href: "/dashboard/settings", icon: Settings },
+  { name: "Estadísticas", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "Suscripción", href: "/dashboard/subscription", icon: CreditCard },
+  { name: "Configuración", href: "/dashboard/settings", icon: Settings },
 ];
 
 export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
