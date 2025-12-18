@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { footerNavigation } from "@/lib/constants";
 import { getCurrentYear } from "@/utils/date";
 
 export async function PublicFooter() {
@@ -25,96 +26,25 @@ export async function PublicFooter() {
           </p>
         </div>
 
-        <div>
-          <h3 className="mb-4 font-semibold">Plataforma</h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link
-                href="/explorar/productos"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Explorar
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/explorar/comercios"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Explorar
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/planes"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Planes y Precios
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/como-funciona"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Cómo Funciona
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="mb-4 font-semibold">Comercios</h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link
-                href="/auth/signup"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Registrar Negocio
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/auth/signin"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Iniciar Sesión
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/dashboard"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Panel de Control
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="mb-4 font-semibold">Legal</h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link
-                href="/terminos"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Términos y Condiciones
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/privacidad"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Política de Privacidad
-              </Link>
-            </li>
-          </ul>
-        </div>
+        {Object.entries(footerNavigation).map(([key, value]) => (
+          <div key={key}>
+            <h3 className="mb-4 font-semibold">
+              {key.charAt(0).toUpperCase() + key.slice(1)}
+            </h3>
+            <ul className="space-y-2 text-sm">
+              {value.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
       <div className="mt-8 border-t pt-8 text-center text-muted-foreground text-sm">

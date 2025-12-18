@@ -1,5 +1,6 @@
+import { Building, Package, Sparkles } from "lucide-react";
 import { Suspense } from "react";
-
+import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
@@ -37,6 +38,7 @@ export default async function ComerciosPage({
   const totalPages = Math.ceil(total / currentLimit);
   const categories = await orpc.category.listAllCategories();
 
+  const hasFilters = Object.entries((await searchParams) || {}).length > 0;
   return (
     <>
       {/* Header */}
@@ -56,7 +58,7 @@ export default async function ComerciosPage({
       />
 
       {/* ACTIVE FILTERS */}
-      {!!(await searchParams) && (
+      {hasFilters && (
         <ActiveFilters
           typeExplorer="comercios"
           params={{
@@ -94,11 +96,19 @@ export default async function ComerciosPage({
             />
           </div>
         </>
-      ) : (
+      ) : hasFilters ? (
         <EmptyStateSearch
           title="No se encontraron comercios"
           description="Por favor, intenta con otros filtros."
           typeExplorer="comercios"
+          className="mx-auto"
+        />
+      ) : (
+        <EmptyStateCustomMessage
+          title="No hay comercios"
+          description="Registra tu primer comercio"
+          className="mx-auto"
+          icons={[Building, Sparkles, Package]}
         />
       )}
     </>

@@ -1,4 +1,6 @@
+import { Package, ShoppingBag, Sparkles } from "lucide-react";
 import { Suspense } from "react";
+import { EmptyStateCustomMessage } from "@/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/components/empty-state/empty-state-search";
 import { LimitSelector } from "@/components/shared/limit-selector";
 import { PaginationControls } from "@/components/shared/pagination-controls";
@@ -41,6 +43,7 @@ export default async function ProductosPage({
 
   const { businesses } = await orpc.business.listAllBusinesses();
 
+  const hasFilters = Object.entries((await searchParams) || {}).length > 0;
   return (
     <>
       {/* Header */}
@@ -60,7 +63,7 @@ export default async function ProductosPage({
       />
 
       {/* ACTIVE FILTERS */}
-      {!!(await searchParams) && (
+      {hasFilters && (
         <ActiveFilters
           typeExplorer="productos"
           params={{
@@ -99,11 +102,19 @@ export default async function ProductosPage({
             />
           </div>
         </>
-      ) : (
+      ) : hasFilters ? (
         <EmptyStateSearch
           title="No se encontraron productos"
           description="Por favor, intenta con otros filtros."
           typeExplorer="productos"
+          className="mx-auto"
+        />
+      ) : (
+        <EmptyStateCustomMessage
+          title="No hay productos"
+          description="Registra tu primer producto"
+          className="mx-auto"
+          icons={[ShoppingBag, Sparkles, Package]}
         />
       )}
     </>

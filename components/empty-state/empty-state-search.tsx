@@ -7,10 +7,12 @@ export default function EmptyStateSearch({
   title,
   description,
   typeExplorer,
+  className,
 }: {
   title: string;
   description: string;
   typeExplorer: "productos" | "comercios";
+  className?: React.HTMLAttributes<HTMLDivElement>["className"];
 }) {
   const router = useRouter();
   return (
@@ -24,6 +26,7 @@ export default function EmptyStateSearch({
           router.push(`/explorar/${typeExplorer}`);
         },
       }}
+      className={className}
     />
   );
 }
