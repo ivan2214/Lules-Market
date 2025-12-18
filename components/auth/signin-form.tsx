@@ -1,11 +1,15 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { onError, onSuccess } from "@orpc/client";
+import { useServerAction } from "@orpc/react/hooks";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Controller } from "react-hook-form";
-import { businessSignInAction } from "@/app/actions/auth-actions";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { businessSignInAction } from "@/app/actions/auth";
 import { BusinessSignInInputSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +20,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup } from "@/components/ui/input-group";
-import { useAction } from "@/hooks/use-action";
 
 export function SignInForm() {
   const router = useRouter();
@@ -27,27 +30,41 @@ export function SignInForm() {
     password: "",
   };
 
-  const { execute, form, pending } = useAction({
-    action: businessSignInAction,
-    formSchema: BusinessSignInInputSchema,
+  const form = useForm({
+    resolver: zodResolver(BusinessSignInInputSchema),
     defaultValues,
-    options: {
-      showToasts: true,
-      onSuccess: ({ isAdmin, hasBusiness, hasVerified }) => {
-        if (hasVerified) {
-          if (isAdmin) router.push("/admin");
-          else if (hasBusiness) router.push("/dashboard");
-          else if (!hasBusiness) router.push("/auth/business-setup");
-        } else {
-          router.push("/auth/verify");
-        }
-        form.reset();
-      },
-    },
   });
 
+  const { execute, isPending } = useServerAction(businessSignInAction, {
+    interceptors: [
+      // Manejo de éxito
+      onSuccess((data) => {
+        toast.success(data?.message);
+        // Navegación según tipo de usuario
+        if (data?.hasVerified && data?.isAdmin) {
+          router.push("/admin");
+        } else if (data?.hasVerified && !data?.isAdmin) {
+          router.push("/admin"); // Nota: Parece que debe ir a /auth/verify
+        } else if (!data?.hasVerified && !data?.isAdmin) {
+          router.push("/auth/verify");
+        }
+
+        form.reset();
+      }),
+
+      // Manejo de errores
+      onError((error) => {
+        toast.error(error?.message || "Error al iniciar sesión");
+      }),
+    ],
+  });
+
+  const action = () => {
+    execute(form.getValues());
+  };
+
   return (
-    <form id="signin-form" className="space-y-4" onSubmit={execute}>
+    <form id="signin-form" className="space-y-4" action={action}>
       <FieldGroup>
         {/* Email */}
         <Controller
@@ -65,7 +82,7 @@ export function SignInForm() {
                 onBlur={field.onBlur}
                 placeholder="tu@email.com"
                 aria-invalid={fieldState.invalid}
-                disabled={pending}
+                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -89,13 +106,13 @@ export function SignInForm() {
                   onBlur={field.onBlur}
                   placeholder="••••••••"
                   aria-invalid={fieldState.invalid}
-                  disabled={pending}
+                  disabled={isPending}
                 />
                 <Button
                   aria-label={
                     showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
                   }
-                  disabled={pending}
+                  disabled={isPending}
                   type="button"
                   variant="ghost"
                   size="icon"
@@ -130,13 +147,13 @@ export function SignInForm() {
           type="reset"
           variant="outline"
           onClick={() => form.reset()}
-          disabled={pending}
+          disabled={isPending}
         >
           Cancelar
         </Button>
 
-        <Button type="submit" disabled={pending} form="signin-form">
-          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button type="submit" disabled={isPending} form="signin-form">
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Iniciar Sesión
         </Button>
       </Field>

@@ -1,10 +1,14 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { onError, onSuccess } from "@orpc/client";
+import { useServerAction } from "@orpc/react/hooks";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Controller } from "react-hook-form";
-import { businessSignUpAction } from "@/app/actions/auth-actions";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { businessSignUpAction } from "@/app/actions/auth";
 import { BusinessSignUpInputSchema } from "@/app/schemas/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,189 +19,172 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup } from "@/components/ui/input-group";
-import { useAction } from "@/hooks/use-action";
 
 export function SignUpForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
   });
 
-  const defaultValues = {
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
-
-  const router = useRouter();
-
-  const { execute, form, pending } = useAction({
-    action: businessSignUpAction,
-    formSchema: BusinessSignUpInputSchema,
-    defaultValues,
-    options: {
-      showToasts: true,
-      onSuccess: ({ hasVerified, isAdmin }) => {
-        if (hasVerified && isAdmin) {
-          router.push("/admin");
-        }
-
-        if (hasVerified && !isAdmin) {
-          router.push("/admin");
-        }
-
-        if (!hasVerified && !isAdmin) {
-          router.push("/auth/verify");
-        }
-      },
+  // React Hook Form setup
+  const form = useForm({
+    resolver: zodResolver(BusinessSignUpInputSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
+  // oRPC useServerAction hook
+  const { execute, isPending } = useServerAction(businessSignUpAction, {
+    interceptors: [
+      // Manejo de éxito
+      onSuccess((data) => {
+        toast.success(data?.message);
+
+        // Navegación según tipo de usuario
+        if (data?.hasVerified && data?.isAdmin) {
+          router.push("/admin");
+        } else if (data?.hasVerified && !data?.isAdmin) {
+          router.push("/admin"); // Nota: Parece que debe ir a /auth/verify
+        } else if (!data?.hasVerified && !data?.isAdmin) {
+          router.push("/auth/verify");
+        }
+
+        form.reset();
+      }),
+
+      // Manejo de errores
+      onError((error) => {
+        toast.error(error.message || "Error al crear la cuenta");
+      }),
+    ],
+  });
+
+  const action = () => {
+    execute(form.getValues());
+  };
+
   return (
-    <form id="signup-form" className="space-y-4" onSubmit={execute}>
+    <form id="signup-form" className="space-y-4" action={action}>
       <FieldGroup>
         {/* Nombre */}
-        <Controller
-          name="name"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Nombre Completo</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.value ?? ""}
-                onChange={(e) => field.onChange(e.target.value)}
-                onBlur={field.onBlur}
-                placeholder="Juan Pérez"
-                aria-invalid={fieldState.invalid}
-                disabled={pending}
-              />
-
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
+        <Field data-invalid={!!form.formState.errors.name}>
+          <FieldLabel htmlFor="name">Nombre Completo</FieldLabel>
+          <Input
+            id="name"
+            placeholder="Juan Pérez"
+            aria-invalid={!!form.formState.errors.name}
+            disabled={isPending}
+            {...form.register("name")}
+          />
+          {form.formState.errors.name && (
+            <FieldError errors={[form.formState.errors.name]} />
           )}
-        />
+        </Field>
 
         {/* Email */}
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="email"
-                value={field.value ?? ""}
-                onChange={(e) => field.onChange(e.target.value)}
-                onBlur={field.onBlur}
-                placeholder="tu@email.com"
-                aria-invalid={fieldState.invalid}
-                disabled={pending}
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
+        <Field data-invalid={!!form.formState.errors.email}>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <Input
+            id="email"
+            type="email"
+            placeholder="tu@email.com"
+            aria-invalid={!!form.formState.errors.email}
+            disabled={isPending}
+            {...form.register("email")}
+          />
+          {form.formState.errors.email && (
+            <FieldError errors={[form.formState.errors.email]} />
           )}
-        />
+        </Field>
 
         {/* Contraseña */}
-        <Controller
-          name="password"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Contraseña</FieldLabel>
-              <InputGroup>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type={showPassword.password ? "text" : "password"}
-                  value={field.value ?? ""}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  onBlur={field.onBlur}
-                  placeholder="••••••••"
-                  aria-invalid={fieldState.invalid}
-                  disabled={pending}
-                />
-                <Button
-                  aria-label={
-                    showPassword.password
-                      ? "Ocultar contraseña"
-                      : "Mostrar contraseña"
-                  }
-                  disabled={pending}
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                    setShowPassword({
-                      ...showPassword,
-                      password: !showPassword.password,
-                    })
-                  }
-                >
-                  {showPassword.password ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              </InputGroup>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
+        <Field data-invalid={!!form.formState.errors.password}>
+          <FieldLabel htmlFor="password">Contraseña</FieldLabel>
+          <InputGroup>
+            <Input
+              id="password"
+              type={showPassword.password ? "text" : "password"}
+              placeholder="••••••••"
+              aria-invalid={!!form.formState.errors.password}
+              disabled={isPending}
+              {...form.register("password")}
+            />
+            <Button
+              aria-label={
+                showPassword.password
+                  ? "Ocultar contraseña"
+                  : "Mostrar contraseña"
+              }
+              disabled={isPending}
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                setShowPassword({
+                  ...showPassword,
+                  password: !showPassword.password,
+                })
+              }
+            >
+              {showPassword.password ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </Button>
+          </InputGroup>
+          {form.formState.errors.password && (
+            <FieldError errors={[form.formState.errors.password]} />
           )}
-        />
+        </Field>
 
         {/* Confirmar Contraseña */}
-        <Controller
-          name="confirmPassword"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Confirmar Contraseña</FieldLabel>
-              <InputGroup>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type={showPassword.confirmPassword ? "text" : "password"}
-                  value={field.value ?? ""}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  onBlur={field.onBlur}
-                  placeholder="••••••••"
-                  aria-invalid={fieldState.invalid}
-                  disabled={pending}
-                />
-                <Button
-                  aria-label={
-                    showPassword.confirmPassword
-                      ? "Ocultar contraseña"
-                      : "Mostrar contraseña"
-                  }
-                  disabled={pending}
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                    setShowPassword({
-                      ...showPassword,
-                      confirmPassword: !showPassword.confirmPassword,
-                    })
-                  }
-                >
-                  {showPassword.confirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              </InputGroup>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
+        <Field data-invalid={!!form.formState.errors.confirmPassword}>
+          <FieldLabel htmlFor="confirmPassword">
+            Confirmar Contraseña
+          </FieldLabel>
+          <InputGroup>
+            <Input
+              id="confirmPassword"
+              type={showPassword.confirmPassword ? "text" : "password"}
+              placeholder="••••••••"
+              aria-invalid={!!form.formState.errors.confirmPassword}
+              disabled={isPending}
+              {...form.register("confirmPassword")}
+            />
+            <Button
+              aria-label={
+                showPassword.confirmPassword
+                  ? "Ocultar contraseña"
+                  : "Mostrar contraseña"
+              }
+              disabled={isPending}
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                setShowPassword({
+                  ...showPassword,
+                  confirmPassword: !showPassword.confirmPassword,
+                })
+              }
+            >
+              {showPassword.confirmPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </Button>
+          </InputGroup>
+          {form.formState.errors.confirmPassword && (
+            <FieldError errors={[form.formState.errors.confirmPassword]} />
           )}
-        />
+        </Field>
       </FieldGroup>
 
       {/* Botones */}
@@ -206,13 +193,13 @@ export function SignUpForm() {
           type="reset"
           variant="outline"
           onClick={() => form.reset()}
-          disabled={pending}
+          disabled={isPending}
         >
           Cancelar
         </Button>
 
-        <Button type="submit" disabled={pending} form="signup-form">
-          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button type="submit" disabled={isPending}>
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Crear Cuenta
         </Button>
       </Field>

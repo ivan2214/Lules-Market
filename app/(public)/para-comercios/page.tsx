@@ -131,7 +131,7 @@ const PlanPricingPreviewSkeleton = () => {
 };
 
 export default async function ForBusinessPage() {
-  const plans = await orpc.admin.getAllPlans();
+  const plans = await orpc.plan.getAllPlans();
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">
