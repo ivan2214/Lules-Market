@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     alternates: {
-      canonical: `https://lules-market.vercel.app/comercios/${id}`,
+      canonical: `https://lules-market.vercel.app/comercio/${id}`,
     },
     openGraph: {
       type: "website",
@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             },
           ],
       locale: "es_AR",
-      url: `https://lules-market.vercel.app/comercios/${id}`,
+      url: `https://lules-market.vercel.app/comercio/${id}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -103,7 +103,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     authors: [
       {
         name: business.name,
-        url: `https://lules-market.vercel.app/comercios/${id}`,
+        url: `https://lules-market.vercel.app/comercio/${id}`,
       },
     ],
     category: business.category?.value,
@@ -160,7 +160,7 @@ export default async function BusinessPage({
         phone={business.phone || ""}
         email={business.email || ""}
         image={business.logo?.url || ""}
-        url={`https://lules-market.vercel.app/comercios/${id}`}
+        url={`https://lules-market.vercel.app/comercio/${id}`}
       />
       <Button asChild variant="ghost">
         <Link href="/explorar/comercios" className="flex items-center">

@@ -29,7 +29,7 @@ export const navigation: navigationItem[] = [
   { name: "Productos", href: "/explorar/productos", icon: ShoppingBag },
   { name: "Comercios", href: "/explorar/comercios", icon: Store },
   { name: "Planes", href: "/planes", icon: CreditCard },
-  { name: "Como funciona", href: "/como-funciona", icon: Info },
+  { name: "Preguntas Frecuentes", href: "/faq", icon: Info },
 ];
 
 export const footerNavigation: {
@@ -51,8 +51,16 @@ export const footerNavigation: {
       href: "/planes",
     },
     {
-      name: "Como funciona",
-      href: "/como-funciona",
+      name: "Qué es Lules Market",
+      href: "/que-es",
+    },
+    {
+      name: "Preguntas Frecuentes",
+      href: "/faq",
+    },
+    {
+      name: "Roadmap",
+      href: "/roadmap",
     },
   ],
   comercio: [
@@ -72,11 +80,15 @@ export const footerNavigation: {
   legal: [
     {
       name: "Política de Privacidad",
-      href: "/politica-de-privacidad",
+      href: "/privacidad",
     },
     {
       name: "Términos y Condiciones",
-      href: "/terminos-y-condiciones",
+      href: "/terminos",
+    },
+    {
+      name: "Política de Cookies",
+      href: "/politica-de-cookies",
     },
   ],
 };

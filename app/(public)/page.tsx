@@ -97,7 +97,20 @@ export default async function HomePage() {
         <RecentProducts />
       </HydrateClient>
 
-      {/* CTA Section - Static */}
+      <section className="bg-muted/50 py-16">
+        <div className="mx-auto max-w-4xl px-4 text-center">
+          <h2 className="mb-6 font-bold text-2xl tracking-tight">
+            Nuestro Objetivo Principal
+          </h2>
+          <blockquote className="text-balance font-medium text-muted-foreground text-xl italic leading-relaxed">
+            &ldquo;El objetivo de la plataforma es digitalizar el comercio
+            local, conectar negocios con clientes cercanos y centralizar la
+            oferta de productos y servicios en una sola web accesible para
+            todos.&rdquo;
+          </blockquote>
+        </div>
+      </section>
+
       <section className="rounded-2xl bg-primary p-8 text-primary-foreground md:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-balance font-bold text-3xl md:text-4xl">

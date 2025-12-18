@@ -187,22 +187,24 @@ export default async function ForBusinessPage() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <Store className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-2 font-semibold">Catálogo Digital</h3>
+                <h3 className="mb-2 font-semibold">Imagen Profesional</h3>
                 <p className="text-muted-foreground text-sm">
-                  Publica tus productos con fotos, descripciones y precios de
-                  forma sencilla
+                  Diferénciate de la competencia con un perfil web propio. Da
+                  confianza mostrando una imagen seria y organizada.
                 </p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-primary/50 bg-primary/5">
               <CardContent className="pt-6">
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <TrendingUp className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-2 font-semibold">Mayor Visibilidad</h3>
+                <h3 className="mb-2 font-semibold">Mejor que Facebook</h3>
                 <p className="text-muted-foreground text-sm">
-                  Aparece en búsquedas locales y atrae más clientes a tu negocio
+                  Tus productos no se pierden en el feed. En Lules Market, tu
+                  catálogo está siempre disponible y ordenado para quien lo
+                  busca.
                 </p>
               </CardContent>
             </Card>
@@ -212,9 +214,10 @@ export default async function ForBusinessPage() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <Zap className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-2 font-semibold">Fácil de Usar</h3>
+                <h3 className="mb-2 font-semibold">Gestión Centralizada</h3>
                 <p className="text-muted-foreground text-sm">
-                  Interfaz intuitiva que no requiere conocimientos técnicos
+                  Actualiza precios, fotos y horarios en un solo lugar. Comparte
+                  tu link y olvídate de responder siempre lo mismo.
                 </p>
               </CardContent>
             </Card>

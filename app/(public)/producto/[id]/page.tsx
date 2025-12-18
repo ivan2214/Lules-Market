@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     alternates: {
-      canonical: `https://lules-market.vercel.app/productos/${id}`,
+      canonical: `https://lules-market.vercel.app/producto/${id}`,
     },
     openGraph: {
       type: "website",
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             },
           ],
       locale: "es_AR",
-      url: `https://lules-market.vercel.app/productos/${id}`,
+      url: `https://lules-market.vercel.app/producto/${id}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     authors: [
       {
         name: product.business?.name,
-        url: `https://lules-market.vercel.app/comercios/${product.business?.id}`,
+        url: `https://lules-market.vercel.app/comercio/${product.business?.id}`,
       },
     ],
     category: product.category?.label,
@@ -154,7 +154,7 @@ export default async function ProductPage({ params }: Props) {
         image={mainImage(product.images || [])}
         seller={{
           name: product.business?.name || "",
-          url: `https://lules-market.vercel.app/comercios/${product.business?.id}`,
+          url: `https://lules-market.vercel.app/comercio/${product.business?.id}`,
         }}
       />
       <Button variant="ghost" className="mb-4 gap-2" asChild>

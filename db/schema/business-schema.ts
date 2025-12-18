@@ -4,6 +4,7 @@ import {
   doublePrecision,
   index,
   integer,
+  json,
   pgTable,
   text,
   timestamp,
@@ -91,9 +92,13 @@ export const plan = pgTable("plan", {
   discount: integer("discount").default(0).notNull(),
   features: text("features").array().notNull(),
   maxProducts: integer("max_products").notNull(),
-  maxImages: integer("max_images").notNull(),
+  maxImagesPerProduct: integer("max_images_per_product").notNull(),
   hasStatistics: boolean("has_statistics").default(false).notNull(),
   canFeatureProducts: boolean("can_feature_products").default(false).notNull(),
+  details: json("details")
+    .$type<{ products: string; images: string; priority: string }>()
+    .notNull(),
+  popular: boolean("popular").default(false).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")

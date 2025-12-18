@@ -42,44 +42,57 @@ export default function PlanesPage() {
       name: "Gratuito",
       price: 0,
       icon: Sparkles,
-      description: "Perfecto para comenzar",
+      description: "Perfecto para probar la plataforma",
       features: [
-        "Hasta 10 productos",
+        "Hasta 10 productos publicados",
+        "1 imagen por producto",
+        "Prioridad estándar en listados",
         "Perfil de negocio básico",
-        "Contacto directo con clientes",
-        "Búsqueda en catálogo público",
       ],
       cta: "Comenzar Gratis",
+      details: {
+        products: "10",
+        images: "1 por producto",
+        priority: "Estándar",
+      },
     },
     {
       name: "Básico",
       price: 5000,
       icon: Zap,
-      description: "Para negocios en crecimiento",
+      description: "Para negocios que quieren destacar",
       features: [
         "Hasta 50 productos",
-        "Estadísticas simples de visitas",
+        "3 imágenes por producto",
         "Prioridad media en búsquedas",
         "Soporte por email",
-        "Todo lo del plan Gratuito",
       ],
       popular: true,
       cta: "Comenzar Ahora",
+      details: {
+        products: "50",
+        images: "3 por producto",
+        priority: "Media",
+      },
     },
     {
       name: "Premium",
       price: 15000,
       icon: Crown,
-      description: "Para negocios establecidos",
+      description: "La mejor experiencia para tu marca",
       features: [
         "Productos ilimitados",
-        "Destacar productos en búsquedas",
-        "Estadísticas avanzadas y reportes",
-        "Máxima prioridad en búsquedas",
+        "5 imágenes por producto",
+        "Máxima prioridad (Top listados)",
+        "Productos destacados en Home",
         "Soporte prioritario",
-        "Todo lo del plan Básico",
       ],
       cta: "Comenzar Ahora",
+      details: {
+        products: "Ilimitados",
+        images: "5 por producto",
+        priority: "Alta (Top)",
+      },
     },
   ];
 
@@ -174,40 +187,38 @@ export default function PlanesPage() {
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="p-4">Productos</td>
+                    <td className="p-4">Cantidad de Productos</td>
                     <td className="p-4 text-center">10</td>
                     <td className="bg-primary/5 p-4 text-center">50</td>
-                    <td className="p-4 text-center">Ilimitados</td>
+                    <td className="p-4 text-center font-bold">Ilimitados</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="p-4">Estadísticas</td>
-                    <td className="p-4 text-center">-</td>
-                    <td className="bg-primary/5 p-4 text-center">
-                      <Check className="mx-auto h-5 w-5 text-primary" />
-                    </td>
-                    <td className="p-4 text-center">
-                      <Check className="mx-auto h-5 w-5 text-primary" />
-                    </td>
+                    <td className="p-4">Imágenes por producto</td>
+                    <td className="p-4 text-center">1</td>
+                    <td className="bg-primary/5 p-4 text-center">3</td>
+                    <td className="p-4 text-center">5</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="p-4">Productos destacados</td>
-                    <td className="p-4 text-center">-</td>
-                    <td className="bg-primary/5 p-4 text-center">-</td>
-                    <td className="p-4 text-center">
-                      <Check className="mx-auto h-5 w-5 text-primary" />
-                    </td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Prioridad en búsquedas</td>
-                    <td className="p-4 text-center">Baja</td>
+                    <td className="p-4">Prioridad en listados</td>
+                    <td className="p-4 text-center">Estándar</td>
                     <td className="bg-primary/5 p-4 text-center">Media</td>
-                    <td className="p-4 text-center">Alta</td>
+                    <td className="p-4 text-center font-bold">Alta</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Estadísticas de visitas</td>
+                    <td className="p-4 text-center">-</td>
+                    <td className="bg-primary/5 p-4 text-center">Básicas</td>
+                    <td className="p-4 text-center">Avanzadas</td>
                   </tr>
                   <tr>
-                    <td className="p-4">Soporte</td>
-                    <td className="p-4 text-center">Comunidad</td>
-                    <td className="bg-primary/5 p-4 text-center">Email</td>
-                    <td className="p-4 text-center">Prioritario</td>
+                    <td className="p-4">Soporte técnico</td>
+                    <td className="p-4 text-center">Email</td>
+                    <td className="bg-primary/5 p-4 text-center">
+                      Email Rápido
+                    </td>
+                    <td className="p-4 text-center font-medium text-primary">
+                      WhatsApp Directo
+                    </td>
                   </tr>
                 </tbody>
               </table>

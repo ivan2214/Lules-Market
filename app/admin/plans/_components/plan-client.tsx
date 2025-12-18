@@ -97,10 +97,10 @@ export const PlanClient: React.FC<PlanClientProps> = ({ plans }) => {
               : row.original.maxProducts}
           </div>
           <div className="text-muted-foreground">
-            Imágenes:{" "}
-            {row.original.maxImages === -1
+            Imágenes por producto:{" "}
+            {row.original.maxImagesPerProduct === -1
               ? "Ilimitadas"
-              : row.original.maxImages}
+              : row.original.maxImagesPerProduct}
           </div>
         </div>
       ),

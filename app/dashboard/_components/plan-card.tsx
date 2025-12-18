@@ -90,7 +90,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
               </span>
             </div>
           )}
-          {(plan.maxImages || plan.type === "PREMIUM") && (
+          {(plan.maxImagesPerProduct || plan.type === "PREMIUM") && (
             <div className="flex items-start gap-2">
               <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <span
@@ -101,7 +101,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
               >
                 {plan.type === "PREMIUM"
                   ? "Imágenes Ilimitadas"
-                  : `${plan.maxImages} Imágenes`}
+                  : `${plan.maxImagesPerProduct} imágenes por producto`}
                 {plan.type === "PREMIUM" && (
                   <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 )}

@@ -46,7 +46,7 @@ interface CreatedBusiness {
   productsUsed: number;
   imagesUsed: number;
   maxProducts: number;
-  maxImages: number;
+  maxImagesPerProduct: number;
   name: string;
 }
 
@@ -168,15 +168,26 @@ async function deleteAllData(): Promise<void> {
 async function seedPlans(): Promise<PlanInsert[]> {
   console.log("🔐 Upsert de planes...");
 
-  const plansData = [
+  const plansData: PlanInsert[] = [
     {
       type: PLAN_TYPE.FREE as PlanType,
-      name: "Gratis",
-      description: "Plan gratuito con features limitadas",
+      name: "Gratuito",
+      description: "Perfecto para probar la plataforma",
       price: 0,
-      features: ["Listado básico", "Soporte comunitario"],
-      maxProducts: 20,
-      maxImages: 10,
+      features: [
+        "Hasta 10 productos publicados",
+        "1 imagen por producto",
+        "Prioridad estándar en listados",
+        "Perfil de negocio básico",
+      ],
+      details: {
+        products: "10",
+        images: "1 por producto",
+        priority: "Estándar",
+      },
+      maxProducts: 10,
+      maxImagesPerProduct: 1,
+      popular: false,
       isActive: true,
       hasStatistics: false,
       canFeatureProducts: false,
@@ -184,12 +195,23 @@ async function seedPlans(): Promise<PlanInsert[]> {
     {
       type: PLAN_TYPE.BASIC as PlanType,
       name: "Básico",
-      description: "Plan económico para comercios pequeños",
-      price: 15000,
-      discount: 10,
-      features: ["Listado destacado", "Estadísticas básicas"],
-      maxProducts: 100,
-      maxImages: 50,
+      description: "Para negocios que quieren destacar",
+      price: 5000,
+      discount: 0,
+      features: [
+        "Hasta 50 productos",
+        "3 imágenes por producto",
+        "Prioridad media en búsquedas",
+        "Soporte por email",
+      ],
+      details: {
+        products: "50",
+        images: "3 por producto",
+        priority: "Media",
+      },
+      maxProducts: 50,
+      maxImagesPerProduct: 3,
+      popular: true,
       isActive: true,
       hasStatistics: true,
       canFeatureProducts: false,
@@ -197,16 +219,24 @@ async function seedPlans(): Promise<PlanInsert[]> {
     {
       type: PLAN_TYPE.PREMIUM as PlanType,
       name: "Premium",
-      description: "Plan completo con features avanzadas",
-      price: 25000,
-      discount: 20,
+      description: "La mejor experiencia para tu marca",
+      price: 15000,
+      discount: 0,
       features: [
-        "Productos destacados",
-        "Reportes avanzados",
-        "Priority Support",
+        "Productos ilimitados",
+        "5 imágenes por producto",
+        "Máxima prioridad (Top listados)",
+        "Productos destacados en Home",
+        "Soporte prioritario",
       ],
+      details: {
+        products: "Ilimitados",
+        images: "5 por producto",
+        priority: "Alta (Top)",
+      },
       maxProducts: 9999,
-      maxImages: 9999,
+      maxImagesPerProduct: 5,
+      popular: false,
       isActive: true,
       hasStatistics: true,
       canFeatureProducts: true,
@@ -408,7 +438,8 @@ async function seedBusinesses(
       const { id, name: businessName } = businessInsert[0];
 
       const productsUsed = faker.number.int({ min: 0, max: plan.maxProducts });
-      const imagesUsed = faker.number.int({ min: 0, max: plan.maxImages });
+      // Total images used is tricky with per-product limit, but we'll approximate for now or just set 0
+      const imagesUsed = 0;
 
       const currentPlanInsert = await db
         .insert(schema.currentPlan)
@@ -442,7 +473,7 @@ async function seedBusinesses(
         productsUsed,
         imagesUsed,
         maxProducts: plan.maxProducts,
-        maxImages: plan.maxImages,
+        maxImagesPerProduct: plan.maxImagesPerProduct,
         name: businessName,
       });
     } catch {
@@ -529,7 +560,7 @@ async function seedProducts(
 
       const imgCount = faker.number.int({
         min: 1,
-        max: Math.min(negocio.maxImages, 5),
+        max: negocio.maxImagesPerProduct,
       });
 
       for (let idx = 0; idx < imgCount; idx++) {

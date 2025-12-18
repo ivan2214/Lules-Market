@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PublicFooter } from "@/app/(public)/_components/footer";
+import { Badge } from "@/app/shared/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -10,8 +11,8 @@ import {
 export const metadata: Metadata = {
   title: "Términos y Condiciones - Lules Market",
   description:
-    "Conoce nuestros términos y condiciones de uso. Información legal importante sobre el uso de nuestra plataforma.",
-  keywords: "términos, condiciones, legal, normativa, marketplace",
+    "Términos y condiciones de uso de Lules Market. Marco legal, derechos y obligaciones para usuarios y comercios en Argentina.",
+  keywords: "términos, condiciones, legal, argentina, tucumán, lules market",
   openGraph: {
     title: "Términos y Condiciones - Lules Market",
     description: "Conoce nuestros términos y condiciones de uso.",
@@ -32,9 +33,39 @@ export default function TerminosPage() {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-12">
       <div className="mb-8">
+        <div className="mb-4 flex items-center gap-2">
+          <Badge variant="outline" className="text-sm">
+            Última actualización: Diciembre 2025
+          </Badge>
+        </div>
         <h1 className="mb-4 font-bold text-4xl tracking-tight">
           Términos y Condiciones
         </h1>
+        <p className="text-lg text-muted-foreground">
+          Bienvenido a Lules Market. Por favor, lea atentamente estos términos
+          antes de utilizar nuestra plataforma.
+        </p>
+      </div>
+
+      <div className="mb-8 rounded-lg border bg-muted/50 p-6">
+        <h2 className="mb-4 font-semibold text-lg">Resumen Rápido</h2>
+        <ul className="grid gap-2 text-sm sm:grid-cols-2">
+          <li className="flex items-start gap-2">
+            ✅ <strong>Somos intermediarios:</strong> Conectamos compradores y
+            vendedores.
+          </li>
+          <li className="flex items-start gap-2">
+            ✅ <strong>Responsabilidad:</strong> Cada comercio es responsable de
+            sus productos.
+          </li>
+          <li className="flex items-start gap-2">
+            ✅ <strong>Pagos:</strong> Las transacciones se acuerdan entre
+            partes (por ahora).
+          </li>
+          <li className="flex items-start gap-2">
+            ✅ <strong>Jurisdicción:</strong> San Miguel de Tucumán, Argentina.
+          </li>
+        </ul>
       </div>
 
       <div className="space-y-6">
@@ -44,190 +75,114 @@ export default function TerminosPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              Al acceder y utilizar esta plataforma, usted acepta estar sujeto a
-              estos términos y condiciones de uso. Si no está de acuerdo con
-              alguna parte de estos términos, no debe utilizar nuestros
-              servicios.
-            </p>
-            <p>
-              Nos reservamos el derecho de modificar estos términos en cualquier
-              momento. Es su responsabilidad revisar periódicamente estos
-              términos para estar al tanto de cualquier cambio.
+              Al acceder y utilizar Lules Market, usted acepta estar sujeto a
+              estos términos y condiciones, así como a nuestra Política de
+              Privacidad y demás políticas complementarias. Si no está de
+              acuerdo, debe abstenerse de utilizar el sitio.
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>2. Uso de la Plataforma</CardTitle>
+            <CardTitle>2. Descripción del Servicio</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              Esta plataforma está diseñada para ayudar a negocios locales a
-              establecer su presencia digital. Al utilizar nuestros servicios,
-              usted se compromete a:
+              Lules Market es una plataforma digital que permite a comercios
+              locales de Lules, Tucumán, exhibir sus productos y servicios, y a
+              los usuarios contactarlos para realizar compras.
             </p>
+            <p>
+              <strong>Importante:</strong> Lules Market no es el propietario de
+              los productos ofrecidos, no tiene posesión de ellos ni interviene
+              en el perfeccionamiento de las operaciones entre usuarios y
+              comercios, salvo disposición expresa en contrario.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>3. Obligaciones de los Usuarios</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-muted-foreground">
             <ul className="ml-4 list-inside list-disc space-y-2">
+              <li>Proporcionar información veraz y mantenerla actualizada.</li>
               <li>
-                Proporcionar información veraz y actualizada sobre su negocio
+                No utilizar la plataforma con fines ilícitos o que perjudiquen a
+                terceros.
               </li>
-              <li>
-                No utilizar la plataforma para actividades ilegales o
-                fraudulentas
-              </li>
-              <li>
-                No infringir los derechos de propiedad intelectual de terceros
-              </li>
-              <li>
-                Mantener la confidencialidad de sus credenciales de acceso
-              </li>
-              <li>No intentar acceder a áreas restringidas del sistema</li>
+              <li>Mantener la confidencialidad de su cuenta y contraseña.</li>
+              <li>Comportarse con respeto hacia otros usuarios y comercios.</li>
             </ul>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>3. Cuentas de Usuario</CardTitle>
+            <CardTitle>4. Propiedad Intelectual</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              Para utilizar ciertas funciones de la plataforma, debe crear una
-              cuenta. Usted es responsable de:
-            </p>
-            <ul className="ml-4 list-inside list-disc space-y-2">
-              <li>Mantener la seguridad de su contraseña</li>
-              <li>Todas las actividades que ocurran bajo su cuenta</li>
-              <li>
-                Notificarnos inmediatamente sobre cualquier uso no autorizado
-              </li>
-            </ul>
-            <p>
-              Nos reservamos el derecho de suspender o cancelar cuentas que
-              violen estos términos o que permanezcan inactivas por períodos
-              prolongados.
+              Los contenidos de las pantallas relativas a los servicios de Lules
+              Market, así como los programas, bases de datos, redes y archivos
+              son de propiedad de Lules Market y están protegidos por las leyes
+              y tratados internacionales de derecho de autor, marcas, patentes,
+              modelos y diseños industriales.
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>4. Contenido del Usuario</CardTitle>
+            <CardTitle>5. Limitación de Responsabilidad</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              Usted conserva todos los derechos sobre el contenido que publique
-              en la plataforma (fotos, descripciones, productos, etc.). Sin
-              embargo, al publicar contenido, nos otorga una licencia no
-              exclusiva para usar, mostrar y distribuir ese contenido en
-              relación con nuestros servicios.
-            </p>
-            <p>
-              Usted garantiza que tiene todos los derechos necesarios sobre el
-              contenido que publica y que dicho contenido no infringe los
-              derechos de terceros.
+              Lules Market pone a disposición un espacio virtual. No
+              garantizamos la veracidad de la publicidad de terceros que
+              aparezca en el sitio y no seremos responsables por la
+              correspondencia o contratos que el usuario celebre con dichos
+              terceros o con otros usuarios.
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>5. Planes y Pagos</CardTitle>
+            <CardTitle>6. Ley Aplicable y Jurisdicción</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              Ofrecemos diferentes planes de suscripción con distintas
-              funcionalidades. Los pagos se procesan de forma segura a través de
-              MercadoPago.
-            </p>
-            <ul className="ml-4 list-inside list-disc space-y-2">
-              <li>Los planes se facturan mensualmente por adelantado</li>
-              <li>Puede cancelar su suscripción en cualquier momento</li>
-              <li>No se realizan reembolsos por períodos parciales</li>
-              <li>Los precios pueden cambiar con previo aviso</li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>6. Limitación de Responsabilidad</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <p>
-              La plataforma se proporciona "tal cual" sin garantías de ningún
-              tipo. No garantizamos que el servicio será ininterrumpido o libre
-              de errores.
+              Estos Términos y Condiciones se rigen por las leyes de la
+              República Argentina.
             </p>
             <p>
-              No seremos responsables por daños indirectos, incidentales o
-              consecuentes que resulten del uso o la imposibilidad de usar
-              nuestros servicios.
+              Cualquier controversia derivada del presente acuerdo, su
+              existencia, validez, interpretación, alcance o cumplimiento, será
+              sometida a los{" "}
+              <strong>
+                Tribunales Ordinarios de la Ciudad de San Miguel de Tucumán
+              </strong>
+              , renunciando a cualquier otro fuero o jurisdicción.
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>7. Propiedad Intelectual</CardTitle>
+            <CardTitle>7. Contacto</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              Todos los derechos de propiedad intelectual sobre la plataforma,
-              incluyendo el diseño, código, logotipos y marcas, son propiedad
-              nuestra o de nuestros licenciantes.
+              Si tiene alguna duda sobre los Términos y Condiciones Generales o
+              demás políticas y principios que rigen Lules Market, contáctenos
+              en:
             </p>
-            <p>
-              No se le otorga ningún derecho sobre nuestra propiedad intelectual
-              excepto el derecho limitado de usar la plataforma según estos
-              términos.
+            <p className="font-semibold text-primary">
+              legales@lulesmarket.com.ar
             </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>8. Terminación</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <p>
-              Podemos suspender o terminar su acceso a la plataforma en
-              cualquier momento, sin previo aviso, por cualquier motivo,
-              incluyendo la violación de estos términos.
-            </p>
-            <p>
-              Usted puede cancelar su cuenta en cualquier momento desde la
-              configuración de su perfil.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>9. Ley Aplicable</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <p>
-              Estos términos se rigen por las leyes de Argentina. Cualquier
-              disputa relacionada con estos términos estará sujeta a la
-              jurisdicción exclusiva de los tribunales de Argentina.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>10. Contacto</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <p>
-              Si tiene preguntas sobre estos términos y condiciones, puede
-              contactarnos a través de:
-            </p>
-            <ul className="ml-4 list-inside list-disc space-y-2">
-              <li>Email: soporte@plataforma.com</li>
-              <li>Formulario de contacto en nuestra página web</li>
-            </ul>
           </CardContent>
         </Card>
       </div>

@@ -48,26 +48,41 @@ export const planFormSchema = z.object({
   maxProducts: z.coerce
     .number()
     .min(0, "El número máximo de productos debe ser mayor o igual a 0"),
-  maxImages: z.coerce
+  maxImagesPerProduct: z.coerce
     .number()
-    .min(0, "El número máximo de imágenes debe ser mayor o igual a 0"),
+    .min(
+      0,
+      "El número máximo de imágenes por producto debe ser mayor o igual a 0",
+    ),
   features: z
     .array(z.string())
     .min(1, "Debe seleccionar al menos una característica"),
+  details: z.object({
+    products: z.string(),
+    images: z.string(),
+    priority: z.string(),
+  }),
+  popular: z.boolean().default(false).optional(),
   hasStatistics: z.boolean().optional(),
   canFeatureProducts: z.boolean().optional(),
   isActive: z.boolean().optional(),
 }) satisfies z.ZodType<PlanInsert>;
 
 export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
-  const defaultValues = selectedPlan || {
+  const defaultValues: PlanInsert = selectedPlan ?? {
     name: "",
     type: "FREE",
     description: "",
     price: 0,
     maxProducts: 0,
-    maxImages: 0,
+    maxImagesPerProduct: 0,
     features: [],
+    details: {
+      products: "",
+      images: "",
+      priority: "",
+    },
+    popular: false,
     discount: 0,
     canFeatureProducts: false,
     hasStatistics: false,
@@ -87,14 +102,10 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
     }),
   );
 
-  const onSubmit = (data: PlanInsert) => {
-    mutate(data);
-  };
-
   return (
     <form
       id="plan-create"
-      onSubmit={form.handleSubmit(onSubmit)}
+      action={() => mutate(form.getValues())}
       className="grid gap-4"
     >
       <FieldGroup className="grid grid-cols-2 gap-4">
@@ -243,12 +254,12 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
           )}
         />
         <Controller
-          name="maxImages"
+          name="maxImagesPerProduct"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="plan-create-max-images">
-                Maximo de Imagenes
+                Maximo de Imagenes por Producto
               </FieldLabel>
               <Input
                 {...field}
@@ -256,6 +267,64 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
                 aria-invalid={fieldState.invalid}
                 placeholder="Maximo de Imagenes"
                 type="number"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+      <FieldSeparator />
+
+      <FieldGroup className="grid grid-cols-3 gap-4">
+        <Controller
+          name="details.products"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="plan-create-details-products">
+                Detalles: Productos
+              </FieldLabel>
+              <Input
+                {...field}
+                id="plan-create-details-products"
+                aria-invalid={fieldState.invalid}
+                placeholder="Ej: 10, 50, Ilimitados"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          name="details.images"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="plan-create-details-images">
+                Detalles: Imágenes
+              </FieldLabel>
+              <Input
+                {...field}
+                id="plan-create-details-images"
+                aria-invalid={fieldState.invalid}
+                placeholder="Ej: 1 por producto"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          name="details.priority"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="plan-create-details-priority">
+                Detalles: Prioridad
+              </FieldLabel>
+              <Input
+                {...field}
+                id="plan-create-details-priority"
+                aria-invalid={fieldState.invalid}
+                placeholder="Ej: Estándar, Alta"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -309,6 +378,32 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
               </FieldContent>
               <Switch
                 id="plan-create-can-feature-products"
+                name={field.name}
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                aria-invalid={fieldState.invalid}
+              />
+            </Field>
+          )}
+        />
+      </FieldGroup>
+      <FieldGroup>
+        <Controller
+          name="popular"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field orientation="horizontal" data-invalid={fieldState.invalid}>
+              <FieldContent>
+                <FieldLabel htmlFor="plan-create-popular">Popular</FieldLabel>
+                <FieldDescription>
+                  Marcar este plan como popular para resaltarlo.
+                </FieldDescription>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </FieldContent>
+              <Switch
+                id="plan-create-popular"
                 name={field.name}
                 checked={field.value}
                 onCheckedChange={field.onChange}
