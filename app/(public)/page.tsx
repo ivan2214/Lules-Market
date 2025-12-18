@@ -93,15 +93,7 @@ export default async function HomePage() {
       {/* Stats Section - Dynamic, wrapped in Suspense */}
       <HydrateClient client={queryClient}>
         <DynamicStats />
-      </HydrateClient>
-
-      {/* Featured Businesses - Dynamic, wrapped in Suspense */}
-      <HydrateClient client={queryClient}>
         <FeaturedBusinesses />
-      </HydrateClient>
-
-      {/* Recent Products - Dynamic, wrapped in Suspense */}
-      <HydrateClient client={queryClient}>
         <RecentProducts />
       </HydrateClient>
 
