@@ -1,17 +1,9 @@
-import {
-  AlertCircle,
-  CheckCircle,
-  CreditCard,
-  Package,
-  Store,
-  TrendingUp,
-  XCircle,
-} from "lucide-react";
-
-import { BusinessGrowthChart } from "@/components/admin/business-growth-chart";
-
-import { RevenueChart } from "@/components/admin/revenue-chart";
-import { StatCard } from "@/components/admin/stat-card";
+import { connection } from "next/server";
+import { GridAnalytics } from "@/components/admin/grid-analytics";
+import { GridPayments } from "@/components/admin/grid-payments";
+import { GridPlansDistribution } from "@/components/admin/grid-plans-distribution";
+import { GridStats } from "@/components/admin/grid-stats";
+import { TrialStat } from "@/components/admin/stats-trial";
 import {
   Card,
   CardContent,
@@ -19,15 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { orpc } from "@/lib/orpc";
+import { orpcTanstack } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 
 export default async function AdminDashboard() {
-  const [{ stats }, { planDistribution, monthlyData, businessGrowthData }] =
-    await Promise.all([
-      orpc.admin.getAdminDashboardStats(),
-      orpc.admin.getAnalyticsData(),
-    ]);
+  await connection();
+  const queryClient = getQueryClient();
+
+  queryClient.prefetchQuery(
+    orpcTanstack.admin.getAdminDashboardStats.queryOptions(),
+  );
+  queryClient.prefetchQuery(orpcTanstack.admin.getAnalyticsData.queryOptions());
 
   return (
     <div className="space-y-6">
@@ -41,67 +35,24 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats principales */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard
-          title="Total Negocios"
-          value={stats.businesses.total}
-          description={`${stats.businesses.active} activos, ${stats.businesses.banned} baneados`}
-          icon={Store}
-          trend={stats.businesses.trend}
-        />
-        <StatCard
-          title="Total Productos"
-          value={stats.products.total}
-          description={`${stats.products.active} activos, ${stats.products.banned} baneados`}
-          icon={Package}
-          trend={stats.products.trend}
-        />
-        <StatCard
-          title="Ingresos Totales"
-          value={`$${(stats.payments.totalRevenue.total / 1000).toFixed(0)}k`}
-          description={`${stats.payments.approved} pagos aprobados`}
-          icon={CreditCard}
-          trend={stats.payments.totalRevenue.trend}
-        />
-      </div>
+      <HydrateClient client={queryClient}>
+        <GridStats />
+      </HydrateClient>
 
       {/* Pagos */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <StatCard
-          title="Pagos Aprobados"
-          value={stats.payments.approved}
-          icon={CheckCircle}
-          className="border-green-200 dark:border-green-900"
-        />
-        <StatCard
-          title="Pagos Pendientes"
-          value={stats.payments.pending}
-          icon={AlertCircle}
-          className="border-yellow-200 dark:border-yellow-900"
-        />
-        <StatCard
-          title="Pagos Rechazados"
-          value={stats.payments.rejected}
-          icon={XCircle}
-          className="border-red-200 dark:border-red-900"
-        />
-      </div>
+      <HydrateClient client={queryClient}>
+        <GridPayments />
+      </HydrateClient>
 
       {/* Gráficos */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <BusinessGrowthChart data={businessGrowthData} />
-        <RevenueChart data={monthlyData} />
-      </div>
+      <HydrateClient client={queryClient}>
+        <GridAnalytics />
+      </HydrateClient>
 
       {/* Trials */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <StatCard
-          title="Trials Activos"
-          value={stats.trials.actives}
-          icon={TrendingUp}
-          className="border-blue-200 dark:border-blue-900"
-        />
-      </div>
+      <HydrateClient client={queryClient}>
+        <TrialStat />
+      </HydrateClient>
 
       {/* Distribución de planes */}
       <Card>
@@ -110,21 +61,9 @@ export default async function AdminDashboard() {
           <CardDescription>Negocios por tipo de plan</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            {(["FREE", "BASIC", "PREMIUM"] as const).map((plan) => (
-              <div key={plan} className="space-y-2">
-                <p className="font-medium text-muted-foreground text-sm">
-                  Plan {plan}
-                </p>
-                <p className="font-bold text-3xl">
-                  {planDistribution[plan].value}
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  {planDistribution[plan].percentage.toFixed(1)}% del total
-                </p>
-              </div>
-            ))}
-          </div>
+          <HydrateClient client={queryClient}>
+            <GridPlansDistribution />
+          </HydrateClient>
         </CardContent>
       </Card>
     </div>

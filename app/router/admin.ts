@@ -1,3 +1,4 @@
+import "server-only";
 import { addMonths, format, startOfMonth, subMonths } from "date-fns";
 import { and, count, eq, gte, lt, sum } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { orpc } from "@/lib/orpc";
+import { formatCurrency } from "@/utils/format";
 
 export default async function SubscriptionPage() {
   const { currentBusiness } = await getCurrentBusiness();
@@ -107,7 +108,7 @@ export default async function SubscriptionPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-bold">
-                      ${payment.amount.toLocaleString()}
+                      {formatCurrency(payment.amount, "ARS")}
                     </p>
                     <Badge
                       variant={
