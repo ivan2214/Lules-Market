@@ -11,16 +11,35 @@ type ProductsGridProps = {
   currentPage: number;
   hasFilters: boolean;
   currentLimit: number;
+  search?: string;
+  category?: string;
+  businessId?: string;
+  sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
 };
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({
   hasFilters,
   currentLimit,
   currentPage,
+  search,
+  category,
+  businessId,
+  sort,
 }) => {
   const {
     data: { products, total },
-  } = useSuspenseQuery(orpcTanstack.products.listAllProducts.queryOptions());
+  } = useSuspenseQuery(
+    orpcTanstack.products.listAllProducts.queryOptions({
+      input: {
+        limit: currentLimit,
+        page: currentPage,
+        search,
+        category,
+        businessId,
+        sort,
+      },
+    }),
+  );
 
   const totalPages = Math.ceil(total / currentLimit);
 

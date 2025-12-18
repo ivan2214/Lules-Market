@@ -11,14 +11,30 @@ export const BusinessGrid = ({
   currentPage,
   hasFilters,
   currentLimit,
+  search,
+  category,
+  sortBy,
 }: {
   currentPage: number;
   hasFilters: boolean;
   currentLimit: number;
+  search?: string;
+  category?: string;
+  sortBy?: "newest" | "oldest";
 }) => {
   const {
     data: { businesses, total },
-  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+  } = useSuspenseQuery(
+    orpcTanstack.business.listAllBusinesses.queryOptions({
+      input: {
+        limit: currentLimit,
+        page: currentPage,
+        search,
+        category,
+        sortBy,
+      },
+    }),
+  );
   const totalPages = Math.ceil(total / currentLimit);
 
   if (!businesses.length) {

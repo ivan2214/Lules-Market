@@ -82,6 +82,9 @@ export default async function ComerciosPage({
           currentLimit={currentLimit}
           currentPage={currentPage}
           hasFilters={hasFilters}
+          search={search}
+          category={categoryDecoded}
+          sortBy={sortBy}
         />
       </HydrateClient>
     </>

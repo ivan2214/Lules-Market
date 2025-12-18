@@ -85,6 +85,10 @@ export default async function ProductosPage({
           hasFilters={hasFilters}
           currentLimit={currentLimit}
           currentPage={currentPage}
+          search={search}
+          category={decodeURIComponent(category || "")}
+          businessId={businessId}
+          sort={sortBy}
         />
       </HydrateClient>
     </>
