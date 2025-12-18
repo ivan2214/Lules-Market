@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/app/shared/components/ui/button";
-import { Skeleton } from "@/app/shared/components/ui/skeleton";
 import { navigation } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -20,16 +19,6 @@ export const DesktopMenu = () => {
             {item.name}
           </Button>
         </Link>
-      ))}
-    </nav>
-  );
-};
-
-export const DesktopMenuSkeleton = () => {
-  return (
-    <nav className="hidden items-center gap-1 md:flex">
-      {navigation.map((item) => (
-        <Skeleton key={item.href} className="h-10 w-24" />
       ))}
     </nav>
   );
