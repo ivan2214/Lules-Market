@@ -21,6 +21,7 @@ export const CACHE_TAGS = {
     LOGS: {
       GET_ALL: "admin-logs-get-all",
       GET_BY_ID: (id: string) => `admin-logs-get-by-id-${id}`,
+      CREATE_LOG: "admin-logs-create-log",
     },
     MEDIA: {
       GET_ALL: "admin-media-get-all",
@@ -33,14 +34,17 @@ export const CACHE_TAGS = {
     PLANS: {
       GET_ALL: "admin-plans-get-all",
       GET_BY_ID: (id: string) => `admin-plans-get-by-id-${id}`,
+      CREATE_PLAN: "admin-plans-create-plan",
     },
     PRODUCTS: {
       GET_ALL: "admin-products-get-all",
       GET_BY_ID: (id: string) => `admin-products-get-by-id-${id}`,
+      CREATE_PRODUCT: "admin-products-create-product",
     },
     TRIALS: {
       GET_ALL: "admin-trials-get-all",
       GET_BY_ID: (id: string) => `admin-trials-get-by-id-${id}`,
+      CREATE_TRIAL: "admin-trials-create-trial",
     },
     ANALYTICS: {
       GET_ALL: "admin-analytics-get-all",

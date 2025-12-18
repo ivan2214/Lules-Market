@@ -75,6 +75,32 @@ const round = (n: number, decimals = 2): number => {
   return Number.isFinite(n) ? +n.toFixed(decimals) : 0;
 };
 
+async function createLogCached(input: LogInsert) {
+  "use cache";
+  cacheTag(CACHE_TAGS.ADMIN.LOGS.CREATE_LOG);
+  cacheLife({
+    revalidate: 60 * 60,
+    expire: 60 * 60 * 24,
+  });
+  try {
+    const [log] = await db
+      .insert(schemaLog)
+      .values({
+        businessId: input.businessId,
+        adminId: input.adminId,
+        action: input.action,
+        entityType: input.entityType,
+        entityId: input.entityId,
+        details: input.details || {},
+      })
+      .returning();
+    return { success: true, log };
+  } catch (error) {
+    console.error("Error creating log:", error);
+    return { success: false, error: "Failed to create log." };
+  }
+}
+
 export const createLog = adminAuthorized
   .route({
     method: "POST",
@@ -92,24 +118,45 @@ export const createLog = adminAuthorized
     }),
   )
   .handler(async ({ input }) => {
-    try {
-      const [log] = await db
-        .insert(schemaLog)
-        .values({
-          businessId: input.businessId,
-          adminId: input.adminId,
-          action: input.action,
-          entityType: input.entityType,
-          entityId: input.entityId,
-          details: input.details || {},
-        })
-        .returning();
-      return { success: true, log };
-    } catch (error) {
-      console.error("Error creating log:", error);
-      return { success: false, error: "Failed to create log." };
-    }
+    return createLogCached(input);
   });
+
+async function createPlanCached(input: PlanInsert) {
+  "use cache";
+  cacheTag(CACHE_TAGS.ADMIN.PLANS.CREATE_PLAN);
+  cacheLife({
+    revalidate: 60 * 60,
+    expire: 60 * 60 * 24,
+  });
+  try {
+    const alreadyExists = await db
+      .select()
+      .from(plan)
+      .where(eq(plan.type, input.type))
+      .limit(1);
+    if (alreadyExists.length > 0) {
+      return { errorMessage: "El plan ya existe" };
+    }
+    await db.insert(plan).values({
+      name: input.name,
+      type: input.type,
+      description: input.description,
+      price: input.price,
+      discount: input.discount,
+      maxProducts: input.maxProducts,
+      maxImages: input.maxImages,
+      features: input.features,
+      canFeatureProducts: input.canFeatureProducts,
+      hasStatistics: input.hasStatistics,
+      isActive: input.isActive,
+    });
+
+    return { successMessage: "Plan creado exitosamente" };
+  } catch (error) {
+    console.error("Error creating plan:", error);
+    return { errorMessage: "Error al crear el plan" };
+  }
+}
 
 export const createPlan = adminAuthorized
   .route({
@@ -127,34 +174,7 @@ export const createPlan = adminAuthorized
     }),
   )
   .handler(async ({ input }) => {
-    try {
-      const alreadyExists = await db
-        .select()
-        .from(plan)
-        .where(eq(plan.type, input.type))
-        .limit(1);
-      if (alreadyExists.length > 0) {
-        return { errorMessage: "El plan ya existe" };
-      }
-      await db.insert(plan).values({
-        name: input.name,
-        type: input.type,
-        description: input.description,
-        price: input.price,
-        discount: input.discount,
-        maxProducts: input.maxProducts,
-        maxImages: input.maxImages,
-        features: input.features,
-        canFeatureProducts: input.canFeatureProducts,
-        hasStatistics: input.hasStatistics,
-        isActive: input.isActive,
-      });
-
-      return { successMessage: "Plan creado exitosamente" };
-    } catch (error) {
-      console.error("Error creating plan:", error);
-      return { errorMessage: "Error al crear el plan" };
-    }
+    return createPlanCached(input);
   });
 
 export const deleteAllLogs = adminAuthorized
@@ -181,6 +201,149 @@ export const deleteAllLogs = adminAuthorized
     }
   });
 
+async function getAdminDashboardStatsCached() {
+  "use cache";
+  cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.STATS);
+  cacheLife("seconds");
+
+  const now = new Date();
+
+  const startCurrentMonth = startOfMonth(now);
+  const endCurrentMonth = addMonths(startCurrentMonth, 1);
+  const startLastMonth = startOfMonth(subMonths(now, 1));
+  const endLastMonth = startCurrentMonth;
+
+  const [
+    totalBusinessesResult,
+    bannedBusinessesResult,
+    bannedProductsResult,
+    totalProductsResult,
+    totalApprovedPaymentsResult,
+    totalPendingPaymentsResult,
+    totalRejectedPaymentsResult,
+    trialsActivesResult,
+    businessesCurrentMonthResult,
+    productsCurrentMonthResult,
+    paymentsCurrentMonthResult,
+    businessesLastMonthResult,
+    productsLastMonthResult,
+    paymentsLastMonthResult,
+  ] = await Promise.all([
+    db.select({ count: count() }).from(business),
+    db
+      .select({ count: count() })
+      .from(business)
+      .innerJoin(bannedBusiness, eq(business.id, bannedBusiness.businessId)),
+    db
+      .select({ count: count() })
+      .from(product)
+      .innerJoin(bannedProduct, eq(product.id, bannedProduct.productId)),
+    db.select({ count: count() }).from(product),
+    db
+      .select({ count: count() })
+      .from(payment)
+      .where(eq(payment.status, "approved")),
+    db
+      .select({ count: count() })
+      .from(payment)
+      .where(eq(payment.status, "pending")),
+    db
+      .select({ count: count() })
+      .from(payment)
+      .where(eq(payment.status, "rejected")),
+    db.select({ count: count() }).from(trial).where(eq(trial.isActive, true)),
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(gte(business.createdAt, startCurrentMonth)),
+    db
+      .select({ count: count() })
+      .from(product)
+      .where(gte(product.createdAt, startCurrentMonth)),
+    db
+      .select({ total: sum(payment.amount) })
+      .from(payment)
+      .where(
+        and(
+          eq(payment.status, "approved"),
+          gte(payment.createdAt, startCurrentMonth),
+          lt(payment.createdAt, endCurrentMonth),
+        ),
+      ),
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(
+        and(
+          gte(business.createdAt, startLastMonth),
+          lt(business.createdAt, endLastMonth),
+        ),
+      ),
+    db
+      .select({ count: count() })
+      .from(product)
+      .where(
+        and(
+          gte(product.createdAt, startLastMonth),
+          lt(product.createdAt, endLastMonth),
+        ),
+      ),
+    db
+      .select({ total: sum(payment.amount) })
+      .from(payment)
+      .where(
+        and(
+          eq(payment.status, "approved"),
+          gte(payment.createdAt, startLastMonth),
+          lt(payment.createdAt, endLastMonth),
+        ),
+      ),
+  ]);
+
+  const totalBusinesses = totalBusinessesResult[0]?.count ?? 0;
+  const bannedBusinesses = bannedBusinessesResult[0]?.count ?? 0;
+  const bannedProducts = bannedProductsResult[0]?.count ?? 0;
+  const totalProducts = totalProductsResult[0]?.count ?? 0;
+  const totalApprovedPayments = totalApprovedPaymentsResult[0]?.count ?? 0;
+  const totalPendingPayments = totalPendingPaymentsResult[0]?.count ?? 0;
+  const totalRejectedPayments = totalRejectedPaymentsResult[0]?.count ?? 0;
+  const trialsActives = trialsActivesResult[0]?.count ?? 0;
+  const businessesCurrentMonth = businessesCurrentMonthResult[0]?.count ?? 0;
+  const productsCurrentMonth = productsCurrentMonthResult[0]?.count ?? 0;
+  const businessesLastMonth = businessesLastMonthResult[0]?.count ?? 0;
+  const productsLastMonth = productsLastMonthResult[0]?.count ?? 0;
+
+  const currentRevenue = Number(paymentsCurrentMonthResult[0]?.total) || 0;
+  const lastRevenue = Number(paymentsLastMonthResult[0]?.total) || 0;
+
+  const stats = {
+    businesses: {
+      total: totalBusinesses,
+      active: totalBusinesses - bannedBusinesses,
+      banned: bannedBusinesses,
+      trend: buildTrend(businessesCurrentMonth, businessesLastMonth),
+    },
+    products: {
+      total: totalProducts,
+      active: totalProducts - bannedProducts,
+      banned: bannedProducts,
+      trend: buildTrend(productsCurrentMonth, productsLastMonth),
+    },
+    payments: {
+      approved: totalApprovedPayments,
+      pending: totalPendingPayments,
+      rejected: totalRejectedPayments,
+      totalRevenue: {
+        total: currentRevenue,
+        trend: buildTrend(currentRevenue, lastRevenue),
+      },
+    },
+    trials: { actives: trialsActives },
+  };
+
+  return { stats };
+}
+
 export const getAdminDashboardStats = adminAuthorized
   .route({
     method: "GET",
@@ -195,146 +358,7 @@ export const getAdminDashboardStats = adminAuthorized
     }),
   )
   .handler(async () => {
-    "use cache";
-    cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.STATS);
-    cacheLife("seconds");
-
-    const now = new Date();
-
-    const startCurrentMonth = startOfMonth(now);
-    const endCurrentMonth = addMonths(startCurrentMonth, 1);
-    const startLastMonth = startOfMonth(subMonths(now, 1));
-    const endLastMonth = startCurrentMonth;
-
-    const [
-      totalBusinessesResult,
-      bannedBusinessesResult,
-      bannedProductsResult,
-      totalProductsResult,
-      totalApprovedPaymentsResult,
-      totalPendingPaymentsResult,
-      totalRejectedPaymentsResult,
-      trialsActivesResult,
-      businessesCurrentMonthResult,
-      productsCurrentMonthResult,
-      paymentsCurrentMonthResult,
-      businessesLastMonthResult,
-      productsLastMonthResult,
-      paymentsLastMonthResult,
-    ] = await Promise.all([
-      db.select({ count: count() }).from(business),
-      db
-        .select({ count: count() })
-        .from(business)
-        .innerJoin(bannedBusiness, eq(business.id, bannedBusiness.businessId)),
-      db
-        .select({ count: count() })
-        .from(product)
-        .innerJoin(bannedProduct, eq(product.id, bannedProduct.productId)),
-      db.select({ count: count() }).from(product),
-      db
-        .select({ count: count() })
-        .from(payment)
-        .where(eq(payment.status, "approved")),
-      db
-        .select({ count: count() })
-        .from(payment)
-        .where(eq(payment.status, "pending")),
-      db
-        .select({ count: count() })
-        .from(payment)
-        .where(eq(payment.status, "rejected")),
-      db.select({ count: count() }).from(trial).where(eq(trial.isActive, true)),
-      db
-        .select({ count: count() })
-        .from(business)
-        .where(gte(business.createdAt, startCurrentMonth)),
-      db
-        .select({ count: count() })
-        .from(product)
-        .where(gte(product.createdAt, startCurrentMonth)),
-      db
-        .select({ total: sum(payment.amount) })
-        .from(payment)
-        .where(
-          and(
-            eq(payment.status, "approved"),
-            gte(payment.createdAt, startCurrentMonth),
-            lt(payment.createdAt, endCurrentMonth),
-          ),
-        ),
-      db
-        .select({ count: count() })
-        .from(business)
-        .where(
-          and(
-            gte(business.createdAt, startLastMonth),
-            lt(business.createdAt, endLastMonth),
-          ),
-        ),
-      db
-        .select({ count: count() })
-        .from(product)
-        .where(
-          and(
-            gte(product.createdAt, startLastMonth),
-            lt(product.createdAt, endLastMonth),
-          ),
-        ),
-      db
-        .select({ total: sum(payment.amount) })
-        .from(payment)
-        .where(
-          and(
-            eq(payment.status, "approved"),
-            gte(payment.createdAt, startLastMonth),
-            lt(payment.createdAt, endLastMonth),
-          ),
-        ),
-    ]);
-
-    const totalBusinesses = totalBusinessesResult[0]?.count ?? 0;
-    const bannedBusinesses = bannedBusinessesResult[0]?.count ?? 0;
-    const bannedProducts = bannedProductsResult[0]?.count ?? 0;
-    const totalProducts = totalProductsResult[0]?.count ?? 0;
-    const totalApprovedPayments = totalApprovedPaymentsResult[0]?.count ?? 0;
-    const totalPendingPayments = totalPendingPaymentsResult[0]?.count ?? 0;
-    const totalRejectedPayments = totalRejectedPaymentsResult[0]?.count ?? 0;
-    const trialsActives = trialsActivesResult[0]?.count ?? 0;
-    const businessesCurrentMonth = businessesCurrentMonthResult[0]?.count ?? 0;
-    const productsCurrentMonth = productsCurrentMonthResult[0]?.count ?? 0;
-    const businessesLastMonth = businessesLastMonthResult[0]?.count ?? 0;
-    const productsLastMonth = productsLastMonthResult[0]?.count ?? 0;
-
-    const currentRevenue = Number(paymentsCurrentMonthResult[0]?.total) || 0;
-    const lastRevenue = Number(paymentsLastMonthResult[0]?.total) || 0;
-
-    const stats = {
-      businesses: {
-        total: totalBusinesses,
-        active: totalBusinesses - bannedBusinesses,
-        banned: bannedBusinesses,
-        trend: buildTrend(businessesCurrentMonth, businessesLastMonth),
-      },
-      products: {
-        total: totalProducts,
-        active: totalProducts - bannedProducts,
-        banned: bannedProducts,
-        trend: buildTrend(productsCurrentMonth, productsLastMonth),
-      },
-      payments: {
-        approved: totalApprovedPayments,
-        pending: totalPendingPayments,
-        rejected: totalRejectedPayments,
-        totalRevenue: {
-          total: currentRevenue,
-          trend: buildTrend(currentRevenue, lastRevenue),
-        },
-      },
-      trials: { actives: trialsActives },
-    };
-
-    return { stats };
+    return getAdminDashboardStatsCached();
   });
 
 const RevenuePointSchema = z.object({
@@ -370,6 +394,123 @@ const PlanDistributionSchema = z.object({
   PREMIUM: PlanValueSchema,
 });
 
+async function getAnalyticsDataCached() {
+  "use cache";
+  cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.ANALYTICS);
+  cacheLife("seconds");
+
+  // Count businesses by plan type
+  const [freeResult, basicResult, premiumResult] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(business)
+      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .where(eq(currentPlan.planType, "FREE")),
+    db
+      .select({ count: count() })
+      .from(business)
+      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .where(eq(currentPlan.planType, "BASIC")),
+    db
+      .select({ count: count() })
+      .from(business)
+      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .where(eq(currentPlan.planType, "PREMIUM")),
+  ]);
+
+  const free = freeResult[0]?.count ?? 0;
+  const basic = basicResult[0]?.count ?? 0;
+  const premium = premiumResult[0]?.count ?? 0;
+
+  const totalPlans = free + basic + premium || 1;
+  const planDistribution: Analytics["planDistribution"] = {
+    FREE: { value: free, percentage: round((free / totalPlans) * 100) },
+    BASIC: { value: basic, percentage: round((basic / totalPlans) * 100) },
+    PREMIUM: {
+      value: premium,
+      percentage: round((premium / totalPlans) * 100),
+    },
+  };
+
+  const sixMonthsAgo = startOfMonth(subMonths(new Date(), 5));
+
+  // Get payments for the last 6 months
+  const monthlyPayments = await db
+    .select({
+      createdAt: payment.createdAt,
+      amount: payment.amount,
+    })
+    .from(payment)
+    .where(
+      and(gte(payment.createdAt, sixMonthsAgo), eq(payment.status, "approved")),
+    );
+
+  // Get businesses created in the last 6 months
+  const businessByMonth = await db
+    .select({
+      createdAt: business.createdAt,
+    })
+    .from(business)
+    .where(gte(business.createdAt, sixMonthsAgo));
+
+  // 🔹 Revenue mensual
+  const monthlyRevenue = Array.from({ length: 6 }).map((_, i) => {
+    const date = startOfMonth(subMonths(new Date(), 5 - i));
+    const month = format(date, "MMM");
+    const nextMonth = addMonths(date, 1);
+
+    const revenue = monthlyPayments
+      .filter((p) => p.createdAt >= date && p.createdAt < nextMonth && p.amount)
+      .reduce((acc, p) => acc + Number(p.amount || 0), 0);
+
+    return { month, revenue };
+  });
+
+  const last = monthlyRevenue.at(-1);
+  const current = last ? last.revenue : 0;
+  const previous = monthlyRevenue.at(-2)?.revenue ?? 0;
+
+  const monthlyData: Analytics["monthlyRevenue"] = {
+    data: monthlyRevenue,
+    trend: current > previous ? "up" : current < previous ? "down" : "stable",
+    percentage: round(calcTrend(current, previous)),
+  };
+
+  // 🔹 Crecimiento de negocios
+  const businessGrowth = Array.from({ length: 6 }).map((_, i) => {
+    const date = startOfMonth(subMonths(new Date(), 5 - i));
+    const month = format(date, "MMM");
+    const nextMonth = addMonths(date, 1);
+
+    const count = businessByMonth.filter(
+      (b) => b.createdAt >= date && b.createdAt < nextMonth,
+    ).length;
+
+    return { month, count };
+  });
+
+  const lastBusiness = businessGrowth.at(-1);
+  const currentBusiness = lastBusiness ? lastBusiness.count : 0;
+  const prevBusiness = businessGrowth.at(-2)?.count ?? 0;
+
+  const businessGrowthData: Analytics["businessGrowth"] = {
+    data: businessGrowth,
+    trend:
+      currentBusiness > prevBusiness
+        ? "up"
+        : currentBusiness < prevBusiness
+          ? "down"
+          : "stable",
+    percentage: round(calcTrend(currentBusiness, prevBusiness)),
+  };
+
+  return {
+    planDistribution,
+    monthlyData,
+    businessGrowthData,
+  };
+}
+
 export const getAnalyticsData = adminAuthorized
   .route({
     method: "GET",
@@ -386,125 +527,7 @@ export const getAnalyticsData = adminAuthorized
     }),
   )
   .handler(async () => {
-    "use cache";
-    cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.ANALYTICS);
-    cacheLife("seconds");
-
-    // Count businesses by plan type
-    const [freeResult, basicResult, premiumResult] = await Promise.all([
-      db
-        .select({ count: count() })
-        .from(business)
-        .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
-        .where(eq(currentPlan.planType, "FREE")),
-      db
-        .select({ count: count() })
-        .from(business)
-        .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
-        .where(eq(currentPlan.planType, "BASIC")),
-      db
-        .select({ count: count() })
-        .from(business)
-        .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
-        .where(eq(currentPlan.planType, "PREMIUM")),
-    ]);
-
-    const free = freeResult[0]?.count ?? 0;
-    const basic = basicResult[0]?.count ?? 0;
-    const premium = premiumResult[0]?.count ?? 0;
-
-    const totalPlans = free + basic + premium || 1;
-    const planDistribution: Analytics["planDistribution"] = {
-      FREE: { value: free, percentage: round((free / totalPlans) * 100) },
-      BASIC: { value: basic, percentage: round((basic / totalPlans) * 100) },
-      PREMIUM: {
-        value: premium,
-        percentage: round((premium / totalPlans) * 100),
-      },
-    };
-
-    const sixMonthsAgo = startOfMonth(subMonths(new Date(), 5));
-
-    // Get payments for the last 6 months
-    const monthlyPayments = await db
-      .select({
-        createdAt: payment.createdAt,
-        amount: payment.amount,
-      })
-      .from(payment)
-      .where(
-        and(
-          gte(payment.createdAt, sixMonthsAgo),
-          eq(payment.status, "approved"),
-        ),
-      );
-
-    // Get businesses created in the last 6 months
-    const businessByMonth = await db
-      .select({
-        createdAt: business.createdAt,
-      })
-      .from(business)
-      .where(gte(business.createdAt, sixMonthsAgo));
-
-    // 🔹 Revenue mensual
-    const monthlyRevenue = Array.from({ length: 6 }).map((_, i) => {
-      const date = startOfMonth(subMonths(new Date(), 5 - i));
-      const month = format(date, "MMM");
-      const nextMonth = addMonths(date, 1);
-
-      const revenue = monthlyPayments
-        .filter(
-          (p) => p.createdAt >= date && p.createdAt < nextMonth && p.amount,
-        )
-        .reduce((acc, p) => acc + Number(p.amount || 0), 0);
-
-      return { month, revenue };
-    });
-
-    const last = monthlyRevenue.at(-1);
-    const current = last ? last.revenue : 0;
-    const previous = monthlyRevenue.at(-2)?.revenue ?? 0;
-
-    const monthlyData: Analytics["monthlyRevenue"] = {
-      data: monthlyRevenue,
-      trend: current > previous ? "up" : current < previous ? "down" : "stable",
-      percentage: round(calcTrend(current, previous)),
-    };
-
-    // 🔹 Crecimiento de negocios
-    const businessGrowth = Array.from({ length: 6 }).map((_, i) => {
-      const date = startOfMonth(subMonths(new Date(), 5 - i));
-      const month = format(date, "MMM");
-      const nextMonth = addMonths(date, 1);
-
-      const count = businessByMonth.filter(
-        (b) => b.createdAt >= date && b.createdAt < nextMonth,
-      ).length;
-
-      return { month, count };
-    });
-
-    const lastBusiness = businessGrowth.at(-1);
-    const currentBusiness = lastBusiness ? lastBusiness.count : 0;
-    const prevBusiness = businessGrowth.at(-2)?.count ?? 0;
-
-    const businessGrowthData: Analytics["businessGrowth"] = {
-      data: businessGrowth,
-      trend:
-        currentBusiness > prevBusiness
-          ? "up"
-          : currentBusiness < prevBusiness
-            ? "down"
-            : "stable",
-      percentage: round(calcTrend(currentBusiness, prevBusiness)),
-    };
-
-    return {
-      planDistribution,
-      monthlyData,
-      businessGrowthData,
-    };
+    return getAnalyticsDataCached();
   });
 
 export const adminRoute = {
