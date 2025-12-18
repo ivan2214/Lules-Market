@@ -121,7 +121,7 @@ export async function generateStaticParams() {
 
   // fallback si no hay negocios
   if (!businesses.length) {
-    return [];
+    return [{ id: "static-fallback" }];
   }
 
   return businesses.map((business) => ({ id: business.id }));

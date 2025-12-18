@@ -126,7 +126,7 @@ export async function generateStaticParams() {
   const { products } = await orpc.products.listAllProducts();
 
   if (!products.length) {
-    return [{ id: "default" }]; // fallback para que el build no falle
+    return [{ id: "static-fallback" }];
   }
 
   return products.map((product) => ({ id: product.id }));
