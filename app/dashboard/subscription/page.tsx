@@ -1,5 +1,3 @@
-import { getPlans } from "@/app/actions/plan-actions";
-
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import { PlanCard } from "@/components/dashboard/plan-card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +16,7 @@ export default async function SubscriptionPage() {
 
   const payments = await orpc.payment.history();
 
-  const plans = await getPlans();
+  const plans = await orpc.admin.getAllPlans();
 
   return (
     <div className="space-y-8">

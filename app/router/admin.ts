@@ -15,7 +15,7 @@ import {
   log as schemaLog,
   trial,
 } from "@/db/schema";
-import type { Log, LogInsert, PlanInsert } from "@/db/types";
+import type { Log, LogInsert, Plan, PlanInsert } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { Analytics } from "@/types";
 import { adminAuthorized } from "./middlewares/authorized";
@@ -530,10 +530,34 @@ export const getAnalyticsData = adminAuthorized
     return getAnalyticsDataCached();
   });
 
+async function getPlansCached(): Promise<Plan[]> {
+  "use cache";
+  cacheLife("days");
+  cacheTag(CACHE_TAGS.ADMIN.PLANS.GET_ALL);
+
+  const plans = await db.query.plan.findMany();
+
+  return plans;
+}
+
+export const getAllPlans = adminAuthorized
+  .route({
+    method: "GET",
+    path: "/admin/plans",
+    summary: "Get all plans",
+    description: "Get all plans",
+    tags: ["Admin"],
+  })
+  .output(z.array(z.custom<Plan>()))
+  .handler(async () => {
+    return getPlansCached();
+  });
+
 export const adminRoute = {
   createLog,
   createPlan,
   deleteAllLogs,
   getAdminDashboardStats,
   getAnalyticsData,
+  getAllPlans,
 };

@@ -1,13 +1,19 @@
-import { ORPCError } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { eq } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { cacheTag, updateTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
-import type { CurrentPlan, Payment, PaymentWithRelations } from "@/db/types";
+import type {
+  CurrentPlan,
+  Payment,
+  PaymentWithRelations,
+  Plan,
+  PlanType,
+} from "@/db/types";
 import { env } from "@/env";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
-import { getPlan } from "../data/plan/plan.dal";
+
 import { businessAuthorized } from "./middlewares/authorized";
 
 const invalidateBusiness = (businessId: string) => {
@@ -16,6 +22,34 @@ const invalidateBusiness = (businessId: string) => {
 };
 
 const PlanTypeSchema = z.enum(["FREE", "BASIC", "PREMIUM"]);
+
+export async function getPlanCache(planType: PlanType): Promise<Plan | null> {
+  "use cache";
+  cacheTag(CACHE_TAGS.PLAN.GET_BY_ID(planType));
+  try {
+    const result = await db.query.plan.findFirst({
+      where: eq(schema.plan.type, planType),
+    });
+    return result ?? null;
+  } catch (error) {
+    console.error("Error al obtener el plan:", error);
+    return null;
+  }
+}
+
+export const getPlan = os
+  .route({
+    method: "GET",
+    description: "Get a plan",
+    summary: "Get a plan",
+    tags: ["Payment"],
+  })
+  .input(z.object({ planType: PlanTypeSchema }))
+  .output(z.custom<Plan>().nullish())
+  .handler(async ({ input }) => {
+    const { planType } = input;
+    return await getPlanCache(planType);
+  });
 
 export const createPreference = businessAuthorized
   .route({
@@ -48,7 +82,7 @@ export const createPreference = businessAuthorized
       };
     }
 
-    const planLimits = await getPlan(planType);
+    const planLimits = await getPlanCache(planType);
 
     if (!planLimits) {
       return {

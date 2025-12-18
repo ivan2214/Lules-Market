@@ -1,5 +1,5 @@
 import { Check, Plus } from "lucide-react";
-import { cacheLife, cacheTag } from "next/cache";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,25 +17,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { db } from "@/db";
-import type { Plan } from "@/db/types";
-import { CACHE_TAGS } from "@/lib/cache-tags";
+import { orpc } from "@/lib/orpc";
 import { formatCurrency } from "@/utils/format";
 import { PlanClient } from "./components/plan-client";
 import { PlanForm } from "./components/plan-form";
 
-async function getPlans(): Promise<Plan[]> {
-  "use cache";
-  cacheLife("days");
-  cacheTag(CACHE_TAGS.ADMIN.PLANS.GET_ALL);
-
-  const plans = await db.query.plan.findMany();
-
-  return plans;
-}
-
 export default async function PlansPage() {
-  const plans = await getPlans();
+  const plans = await orpc.admin.getAllPlans();
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-start gap-y-2 lg:flex-row lg:items-center lg:justify-between">

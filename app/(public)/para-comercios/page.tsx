@@ -2,15 +2,16 @@
 
 import { ArrowRight, Check, Store, TrendingUp, Zap } from "lucide-react";
 import type { Metadata } from "next";
-import { cacheLife } from "next/cache";
+
 import Link from "next/link";
 import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { db, schema } from "@/db";
+
 import type { Plan } from "@/db/types";
+import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 
@@ -51,13 +52,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://lules-market.vercel.app/para-comercios",
   },
-};
-
-const getPlans = async () => {
-  "use cache";
-  cacheLife("days");
-  const plans = await db.select().from(schema.plan);
-  return plans;
 };
 
 const PlanPricingPreview = async ({ plans }: { plans: Plan[] }) => {
@@ -137,7 +131,8 @@ const PlanPricingPreviewSkeleton = () => {
 };
 
 export default async function ForBusinessPage() {
-  const plans = await getPlans();
+  const plans = await orpc.admin.getAllPlans();
+
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">
       {/* Hero Section */}
