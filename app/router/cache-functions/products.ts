@@ -1,9 +1,26 @@
 import "server-only";
-import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  type SQL,
+  sql,
+} from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
-import { product, category as schemaCategory } from "@/db/schema";
+import {
+  business,
+  currentPlan,
+  plan,
+  product,
+  category as schemaCategory,
+} from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 
@@ -100,15 +117,51 @@ export async function recentProductsCache() {
   "use cache";
   cacheTag(CACHE_TAGS.PRODUCT.GET_RECENT);
   cacheLife("hours");
+
+  // 1. Obtener IDs ordenados por prioridad del plan del negocio y fecha de creación del producto
+  const sortedIds = await db
+    .select({ id: product.id })
+    .from(product)
+    .innerJoin(business, eq(product.businessId, business.id))
+    .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+    .innerJoin(plan, eq(currentPlan.planType, plan.type))
+    .where(
+      and(
+        eq(product.active, true),
+        eq(product.isBanned, false),
+        eq(business.isActive, true),
+        eq(business.isBanned, false),
+      ),
+    )
+    .orderBy(
+      sql`CASE
+        WHEN ${plan.type} = 'PREMIUM' THEN 3
+        WHEN ${plan.type} = 'BASIC' THEN 2
+        WHEN ${plan.type} = 'FREE' THEN 1
+        ELSE 0
+      END DESC`,
+      desc(product.createdAt),
+    )
+    .limit(8);
+
+  if (sortedIds.length === 0) return [];
+
+  const ids = sortedIds.map((row) => row.id);
+
+  // 2. Obtener data completa
   const products = await db.query.product.findMany({
-    where: and(eq(product.active, true), eq(product.isBanned, false)),
+    where: inArray(product.id, ids),
     with: {
       images: true,
       business: true,
       category: true,
     },
-    orderBy: [desc(product.createdAt)],
-    limit: 8,
   });
-  return products;
+
+  // 3. Reordenar
+  const orderedProducts = products.sort((a, b) => {
+    return ids.indexOf(a.id) - ids.indexOf(b.id);
+  });
+
+  return orderedProducts;
 }

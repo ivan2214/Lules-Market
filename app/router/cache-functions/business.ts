@@ -1,9 +1,26 @@
 import "server-only";
-import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  or,
+  type SQL,
+  sql,
+} from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import z from "zod";
 import { db } from "@/db";
-import { business, category as categorySchema, product } from "@/db/schema";
+import {
+  business,
+  category as categorySchema,
+  currentPlan,
+  plan,
+  product,
+} from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 
@@ -92,16 +109,45 @@ export async function featuredBusinessesCache() {
   "use cache";
   cacheTag(CACHE_TAGS.BUSINESS.GET_FEATURED);
   cacheLife("hours");
+
+  // 1. Obtener IDs ordenados por prioridad del plan y fecha de creación
+  const sortedIds = await db
+    .select({ id: business.id })
+    .from(business)
+    .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+    .innerJoin(plan, eq(currentPlan.planType, plan.type))
+    .where(and(eq(business.isActive, true), eq(business.isBanned, false)))
+    .orderBy(
+      sql`CASE
+        WHEN ${plan.type} = 'PREMIUM' THEN 3
+        WHEN ${plan.type} = 'BASIC' THEN 2
+        WHEN ${plan.type} = 'FREE' THEN 1
+        ELSE 0
+      END DESC`,
+      desc(business.createdAt),
+    )
+    .limit(6);
+
+  if (sortedIds.length === 0) return [];
+
+  const ids = sortedIds.map((row) => row.id);
+
+  // 2. Obtener data completa usando la API relacional para mantener estructura
+  // Nota: Drizzle no garantiza el orden en inArray, así que reordenamos en JS
   const featuredBusinesses = await db.query.business.findMany({
-    where: and(eq(business.isActive, true), eq(business.isBanned, false)),
-    limit: 6,
-    orderBy: desc(business.createdAt),
+    where: inArray(business.id, ids),
     with: {
       category: true,
       logo: true,
     },
   });
-  return featuredBusinesses;
+
+  // 3. Reordenar según el orden de los IDs obtenidos
+  const orderedBusinesses = featuredBusinesses.sort((a, b) => {
+    return ids.indexOf(a.id) - ids.indexOf(b.id);
+  });
+
+  return orderedBusinesses;
 }
 
 export async function getBusinessByIdCache(id: string) {

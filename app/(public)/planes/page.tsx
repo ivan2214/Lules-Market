@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/shared/components/ui/card";
+import { orpc } from "@/lib/orpc";
 
 export const metadata: Metadata = {
   title: "Planes y Precios - Lules Market",
@@ -35,68 +36,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PlanesPage() {
-  const plans = [
-    {
-      name: "Gratuito",
-      price: 0,
-      icon: Sparkles,
-      description: "Perfecto para probar la plataforma",
-      features: [
-        "Hasta 10 productos publicados",
-        "1 imagen por producto",
-        "Prioridad estándar en listados",
-        "Perfil de negocio básico",
-      ],
-      cta: "Comenzar Gratis",
-      details: {
-        products: "10",
-        images: "1 por producto",
-        priority: "Estándar",
-      },
-    },
-    {
-      name: "Básico",
-      price: 5000,
-      icon: Zap,
-      description: "Para negocios que quieren destacar",
-      features: [
-        "Hasta 50 productos",
-        "3 imágenes por producto",
-        "Prioridad media en búsquedas",
-        "Soporte por email",
-      ],
-      popular: true,
-      cta: "Comenzar Ahora",
-      details: {
-        products: "50",
-        images: "3 por producto",
-        priority: "Media",
-      },
-    },
-    {
-      name: "Premium",
-      price: 15000,
-      icon: Crown,
-      description: "La mejor experiencia para tu marca",
-      features: [
-        "Productos ilimitados",
-        "5 imágenes por producto",
-        "Máxima prioridad (Top listados)",
-        "Productos destacados en Home",
-        "Soporte prioritario",
-      ],
-      cta: "Comenzar Ahora",
-      details: {
-        products: "Ilimitados",
-        images: "5 por producto",
-        priority: "Alta (Top)",
-      },
-    },
-  ];
+export default async function PlanesPage() {
+  const plans = await orpc.plan.getAllPlans();
 
   return (
-    <div className="container py-16">
+    <div className="container mx-auto py-16">
       <div className="mx-auto mb-16 max-w-3xl text-center">
         <h1 className="text-balance font-bold text-4xl tracking-tight sm:text-5xl">
           Planes para cada tipo de negocio
@@ -109,7 +53,12 @@ export default function PlanesPage() {
 
       <div className="mx-auto mb-16 grid max-w-6xl gap-8 md:grid-cols-3">
         {plans.map((plan) => {
-          const Icon = plan.icon;
+          const Icon =
+            plan.type === "FREE"
+              ? Sparkles
+              : plan.type === "BASIC"
+                ? Zap
+                : Crown;
           return (
             <Card
               key={plan.name}
@@ -153,7 +102,7 @@ export default function PlanesPage() {
                   variant={plan.popular ? "default" : "outline"}
                 >
                   <Link href="/auth/signup">
-                    {plan.cta}
+                    Comenzar Ahora
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
