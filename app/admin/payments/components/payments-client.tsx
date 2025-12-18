@@ -76,14 +76,16 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
 
   const paymentColumns: ColumnDef<PaymentWithRelations>[] = [
     {
-      accessorKey: "externalId",
+      accessorKey: "id",
       header: "ID Externo",
       cell: ({ row }) => (
-        <span className="font-mono text-sm">{row.original.id || "N/A"}</span>
+        <span className="font-mono text-sm">
+          #{row.original.id.slice(0, 6)}
+        </span>
       ),
     },
     {
-      accessorKey: "business",
+      accessorKey: "business.name",
       header: "Negocio",
       cell: ({ row }) => row.original.business?.name || "N/A",
     },
@@ -102,8 +104,9 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
       ),
     },
     {
-      accessorKey: "method",
+      accessorKey: "paymentMethod",
       header: "Método",
+      cell: ({ row }) => row.original.paymentMethod || "N/A",
     },
     {
       accessorKey: "status",
