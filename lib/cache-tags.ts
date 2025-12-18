@@ -69,7 +69,10 @@ export const CACHE_TAGS = {
   },
 
   ANALYTICS: {
-    GET_ALL: "analytics-get-all",
+    HOME_PAGE_STATS: "analytics-home-page-stats",
+    GET_STATS: "analytics-get-stats",
+    GET_PRODUCT_STATS: (productId: string) =>
+      `analytics-get-product-stats-${productId}`,
   },
 
   PLAN: {

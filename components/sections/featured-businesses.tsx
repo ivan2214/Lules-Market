@@ -1,12 +1,16 @@
+"use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { orpc } from "@/lib/orpc";
+import { orpcTanstack } from "@/lib/orpc";
 import { BusinessList } from "../public/business-list";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
 
-export async function FeaturedBusinesses() {
-  const featuredBusinesses = await orpc.business.featuredBusinesses();
+export function FeaturedBusinesses() {
+  const { data: featuredBusinesses } = useSuspenseQuery(
+    orpcTanstack.business.featuredBusinesses.queryOptions(),
+  );
 
   return (
     <section className="mb-12">
@@ -30,7 +34,7 @@ export async function FeaturedBusinesses() {
   );
 }
 
-export function BusinessesSkeletons() {
+export function FeaturedBusinessesSkeletons() {
   return (
     <section className="mb-12">
       <div className="mb-6">

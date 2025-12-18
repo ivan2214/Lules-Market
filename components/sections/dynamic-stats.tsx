@@ -1,5 +1,7 @@
+"use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, Store } from "lucide-react";
-import { orpc } from "@/lib/orpc";
+import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
@@ -8,13 +10,16 @@ function calcTrend(current: number, previous: number) {
   return ((current - previous) / previous) * 100;
 }
 
-export async function DynamicStats() {
+export function DynamicStats() {
   const {
-    activeBusinessesTotal,
-    activeBusinessesLastMonth,
-    productsTotal,
-    productsLastMonth,
-  } = await orpc.analytics.getHomePageStats();
+    data: {
+      activeBusinessesTotal,
+      activeBusinessesLastMonth,
+      productsTotal,
+      productsLastMonth,
+    },
+  } = useSuspenseQuery(orpcTanstack.analytics.getHomePageStats.queryOptions());
+
   const stats = {
     businesses: {
       value: activeBusinessesTotal,
@@ -72,7 +77,7 @@ export async function DynamicStats() {
   );
 }
 
-export function StatsSkeletons() {
+export function DynamicStatsSkeletons() {
   return (
     <section className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {[1, 2, 3, 4].map((i) => (

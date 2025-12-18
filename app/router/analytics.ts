@@ -1,3 +1,4 @@
+import "server-only";
 import { ORPCError } from "@orpc/server";
 import { and, count, eq, gte, lt } from "drizzle-orm";
 import { z } from "zod";
@@ -11,7 +12,9 @@ export type AnalyticsPeriod = z.infer<typeof AnalyticsPeriodSchema>;
 
 import { os } from "@orpc/server";
 import { startOfMonth, subMonths } from "date-fns";
+import { cacheLife, cacheTag } from "next/cache";
 import { business, product } from "@/db/schema";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 
 export const getHomePageStats = os
   .route({
@@ -30,6 +33,13 @@ export const getHomePageStats = os
     }),
   )
   .handler(async () => {
+    "use cache";
+    cacheTag(CACHE_TAGS.ANALYTICS.HOME_PAGE_STATS);
+    // revalidar cada 1 hora
+    cacheLife({
+      revalidate: 60 * 60,
+      expire: 60 * 60 * 24,
+    });
     const now = new Date();
     const startThisMonth = startOfMonth(now);
     const startLastMonth = startOfMonth(subMonths(now, 1));
@@ -110,6 +120,12 @@ export const getStats = businessAuthorized
     }),
   )
   .handler(async ({ context, input }) => {
+    "use cache";
+    cacheTag(CACHE_TAGS.ANALYTICS.GET_STATS);
+    cacheLife({
+      revalidate: 60 * 60,
+      expire: 60 * 60 * 24,
+    });
     const { business: currentBusiness } = context;
     const period = input.period ?? "30d";
 

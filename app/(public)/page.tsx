@@ -1,21 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
-import {
-  DynamicStats,
-  StatsSkeletons,
-} from "@/components/sections/dynamic-stats";
-import {
-  BusinessesSkeletons,
-  FeaturedBusinesses,
-} from "@/components/sections/featured-businesses";
-
-import {
-  ProductsSkeletons,
-  RecentProducts,
-} from "@/components/sections/recent-products";
+import { connection } from "next/server";
+import { DynamicStats } from "@/components/sections/dynamic-stats";
+import { FeaturedBusinesses } from "@/components/sections/featured-businesses";
+import { RecentProducts } from "@/components/sections/recent-products";
 import { Button } from "@/components/ui/button";
+import { orpcTanstack } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 
 export const metadata: Metadata = {
   title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
@@ -56,8 +48,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
-  // ✅ NO database queries here - they're all moved into Suspense boundaries
+export default async function HomePage() {
+  await connection();
+  const queryClient = getQueryClient();
+
+  queryClient.prefetchQuery(
+    orpcTanstack.analytics.getHomePageStats.queryOptions(),
+  );
+
+  queryClient.prefetchQuery(
+    orpcTanstack.business.featuredBusinesses.queryOptions(),
+  );
+
+  queryClient.prefetchQuery(
+    orpcTanstack.products.recentProducts.queryOptions(),
+  );
+
   return (
     <main className="container mx-auto px-4 py-8 lg:p-0">
       {/* Hero Section - Completely static */}
@@ -85,19 +91,19 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section - Dynamic, wrapped in Suspense */}
-      <Suspense fallback={<StatsSkeletons />}>
+      <HydrateClient client={queryClient}>
         <DynamicStats />
-      </Suspense>
+      </HydrateClient>
 
       {/* Featured Businesses - Dynamic, wrapped in Suspense */}
-      <Suspense fallback={<BusinessesSkeletons />}>
+      <HydrateClient client={queryClient}>
         <FeaturedBusinesses />
-      </Suspense>
+      </HydrateClient>
 
       {/* Recent Products - Dynamic, wrapped in Suspense */}
-      <Suspense fallback={<ProductsSkeletons />}>
+      <HydrateClient client={queryClient}>
         <RecentProducts />
-      </Suspense>
+      </HydrateClient>
 
       {/* CTA Section - Static */}
       <section className="rounded-2xl bg-primary p-8 text-primary-foreground md:p-12">

@@ -1,12 +1,17 @@
+"use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { orpc } from "@/lib/orpc";
+import { orpcTanstack } from "@/lib/orpc";
 import { ProductList } from "../public/product-list";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
 
-export async function RecentProducts() {
-  const products = await orpc.products.recentProducts();
+export function RecentProducts() {
+  const { data: products } = useSuspenseQuery(
+    orpcTanstack.products.recentProducts.queryOptions(),
+  );
+
   return (
     <section className="mb-12">
       <div className="mb-6 flex items-center justify-between">
@@ -27,7 +32,7 @@ export async function RecentProducts() {
   );
 }
 
-export function ProductsSkeletons() {
+export function RecentProductsSkeletons() {
   return (
     <section className="mb-12">
       <div className="mb-6">
