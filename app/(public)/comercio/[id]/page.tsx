@@ -150,7 +150,7 @@ export default async function BusinessPage({
     <div className="container mx-auto space-y-8 py-8">
       {/* ✅ Tracking envuelto en Suspense */}
       <Suspense fallback={null}>
-        <BusinessViewTracker productId={id} />
+        <BusinessViewTracker businessId={id} />
       </Suspense>
 
       <LocalBusinessSchema

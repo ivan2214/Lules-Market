@@ -1,8 +1,16 @@
+import "server-only";
 import { os } from "@orpc/server";
 import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+
+import { headers } from "next/headers";
 import z from "zod";
 import { db } from "@/db";
-import { business, category as categorySchema, product } from "@/db/schema";
+import {
+  business,
+  businessView,
+  category as categorySchema,
+  product,
+} from "@/db/schema";
 import type { BusinessWithRelations, CategoryWithRelations } from "@/db/types";
 
 export const featuredBusinesses = os
@@ -190,9 +198,35 @@ export const getBusinessById = os
     };
   });
 
+export const trackBusinessView = os
+  .route({
+    method: "POST",
+    summary: "Registrar una visita a un negocio",
+    description: "Registrar una visita a un negocio",
+    tags: ["Business"],
+  })
+  .input(z.object({ businessId: z.string() }))
+  .output(z.object({ success: z.boolean() }))
+  .handler(async ({ input }) => {
+    const { businessId } = input;
+    try {
+      const currentHeaders = await headers();
+      const referrer = currentHeaders.get("referer") || undefined;
+      await db.insert(businessView).values({
+        businessId,
+        referrer,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Error tracking business view:", error);
+      return { success: false };
+    }
+  });
+
 export const businessRoute = {
   featuredBusinesses,
   listAllBusinesses,
   listAllBusinessesByCategories,
   getBusinessById,
+  trackBusinessView,
 };

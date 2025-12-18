@@ -1,9 +1,14 @@
+import "server-only";
+
 import { os } from "@orpc/server";
 import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import { updateTag } from "next/cache";
+import { headers } from "next/headers";
 import { z } from "zod";
 import { db } from "@/db";
-import { product, category as schemaCategory } from "@/db/schema";
+import { product, productView, category as schemaCategory } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 
 export const recentProducts = os
   .route({
@@ -159,8 +164,41 @@ export const getProductById = os
     };
   });
 
+export const trackProductView = os
+  .route({
+    path: "/products/:id/view",
+    method: "POST",
+    summary: "Registrar una vista de producto",
+    description: "Registrar una vista de producto",
+    tags: ["Products"],
+  })
+  .input(z.object({ productId: z.string() }))
+  .output(z.object({ success: z.boolean() }))
+  .handler(async ({ input }) => {
+    try {
+      const { productId } = input;
+      const currentHeaders = await headers();
+      const referrer = currentHeaders.get("referer") || undefined;
+      await db.insert(productView).values({
+        productId,
+        referrer,
+      });
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.error("Error tracking product view:", error);
+      return {
+        success: false,
+      };
+    } finally {
+      updateTag(CACHE_TAGS.ANALYTICS.GET_PRODUCT_STATS(input.productId));
+    }
+  });
+
 export const productsRoute = {
   recentProducts,
   listAllProducts,
   getProductById,
+  trackProductView,
 };
