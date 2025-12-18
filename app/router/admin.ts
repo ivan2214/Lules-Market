@@ -1,10 +1,12 @@
 import "server-only";
+import { os } from "@orpc/server";
 import { addMonths, format, startOfMonth, subMonths } from "date-fns";
 import { and, count, eq, gte, lt, sum } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import {
+  admin,
   bannedBusiness,
   bannedProduct,
   business,
@@ -15,7 +17,7 @@ import {
   log as schemaLog,
   trial,
 } from "@/db/schema";
-import type { Log, LogInsert, Plan, PlanInsert } from "@/db/types";
+import type { Log, LogInsert, Permission, Plan, PlanInsert } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { Analytics } from "@/types";
 import { adminAuthorized } from "./middlewares/authorized";
@@ -553,6 +555,39 @@ export const getAllPlans = adminAuthorized
     return getPlansCached();
   });
 
+export const checkAdminPermission = os
+  .route({
+    method: "GET",
+    path: "/admin/check-permission",
+    summary: "Check admin permission",
+    description: "Check admin permission",
+    tags: ["Admin"],
+  })
+  .input(
+    z.object({
+      permission: z.custom<Permission>(),
+      adminId: z.string(),
+    }),
+  )
+  .handler(async ({ input: { permission, adminId } }) => {
+    try {
+      const adminDB = await db.query.admin.findFirst({
+        where: eq(admin.userId, adminId),
+        columns: { permissions: true },
+      });
+
+      // Asegura que exista el admin y que su lista de permisos incluya el permiso requerido.
+      return (
+        adminDB?.permissions?.includes("ALL") ||
+        adminDB?.permissions?.includes(permission) ||
+        false
+      );
+    } catch (error) {
+      console.error("Error al verificar permisos del admin:", error);
+      return false;
+    }
+  });
+
 export const adminRoute = {
   createLog,
   createPlan,
@@ -560,4 +595,5 @@ export const adminRoute = {
   getAdminDashboardStats,
   getAnalyticsData,
   getAllPlans,
+  checkAdminPermission,
 };

@@ -2,10 +2,10 @@
 
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
-import { checkAdminPermission } from "@/app/actions/check-admin-permission";
 import { getCurrentAdmin } from "@/app/data/admin/admin.require";
 import { db, schema } from "@/db";
 import { CACHE_TAGS } from "@/lib/cache-tags";
+import { orpc } from "@/lib/orpc";
 
 export const bannedBusiness = async (
   businessId: string,
@@ -25,7 +25,10 @@ export const bannedBusiness = async (
     }
 
     // 2. 🛑 VALIDACIÓN DE PERMISOS
-    const hasPermission = await checkAdminPermission(admin.userId, "BAN_USERS");
+    const hasPermission = await orpc.admin.checkAdminPermission({
+      adminId: admin.userId,
+      permission: "BAN_USERS",
+    });
 
     if (!hasPermission) {
       return {
@@ -119,7 +122,10 @@ export const unbannedBusiness = async (
     }
 
     // 2. 🛑 VALIDACIÓN DE PERMISOS
-    const hasPermission = await checkAdminPermission(admin.userId, "BAN_USERS");
+    const hasPermission = await orpc.admin.checkAdminPermission({
+      adminId: admin.userId,
+      permission: "BAN_USERS",
+    });
 
     if (!hasPermission) {
       return {
