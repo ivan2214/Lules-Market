@@ -4,7 +4,8 @@ import { cacheTag } from "next/cache";
 import { Suspense } from "react";
 import { LogTable } from "@/components/admin/log-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { db, type Log, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { Log } from "@/db/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { createMetadata } from "@/lib/metadata";
 
@@ -18,7 +19,7 @@ export async function getLogs(
   currentPage: number;
 }> {
   "use cache";
-  cacheTag(CACHE_TAGS.ADMIN_LOGS);
+  cacheTag(CACHE_TAGS.ADMIN.LOGS.GET_ALL);
 
   const skip = (page - 1) * limit;
 

@@ -1,4 +1,3 @@
-import { getCategories } from "@/app/actions/public-actions";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 
 import { BusinessProfileForm } from "@/components/dashboard/business-profile-form";
@@ -9,10 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { orpc } from "@/lib/orpc";
 
 export default async function BusinessPage() {
   const { currentBusiness } = await getCurrentBusiness();
-  const categories = await getCategories();
+  const categories = await orpc.category.listAllCategories();
 
   return (
     <div className="space-y-6">

@@ -13,7 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { db, type PlanType, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { PlanType } from "@/db/types";
+
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 

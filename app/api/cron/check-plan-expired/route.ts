@@ -1,9 +1,10 @@
 import { and, eq, lt } from "drizzle-orm";
 import { type NextRequest, NextResponse } from "next/server";
-import { createLog } from "@/app/data/admin/admin.dal";
+
 import { db, schema } from "@/db";
 import { env } from "@/env";
 import { sendEmail } from "@/lib/email";
+import { orpc } from "@/lib/orpc";
 
 /**
  * Cron job para verificar y desactivar planes expirados
@@ -71,7 +72,7 @@ export async function GET(req: NextRequest) {
       }
 
       // Registrar log de la desactivación
-      await createLog({
+      await orpc.admin.createLog({
         adminId: "SYSTEM",
         action: "PLAN_EXPIRED",
         entityType: "PlanActive",
@@ -102,7 +103,7 @@ export async function GET(req: NextRequest) {
     console.error("❌ Error en cron check-plan-expired:", err);
 
     // Registrar error en logs
-    await createLog({
+    await orpc.admin.createLog({
       adminId: "SYSTEM",
       action: "PLAN_EXPIRATION_CHECK_FAILED",
       details: { error: err.message },

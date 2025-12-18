@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Notification } from "@/db";
+import type { Notification } from "@/db/types";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 

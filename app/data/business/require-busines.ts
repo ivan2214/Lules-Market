@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { cache } from "react";
 import { db, schema } from "@/db";
+import type { BusinessWithRelations } from "@/db/types";
 import { requireUser } from "../user/require-user";
-import type { BusinessDTO } from "./business.dto";
 
 export const requireBusiness = cache(async () => {
   await connection();
@@ -62,12 +62,12 @@ export const requireBusiness = cache(async () => {
 
 export const getCurrentBusiness = cache(
   async (): Promise<{
-    currentBusiness: BusinessDTO;
+    currentBusiness: BusinessWithRelations;
   }> => {
     const { business } = await requireBusiness();
 
     return {
-      currentBusiness: business as BusinessDTO,
+      currentBusiness: business,
     };
   },
 );

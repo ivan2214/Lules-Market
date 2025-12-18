@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Plan, PlanStatus, PlanType } from "@/db";
+import type { Plan, PlanStatus, PlanType } from "@/db/types";
 
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";

@@ -2,6 +2,7 @@ import { count } from "drizzle-orm";
 import { cacheTag } from "next/cache";
 import { Suspense } from "react";
 import { db, schema } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { Skeleton } from "../ui/skeleton";
 import { ClearCacheDb } from "./clear-db";
 
@@ -17,7 +18,7 @@ export const DevTools = () => {
 
 async function ClearCacheWrapper() {
   "use cache";
-  cacheTag("dev-tools");
+  cacheTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
 
   const [
     usersResult,

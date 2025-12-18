@@ -1,12 +1,10 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { Edit, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+
 import { toast } from "sonner";
-import { deleteProductAction } from "@/app/actions/product.action";
-import type { CategoryDTO } from "@/app/data/category/category.dto";
-import type { ProductDTO } from "@/app/data/product/product.dto";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,14 +19,16 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import type { CategoryWithRelations, ProductWithRelations } from "@/db/types";
+import { orpcTanstack } from "@/lib/orpc";
 import { mainImage } from "@/utils/main-image";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { ProductFormDialog } from "./product-form-dialog";
 
 interface ProductCardProps {
-  product: ProductDTO;
+  product: ProductWithRelations;
   canFeature: boolean;
-  categories: CategoryDTO[];
+  categories: CategoryWithRelations[];
 }
 
 export function ProductCard({
@@ -36,28 +36,23 @@ export function ProductCard({
   canFeature = false,
   categories,
 }: ProductCardProps) {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function handleDelete() {
-    setLoading(true);
-    try {
-      const result = await deleteProductAction({
-        productId: product.id,
-      });
-      if (result) {
+  const { mutate, isPending } = useMutation(
+    orpcTanstack.products.deleteProduct.mutationOptions({
+      onSuccess() {
         toast.success("Producto eliminado");
         router.refresh();
-      } else {
-        toast.error(result || "Error al eliminar el producto");
-      }
-    } catch (error) {
-      console.error(" Error deleting product:", error);
-      toast.error("Error inesperado");
-    } finally {
-      setLoading(false);
-    }
-  }
+      },
+      onError(error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Error al eliminar el producto",
+        );
+      },
+    }),
+  );
 
   return (
     <Card>
@@ -124,7 +119,7 @@ export function ProductCard({
         />
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" disabled={loading}>
+            <Button variant="outline" size="sm" disabled={isPending}>
               <Trash2 className="h-4 w-4" />
             </Button>
           </AlertDialogTrigger>
@@ -139,7 +134,7 @@ export function ProductCard({
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction
-                onClick={handleDelete}
+                onClick={() => mutate({ productId: product.id })}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 Eliminar

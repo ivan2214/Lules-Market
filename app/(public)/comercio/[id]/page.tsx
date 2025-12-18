@@ -3,13 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import {
-  getPublicBusiness,
-  getPublicBusinesses,
-  getPublicBusinessesByCategories,
-} from "@/app/actions/public-actions";
 import { LocalBusinessSchema } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";
+import { orpc } from "@/lib/orpc";
 import { BusinessInfo } from "./components/business-info";
 import { BusinessViewTracker } from "./components/business-view-tracker";
 
@@ -19,7 +15,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const business = await getPublicBusiness(id);
+  const { business } = await orpc.business.getBusinessById({ id });
 
   if (!business) {
     notFound();
@@ -121,11 +117,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const { businesses } = await getPublicBusinesses();
+  const { businesses } = await orpc.business.listAllBusinesses();
 
   // fallback si no hay negocios
   if (!businesses.length) {
-    return [{ id: "default" }]; // id que haga sentido para tu app
+    return [];
   }
 
   return businesses.map((business) => ({ id: business.id }));
@@ -137,22 +133,24 @@ export default async function BusinessPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const business = await getPublicBusiness(id);
+  const { business } = await orpc.business.getBusinessById({ id });
 
   if (!business) {
     notFound();
   }
 
   // Comercios de la misma categoría
-  const similarBusinesses = await getPublicBusinessesByCategories(
-    business.category,
-  );
+  const similarBusinesses =
+    business.category &&
+    (await orpc.business.listAllBusinessesByCategories({
+      category: business.category,
+    }));
 
   return (
     <div className="container mx-auto space-y-8 py-8">
       {/* ✅ Tracking envuelto en Suspense */}
       <Suspense fallback={null}>
-        <BusinessViewTracker productId={id} />
+        <BusinessViewTracker businessId={id} />
       </Suspense>
 
       <LocalBusinessSchema
@@ -170,7 +168,10 @@ export default async function BusinessPage({
         </Link>
       </Button>
 
-      <BusinessInfo similarBusinesses={similarBusinesses} business={business} />
+      <BusinessInfo
+        similarBusinesses={similarBusinesses?.businesses}
+        business={business}
+      />
     </div>
   );
 }

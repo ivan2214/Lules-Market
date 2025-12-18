@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { type FileRejection, useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
+import type { ImageInsert } from "@/db/types";
 import { useS3Uploader } from "@/hooks/use-s3-uploader";
 import { canUploadMoreFiles, isValueArray } from "./uploader.helpers";
 // Tipos y helpers extraídos a módulos separados para modularidad.
@@ -59,10 +59,7 @@ export function Uploader({
   );
 
   const uploadFile = useCallback(
-    async (
-      file: File,
-      isMainImage: boolean,
-    ): Promise<ImageCreateInput | null> => {
+    async (file: File, isMainImage: boolean): Promise<ImageInsert | null> => {
       try {
         const { key, presignedUrl, error } = await uploadToS3(file);
 
@@ -133,8 +130,8 @@ export function Uploader({
       });
       setUploadProgress(0);
 
-      const uploadedArray: ImageCreateInput[] = [];
-      let uploaded: ImageCreateInput | null = null;
+      const uploadedArray: ImageInsert[] = [];
+      let uploaded: ImageInsert | null = null;
 
       if (isValueArray(value)) {
         for (let i = 0; i < acceptedFiles.length; i++) {

@@ -1,11 +1,12 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import type { CleanImage } from "@/app/data/image/image.dto";
+
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
+import type { Image } from "@/db/types";
 
 type Props = {
   name: string;
   description?: string | null;
-  logo?: CleanImage | null;
+  logo?: Image | null;
   address?: string | null;
   phone?: string | null;
   email?: string | null;

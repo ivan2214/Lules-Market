@@ -1,11 +1,12 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { BusinessesClient } from "./components/businesses-client";
 
 export default async function BusinessesPage() {
   "use cache";
   cacheLife("hours");
-  cacheTag("business-page");
+  cacheTag(CACHE_TAGS.ADMIN.BUSINESS.GET_ALL);
   const businesses = await db.query.business.findMany({
     with: {
       bannedBusiness: true,

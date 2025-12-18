@@ -1,26 +1,16 @@
-import { and, desc, eq } from "drizzle-orm";
+"use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { connection } from "next/server";
-import { db } from "@/db";
-import { business } from "@/db/schema";
-import { PublicBusinessCard } from "../public/public-business-card";
+import { orpcTanstack } from "@/lib/orpc";
+import { BusinessList } from "../public/business-list";
 import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
 
-export async function FeaturedBusinesses() {
-  // ✅ Mark as dynamic
-  await connection();
-
-  const featuredBusinesses = await db.query.business.findMany({
-    where: and(eq(business.isActive, true), eq(business.isBanned, false)),
-    limit: 6,
-    orderBy: desc(business.createdAt),
-    with: {
-      category: true,
-      logo: true,
-    },
-  });
+export function FeaturedBusinesses() {
+  const { data: featuredBusinesses } = useSuspenseQuery(
+    orpcTanstack.business.featuredBusinesses.queryOptions(),
+  );
 
   return (
     <section className="mb-12">
@@ -38,16 +28,13 @@ export async function FeaturedBusinesses() {
           </Link>
         </Button>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {featuredBusinesses.map((business) => (
-          <PublicBusinessCard key={business.id} business={business} />
-        ))}
-      </div>
+
+      <BusinessList featuredBusinesses={featuredBusinesses} />
     </section>
   );
 }
 
-export function BusinessesSkeletons() {
+export function FeaturedBusinessesSkeletons() {
   return (
     <section className="mb-12">
       <div className="mb-6">

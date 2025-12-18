@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import type { Category } from "@/db";
+import type { Category } from "@/db/types";
 import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
 
 type CategoryPillsProps = {

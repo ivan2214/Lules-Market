@@ -1,12 +1,18 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { trackBusinessView } from "@/app/actions/analytics-actions";
 
-export function BusinessViewTracker({ productId }: { productId: string }) {
+import { orpcTanstack } from "@/lib/orpc";
+
+export function BusinessViewTracker({ businessId }: { businessId: string }) {
+  const { mutate } = useMutation(
+    orpcTanstack.business.trackBusinessView.mutationOptions(),
+  );
+
   useEffect(() => {
-    trackBusinessView(productId); // se ejecuta solo en el cliente
-  }, [productId]);
+    mutate({ businessId });
+  }, [businessId]);
 
   return null;
 }

@@ -3,12 +3,13 @@ import { cacheLife, cacheTag } from "next/cache";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { PaymentsClient } from "./components/payments-client";
 
 export default async function PaymentsPage() {
   "use cache";
   cacheLife("hours");
-  cacheTag("payments-page");
+  cacheTag(CACHE_TAGS.ADMIN.PAYMENTS.GET_ALL);
 
   const payments = await db.query.payment.findMany({
     with: {

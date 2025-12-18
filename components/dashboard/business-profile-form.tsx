@@ -1,13 +1,12 @@
 "use client";
 
-import { Controller } from "react-hook-form";
-import { updateBusinessAction } from "@/app/actions/business-actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  type BusinessDTO,
   type BusinessUpdateInput,
-  BusinessUpdateInputSchema,
-} from "@/app/data/business/business.dto";
-import type { ImageCreateInput } from "@/app/data/image/image.dto";
+  BusinessUpdateSchema,
+} from "@/app/router/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -27,11 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useAction } from "@/hooks/use-action";
+import type { BusinessWithRelations, ImageInsert } from "@/db/types";
+import { orpc } from "@/lib/orpc";
 import { Uploader } from "../uploader/uploader";
 
 interface BusinessProfileFormProps {
-  business: BusinessDTO;
+  business: BusinessWithRelations;
   categories: { label: string; value: string }[];
 }
 
@@ -109,15 +109,25 @@ export function BusinessProfileForm({
         },
       };
 
-  const { form, execute, pending } = useAction({
-    action: updateBusinessAction,
-    formSchema: BusinessUpdateInputSchema,
+  const form = useForm<BusinessUpdateInput>({
+    resolver: zodResolver(BusinessUpdateSchema),
     defaultValues,
-    options: { showToasts: true },
   });
 
+  const [pending, startTransition] = useTransition();
+
+  const onSubmit = async (data: BusinessUpdateInput) => {
+    startTransition(async () => {
+      await orpc.business.update(data);
+    });
+  };
+
   return (
-    <form id="business-profile-form" className="space-y-6" onSubmit={execute}>
+    <form
+      id="business-profile-form"
+      className="space-y-6"
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
       <FieldGroup className="grid gap-6 md:grid-cols-2">
         {/* Nombre */}
         <Controller
@@ -391,9 +401,7 @@ export function BusinessProfileForm({
                 <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
                 <Uploader
                   folder="business/logos"
-                  onChange={(
-                    files: ImageCreateInput | ImageCreateInput[] | null,
-                  ) => {
+                  onChange={(files: ImageInsert | ImageInsert[] | null) => {
                     const isArray = Array.isArray(files);
                     const file = isArray ? files[0] : files;
                     field.onChange(
@@ -431,9 +439,7 @@ export function BusinessProfileForm({
                 <FieldLabel htmlFor={field.name}>Imagen de Portada</FieldLabel>
                 <Uploader
                   folder="business/covers"
-                  onChange={(
-                    files: ImageCreateInput | ImageCreateInput[] | null,
-                  ) => {
+                  onChange={(files: ImageInsert | ImageInsert[] | null) => {
                     const isArray = Array.isArray(files);
                     const file = isArray ? files[0] : files;
                     field.onChange(

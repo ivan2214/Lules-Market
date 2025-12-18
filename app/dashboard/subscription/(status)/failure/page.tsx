@@ -1,10 +1,7 @@
 import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  getPayment,
-  processPaymentFailure,
-} from "@/app/actions/payment-actions";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { orpc } from "@/lib/orpc";
 import type { MercadoPagoCallbackParams } from "@/types";
 
 export default async function PaymentFailurePage({
@@ -26,9 +24,9 @@ export default async function PaymentFailurePage({
     redirect("/dashboard/subscription");
   }
 
-  await processPaymentFailure({ paymentIdDB });
+  await orpc.payment.failure({ paymentIdDB });
 
-  const payment = await getPayment({ paymentIdDB });
+  const { payment } = await orpc.payment.getPayment({ paymentIdDB });
 
   if (!payment) {
     redirect("/dashboard/subscription");

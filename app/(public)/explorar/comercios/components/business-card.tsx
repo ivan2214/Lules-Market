@@ -1,6 +1,5 @@
 import { MapPin } from "lucide-react";
 import Link from "next/link";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,8 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { BusinessWithRelations } from "@/db/types";
 
-type BusinessCardProps = { business: BusinessDTO };
+type BusinessCardProps = { business: BusinessWithRelations };
 
 export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
   return (

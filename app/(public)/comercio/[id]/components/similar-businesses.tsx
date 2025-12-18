@@ -1,11 +1,11 @@
 import Link from "next/link";
-import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { BusinessWithRelations } from "@/db/types";
 
 type Props = {
-  businesses: BusinessDTO[];
+  businesses: BusinessWithRelations[];
 };
 
 export function SimilarBusinesses({ businesses }: Props) {

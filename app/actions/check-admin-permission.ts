@@ -1,7 +1,8 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { db, type Permission, schema } from "@/db";
+import { db, schema } from "@/db";
+import type { Permission } from "@/db/types";
 
 export async function checkAdminPermission(
   adminId: string,

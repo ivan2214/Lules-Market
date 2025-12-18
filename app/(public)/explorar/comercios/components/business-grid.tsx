@@ -1,9 +1,9 @@
-import type { BusinessDTO } from "@/app/data/business/business.dto";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { BusinessWithRelations } from "@/db/types";
 import { BusinessCard } from "./business-card";
 
 type BusinessGridProps = {
-  businesses: BusinessDTO[];
+  businesses: BusinessWithRelations[];
 };
 
 export const BusinessGrid: React.FC<BusinessGridProps> = ({ businesses }) => {

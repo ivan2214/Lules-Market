@@ -7,13 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { db } from "@/db";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { AdminColumns } from "./components/admin-columns";
 import { AdminCreateDialog } from "./components/admin-create-dialog";
 
 async function getAdmins() {
   "use cache";
   cacheLife("hours");
-  cacheTag("admins-page");
+  cacheTag(CACHE_TAGS.ADMIN.ADMINS.GET_ALL);
   const admins = await db.query.admin.findMany({
     with: {
       user: {
