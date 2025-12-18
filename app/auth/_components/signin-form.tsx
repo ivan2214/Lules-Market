@@ -41,10 +41,10 @@ export function SignInForm() {
       onSuccess((data) => {
         toast.success(data?.message);
         // Navegación según tipo de usuario
-        if (data?.hasVerified && data?.isAdmin) {
+        if (data?.isAdmin) {
           router.push("/admin");
         } else if (data?.hasVerified && !data?.isAdmin) {
-          router.push("/admin"); // Nota: Parece que debe ir a /auth/verify
+          router.push("/dashboard"); // Nota: Parece que debe ir a /auth/verify
         } else if (!data?.hasVerified && !data?.isAdmin) {
           router.push("/auth/verify");
         }

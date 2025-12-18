@@ -1,4 +1,5 @@
 import { BusinessProfileForm } from "@/app/dashboard/_components/business-profile-form";
+import { ShareLinkCard } from "@/app/dashboard/_components/share-link-card";
 import { getCurrentBusiness } from "@/app/data/business/require-busines";
 import {
   Card,
@@ -23,6 +24,8 @@ export default async function BusinessPage() {
           Administra la información pública de tu negocio
         </p>
       </div>
+
+      <ShareLinkCard businessId={currentBusiness.id} />
 
       <Card>
         <CardHeader>
