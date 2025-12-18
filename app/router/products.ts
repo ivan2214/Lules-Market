@@ -2,7 +2,7 @@ import "server-only";
 
 import { os } from "@orpc/server";
 import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
-import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { db } from "@/db";
@@ -200,8 +200,6 @@ export const trackProductView = os
       return {
         success: false,
       };
-    } finally {
-      updateTag(CACHE_TAGS.ANALYTICS.GET_PRODUCT_STATS(input.productId));
     }
   });
 
