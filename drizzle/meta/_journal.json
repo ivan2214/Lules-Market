@@ -43,6 +43,13 @@
       "when": 1765842269464,
       "tag": "0005_loud_kate_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1766091214295,
+      "tag": "0006_worried_black_tarantula",
+      "breakpoints": true
     }
   ]
 }
