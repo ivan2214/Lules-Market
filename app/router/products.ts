@@ -8,6 +8,7 @@ import { db } from "@/db";
 import { product, productView } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
 import {
+  getSimilarProductsCache,
   ListAllProductsInputSchema,
   listAllProductsCache,
   recentProductsCache,
@@ -62,7 +63,16 @@ export const getProductById = os
     const productFound = await db.query.product.findFirst({
       where: eq(product.id, id),
       with: {
-        business: true,
+        business: {
+          with: {
+            currentPlan: {
+              with: {
+                plan: true,
+              },
+            },
+            logo: true,
+          },
+        },
         images: true,
         category: true,
       },
@@ -107,9 +117,24 @@ export const trackProductView = os
     }
   });
 
+export const getSimilarProducts = os
+  .route({
+    path: "/products/:id/similar",
+    method: "GET",
+    summary: "Obtener productos similares",
+    description: "Obtener productos similares basados en categoría",
+    tags: ["Products"],
+  })
+  .input(z.object({ id: z.string(), categoryId: z.string() }))
+  .output(z.array(z.custom<ProductWithRelations>()))
+  .handler(async ({ input }) => {
+    return await getSimilarProductsCache(input.categoryId, input.id);
+  });
+
 export const productsRoute = {
   recentProducts,
   listAllProducts,
   getProductById,
   trackProductView,
+  getSimilarProducts,
 };

@@ -1,31 +1,28 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import {
-  ArrowLeft,
-  Mail,
-  MapPin,
+  CheckCircle2,
+  ChevronRight,
   MessageCircle,
-  Phone,
-  Star,
+  Share2,
+  Store,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-
 import { ProductSchema } from "@/app/shared/components/structured-data";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/app/shared/components/ui/avatar";
 import { Badge } from "@/app/shared/components/ui/badge";
 import { Button } from "@/app/shared/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/app/shared/components/ui/card";
+import { Separator } from "@/app/shared/components/ui/separator";
 import { orpc } from "@/lib/orpc";
+import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils/format";
 import { mainImage } from "@/utils/main-image";
+import { ProductCard } from "../../_components/product-card";
 import { ProductImages } from "./_components/product-images";
 import { ProductViewTracker } from "./_components/product-view-tracker";
 
@@ -35,7 +32,6 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-
   const { product } = await orpc.products.getProductById({ id });
 
   if (!product) {
@@ -49,86 +45,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alt: product.name,
   }));
 
-  const seoDescription = product.description
+  const description = product.description
     ? `${product.description.substring(0, 155)}${product.description.length > 155 ? "..." : ""}`
-    : `Compra ${product.name} en Lules Market. Productos de calidad en Argentina.`;
-
-  const keywords = [
-    product.name,
-    product.category,
-    product.business?.name,
-    "comprar online",
-    "Argentina",
-    "Lules Market",
-    "productos",
-  ].filter(Boolean);
+    : `Compra ${product.name} en Lules Market.`;
 
   return {
-    title: `${product.name} | ${product.business?.name} | Lules Market`,
-    description: seoDescription,
-    keywords: keywords.join(", "),
-    robots: {
-      index: true,
-      follow: true,
-      nocache: false,
-      googleBot: {
-        index: true,
-        follow: true,
-      },
-    },
-    alternates: {
-      canonical: `https://lules-market.vercel.app/producto/${id}`,
-    },
+    title: `${product.name} | ${product.business?.name}`,
+    description,
     openGraph: {
-      type: "website",
-      countryName: "Argentina",
       title: product.name,
-      siteName: "Lules Market",
-      description: seoDescription,
-      images: ogImages?.length
-        ? ogImages
-        : [
-            {
-              url: "https://lules-market.vercel.app/og-image.jpg",
-              width: 1200,
-              height: 630,
-              alt: "Lules Market",
-            },
-          ],
-      locale: "es_AR",
-      url: `https://lules-market.vercel.app/producto/${id}`,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: product.name,
-      description: seoDescription,
-      images: ogImages?.length
-        ? [ogImages[0].url]
-        : ["https://lules-market.vercel.app/og-image.jpg"],
-      creator: "@lulesmarket",
-      site: "@lulesmarket",
-    },
-    authors: [
-      {
-        name: product.business?.name,
-        url: `https://lules-market.vercel.app/comercio/${product.business?.id}`,
-      },
-    ],
-    category: product.category?.label,
-    other: {
-      "product:price:amount": product.price?.toString() || "",
-      "product:price:currency": "ARS",
+      description,
+      images: ogImages?.length ? ogImages : [],
     },
   };
 }
 
 export async function generateStaticParams() {
   const { products } = await orpc.products.listAllProducts();
-
-  if (!products.length) {
-    return [{ id: "static-fallback" }];
-  }
-
+  if (!products.length) return [{ id: "static-fallback" }];
   return products.map((product) => ({ id: product.id }));
 }
 
@@ -140,9 +74,24 @@ export default async function ProductPage({ params }: Props) {
     notFound();
   }
 
+  // Fetch Similar Products
+  const similarProducts = product.category
+    ? await orpc.products.getSimilarProducts({
+        id: product.id,
+        categoryId: product.category.id,
+      })
+    : [];
+
+  const planType = product.business?.currentPlan?.plan?.type || "FREE";
+  const isPremium = planType === "PREMIUM";
+
+  // Fixed WhatsApp Message
+  const whatsappMessage = encodeURIComponent(
+    `Hola ${product.business?.name}, vi su producto "${product.name}" en Lules Market y me interesa.`,
+  );
+
   return (
-    <div className="container space-y-8 px-4 py-6">
-      {/* ✅ Tracking envuelto en Suspense */}
+    <div className="min-h-screen bg-background pb-12">
       <Suspense fallback={null}>
         <ProductViewTracker productId={id} />
       </Suspense>
@@ -157,174 +106,172 @@ export default async function ProductPage({ params }: Props) {
           url: `https://lules-market.vercel.app/comercio/${product.business?.id}`,
         }}
       />
-      <Button variant="ghost" className="mb-4 gap-2" asChild>
-        <Link href="/explorar/productos">
-          <ArrowLeft className="h-4 w-4" />
-          Volver a productos
-        </Link>
-      </Button>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left Column - Images & Details */}
-        <div className="flex flex-col gap-2 lg:col-span-2">
-          <ProductImages images={product.images} name={product.name} />
-          {/* Product Details Tabs */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Descripción</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>{product.description}</CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column - Purchase Info & Business */}
-        <div className="space-y-6">
-          {/* Purchase Card */}
-          <Card>
-            <CardHeader>
-              <div className="mb-2 flex items-start justify-between">
-                <Badge
-                  key={product.category?.id}
-                  variant="outline"
-                  className="text-xs"
+      {/* Breadcrumbs */}
+      <div className="border-b bg-muted/20">
+        <div className="container px-4 py-4">
+          <div className="flex flex-wrap items-center gap-2 text-muted-foreground text-sm">
+            <Link href="/" className="hover:text-primary">
+              Inicio
+            </Link>
+            <ChevronRight className="h-4 w-4" />
+            <Link href="/explorar/productos" className="hover:text-primary">
+              Productos
+            </Link>
+            {product.category && (
+              <>
+                <ChevronRight className="h-4 w-4" />
+                <Link
+                  href={`/explorar/productos?category=${product.category.value}`}
+                  className="hover:text-primary"
                 >
-                  {`${product.category?.value.charAt(0).toUpperCase()}${product.category?.value.slice(1)}`}
-                </Badge>
+                  {product.category.label}
+                </Link>
+              </>
+            )}
+            <ChevronRight className="h-4 w-4" />
+            <span className="font-medium text-foreground">{product.name}</span>
+          </div>
+        </div>
+      </div>
 
-                {/* <div className="flex gap-1">
-                  <Button variant="ghost" size="icon">
-                    <Heart className="h-5 w-5" />
-                  </Button>
-                  <Button variant="ghost" size="icon">
-                    <Share2 className="h-5 w-5" />
-                  </Button>
-                </div> */}
+      <div className="container px-4 py-8 md:py-12">
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+          {/* Left Column: Images */}
+          <div className="lg:col-span-7">
+            <ProductImages images={product.images} name={product.name} />
+          </div>
+
+          {/* Right Column: Key Details & Actions */}
+          <div className="space-y-8 lg:col-span-5">
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                {product.category && (
+                  <Badge variant="secondary" className="font-medium">
+                    {product.category.label}
+                  </Badge>
+                )}
+                {isPremium && (
+                  <Badge className="border-none bg-yellow-500 text-white hover:bg-yellow-600">
+                    Destacado
+                  </Badge>
+                )}
               </div>
-              <CardTitle className="text-2xl">{product.name}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Price */}
-              <div>
-                <div className="flex items-baseline gap-2">
-                  <span className="font-bold text-3xl text-primary">
-                    {formatCurrency(product.price || 0, "ARS")}
+              <h1 className="mb-2 font-bold text-3xl tracking-tight md:text-4xl">
+                {product.name}
+              </h1>
+              {product.business && (
+                <Link
+                  href={`/comercio/${product.business.id}`}
+                  className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <Store className="h-4 w-4" />
+                  <span className="font-medium underline decoration-border underline-offset-4 hover:decoration-primary">
+                    {product.business.name}
                   </span>
-                </div>
-                <p className="mt-1 text-muted-foreground text-sm">
-                  Precio en efectivo o transferencia
-                </p>
-              </div>
-
-              <Separator />
-
-              {/* Stock */}
-              <div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Disponibilidad</span>
-                  <span className="font-semibold text-primary">
-                    {product.stock && product.stock > 0
-                      ? `${product.stock} unidades disponibles`
-                      : "Sin stock"}
-                  </span>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Actions */}
-              <div className="space-y-2">
-                <Button className="w-full gap-2" size="lg">
-                  <MessageCircle className="size-5" />
-                  Consultar disponibilidad
-                </Button>
-              </div>
-
-              {/* Trust Badges */}
-              {(product.business?.verified ||
-                product.business?.user?.emailVerified) && (
-                <div className="space-y-2 rounded-lg bg-muted p-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
-                      <Star className="h-3 w-3 text-primary" />
-                    </div>
-                    <span className="text-muted-foreground">
-                      Vendedor verificado
-                    </span>
-                  </div>
-                </div>
+                </Link>
               )}
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Business Info Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">
-                Información del comercio
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Link
-                href={`/comercio/${product.business?.id}`}
-                className="flex items-center gap-3"
-              >
-                <Avatar className="h-12 w-12">
-                  <AvatarImage
-                    src={product.business?.logo?.url || "/placeholder.svg"}
-                  />
-                  <AvatarFallback>{product.business?.name[0]}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold">{product.business?.name}</p>
-                  </div>
-                </div>
-              </Link>
+            <Separator />
 
-              <Separator />
-
-              <div className="space-y-3 text-sm">
-                <div className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground">
-                    {product.business?.address}
-                  </span>
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <Phone className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                  <a
-                    href={`tel:${product.business?.phone}`}
-                    className="text-primary hover:underline"
-                  >
-                    {product.business?.phone}
-                  </a>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                  <a
-                    href={`mailto:${product.business?.email}`}
-                    className="text-primary hover:underline"
-                  >
-                    {product.business?.email}
-                  </a>
-                </div>
+            <div>
+              <div className="mb-2 font-bold text-4xl text-primary">
+                {formatCurrency(product.price || 0, "ARS")}
               </div>
+              <p className="text-muted-foreground text-sm">
+                Precio sujeto a modificaciones. Consultar vigencia.
+              </p>
+            </div>
 
+            <div className="flex flex-col gap-3">
               <Button
-                variant="outline"
-                className="w-full bg-transparent"
+                size="lg"
+                className="h-12 w-full gap-2 text-base shadow-lg shadow-primary/20"
                 asChild
               >
-                <Link href={`/comercio/${product.business?.id}`}>
-                  Ver perfil del comercio
-                </Link>
+                <a
+                  href={`https://wa.me/${product.business?.whatsapp || product.business?.phone}?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  Consultar por WhatsApp
+                </a>
               </Button>
-            </CardContent>
-          </Card>
+              <Button variant="outline" size="lg" className="h-12 w-full gap-2">
+                <Share2 className="h-4 w-4" />
+                Compartir
+              </Button>
+            </div>
+
+            {/* Business Short Card */}
+            {product.business && (
+              <div
+                className={cn(
+                  "rounded-xl border p-4 transition-colors",
+                  isPremium
+                    ? "border-yellow-500/30 bg-yellow-500/5"
+                    : "bg-muted/30",
+                )}
+              >
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-12 w-12 border">
+                    <AvatarImage src={product.business.logo?.url} />
+                    <AvatarFallback>{product.business.name[0]}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="truncate font-semibold">
+                        {product.business.name}
+                      </h3>
+                      {(product.business.verified || isPremium) && (
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                      )}
+                    </div>
+                    <p className="truncate text-muted-foreground text-xs">
+                      {product.business.address || "Dirección no disponible"}
+                    </p>
+                  </div>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href={`/comercio/${product.business.id}`}>
+                      Ver perfil
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        <Separator className="my-12" />
+
+        {/* Detailed Description */}
+        <div className="grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <h2 className="mb-6 font-bold text-2xl">Detalles del producto</h2>
+            <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <p className="whitespace-pre-line text-lg text-muted-foreground leading-relaxed">
+                {product.description ||
+                  "El vendedor no ha proporcionado una descripción detallada para este producto."}
+              </p>
+            </div>
+          </div>
+
+          {/* Mobile-friendly sidebar content could happen here if needed */}
+        </div>
+
+        {/* Similar Products */}
+        {similarProducts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="mb-6 font-bold text-2xl">Productos similares</h2>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+              {similarProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

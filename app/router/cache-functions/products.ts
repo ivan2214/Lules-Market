@@ -93,7 +93,16 @@ export async function listAllProductsCache(
     db.query.product.findMany({
       where: whereClause,
       with: {
-        business: true,
+        business: {
+          with: {
+            currentPlan: {
+              with: {
+                plan: true,
+              },
+            },
+            logo: true,
+          },
+        },
         images: true,
         category: true,
       },
@@ -153,7 +162,16 @@ export async function recentProductsCache() {
     where: inArray(product.id, ids),
     with: {
       images: true,
-      business: true,
+      business: {
+        with: {
+          currentPlan: {
+            with: {
+              plan: true,
+            },
+          },
+          logo: true,
+        },
+      },
       category: true,
     },
   });
@@ -164,4 +182,38 @@ export async function recentProductsCache() {
   });
 
   return orderedProducts;
+}
+
+export async function getSimilarProductsCache(
+  categoryId: string,
+  currentProductId: string,
+) {
+  "use cache";
+  cacheTag(CACHE_TAGS.PRODUCT.GET_SIMILAR(currentProductId));
+  cacheLife("hours");
+
+  const similar = await db.query.product.findMany({
+    where: and(
+      eq(product.active, true),
+      eq(product.categoryId, categoryId),
+      // ne(product.id, currentProductId) // 'ne' is not exported by drizzle-orm? use not(eq(...))
+    ),
+    with: {
+      images: true,
+      business: {
+        with: {
+          currentPlan: {
+            with: {
+              plan: true,
+            },
+          },
+        },
+      },
+      category: true,
+    },
+    limit: 4,
+    orderBy: desc(product.createdAt),
+  });
+
+  return similar.filter((p) => p.id !== currentProductId);
 }

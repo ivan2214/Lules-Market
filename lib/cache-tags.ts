@@ -68,6 +68,7 @@ export const CACHE_TAGS = {
     GET_ALL: "products",
     GET_BY_ID: (id: string) => `product-${id}`,
     GET_RECENT: "products-recent",
+    GET_SIMILAR: (id: string) => `products-similar-${id}`,
   },
 
   CATEGORY: {
