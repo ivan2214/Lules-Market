@@ -1,3 +1,4 @@
+import "server-only";
 import { ORPCError, os } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { cacheTag, updateTag } from "next/cache";

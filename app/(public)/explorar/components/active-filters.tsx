@@ -1,23 +1,39 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Business } from "@/db/types";
 import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
+import { orpcTanstack } from "@/lib/orpc";
+
+type SortByBusiness = "newest" | "oldest";
+type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
+
+type Params = {
+  search?: string;
+  sortBy?: SortByBusiness | SortByProduct;
+  category?: string;
+  page?: string;
+  limit?: string;
+  businessId?: string;
+};
 
 type ActiveFiltersProps = {
-  params: Record<string, string | undefined>;
-  businesses: Business[];
+  params: Params;
+
   typeExplorer: TypeExplorer;
 };
 
 export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   params,
-  businesses,
+
   typeExplorer,
 }) => {
+  const {
+    data: { businesses },
+  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
   const router = useRouter();
   const { createUrl } = useSearchUrl({ currentParams: params, typeExplorer });
 

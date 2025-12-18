@@ -1,5 +1,6 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,8 +22,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { Business, Category } from "@/db/types";
 import { type TypeExplorer, useSearchUrl } from "@/hooks/use-search-url";
+import { orpcTanstack } from "@/lib/orpc";
 import { BusinessesPills } from "./businesses-pills";
 import { CategoryPills } from "./category-pills";
 
@@ -42,16 +43,20 @@ type SearchAndFiltersProps = {
       | "oldest";
   };
   typeExplorer: TypeExplorer;
-  categories: Category[];
-  businesses: Business[];
 };
 
 export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   params,
   typeExplorer,
-  categories,
-  businesses,
 }) => {
+  const {
+    data: { businesses },
+  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+
+  const { data: categories } = useSuspenseQuery(
+    orpcTanstack.category.listAllCategories.queryOptions(),
+  );
+
   const { search, sortBy, businessId, category } = params || {};
   const [searchValue, setSearchValue] = useState(search || "");
   const router = useRouter();
@@ -128,7 +133,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <CategoryPills
               typeExplorer={typeExplorer}
               categories={categories}
-              category={category}
+              category={decodeURIComponent(category || "")}
             />
           </section>
 

@@ -1,3 +1,4 @@
+import "server-only";
 import { os } from "@orpc/server";
 import { cacheLife, cacheTag } from "next/cache";
 import z from "zod";
