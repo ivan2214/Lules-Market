@@ -50,7 +50,7 @@ export const requireBusiness = cache(async () => {
   }
 
   if (!business) {
-    redirect("/auth/business-setup");
+    redirect("/business-setup");
   }
 
   return {
