@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { orpc } from "@/lib/orpc";
+import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
 import { BusinessInfo } from "./_components/business-info";
 import { BusinessViewTracker } from "./_components/business-view-tracker";
@@ -145,7 +146,7 @@ export default async function BusinessPage({ params }: Props) {
         <BusinessViewTracker businessId={id} />
       </Suspense>
 
-      {/* <LocalBusinessSchema
+      <LocalBusinessSchema
         name={business.name}
         description={business.description || ""}
         address={business.address || ""}
@@ -153,7 +154,7 @@ export default async function BusinessPage({ params }: Props) {
         email={business.email || ""}
         image={business.logo?.url || ""}
         url={`https://lules-market.vercel.app/comercio/${id}`}
-      /> */}
+      />
       <Button asChild variant="ghost">
         <Link href="/explorar/comercios" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver
