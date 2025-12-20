@@ -4,7 +4,7 @@ import { createJiti } from "jiti";
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Validar environment variables en build
-await jiti.import("./env.ts");
+await jiti.import("./src/env.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -22,11 +22,11 @@ const nextConfig = {
     ],
     formats: ["image/avif", "image/webp"],
   },
+  reactCompiler: true,
+  cacheComponents: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
-  reactCompiler: true,
-  cacheComponents: true,
 };
 
 export default nextConfig;
