@@ -13,7 +13,7 @@ export const requireAdmin = cache(async () => {
   });
 
   if (!admin) {
-    redirect("/auth/signin");
+    redirect("/signin");
   }
 
   return { session, admin };

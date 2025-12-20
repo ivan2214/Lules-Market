@@ -13,7 +13,7 @@ export default async function proxy(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/admin")
   ) {
     if (!session) {
-      return NextResponse.redirect(new URL("/auth/signin", request.url));
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
   }
 

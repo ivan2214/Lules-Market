@@ -223,7 +223,7 @@ export default function ComoFuncionaPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button asChild size="lg">
-            <Link href="/auth/signup">Crear Cuenta Gratis</Link>
+            <Link href="/signup">Crear Cuenta Gratis</Link>
           </Button>
           <Button asChild variant="outline" size="lg">
             <Link href="/planes">Ver Planes</Link>

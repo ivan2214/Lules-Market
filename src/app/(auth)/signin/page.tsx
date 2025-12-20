@@ -25,7 +25,7 @@ export default function SignInPage() {
         </Suspense>
         <p className="mt-4 text-center text-muted-foreground text-sm">
           ¿No tienes cuenta?{" "}
-          <Link href="/auth/signup" className="font-medium underline">
+          <Link href="/signup" className="font-medium underline">
             Regístrate aquí
           </Link>
         </p>

@@ -86,7 +86,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         message: "Contraseña restablecida exitosamente. Redirigiendo...",
         success: data.status || true,
       }));
-      setTimeout(() => router.push("/auth/signin"), 4000);
+      setTimeout(() => router.push("/signin"), 4000);
     } catch (error) {
       setState((old) => ({
         ...old,
@@ -137,7 +137,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
             </div>
 
             <div className="space-y-3">
-              <Link href="/auth/signin">
+              <Link href="/signin">
                 <Button className="w-full">Iniciar Sesión</Button>
               </Link>
               <Link href="/">
@@ -274,7 +274,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
           <div className="mt-6 text-center">
             <Link
-              href="/auth/signin"
+              href="/signin"
               className="font-medium text-primary text-sm hover:text-primary/50"
             >
               Volver al Login

@@ -11,7 +11,7 @@ export const requireUser = cache(
     name: string;
   }> => {
     const session = await verifySession();
-    if (!session.isAuth) redirect("/auth/signin");
+    if (!session.isAuth) redirect("/signin");
     return session;
   },
 );

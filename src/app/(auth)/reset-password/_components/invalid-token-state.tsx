@@ -21,7 +21,7 @@ export function InvalidTokenState() {
               El enlace de restablecimiento es inválido o está incompleto.
             </p>
           </div>
-          <Link href="/auth/forgot-password">
+          <Link href="/forgot-password">
             <Button className="w-full">Solicitar Nuevo Enlace</Button>
           </Link>
         </CardContent>
