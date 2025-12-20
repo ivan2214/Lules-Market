@@ -27,7 +27,7 @@ export default function Loading() {
 
           <div className="mt-6 text-center">
             <Link
-              href="/auth/signin"
+              href="/signin"
               className="font-medium text-primary text-sm hover:text-primary/50"
             >
               Volver al Login

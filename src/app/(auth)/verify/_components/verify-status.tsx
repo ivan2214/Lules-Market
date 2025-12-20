@@ -141,7 +141,7 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
                 </p>
               </div>
               <div className="flex flex-col gap-3">
-                <Link href="/auth/signin">
+                <Link href="/signin">
                   <Button className="w-full">Iniciar Sesión</Button>
                 </Link>
                 <Link href="/dashboard">
@@ -186,7 +186,7 @@ export function VerifyStatus({ token }: VerifyStatusProps) {
                 >
                   Solicitar Nuevo Email
                 </Button>
-                <Link href="/auth/signin">
+                <Link href="/signin">
                   <Button variant="outline" className="w-full bg-transparent">
                     Volver al Login
                   </Button>

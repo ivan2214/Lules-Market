@@ -28,7 +28,7 @@ export default function SignUpPage() {
         </Suspense>
         <p className="mt-4 text-center text-muted-foreground text-sm">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/auth/signin" className="font-medium underline">
+          <Link href="/signin" className="font-medium underline">
             Inicia sesión aquí
           </Link>
         </p>
