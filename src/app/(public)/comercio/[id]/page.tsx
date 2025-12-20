@@ -132,15 +132,14 @@ export default async function BusinessPage({ params }: Props) {
   }
 
   // Comercios de la misma categoría
-  // Comercios de la misma categoría
-  /*   try {
+  try {
     const response = await orpc.business.listAllBusinessesByCategories({
       category: business.category?.value,
     });
-    console.log(response);
+    console.log("response", response);
   } catch (error) {
     console.error("Error fetching similar businesses:", error);
-  } */
+  }
 
   return (
     <div className="container mx-auto space-y-8 py-8">
