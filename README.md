@@ -1,7 +1,5 @@
 # Lules Market
 
-Bienvenido al repositorio de **Lules Market**. Esta guía está diseñada para ayudar a los nuevos desarrolladores a configurar el entorno de desarrollo desde cero de manera rápida y eficiente.
-
 ## 📋 Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado el siguiente software en tu sistema:

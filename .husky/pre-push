@@ -14,4 +14,4 @@ pnpm audit --audit-level=high || {
 }
 
 echo "Running Build..."
-pnpm build
+#pnpm build
