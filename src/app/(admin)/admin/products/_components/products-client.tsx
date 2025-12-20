@@ -134,7 +134,8 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ products }) => {
                 <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
                   <Image
                     src={
-                      mainImage(selectedProduct.images) || "/placeholder.svg"
+                      mainImage({ images: selectedProduct.images }) ||
+                      "/placeholder.svg"
                     }
                     alt={selectedProduct.name}
                     fill

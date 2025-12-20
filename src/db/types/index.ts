@@ -372,6 +372,7 @@ export interface NotificationWithRelations extends Notification {
 
 export type PlanType = "FREE" | "BASIC" | "PREMIUM";
 export type PlanStatus = "ACTIVE" | "INACTIVE" | "CANCELLED" | "EXPIRED";
+export type PlanPriority = "Estandar" | "Media" | "Alta";
 export type UserRole = "ADMIN" | "USER" | "BUSINESS" | "SUPER_ADMIN";
 export type Permission =
   | "ALL"

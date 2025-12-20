@@ -1,4 +1,4 @@
-import "server-only";
+"use server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { admin, user as userDrizzle } from "@/db/schema";

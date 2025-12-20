@@ -25,10 +25,7 @@ export const requireBusiness = cache(async () => {
       },
       products: {
         where: eq(schema.product.active, true),
-        orderBy: [
-          desc(schema.product.featured),
-          desc(schema.product.createdAt),
-        ],
+        orderBy: [desc(schema.product.createdAt)],
         with: {
           images: true,
         },

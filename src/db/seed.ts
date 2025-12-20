@@ -10,7 +10,14 @@ import { faker } from "@faker-js/faker";
 import { addDays, addMonths, subMonths } from "date-fns";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import type { PlanInsert } from "@/db/types";
+import type {
+  ImageInsert,
+  PaymentInsert,
+  PlanInsert,
+  PlanPriority,
+  ProductInsert,
+  WebhookEventInsert,
+} from "@/db/types";
 import { auth } from "@/lib/auth";
 import * as schema from "./schema";
 
@@ -100,6 +107,7 @@ function pickPlanForBusiness(): {
   planStatus: PlanStatus;
   expiresAt: Date;
   hasStatistics: boolean;
+  listPriority: PlanPriority;
 } {
   const roll = Math.random();
   if (roll < 0.55) {
@@ -108,6 +116,7 @@ function pickPlanForBusiness(): {
       planStatus: PLAN_STATUS.ACTIVE,
       expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
       hasStatistics: false,
+      listPriority: "Estandar",
     };
   }
   if (roll < 0.85) {
@@ -116,6 +125,7 @@ function pickPlanForBusiness(): {
       planStatus: PLAN_STATUS.ACTIVE,
       expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
       hasStatistics: true,
+      listPriority: "Media",
     };
   }
   return {
@@ -123,6 +133,7 @@ function pickPlanForBusiness(): {
     planStatus: PLAN_STATUS.ACTIVE,
     expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 12 })),
     hasStatistics: true,
+    listPriority: "Alta",
   };
 }
 
@@ -185,12 +196,13 @@ async function seedPlans(): Promise<PlanInsert[]> {
         images: "1 por producto",
         priority: "Estándar",
       },
-      maxProducts: 10,
+      maxProducts: 20,
       maxImagesPerProduct: 1,
       popular: false,
       isActive: true,
       hasStatistics: false,
       canFeatureProducts: false,
+      listPriority: "Estandar",
     },
     {
       type: PLAN_TYPE.BASIC as PlanType,
@@ -215,6 +227,7 @@ async function seedPlans(): Promise<PlanInsert[]> {
       isActive: true,
       hasStatistics: true,
       canFeatureProducts: false,
+      listPriority: "Media",
     },
     {
       type: PLAN_TYPE.PREMIUM as PlanType,
@@ -240,6 +253,7 @@ async function seedPlans(): Promise<PlanInsert[]> {
       isActive: true,
       hasStatistics: true,
       canFeatureProducts: true,
+      listPriority: "Alta",
     },
   ];
 
@@ -278,6 +292,11 @@ async function seedCategories(): Promise<{ id: string; label: string }[]> {
     "Belleza y Cuidado Personal",
     "Juguetería",
     "Librería y Oficina",
+    "Servicios",
+    "Tiendas",
+    "Vestimenta",
+    "Tecnología",
+    "Vehículos",
   ];
 
   const categoriasData = categorias.map((nombre) => ({
@@ -401,7 +420,7 @@ async function seedBusinesses(
 
   for (let i = 0; i < count; i++) {
     const category = faker.helpers.arrayElement(categories);
-    const { planType, planStatus, expiresAt, hasStatistics } =
+    const { planType, planStatus, expiresAt, hasStatistics, listPriority } =
       pickPlanForBusiness();
     const plan = plans.find((p) => p.type === planType);
 
@@ -422,8 +441,15 @@ async function seedBusinesses(
           categoryId: category.id,
           address: faker.location.streetAddress(),
           phone: faker.phone.number(),
-          createdAt: faker.datatype.boolean()
-            ? faker.date.past({ refDate: subMonths(new Date(), 1) })
+          createdAt: faker.datatype.boolean({
+            probability: 0.7,
+          })
+            ? faker.date.past({
+                refDate: subMonths(
+                  new Date(),
+                  faker.number.int({ min: 1, max: 12 }),
+                ),
+              })
             : new Date(),
           facebook: faker.internet.url(),
           email: owner.email,
@@ -432,6 +458,8 @@ async function seedBusinesses(
           whatsapp: faker.phone.number(),
           verified: faker.datatype.boolean(),
           status: "ACTIVE",
+          isActive: true,
+          instagram: faker.internet.url(),
         })
         .returning({ id: schema.business.id, name: schema.business.name });
 
@@ -450,10 +478,11 @@ async function seedBusinesses(
           expiresAt,
           activatedAt: new Date(),
           isActive: true,
-          isTrial: false,
+          isTrial: planType === "FREE",
           imagesUsed,
           productsUsed,
           hasStatistics,
+          listPriority,
         })
         .returning({ id: schema.currentPlan.id });
 
@@ -491,7 +520,7 @@ async function seedBusinesses(
 async function addBusinessImages(businesses: CreatedBusiness[]): Promise<void> {
   console.log("🖼️ Agregando imágenes a negocios...");
 
-  const imagesData = [];
+  const imagesData: ImageInsert[] = [];
 
   for (const negocio of businesses) {
     // Cover
@@ -499,6 +528,7 @@ async function addBusinessImages(businesses: CreatedBusiness[]): Promise<void> {
       key: crypto.randomUUID(),
       url: faker.image.url(),
       coverBusinessId: negocio.id,
+      isMainImage: true,
     });
 
     // Logo
@@ -506,6 +536,7 @@ async function addBusinessImages(businesses: CreatedBusiness[]): Promise<void> {
       key: crypto.randomUUID(),
       url: faker.image.avatar(),
       logoBusinessId: negocio.id,
+      isMainImage: true,
     });
   }
 
@@ -525,8 +556,8 @@ async function seedProducts(
   console.log("🛒 Creando productos...");
 
   const allProducts: CreatedProduct[] = [];
-  const productsData = [];
-  const imagesData = [];
+  const productsData: ProductInsert[] = [];
+  const imagesData: ImageInsert[] = [];
   const planUpdates: Record<string, { images: number; products: number }> = {};
 
   for (const negocio of businesses) {
@@ -538,22 +569,35 @@ async function seedProducts(
     for (let i = 1; i <= productsCount; i++) {
       const category = faker.helpers.arrayElement(categories);
       const productId = crypto.randomUUID();
+      const createdAt = faker.datatype.boolean({
+        probability: 0.7,
+      })
+        ? faker.date.past({
+            refDate: subMonths(
+              new Date(),
+              faker.number.int({ min: 1, max: 12 }),
+            ),
+          })
+        : new Date();
+
+      const discount = faker.number.int({ min: 0, max: 70 });
+      const hasDiscount = faker.datatype.boolean({ probability: 0.2 });
 
       productsData.push({
         id: productId,
-        businessId: negocio.id,
-        categoryId: category.id,
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
         price: Number.parseFloat(faker.commerce.price()),
+        discount: hasDiscount ? discount : 0,
+        active: true,
         stock: faker.number.int({ min: 0, max: 150 }),
-        createdAt: faker.datatype.boolean()
-          ? faker.date.past({ refDate: subMonths(new Date(), 1) })
-          : new Date(),
-        featured: negocio.planType === PLAN_TYPE.PREMIUM,
         brand: getRandomBrandName(),
+        businessId: negocio.id,
+        isBanned: false,
+        categoryId: category.id,
         tags: faker.lorem.words(3).split(" "),
-        active: faker.datatype.boolean(),
+        createdAt,
+        // updatedAt se maneja automáticamente
       });
 
       allProducts.push({ id: productId, businessId: negocio.id });
@@ -568,9 +612,7 @@ async function seedProducts(
           key: crypto.randomUUID(),
           productId,
           url: faker.image.url(),
-          name: faker.word.sample(),
           isMainImage: idx === 0,
-          size: faker.number.int({ min: 20000, max: 2000000 }),
         });
       }
 
@@ -671,27 +713,28 @@ async function seedPaymentsAndWebhooks(
     rejected: "rejected",
   };
 
-  const paymentsData = [];
-  const webhooksData = [];
+  const paymentsData: PaymentInsert[] = [];
+  const webhooksData: WebhookEventInsert[] = [];
   const paymentsCreated: CreatedPayment[] = [];
+  const plans = await db.select().from(schema.plan);
 
   for (const negocio of businesses) {
     const payCount = faker.number.int({ min: 0, max: 4 });
 
     for (let p = 0; p < payCount; p++) {
       const status = randomFrom([...paymentStatuses]);
-      const planType = randomFrom([
-        PLAN_TYPE.BASIC,
-        PLAN_TYPE.PREMIUM,
-        PLAN_TYPE.FREE,
-      ]);
-      const amount =
-        planType === PLAN_TYPE.FREE
-          ? 0
-          : planType === PLAN_TYPE.BASIC
-            ? 2999
-            : 9999;
-      const createdAt = faker.date.recent({ days: 120 });
+      const plan = randomFrom(plans);
+      const amount = plan.price;
+      const createdAt = faker.datatype.boolean({
+        probability: 0.7,
+      })
+        ? faker.date.past({
+            refDate: subMonths(
+              new Date(),
+              faker.number.int({ min: 1, max: 12 }),
+            ),
+          })
+        : new Date();
       const mpPaymentId = crypto.randomUUID();
       const paymentId = crypto.randomUUID();
 
@@ -703,7 +746,7 @@ async function seedPaymentsAndWebhooks(
         paymentMethod: randomFrom(["mercadopago", "card", "cash"]),
         mpPaymentId,
         mpStatus: mpStatuses[status],
-        plan: planType,
+        plan: plan.type,
         businessId: negocio.id,
         createdAt,
       });
@@ -740,35 +783,6 @@ async function seedPaymentsAndWebhooks(
   }
 
   return paymentsCreated;
-}
-
-// ===============================================================
-// SEED SAMPLE WEBHOOKS
-// ===============================================================
-
-async function seedSampleWebhooks(): Promise<void> {
-  console.log("🌐 Creando webhooks de ejemplo...");
-
-  const webhookSamples = [
-    {
-      requestId: crypto.randomUUID(),
-      eventType: "user.created",
-      payload: { example: true },
-      mpId: null,
-      createdAt: faker.date.recent({ days: 30 }),
-      processed: faker.datatype.boolean(),
-    },
-    {
-      requestId: crypto.randomUUID(),
-      eventType: "plan.updated",
-      payload: { example: true },
-      mpId: null,
-      createdAt: faker.date.recent({ days: 30 }),
-      processed: faker.datatype.boolean(),
-    },
-  ];
-
-  await db.insert(schema.webhookEvent).values(webhookSamples);
 }
 
 // ===============================================================
@@ -864,27 +878,6 @@ async function applyScenarios(
       .where(eq(schema.business.id, negocio.id));
   }
 
-  // Destacar productos PREMIUM
-  const premiumBusinesses = businesses.filter(
-    (b) => b.planType === PLAN_TYPE.PREMIUM,
-  );
-  const productsToFeature = [];
-  for (const negocio of premiumBusinesses) {
-    const itsProducts = products
-      .filter((p) => p.businessId === negocio.id)
-      .slice(0, 4);
-    productsToFeature.push(...itsProducts.map((p) => p.id));
-  }
-
-  if (productsToFeature.length > 0) {
-    for (const productId of productsToFeature) {
-      await db
-        .update(schema.product)
-        .set({ featured: true })
-        .where(eq(schema.product.id, productId));
-    }
-  }
-
   // Banear negocios random (10%)
   const toBanRandom = businesses.filter(() => Math.random() < 0.1);
   for (const negocio of toBanRandom) {
@@ -923,7 +916,6 @@ async function main(): Promise<void> {
     const products = await seedProducts(businesses, categories);
     await seedViews(products, businesses);
     const payments = await seedPaymentsAndWebhooks(businesses);
-    await seedSampleWebhooks();
     await seedAnalytics(payments);
     await applyScenarios(businesses, products);
 

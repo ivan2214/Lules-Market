@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { mainImage } from "../utils/main-image";
 
 type BusinessCardProps = { business: BusinessWithRelations };
 
@@ -25,7 +26,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
           className="relative aspect-video w-full overflow-hidden p-0"
         >
           <ImageWithSkeleton
-            src={business.coverImage?.url || "/placeholder.svg"}
+            src={mainImage({ image: business.logo })}
             alt={business.name}
             className="h-full w-full object-cover transition-transform hover:scale-105"
           />

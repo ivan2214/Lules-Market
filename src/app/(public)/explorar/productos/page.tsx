@@ -77,6 +77,15 @@ export default async function ProductosPage({
       <ResultsCountAndLimitSelector
         typeExplorer="productos"
         currentLimit={currentLimit}
+        params={{
+          search,
+          category,
+          page,
+          businessId,
+          limit,
+          sortBy,
+        }}
+        currentPage={currentPage}
       />
 
       {/* Products Grid */}

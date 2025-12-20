@@ -117,7 +117,6 @@ export function ProductFormDialog({
               size: img.size ?? 0,
             })) ?? [],
           active: product.active,
-          featured: product.featured,
         }
       : {
           name: "",
@@ -125,7 +124,6 @@ export function ProductFormDialog({
           price: 0,
           images: [],
           active: true,
-          featured: false,
         };
   const schema = product ? ProductUpdateSchema : ProductCreateSchema;
 
@@ -290,35 +288,6 @@ export function ProductFormDialog({
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
-                  </Field>
-                )}
-              />
-
-              {/* Destacado */}
-              <Controller
-                name="featured"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field
-                    orientation="horizontal"
-                    data-invalid={!!fieldState.invalid}
-                  >
-                    <FieldContent>
-                      <FieldLabel htmlFor={field.name}>Destacado</FieldLabel>
-                      <FieldDescription>
-                        Destaca este producto en la lista de productos.
-                      </FieldDescription>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </FieldContent>
-                    <Switch
-                      id={field.name}
-                      checked={!!field.value}
-                      onCheckedChange={field.onChange}
-                      aria-invalid={!!fieldState.invalid}
-                      disabled={isViewMode || pending}
-                    />
                   </Field>
                 )}
               />

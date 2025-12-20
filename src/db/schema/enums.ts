@@ -9,6 +9,12 @@ export const planStatusEnum = pgEnum("plan_status", [
   "EXPIRED",
 ]);
 
+export const listPriorityEnum = pgEnum("list_priority", [
+  "Estandar",
+  "Media",
+  "Alta",
+]);
+
 export const userRoleEnum = pgEnum("user_role", [
   "ADMIN",
   "USER",

@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { Edit, Star, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
@@ -60,7 +60,7 @@ export function ProductCardDashboard({
         <div className="relative mb-4 aspect-square overflow-hidden rounded-lg bg-muted">
           {product.images?.[0] ? (
             <ImageWithSkeleton
-              src={mainImage(product.images) || "/placeholder.svg"}
+              src={mainImage({ images: product.images }) || "/placeholder.svg"}
               alt={product.name}
               className="h-full w-full object-cover"
             />
@@ -68,12 +68,6 @@ export function ProductCardDashboard({
             <div className="flex h-full items-center justify-center text-muted-foreground">
               Sin imagen
             </div>
-          )}
-          {product.featured && (
-            <Badge className="absolute top-2 right-2 bg-amber-500">
-              <Star className="mr-1 h-3 w-3" />
-              Destacado
-            </Badge>
           )}
         </div>
         <div className="space-y-2">

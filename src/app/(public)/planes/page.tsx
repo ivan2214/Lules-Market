@@ -1,7 +1,7 @@
 import { ArrowRight, Check, Crown, Sparkles, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { orpc } from "@/lib/orpc";
+import { getPlansCache } from "@/core/cache-functions/plan";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { ComparisonTable } from "./_components/comparison-table";
 
 export const metadata: Metadata = {
   title: "Planes y Precios - Lules Market",
@@ -37,7 +38,8 @@ export const metadata: Metadata = {
 };
 
 export default async function PlanesPage() {
-  const plans = await orpc.plan.getAllPlans();
+  const plans = await getPlansCache();
+  console.log(plans);
 
   return (
     <div className="container mx-auto py-16">
@@ -113,67 +115,7 @@ export default async function PlanesPage() {
       </div>
 
       {/* Comparison Table */}
-      <div className="mx-auto max-w-5xl">
-        <h2 className="mb-8 text-center font-bold text-3xl">
-          Comparación Detallada
-        </h2>
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="p-4 text-left font-semibold">
-                      Característica
-                    </th>
-                    <th className="p-4 text-center font-semibold">Gratuito</th>
-                    <th className="bg-primary/5 p-4 text-center font-semibold">
-                      Básico
-                    </th>
-                    <th className="p-4 text-center font-semibold">Premium</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="p-4">Cantidad de Productos</td>
-                    <td className="p-4 text-center">10</td>
-                    <td className="bg-primary/5 p-4 text-center">50</td>
-                    <td className="p-4 text-center font-bold">Ilimitados</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Imágenes por producto</td>
-                    <td className="p-4 text-center">1</td>
-                    <td className="bg-primary/5 p-4 text-center">3</td>
-                    <td className="p-4 text-center">5</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Prioridad en listados</td>
-                    <td className="p-4 text-center">Estándar</td>
-                    <td className="bg-primary/5 p-4 text-center">Media</td>
-                    <td className="p-4 text-center font-bold">Alta</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Estadísticas de visitas</td>
-                    <td className="p-4 text-center">-</td>
-                    <td className="bg-primary/5 p-4 text-center">Básicas</td>
-                    <td className="p-4 text-center">Avanzadas</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4">Soporte técnico</td>
-                    <td className="p-4 text-center">Email</td>
-                    <td className="bg-primary/5 p-4 text-center">
-                      Email Rápido
-                    </td>
-                    <td className="p-4 text-center font-medium text-primary">
-                      WhatsApp Directo
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <ComparisonTable plans={plans} />
 
       {/* FAQ */}
       <div className="mx-auto mt-16 max-w-3xl">

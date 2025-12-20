@@ -99,7 +99,7 @@ export default async function ProductPage({ params }: Props) {
           product.stock && product.stock > 0 ? "InStock" : "OutOfStock"
         }
         price={product.price}
-        image={mainImage(product.images)}
+        image={mainImage({ images: product.images })}
         currency="MXN"
         seller={{
           name: product.business?.name || "Sin nombre",

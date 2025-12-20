@@ -86,7 +86,6 @@ export async function listAllProductsCache(
     }
   }
 
-  orderBy.push(desc(product.featured));
   orderBy.push(desc(product.createdAt));
 
   const [products, totalResult] = await Promise.all([
