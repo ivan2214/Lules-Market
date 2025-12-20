@@ -29,12 +29,12 @@ export default async function ProductosPage({
   await queryClient.prefetchQuery(
     orpcTanstack.products.listAllProducts.queryOptions({
       input: {
+        businessId,
         category,
-        search,
-        sort: sortBy,
         limit: currentLimit,
         page: currentPage,
-        businessId,
+        search,
+        sort: sortBy,
       },
     }),
   );

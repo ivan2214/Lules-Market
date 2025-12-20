@@ -1,12 +1,13 @@
-import type { Plan } from "@/db/types";
+"use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
-interface ComparisonTableProps {
-  plans: Plan[];
-}
-
-export const ComparisonTable: React.FC<ComparisonTableProps> = ({ plans }) => {
+export const ComparisonTable = () => {
+  const { data: plans } = useSuspenseQuery(
+    orpcTanstack.plan.getAllPlans.queryOptions(),
+  );
   return (
     <div className="mx-auto max-w-5xl">
       <h2 className="mb-8 text-center font-bold text-3xl">

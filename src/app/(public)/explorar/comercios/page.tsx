@@ -29,10 +29,10 @@ export default async function ComerciosPage({
     orpcTanstack.business.listAllBusinesses.queryOptions({
       input: {
         category,
-        search,
-        sortBy,
         limit: currentLimit,
         page: currentPage,
+        search,
+        sortBy,
       },
     }),
   );
