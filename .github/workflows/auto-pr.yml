@@ -1,124 +1,124 @@
 name: Auto Create PR with AI Description
 
 on:
-    push:
-        branches:
-            - "feature/**"
-            - "refactor/**"
-            - "bugfix/**"
-            - "hotfix/**"
-            - "chore/**"
-            - "fix/**"
-            - "docs/**"
-            - "style/**"
+  push:
+    branches:
+      - "feature/**"
+      - "refactor/**"
+      - "bugfix/**"
+      - "hotfix/**"
+      - "chore/**"
+      - "fix/**"
+      - "docs/**"
+      - "style/**"
 
 jobs:
-    create-pr:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            pull-requests: write
+  create-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            - name: Check if PR already exists
-              id: check-pr
-              env:
-                  GH_TOKEN: ${{ github.token }}
-              run: |
-                  PR_EXISTS=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq length)
-                  echo "exists=$PR_EXISTS" >> $GITHUB_OUTPUT
+      - name: Check if PR already exists
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_EXISTS=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq length)
+          echo "exists=$PR_EXISTS" >> $GITHUB_OUTPUT
 
-            - name: Get diff and commit messages
-              if: steps.check-pr.outputs.exists == '0'
-              id: get-changes
-              run: |
-                  DIFF=$(git diff origin/dev...${{ github.ref_name }} | head -c 10000)
-                  COMMITS=$(git log origin/dev..${{ github.ref_name }} --pretty=format:"- %s" | head -c 2000)
-                  FILES=$(git diff --name-only origin/dev...${{ github.ref_name }} | head -20)
+      - name: Get diff and commit messages
+        if: steps.check-pr.outputs.exists == '0'
+        id: get-changes
+        run: |
+          DIFF=$(git diff origin/dev...${{ github.ref_name }} | head -c 10000)
+          COMMITS=$(git log origin/dev..${{ github.ref_name }} --pretty=format:"- %s" | head -c 2000)
+          FILES=$(git diff --name-only origin/dev...${{ github.ref_name }} | head -20)
 
-                  echo "$DIFF" > diff.txt
-                  echo "$COMMITS" > commits.txt
-                  echo "$FILES" > files.txt
+          echo "$DIFF" > diff.txt
+          echo "$COMMITS" > commits.txt
+          echo "$FILES" > files.txt
 
-                  BRANCH_NAME="${{ github.ref_name }}"
-                  echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
-            - name: Generate PR with Gemini AI
-              if: steps.check-pr.outputs.exists == '0'
-              id: generate-pr-gemini
-              env:
-                  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-              run: |
-                  DIFF=$(cat diff.txt)
-                  COMMITS=$(cat commits.txt)
-                  FILES=$(cat files.txt)
-                  BRANCH="${{ steps.get-changes.outputs.branch }}"
+      - name: Generate PR with Gemini AI
+        if: steps.check-pr.outputs.exists == '0'
+        id: generate-pr-gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          DIFF=$(cat diff.txt)
+          COMMITS=$(cat commits.txt)
+          FILES=$(cat files.txt)
+          BRANCH="${{ steps.get-changes.outputs.branch }}"
 
-                  PROMPT="Eres un asistente que genera títulos y descripciones para Pull Requests.
+          PROMPT="Eres un asistente que genera títulos y descripciones para Pull Requests.
 
-                  Rama: $BRANCH
+          Rama: $BRANCH
 
-                  Commits:
-                  $COMMITS
+          Commits:
+          $COMMITS
 
-                  Archivos modificados:
-                  $FILES
+          Archivos modificados:
+          $FILES
 
-                  Cambios en el código:
-                  $DIFF
+          Cambios en el código:
+          $DIFF
 
-                  Genera un título conciso (máximo 72 caracteres) y una descripción detallada en markdown.
-                  Responde SOLO en formato JSON válido:
-                  {
-                    \"title\": \"título aquí\",
-                    \"description\": \"descripción en markdown aquí\"
-                  }"
+          Genera un título conciso (máximo 72 caracteres) y una descripción detallada en markdown.
+          Responde SOLO en formato JSON válido:
+          {
+            \"title\": \"título aquí\",
+            \"description\": \"descripción en markdown aquí\"
+          }"
 
-                  API_URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent"
+          API_URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
-                  RESPONSE=$(curl -s "${API_URL}?key=${GEMINI_API_KEY}" \
-                    -H "Content-Type: application/json" \
-                    -d "{
-                      \"contents\": [{
-                        \"parts\": [{
-                          \"text\": $(echo "$PROMPT" | jq -Rs .)
-                        }]
-                      }],
-                      \"generationConfig\": {
-                        \"temperature\": 0.7,
-                        \"maxOutputTokens\": 1024
-                      }
-                    }")
+          RESPONSE=$(curl -s "${API_URL}?key=${GEMINI_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"contents\": [{
+                \"parts\": [{
+                  \"text\": $(echo "$PROMPT" | jq -Rs .)
+                }]
+              }],
+              \"generationConfig\": {
+                \"temperature\": 0.7,
+                \"maxOutputTokens\": 1024
+              }
+            }")
 
-                  CONTENT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
-                  CONTENT=$(echo "$CONTENT" | sed 's/```json//g' | sed 's/```//g')
+          CONTENT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
+          CONTENT=$(echo "$CONTENT" | sed 's/```json//g' | sed 's/```//g')
 
-                  TITLE=$(echo "$CONTENT" | jq -r '.title')
-                  DESCRIPTION=$(echo "$CONTENT" | jq -r '.description')
+          TITLE=$(echo "$CONTENT" | jq -r '.title')
+          DESCRIPTION=$(echo "$CONTENT" | jq -r '.description')
 
-                  echo "$TITLE" > pr_title.txt
-                  echo "$DESCRIPTION" > pr_description.txt
+          echo "$TITLE" > pr_title.txt
+          echo "$DESCRIPTION" > pr_description.txt
 
-            - name: Create Pull Request
-              if: steps.check-pr.outputs.exists == '0'
-              env:
-                  GH_TOKEN: ${{ github.token }}
-              run: |
-                  TITLE=$(cat pr_title.txt)
-                  DESCRIPTION=$(cat pr_description.txt)
+      - name: Create Pull Request
+        if: steps.check-pr.outputs.exists == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE=$(cat pr_title.txt)
+          DESCRIPTION=$(cat pr_description.txt)
 
-                  gh pr create \
-                    --base dev \
-                    --head ${{ github.ref_name }} \
-                    --title "$TITLE" \
-                    --body "$DESCRIPTION"
+          gh pr create \
+            --base dev \
+            --head ${{ github.ref_name }} \
+            --title "$TITLE" \
+            --body "$DESCRIPTION"
 
-            - name: Skip if PR exists
-              if: steps.check-pr.outputs.exists != '0'
-              run: |
-                  echo "PR already exists for this branch, skipping creation"
+      - name: Skip if PR exists
+        if: steps.check-pr.outputs.exists != '0'
+        run: |
+          echo "PR already exists for this branch, skipping creation"
