@@ -1,7 +1,10 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Check } from "lucide-react";
+import Link from "next/link";
 import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { formatCurrency } from "@/shared/utils/format";
