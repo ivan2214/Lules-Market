@@ -20,12 +20,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@/lib/*": ["lib/*"],
-      "@/utils/*": ["utils/*"],
-      "@/shared/*": ["shared/*"],
-      "@/core/*": ["core/*"], // o "lib/*" si elegiste lib
-      "@/features/*": ["app/*"]
+      "@/*": ["./src/*"],
+      "@/features/*": ["./src/app/*"]
     }
   },
   "include": [
