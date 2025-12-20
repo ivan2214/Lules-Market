@@ -1,3 +1,4 @@
+import { ORPCError } from "@orpc/client";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
@@ -66,7 +67,7 @@ export const auth = betterAuth({
       );
 
       if (!verificationToken) {
-        throw new Error("Token de verificación inválido o expirado");
+        throw new ORPCError("Token de verificación inválido o expirado");
       }
 
       // Check if token is expired
@@ -76,7 +77,7 @@ export const auth = betterAuth({
           .delete(emailVerificationToken)
           .where(eq(emailVerificationToken.id, verificationToken.id));
 
-        throw new Error(
+        throw new ORPCError(
           "El enlace de verificación ha expirado. Solicitá un nuevo enlace.",
         );
       }

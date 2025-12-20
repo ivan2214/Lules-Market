@@ -1,6 +1,6 @@
 "use server";
 
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { db, schema } from "@/db";
@@ -18,7 +18,7 @@ export const bannedBusiness = os
 
       // 1. 🛑 Validación del Administrador
       if (!admin) {
-        throw new Error(
+        throw new ORPCError(
           "Permiso denegado: No se encontró un administrador activo.",
         );
       }
@@ -30,7 +30,7 @@ export const bannedBusiness = os
       });
 
       if (!hasPermission) {
-        throw new Error(
+        throw new ORPCError(
           `Permiso denegado: Admin ${admin.userId} no tiene permiso para BAN_USERS.`,
         );
       }
@@ -42,19 +42,19 @@ export const bannedBusiness = os
 
       // 3. 🛑 Validación de Existencia de Comercio
       if (!existBusiness) {
-        throw new Error(`Comercio con ID ${businessId} no encontrado.`);
+        throw new ORPCError(`Comercio con ID ${businessId} no encontrado.`);
       }
 
       // 4. 🛑 Validación de Autobaneo
       if (existBusiness.userId === admin.userId) {
-        throw new Error(
+        throw new ORPCError(
           "Alerta de seguridad: Un administrador intentó auto-banearse. Acción bloqueada.",
         );
       }
 
       // 5. 🛑 Validación de Estado: Evitar trabajo innecesario
       if (existBusiness.isBanned) {
-        throw new Error(
+        throw new ORPCError(
           `Comercio con ID ${businessId} ya está baneado. Proceso omitido.`,
         );
       }
@@ -93,7 +93,7 @@ export const bannedBusiness = os
       if (error instanceof Error) {
         throw error; // Let the client handle the error message
       }
-      throw new Error(`Error crítico al banear comercio: ${error}`);
+      throw new ORPCError(`Error crítico al banear comercio: ${error}`);
     }
   })
   .actionable();
@@ -107,7 +107,7 @@ export const unbannedBusiness = os
 
       // 1. 🛑 Validación del Administrador
       if (!admin) {
-        throw new Error(
+        throw new ORPCError(
           "Permiso denegado: No se encontró un administrador activo.",
         );
       }
@@ -119,7 +119,7 @@ export const unbannedBusiness = os
       });
 
       if (!hasPermission) {
-        throw new Error(
+        throw new ORPCError(
           `Permiso denegado: Admin ${admin.userId} no tiene permiso para BAN_USERS.`,
         );
       }
@@ -134,12 +134,12 @@ export const unbannedBusiness = os
 
       // 3. 🛑 Validación de Existencia de Comercio
       if (!existBusiness) {
-        throw new Error(`Comercio con ID ${businessId} no encontrado.`);
+        throw new ORPCError(`Comercio con ID ${businessId} no encontrado.`);
       }
 
       // 4. 🛑 Validación de Estado: Evitar trabajo innecesario
       if (!existBusiness.isBanned) {
-        throw new Error(
+        throw new ORPCError(
           `Comercio con ID ${businessId} no está baneado. Proceso omitido.`,
         );
       }
@@ -169,7 +169,7 @@ export const unbannedBusiness = os
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error(`Error crítico al desbanear comercio: ${error}`);
+      throw new ORPCError(`Error crítico al desbanear comercio: ${error}`);
     }
   })
   .actionable();

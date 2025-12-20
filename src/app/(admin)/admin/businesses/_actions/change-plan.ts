@@ -1,6 +1,6 @@
 "use server";
 
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { addDays } from "date-fns";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
@@ -24,21 +24,21 @@ export const changePlan = os
       const plan = await db.query.plan.findFirst({
         where: eq(schema.plan.type, planType),
       });
-      if (!plan) throw new Error("Plan no encontrado");
+      if (!plan) throw new ORPCError("Plan no encontrado");
 
       // Buscamos el negocio
       const business = await db.query.business.findFirst({
         where: eq(schema.business.id, businessId),
         with: { currentPlan: true, trial: true },
       });
-      if (!business) throw new Error("Comercio no encontrado");
+      if (!business) throw new ORPCError("Comercio no encontrado");
 
       const now = new Date();
 
       if (isTrial) {
         // Solo se permite trial si el plan actual está activo
         if (business.currentPlan?.planStatus !== "ACTIVE") {
-          throw new Error(
+          throw new ORPCError(
             "El comercio no tiene un plan activo para convertir en trial",
           );
         }
@@ -99,7 +99,7 @@ export const changePlan = os
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error(`Ocurrió un error: ${error}`);
+      throw new ORPCError(`Ocurrió un error: ${error}`);
     }
   })
   .actionable();

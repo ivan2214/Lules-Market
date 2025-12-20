@@ -3,6 +3,7 @@ import { ORPCError, os } from "@orpc/server";
 import { APIError } from "better-auth";
 import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
+import { z } from "zod";
 import { db, schema } from "@/db";
 import { auth } from "@/lib/auth";
 import { orpc } from "@/lib/orpc";
@@ -19,14 +20,23 @@ import {
 
 const businessSignInProcedure = os
   .input(BusinessSignInInputSchema)
+  .output(
+    z.object({
+      message: z.string(),
+      hasVerified: z.boolean(),
+      isAdmin: z.boolean(),
+      hasBusiness: z.boolean(),
+    }),
+  )
   .handler(async ({ input }) => {
     const { email, password } = input;
 
     try {
       // Verificar si existe el usuario
       const existingUser = await orpc.user.getUserByEmail({ email });
+
       if (!existingUser) {
-        throw new Error("El usuario no existe.");
+        throw new ORPCError("El usuario no existe.");
       }
 
       // Sincronizar rol de usuario
@@ -75,13 +85,13 @@ const businessSignInProcedure = os
         switch (error.status) {
           case "UNPROCESSABLE_ENTITY":
           case "UNAUTHORIZED":
-            throw new Error("Email o contraseña incorrectos.");
+            throw new ORPCError("Email o contraseña incorrectos.");
           case "FORBIDDEN":
-            throw new Error("Confirmar tu cuenta antes de ingresar.");
+            throw new ORPCError("Confirmar tu cuenta antes de ingresar.");
           case "BAD_REQUEST":
-            throw new Error("Email inválido.");
+            throw new ORPCError("Email inválido.");
           default:
-            throw new Error("Algo salió mal.");
+            throw new ORPCError("Algo salió mal.");
         }
       }
 
@@ -91,7 +101,7 @@ const businessSignInProcedure = os
       }
 
       console.error("sign in with email has not worked", error);
-      throw new Error("Algo salió mal.");
+      throw new ORPCError("Algo salió mal.");
     }
   });
 
@@ -117,7 +127,7 @@ const businessSignUpProcedure = os
       });
 
       if (existingUser) {
-        throw new Error("Ya existe un usuario con este email");
+        throw new ORPCError("Ya existe un usuario con este email");
       }
 
       // Crear usuario
@@ -144,7 +154,7 @@ const businessSignUpProcedure = os
       });
 
       if (!user) {
-        throw new Error("Error al crear el usuario");
+        throw new ORPCError("Error al crear el usuario");
       }
 
       updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
@@ -181,7 +191,7 @@ const businessSignUpProcedure = os
       }
 
       console.error("sign up with email has not worked", error);
-      throw new Error("Error al iniciar sesión");
+      throw new ORPCError("Error al iniciar sesión");
     }
   });
 
