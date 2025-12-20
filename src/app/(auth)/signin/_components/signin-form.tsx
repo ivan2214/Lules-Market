@@ -45,9 +45,9 @@ export function SignInForm() {
         if (data?.isAdmin) {
           router.push("/admin");
         } else if (data?.hasVerified && !data?.isAdmin) {
-          router.push("/dashboard"); // Nota: Parece que debe ir a /auth/verify
+          router.push("/dashboard");
         } else if (!data?.hasVerified && !data?.isAdmin) {
-          router.push("/auth/verify");
+          router.push("/verify");
         }
 
         form.reset();
@@ -133,7 +133,7 @@ export function SignInForm() {
         <div className="flex items-center justify-between">
           <div className="text-sm">
             <Link
-              href="/auth/forgot-password"
+              href="/forgot-password"
               className="font-medium text-primary hover:text-primary/50"
             >
               ¿Olvidaste tu contraseña?

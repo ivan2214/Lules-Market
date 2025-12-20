@@ -12,6 +12,6 @@ export async function AdminHeaderWrapper() {
   await requireAdmin();
 
   const admin = await getCurrentAdmin();
-  if (!admin) redirect("/auth/signin");
+  if (!admin) redirect("/signin");
   return <AdminHeader admin={admin} />;
 }

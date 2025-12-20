@@ -85,7 +85,7 @@ const PlanPricingPreview = async ({ plans }: { plans: Plan[] }) => {
               className="w-full"
               variant={plan.type === "BASIC" ? "default" : "outline"}
             >
-              <Link href="/auth/signup">Comenzar Gratis</Link>
+              <Link href="/signup">Comenzar Gratis</Link>
             </Button>
             {plan.type === "BASIC" && (
               <Badge className="-top-3 -right-3 absolute">Más Popular</Badge>
@@ -147,7 +147,7 @@ export default async function ForBusinessPage() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link href="/auth/signup">
+                <Link href="/signup">
                   Comenzar Gratis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -158,7 +158,7 @@ export default async function ForBusinessPage() {
                 variant="outline"
                 className="w-full sm:w-auto"
               >
-                <Link href="/auth/signin">
+                <Link href="/signin">
                   Iniciar sesión
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -255,7 +255,7 @@ export default async function ForBusinessPage() {
                 visibilidad y ventas
               </p>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/auth/signup">
+                <Link href="/signup">
                   Registrar mi Negocio
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
