@@ -3,13 +3,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/app/shared/components/ui/badge";
-import { Button } from "@/app/shared/components/ui/button";
-import {
-  type TypeExplorer,
-  useSearchUrl,
-} from "@/app/shared/hooks/use-search-url";
 import { orpcTanstack } from "@/lib/orpc";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
+import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
 
 type SortByBusiness = "newest" | "oldest";
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";

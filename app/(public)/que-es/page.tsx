@@ -1,8 +1,8 @@
 import { MapPin, Store, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/app/shared/components/ui/button";
-import { Card, CardContent } from "@/app/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "¿Qué es Lules Market? - La solución para el comercio local",

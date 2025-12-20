@@ -2,12 +2,9 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Badge } from "@/app/shared/components/ui/badge";
-import {
-  type TypeExplorer,
-  useSearchUrl,
-} from "@/app/shared/hooks/use-search-url";
 import type { Business } from "@/db/types";
+import { Badge } from "@/shared/components/ui/badge";
+import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
 
 type BusinessesPillsProps = {
   businesses: Business[];

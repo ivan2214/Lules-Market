@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { LocalBusinessSchema } from "@/app/shared/components/structured-data";
-import { Button } from "@/app/shared/components/ui/button";
 import { orpc } from "@/lib/orpc";
+import { LocalBusinessSchema } from "@/shared/components/structured-data";
+import { Button } from "@/shared/components/ui/button";
 import { BusinessInfo } from "./_components/business-info";
 import { BusinessViewTracker } from "./_components/business-view-tracker";
 

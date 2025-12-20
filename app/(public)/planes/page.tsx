@@ -1,8 +1,9 @@
 import { ArrowRight, Check, Crown, Sparkles, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Badge } from "@/app/shared/components/ui/badge";
-import { Button } from "@/app/shared/components/ui/button";
+import { orpc } from "@/lib/orpc";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,8 +11,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/shared/components/ui/card";
-import { orpc } from "@/lib/orpc";
+} from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Planes y Precios - Lules Market",

@@ -1,11 +1,11 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Building, Package, Sparkles } from "lucide-react";
-import { PaginationControls } from "@/app/shared/components/common/pagination-controls";
-import { EmptyStateCustomMessage } from "@/app/shared/components/empty-state/empty-state-custom-message";
-import EmptyStateSearch from "@/app/shared/components/empty-state/empty-state-search";
+import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
 import { orpcTanstack } from "@/lib/orpc";
-import { BusinessCard } from "./business-card";
+import { BusinessCard } from "@/shared/components/business-card";
+import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
+import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
 
 export const BusinessGrid = ({
   currentPage,

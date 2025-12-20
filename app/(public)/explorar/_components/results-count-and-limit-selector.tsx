@@ -1,7 +1,7 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { LimitSelector } from "@/app/shared/components/common/limit-selector";
+import { LimitSelector } from "@/app/(public)/explorar/_components/limit-selector";
 import { orpcTanstack } from "@/lib/orpc";
 
 interface ResultsCountAndLimitSelectorProps {

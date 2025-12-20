@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { ImageWithSkeleton } from "@/app/shared/components/image-with-skeleton";
-import { Badge } from "@/app/shared/components/ui/badge";
+import type { BusinessWithRelations } from "@/db/types";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
+import { Badge } from "@/shared/components/ui/badge";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/app/shared/components/ui/card";
-import type { BusinessWithRelations } from "@/db/types";
+} from "@/shared/components/ui/card";
 
 type Props = {
   businesses: BusinessWithRelations[];

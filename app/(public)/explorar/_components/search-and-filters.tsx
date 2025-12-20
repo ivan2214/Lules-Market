@@ -5,15 +5,16 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/app/shared/components/ui/button";
-import { Input } from "@/app/shared/components/ui/input";
+import { orpcTanstack } from "@/lib/orpc";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/app/shared/components/ui/select";
+} from "@/shared/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -21,12 +22,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/app/shared/components/ui/sheet";
-import {
-  type TypeExplorer,
-  useSearchUrl,
-} from "@/app/shared/hooks/use-search-url";
-import { orpcTanstack } from "@/lib/orpc";
+} from "@/shared/components/ui/sheet";
+import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
 import { BusinessesPills } from "./businesses-pills";
 import { CategoryPills } from "./category-pills";
 

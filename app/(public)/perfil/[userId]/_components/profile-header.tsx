@@ -5,8 +5,8 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/app/shared/components/ui/avatar";
-import { Card, CardContent } from "@/app/shared/components/ui/card";
+} from "@/shared/components/ui/avatar";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 interface ProfileHeaderProps {
   name: string;

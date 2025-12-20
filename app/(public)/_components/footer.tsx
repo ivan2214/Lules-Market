@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { footerNavigation } from "@/lib/constants";
-import { getCurrentYear } from "@/utils/date";
+import { footerNavigation } from "@/shared/constants/footer-navigation";
+import { getCurrentYear } from "@/shared/utils/date";
 
 export async function PublicFooter() {
   const year = await getCurrentYear();

@@ -1,7 +1,7 @@
 ﻿import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
-import { EmailTemplate } from "@/app/shared/components/email-template";
 import { env } from "@/env";
+import { EmailTemplate } from "@/shared/components/email-template";
 
 export const transporter = nodemailer.createTransport({
   service: "gmail",

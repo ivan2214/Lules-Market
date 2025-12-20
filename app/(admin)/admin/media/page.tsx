@@ -1,0 +1,83 @@
+import { cacheLife, cacheTag } from "next/cache";
+import { db } from "@/db";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
+import { CACHE_TAGS } from "@/shared/constants/cache-tags";
+import { MediaClient } from "./_components/media-client";
+
+const getImages = async (page?: string, limit?: string) => {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.ADMIN.MEDIA.GET_ALL);
+  return await db.query.image.findMany({
+    limit: limit ? Number(limit) : 10,
+    offset: page ? Number(page) * (limit ? Number(limit) : 10) : 0,
+  });
+};
+
+export default async function MediaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    limit?: string;
+  }>;
+}) {
+  const { page, limit } = await searchParams;
+  const images = await getImages(page, limit);
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-bold text-3xl tracking-tight">
+          Moderación de Contenido
+        </h1>
+        <p className="text-muted-foreground">
+          Revisa y modera imágenes cargadas por los negocios
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
+              Total Imágenes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="font-bold text-2xl">{images.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
+              Reportadas
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="font-bold text-2xl text-yellow-600">
+              {images.filter((img) => img.isReported).length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="font-medium text-muted-foreground text-sm">
+              Seguras
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="font-bold text-2xl text-green-600">
+              {images.filter((img) => !img.isReported).length}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <MediaClient images={images} />
+    </div>
+  );
+}

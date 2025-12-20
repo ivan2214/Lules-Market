@@ -1,5 +1,5 @@
 import type { BusinessWithRelations } from "@/db/types";
-import { BusinessCard } from "./business-card";
+import { BusinessCard } from "@/shared/components/business-card";
 
 export const BusinessList = ({
   featuredBusinesses,

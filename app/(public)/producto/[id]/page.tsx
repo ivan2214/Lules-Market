@@ -7,19 +7,23 @@ import {
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { orpc } from "@/lib/orpc";
+import { cn } from "@/lib/utils";
+import { ProductCard } from "@/shared/components/product-card";
+import { ProductSchema } from "@/shared/components/structured-data";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/app/shared/components/ui/avatar";
-import { Badge } from "@/app/shared/components/ui/badge";
-import { Button } from "@/app/shared/components/ui/button";
-import { Separator } from "@/app/shared/components/ui/separator";
-import { orpc } from "@/lib/orpc";
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/utils/format";
-import { ProductCard } from "../../_components/product-card";
+} from "@/shared/components/ui/avatar";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
+import { Separator } from "@/shared/components/ui/separator";
+import { formatCurrency } from "@/shared/utils/format";
+import { mainImage } from "@/shared/utils/main-image";
 import { ProductImages } from "./_components/product-images";
+import { ProductViewTracker } from "./_components/product-view-tracker";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -85,6 +89,24 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-background pb-12">
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProductViewTracker productId={product.id} />
+      </Suspense>
+      <ProductSchema
+        name={product.name}
+        description={product.description}
+        availability={
+          product.stock && product.stock > 0 ? "InStock" : "OutOfStock"
+        }
+        price={product.price}
+        image={mainImage(product.images)}
+        currency="MXN"
+        seller={{
+          name: product.business?.name || "Sin nombre",
+          url: `https://lules-market.vercel.app/producto/${product.id}`,
+        }}
+        url={`https://lules-market.vercel.app/producto/${product.id}`}
+      />
       <div className="border-b bg-muted/30">
         <div className="container mx-auto px-4 py-5">
           <div className="flex flex-wrap items-center gap-2 text-sm">

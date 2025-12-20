@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from "@/app/shared/components/ui/card";
-import { Skeleton } from "@/app/shared/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
 export default function ProductDetailLoading() {
   return (

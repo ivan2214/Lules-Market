@@ -1,11 +1,11 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, ShoppingBag, Sparkles } from "lucide-react";
-import { ProductCard } from "@/app/(public)/_components/product-card";
-import { PaginationControls } from "@/app/shared/components/common/pagination-controls";
-import { EmptyStateCustomMessage } from "@/app/shared/components/empty-state/empty-state-custom-message";
-import EmptyStateSearch from "@/app/shared/components/empty-state/empty-state-search";
+import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
 import { orpcTanstack } from "@/lib/orpc";
+import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
+import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
+import { ProductCard } from "@/shared/components/product-card";
 
 type ProductsGridProps = {
   currentPage: number;

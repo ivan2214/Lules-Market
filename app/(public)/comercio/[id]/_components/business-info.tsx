@@ -11,9 +11,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
-import { ImageWithSkeleton } from "@/app/shared/components/image-with-skeleton";
-import { Badge } from "@/app/shared/components/ui/badge";
-import { Button } from "@/app/shared/components/ui/button";
+import type { BusinessWithRelations } from "@/db/types";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
 import {
   Card,
   CardContent,
@@ -21,10 +22,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/shared/components/ui/card";
-import type { BusinessWithRelations } from "@/db/types";
-import { formatCurrency } from "@/utils/format";
-import { mainImage } from "@/utils/main-image";
+} from "@/shared/components/ui/card";
+import { formatCurrency } from "@/shared/utils/format";
+import { mainImage } from "@/shared/utils/main-image";
 import { SimilarBusinesses } from "./similar-businesses";
 
 type BusinessInfoProps = {

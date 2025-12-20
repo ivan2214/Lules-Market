@@ -1,8 +1,8 @@
 import { BarChart3, QrCode, Star, Store, Users, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/app/shared/components/ui/button";
-import { Card, CardContent } from "@/app/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Cómo Funciona - Lules Market",

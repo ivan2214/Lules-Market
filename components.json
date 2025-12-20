@@ -12,11 +12,11 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/app/shared/components",
+    "components": "@/shared/components",
     "utils": "@/lib/utils",
-    "ui": "@/app/shared/components/ui",
+    "ui": "@/shared/components/ui",
     "lib": "@/lib",
-    "hooks": "@/app/shared/hooks"
+    "hooks": "@/shared/hooks"
   },
   "registries": {
     "@wandry-ui": "https://ui.wandry.com.ua/r/{name}.json"

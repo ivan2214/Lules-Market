@@ -4,8 +4,8 @@ import { Inter, Poppins } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import { Toaster } from "@/app/shared/components/ui/sonner";
 import { Providers } from "@/lib/providers";
+import { Toaster } from "@/shared/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],

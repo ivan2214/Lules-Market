@@ -1,8 +1,8 @@
+import { ActiveFilters } from "@/features/(public)/explorar/_components/active-filters";
+import { ResultsCountAndLimitSelector } from "@/features/(public)/explorar/_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "@/features/(public)/explorar/_components/search-and-filters";
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { ActiveFilters } from "../_components/active-filters";
-import { ResultsCountAndLimitSelector } from "../_components/results-count-and-limit-selector";
-import { SearchAndFilters } from "../_components/search-and-filters";
 import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {

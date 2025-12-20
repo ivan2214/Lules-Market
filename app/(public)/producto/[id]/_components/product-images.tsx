@@ -1,14 +1,14 @@
-import { ImageWithSkeleton } from "@/app/shared/components/image-with-skeleton";
-import { Button } from "@/app/shared/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/app/shared/components/ui/card";
+import type { Image } from "@/db/types";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/app/shared/components/ui/carousel";
-import type { Image } from "@/db/types";
+} from "@/shared/components/ui/carousel";
 
 type Props = {
   images?: Image[] | null;

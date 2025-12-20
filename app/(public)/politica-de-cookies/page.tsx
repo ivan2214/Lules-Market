@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/app/shared/components/ui/card";
+} from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Política de Cookies - Lules Market",

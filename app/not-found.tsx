@@ -1,6 +1,6 @@
 import { Home, Search } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/app/shared/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 
 export default function NotFound() {
   return (

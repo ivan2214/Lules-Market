@@ -1,5 +1,5 @@
 import type { ProductWithRelations } from "@/db/types";
-import { ProductCard } from "./product-card";
+import { ProductCard } from "@/shared/components/product-card";
 
 export function ProductList({
   products,

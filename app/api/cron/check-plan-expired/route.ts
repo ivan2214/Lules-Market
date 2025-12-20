@@ -3,7 +3,6 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { db, schema } from "@/db";
 import { env } from "@/env";
-import { sendEmail } from "@/lib/email";
 import { orpc } from "@/lib/orpc";
 
 /**
@@ -60,6 +59,7 @@ export async function GET(req: NextRequest) {
 
       // enviar email informando el vencimiento del plan
       if (plan.business?.user?.email && plan.plan && plan.expiresAt) {
+        const { sendEmail } = await import("@/lib/email"); // Importación dinámica
         await sendEmail({
           to: plan.business.user.email,
           subject: "Tu plan expiró en LulesMarket",

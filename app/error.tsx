@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react"; // Importar useState
-import { Button } from "@/app/shared/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 
 // biome-ignore lint/suspicious/noShadowRestrictedNames: <needed>
 export default function Error({

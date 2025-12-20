@@ -1,6 +1,6 @@
 import type React from "react";
 import { PublicFooter } from "@/app/(public)/_components/footer";
-import { Navigation } from "@/app/shared/components/navigation";
+import { Navigation } from "@/shared/components/navigation";
 
 export default function PublicLayout({
   children,

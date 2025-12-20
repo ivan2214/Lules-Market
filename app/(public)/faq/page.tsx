@@ -4,7 +4,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/app/shared/components/ui/accordion";
+} from "@/shared/components/ui/accordion";
 
 export const metadata: Metadata = {
   title: "Preguntas Frecuentes - Lules Market",

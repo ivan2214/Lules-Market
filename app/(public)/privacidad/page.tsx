@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Badge } from "@/app/shared/components/ui/badge";
+import { Badge } from "@/shared/components/ui/badge";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/app/shared/components/ui/card";
+} from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Política de Privacidad - Lules Market",
