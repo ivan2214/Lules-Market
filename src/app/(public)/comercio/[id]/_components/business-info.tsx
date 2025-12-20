@@ -39,7 +39,7 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
   const products: BusinessWithRelations["products"] = business?.products;
 
   return (
-    <main className="container px-4 py-4 md:py-8">
+    <section className="container px-4 py-4 md:py-8">
       <div className="mb-8 md:mb-12">
         <div className="mx-auto max-w-6xl">
           <div className="relative w-full">
@@ -325,6 +325,6 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
           </Card>
         </div>
       </div>
-    </main>
+    </section>
   );
 };

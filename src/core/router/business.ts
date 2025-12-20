@@ -55,9 +55,20 @@ export const listAllBusinessesByCategories = os
     summary: "List all businesses by categories",
     tags: ["Business"],
   })
-  .input(z.object({ category: z.string() }))
+  .input(z.object({ category: z.string().nullish() }))
+  .output(
+    z.object({
+      businesses: z.array(z.custom<BusinessWithRelations>()).nullish(),
+    }),
+  )
   .handler(async ({ input }) => {
-    return listAllBusinessesByCategoriesCache(input);
+    if (!input.category) {
+      return { businesses: null };
+    }
+    const businesses = await listAllBusinessesByCategoriesCache({
+      category: input.category,
+    });
+    return businesses;
   });
 
 export const trackBusinessView = os
