@@ -6,6 +6,7 @@ import { businessView } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
 import {
   featuredBusinessesCache,
+  getAllBusinessIdsCache,
   getBusinessByIdCache,
   ListAllBusinessesInputSchema,
   ListAllBusinessesOutputSchema,
@@ -36,6 +37,17 @@ export const listAllBusinesses = os
   .output(ListAllBusinessesOutputSchema)
   .handler(async ({ input }) => {
     return await listAllBusinessesCache(input);
+  });
+
+export const getAllBusinessIds = os
+  .route({
+    method: "GET",
+    summary: "Get all business IDs",
+    tags: ["Business"],
+  })
+  .output(z.array(z.object({ id: z.string() })))
+  .handler(async () => {
+    return await getAllBusinessIdsCache();
   });
 
 export const getBusinessById = os
@@ -88,6 +100,7 @@ export const trackBusinessView = os
 export const businessRoute = {
   featuredBusinesses,
   listAllBusinesses,
+  getAllBusinessIds,
   getBusinessById,
   listAllBusinessesByCategories,
   trackBusinessView,

@@ -117,10 +117,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/* 
-
 export async function generateStaticParams() {
-  const { businesses } = await orpc.business.listAllBusinesses();
+  const businesses = await orpc.business.getAllBusinessIds();
 
   // fallback si no hay negocios
   if (!businesses.length) {
@@ -128,7 +126,7 @@ export async function generateStaticParams() {
   }
 
   return businesses.map((business) => ({ id: business.id }));
-} */
+}
 
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;

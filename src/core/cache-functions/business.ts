@@ -105,6 +105,20 @@ export async function listAllBusinessesCache(
   };
 }
 
+// Optimized function for static params generation
+export async function getAllBusinessIdsCache() {
+  "use cache";
+  cacheTag("business-ids"); // Specific tag for IDs
+  cacheLife("hours");
+
+  const businesses = await db
+    .select({ id: business.id })
+    .from(business)
+    .where(eq(business.isActive, true));
+
+  return businesses;
+}
+
 export async function featuredBusinessesCache() {
   "use cache";
   cacheTag(CACHE_TAGS.BUSINESS.GET_FEATURED);
