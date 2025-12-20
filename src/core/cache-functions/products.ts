@@ -282,6 +282,7 @@ export async function getSimilarProductsCache(
               plan: true,
             },
           },
+          logo: true,
         },
       },
       category: true,
