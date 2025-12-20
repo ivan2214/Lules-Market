@@ -37,16 +37,10 @@ jobs:
         if: steps.check-pr.outputs.exists == '0'
         id: get-changes
         run: |
-          DIFF=$(git diff origin/dev...${{ github.ref_name }} | head -c 10000)
-          COMMITS=$(git log origin/dev..${{ github.ref_name }} --pretty=format:"- %s" | head -c 2000)
-          FILES=$(git diff --name-only origin/dev...${{ github.ref_name }} | head -20)
-
-          echo "$DIFF" > diff.txt
-          echo "$COMMITS" > commits.txt
-          echo "$FILES" > files.txt
-
-          BRANCH_NAME="${{ github.ref_name }}"
-          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          git diff origin/dev...${{ github.ref_name }} | head -c 3000 > diff.txt
+          git log origin/dev..${{ github.ref_name }} --pretty=format:"- %s" | head -c 800 > commits.txt
+          git diff --name-only origin/dev...${{ github.ref_name }} | head -20 > files.txt
+          echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
       - name: Generate PR with Gemini AI
         if: steps.check-pr.outputs.exists == '0'
@@ -59,18 +53,18 @@ jobs:
           FILES=$(cat files.txt)
           BRANCH="${{ steps.get-changes.outputs.branch }}"
 
-          PROMPT="Eres un asistente que genera títulos y descripciones para Pull Requests.
+          FINAL_PROMPT="Eres un asistente que genera títulos y descripciones para Pull Requests.
 
-          Rama: $BRANCH
+          Rama: ${BRANCH}
 
           Commits:
-          $COMMITS
+          ${COMMITS}
 
           Archivos modificados:
-          $FILES
+          ${FILES}
 
           Cambios en el código:
-          $DIFF
+          ${DIFF}
 
           Genera un título conciso (máximo 72 caracteres) y una descripción detallada en markdown.
           Responde SOLO en formato JSON válido:
@@ -79,30 +73,35 @@ jobs:
             \"description\": \"descripción en markdown aquí\"
           }"
 
+          jq -n --arg prompt "$FINAL_PROMPT" '{"contents":[{"parts":[{"text":$prompt}]}],"generationConfig":{"temperature":0.7,"maxOutputTokens":4096}}' > request.json
+
           API_URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
-          RESPONSE=$(curl -s "${API_URL}?key=${GEMINI_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"contents\": [{
-                \"parts\": [{
-                  \"text\": $(echo "$PROMPT" | jq -Rs .)
-                }]
-              }],
-              \"generationConfig\": {
-                \"temperature\": 0.7,
-                \"maxOutputTokens\": 1024
-              }
-            }")
+          RESPONSE=$(curl -s "${API_URL}?key=${GEMINI_API_KEY}" -H "Content-Type: application/json" -d @request.json)
 
-          CONTENT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
-          CONTENT=$(echo "$CONTENT" | sed 's/```json//g' | sed 's/```//g')
+          echo "=== API Response ==="
+          echo "$RESPONSE"
 
-          TITLE=$(echo "$CONTENT" | jq -r '.title')
-          DESCRIPTION=$(echo "$CONTENT" | jq -r '.description')
+          CONTENT=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null || echo "")
+
+          if [ -z "$CONTENT" ] || [ "$CONTENT" = "null" ]; then
+            echo "Error: No se pudo obtener respuesta de Gemini"
+            echo "Response completo: $RESPONSE"
+            exit 1
+          fi
+
+          CONTENT=$(echo "$CONTENT" | sed 's/```json//g' | sed 's/```//g' | tr -d '\n' | sed 's/^[[:space:]]*//')
+
+          echo "=== Cleaned Content ==="
+          echo "$CONTENT"
+
+          TITLE=$(echo "$CONTENT" | jq -r '.title' 2>/dev/null || echo "Update: ${BRANCH}")
+          DESCRIPTION=$(echo "$CONTENT" | jq -r '.description' 2>/dev/null || echo "Changes from branch ${BRANCH}")
 
           echo "$TITLE" > pr_title.txt
           echo "$DESCRIPTION" > pr_description.txt
+
+          echo "Title: $TITLE"
 
       - name: Create Pull Request
         if: steps.check-pr.outputs.exists == '0'
@@ -112,11 +111,7 @@ jobs:
           TITLE=$(cat pr_title.txt)
           DESCRIPTION=$(cat pr_description.txt)
 
-          gh pr create \
-            --base dev \
-            --head ${{ github.ref_name }} \
-            --title "$TITLE" \
-            --body "$DESCRIPTION"
+          gh pr create --base dev --head ${{ github.ref_name }} --title "$TITLE" --body "$DESCRIPTION"
 
       - name: Skip if PR exists
         if: steps.check-pr.outputs.exists != '0'

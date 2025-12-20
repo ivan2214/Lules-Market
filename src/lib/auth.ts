@@ -128,7 +128,7 @@ export const auth = betterAuth({
         description: `Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo. Si no funciona el boton, podés verificar tu cuenta manualmente ingresando el token de verificación en la pantalla de verificación`,
         token,
         buttonText: "Verificar Email",
-        buttonUrl: `${env.APP_URL}/auth/verify?token=${token}`,
+        buttonUrl: `${env.APP_URL}/verify?token=${token}`,
         userFirstname: user.name,
       });
     },

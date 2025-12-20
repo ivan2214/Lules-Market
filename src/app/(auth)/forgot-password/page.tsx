@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
     try {
       const { error, data } = await forgetPassword({
         email: values.email,
-        redirectTo: `${window.location.origin}/auth/reset-password`, // This page will be created next
+        redirectTo: `${window.location.origin}/reset-password`, // This page will be created next
       });
 
       if (error || !data.status) {
@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Link href="/auth/signin">
+                <Link href="/signin">
                   <Button className="w-full">Volver al Login</Button>
                 </Link>
                 <Button
@@ -183,7 +183,7 @@ export default function ForgotPasswordPage() {
 
           <div className="mt-6 text-center">
             <Link
-              href="/auth/signin"
+              href="/signin"
               className="inline-flex items-center gap-2 font-medium text-primary text-sm hover:text-primary/50"
             >
               <ArrowLeft className="h-4 w-4" />

@@ -101,7 +101,7 @@ export default async function PlanesPage() {
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
                 >
-                  <Link href="/auth/signup">
+                  <Link href="/signup">
                     Comenzar Ahora
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -251,7 +251,7 @@ export default async function PlanesPage() {
               plataforma
             </p>
             <Button asChild size="lg" variant="secondary">
-              <Link href="/auth/signup">
+              <Link href="/signup">
                 Registrar mi Negocio Gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

@@ -50,9 +50,9 @@ export function SignUpForm() {
         if (data?.hasVerified && data?.isAdmin) {
           router.push("/admin");
         } else if (data?.hasVerified && !data?.isAdmin) {
-          router.push("/admin"); // Nota: Parece que debe ir a /auth/verify
+          router.push("/admin");
         } else if (!data?.hasVerified && !data?.isAdmin) {
-          router.push("/auth/verify");
+          router.push("/verify");
         }
 
         form.reset();
