@@ -1,8 +1,11 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { orpc } from "@/lib/orpc";
 import { Button } from "@/shared/components/ui/button";
+import { BusinessInfo } from "./_components/business-info";
+import { BusinessViewTracker } from "./_components/business-view-tracker";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -131,23 +134,16 @@ export default async function BusinessPage({ params }: Props) {
     notFound();
   }
 
-  // Comercios de la misma categoría
-  try {
-    const response = await orpc.business.listAllBusinessesByCategories({
+  const { businesses: similarBusinesses } =
+    await orpc.business.listAllBusinessesByCategories({
       category: business.category?.value,
     });
-    console.log("response", response);
-  } catch (error) {
-    console.error("Error fetching similar businesses:", error);
-  }
 
   return (
     <div className="container mx-auto space-y-8 py-8">
-      {/* ✅ Tracking envuelto en Suspense */}
-      {/* ✅ Tracking envuelto en Suspense */}
-      {/* <Suspense fallback={null}>
+      <Suspense fallback={null}>
         <BusinessViewTracker businessId={id} />
-      </Suspense> */}
+      </Suspense>
 
       {/* <LocalBusinessSchema
         name={business.name}
@@ -164,7 +160,7 @@ export default async function BusinessPage({ params }: Props) {
         </Link>
       </Button>
 
-      {/* <BusinessInfo business={business} similarBusinesses={similarBusinesses} /> */}
+      <BusinessInfo business={business} similarBusinesses={similarBusinesses} />
     </div>
   );
 }
