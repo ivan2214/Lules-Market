@@ -37,8 +37,8 @@ jobs:
         if: steps.check-pr.outputs.exists == '0'
         id: get-changes
         run: |
-          git diff origin/dev...${{ github.ref_name }} | head -c 5000 > diff.txt
-          git log origin/dev..${{ github.ref_name }} --pretty=format:"- %s" | head -c 1000 > commits.txt
+          git diff origin/dev...${{ github.ref_name }} | head -c 3000 > diff.txt
+          git log origin/dev..${{ github.ref_name }} --pretty=format:"- %s" | head -c 800 > commits.txt
           git diff --name-only origin/dev...${{ github.ref_name }} | head -20 > files.txt
           echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
@@ -73,7 +73,7 @@ jobs:
             \"description\": \"descripción en markdown aquí\"
           }"
 
-          jq -n --arg prompt "$FINAL_PROMPT" '{"contents":[{"parts":[{"text":$prompt}]}],"generationConfig":{"temperature":0.7,"maxOutputTokens":2048}}' > request.json
+          jq -n --arg prompt "$FINAL_PROMPT" '{"contents":[{"parts":[{"text":$prompt}]}],"generationConfig":{"temperature":0.7,"maxOutputTokens":4096}}' > request.json
 
           API_URL="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
