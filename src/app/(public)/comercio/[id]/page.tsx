@@ -1,7 +1,9 @@
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { env } from "@/env";
 import { orpc } from "@/lib/orpc";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
@@ -12,7 +14,7 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-/* export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const { business } = await orpc.business.getBusinessById({ id });
 
@@ -52,7 +54,7 @@ type Props = {
     "Argentina",
     "Lules Market",
     business.address ? "tienda física" : "",
-  ].filter(Boolean);
+  ];
 
   return {
     title: `${business.name} | Comercio en Lules Market`,
@@ -68,7 +70,7 @@ type Props = {
       },
     },
     alternates: {
-      canonical: `https://lules-market.vercel.app/comercio/${id}`,
+      canonical: `${env.APP_URL}/comercio/${id}`,
     },
     openGraph: {
       type: "website",
@@ -80,14 +82,14 @@ type Props = {
         ? ogImages
         : [
             {
-              url: "https://lules-market.vercel.app/og-image.jpg",
+              url: `${env.APP_URL}/og-image.jpg`,
               width: 1200,
               height: 630,
               alt: "Lules Market",
             },
           ],
       locale: "es_AR",
-      url: `https://lules-market.vercel.app/comercio/${id}`,
+      url: `${env.APP_URL}/comercio/${id}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -95,14 +97,14 @@ type Props = {
       description: seoDescription,
       images: ogImages.length
         ? [ogImages[0].url]
-        : ["https://lules-market.vercel.app/og-image.jpg"],
+        : [`${env.APP_URL}/og-image.jpg`],
       creator: "@lulesmarket",
       site: "@lulesmarket",
     },
     authors: [
       {
         name: business.name,
-        url: `https://lules-market.vercel.app/comercio/${id}`,
+        url: `${env.APP_URL}/comercio/${id}`,
       },
     ],
     category: business.category?.value,
@@ -114,6 +116,8 @@ type Props = {
     },
   };
 }
+
+/* 
 
 export async function generateStaticParams() {
   const { businesses } = await orpc.business.listAllBusinesses();
@@ -129,7 +133,6 @@ export async function generateStaticParams() {
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
   const { business } = await orpc.business.getBusinessById({ id });
-  console.log("business", business);
 
   if (!business) {
     notFound();
@@ -153,7 +156,7 @@ export default async function BusinessPage({ params }: Props) {
         phone={business.phone || ""}
         email={business.email || ""}
         image={business.logo?.url || ""}
-        url={`https://lules-market.vercel.app/comercio/${id}`}
+        url={`${env.APP_URL}/comercio/${id}`}
       />
       <Button asChild variant="ghost">
         <Link href="/explorar/comercios" className="flex items-center">
