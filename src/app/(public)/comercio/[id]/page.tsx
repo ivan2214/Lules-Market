@@ -1,5 +1,4 @@
 import { ArrowLeft } from "lucide-react";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { orpc } from "@/lib/orpc";
@@ -9,7 +8,7 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+/* export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const { business } = await orpc.business.getBusinessById({ id });
 
@@ -121,16 +120,12 @@ export async function generateStaticParams() {
   }
 
   return businesses.map((business) => ({ id: business.id }));
-}
+} */
 
-export default async function BusinessPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
   const { business } = await orpc.business.getBusinessById({ id });
-  console.log(business);
+  console.log("business", business);
 
   if (!business) {
     notFound();
