@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1765282337647,
+      "tag": "0000_fluffy_risque",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765283132156,
+      "tag": "0001_wild_bromley",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765284196957,
+      "tag": "0002_kind_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1765292179696,
+      "tag": "0003_boring_sugar_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1765303856574,
+      "tag": "0004_yummy_monster_badoon",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1765842269464,
+      "tag": "0005_loud_kate_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1766091214295,
+      "tag": "0006_worried_black_tarantula",
+      "breakpoints": true
+    }
+  ]
+}

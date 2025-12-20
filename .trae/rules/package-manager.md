@@ -1,1 +1,0 @@
-always use pnpm and never use npm or yarn
