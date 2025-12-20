@@ -163,6 +163,8 @@ export async function getBusinessByIdCache(id: string) {
       coverImage: true,
       products: {
         where: eq(product.active, true),
+        limit: 12, // Limit to prevent payload issues
+        orderBy: desc(product.createdAt),
         with: {
           images: true,
         },

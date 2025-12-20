@@ -2,12 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { orpc } from "@/lib/orpc";
-import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
-import { BusinessInfo } from "./_components/business-info";
-import { BusinessViewTracker } from "./_components/business-view-tracker";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -141,12 +137,11 @@ export default async function BusinessPage({
 
   // Comercios de la misma categoría
   // Comercios de la misma categoría
-  let similarBusinesses = null;
   try {
     const response = await orpc.business.listAllBusinessesByCategories({
       category: business.category?.value,
     });
-    similarBusinesses = response.businesses;
+    console.log(response);
   } catch (error) {
     console.error("Error fetching similar businesses:", error);
   }
@@ -154,11 +149,12 @@ export default async function BusinessPage({
   return (
     <div className="container mx-auto space-y-8 py-8">
       {/* ✅ Tracking envuelto en Suspense */}
-      <Suspense fallback={null}>
+      {/* ✅ Tracking envuelto en Suspense */}
+      {/* <Suspense fallback={null}>
         <BusinessViewTracker businessId={id} />
-      </Suspense>
+      </Suspense> */}
 
-      <LocalBusinessSchema
+      {/* <LocalBusinessSchema
         name={business.name}
         description={business.description || ""}
         address={business.address || ""}
@@ -166,14 +162,14 @@ export default async function BusinessPage({
         email={business.email || ""}
         image={business.logo?.url || ""}
         url={`https://lules-market.vercel.app/comercio/${id}`}
-      />
+      /> */}
       <Button asChild variant="ghost">
         <Link href="/explorar/comercios" className="flex items-center">
           <ArrowLeft className="mr-2 h-4 w-4" /> Volver
         </Link>
       </Button>
 
-      <BusinessInfo business={business} similarBusinesses={similarBusinesses} />
+      {/* <BusinessInfo business={business} similarBusinesses={similarBusinesses} /> */}
     </div>
   );
 }
