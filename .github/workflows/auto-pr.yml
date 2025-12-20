@@ -53,34 +53,25 @@ jobs:
           FILES=$(cat files.txt)
           BRANCH="${{ steps.get-changes.outputs.branch }}"
 
-          cat > prompt.txt << 'EOF'
-          Eres un asistente que genera títulos y descripciones para Pull Requests.
+          FINAL_PROMPT="Eres un asistente que genera títulos y descripciones para Pull Requests.
 
-          Rama: BRANCH_PLACEHOLDER
+          Rama: ${BRANCH}
 
           Commits:
-          COMMITS_PLACEHOLDER
+          ${COMMITS}
 
           Archivos modificados:
-          FILES_PLACEHOLDER
+          ${FILES}
 
           Cambios en el código:
-          DIFF_PLACEHOLDER
+          ${DIFF}
 
           Genera un título conciso (máximo 72 caracteres) y una descripción detallada en markdown.
           Responde SOLO en formato JSON válido:
           {
-            "title": "título aquí",
-            "description": "descripción en markdown aquí"
-          }
-          EOF
-
-          sed -i "s|BRANCH_PLACEHOLDER|${BRANCH}|g" prompt.txt
-          sed -i "s|COMMITS_PLACEHOLDER|${COMMITS}|g" prompt.txt
-          sed -i "s|FILES_PLACEHOLDER|${FILES}|g" prompt.txt
-          sed -i "s|DIFF_PLACEHOLDER|${DIFF}|g" prompt.txt
-
-          FINAL_PROMPT=$(cat prompt.txt)
+            \"title\": \"título aquí\",
+            \"description\": \"descripción en markdown aquí\"
+          }"
 
           jq -n --arg prompt "$FINAL_PROMPT" '{"contents":[{"parts":[{"text":$prompt}]}],"generationConfig":{"temperature":0.7,"maxOutputTokens":2048}}' > request.json
 
