@@ -175,7 +175,7 @@ export async function getBusinessByIdCache(id: string) {
 
 export async function listAllBusinessesByCategoriesCache(input: {
   category: string;
-}) {
+}): Promise<{ businesses: BusinessWithRelations[] }> {
   "use cache";
   cacheTag(CACHE_TAGS.BUSINESS.GET_ALL);
   cacheLife("hours");
