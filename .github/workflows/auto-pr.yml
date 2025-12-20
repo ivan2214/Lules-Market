@@ -90,7 +90,7 @@ jobs:
             exit 1
           fi
 
-          CONTENT=$(echo "$CONTENT" | sed 's/```json//g' | sed 's/```//g' | xargs)
+          CONTENT=$(echo "$CONTENT" | sed 's/```json//g' | sed 's/```//g' | tr -d '\n' | sed 's/^[[:space:]]*//')
 
           echo "=== Cleaned Content ==="
           echo "$CONTENT"
