@@ -130,6 +130,7 @@ export default async function BusinessPage({
 }) {
   const { id } = await params;
   const { business } = await orpc.business.getBusinessById({ id });
+  console.log(business);
 
   if (!business) {
     notFound();
@@ -137,14 +138,14 @@ export default async function BusinessPage({
 
   // Comercios de la misma categoría
   // Comercios de la misma categoría
-  try {
+  /*   try {
     const response = await orpc.business.listAllBusinessesByCategories({
       category: business.category?.value,
     });
     console.log(response);
   } catch (error) {
     console.error("Error fetching similar businesses:", error);
-  }
+  } */
 
   return (
     <div className="container mx-auto space-y-8 py-8">
