@@ -26,20 +26,20 @@ export default async function ProductosPage({
   const currentLimit = limit ? parseInt(limit, 10) : 12;
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.products.listAllProducts.queryOptions({
       input: {
+        businessId,
         category,
-        search,
-        sort: sortBy,
         limit: currentLimit,
         page: currentPage,
-        businessId,
+        search,
+        sort: sortBy,
       },
     }),
   );
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.business.listAllBusinesses.queryOptions(),
   );
 
@@ -77,6 +77,15 @@ export default async function ProductosPage({
       <ResultsCountAndLimitSelector
         typeExplorer="productos"
         currentLimit={currentLimit}
+        params={{
+          search,
+          category,
+          page,
+          businessId,
+          limit,
+          sortBy,
+        }}
+        currentPage={currentPage}
       />
 
       {/* Products Grid */}

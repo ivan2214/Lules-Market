@@ -1,5 +1,7 @@
 CREATE TYPE "public"."business_status" AS ENUM('PENDING_VERIFICATION', 'ACTIVE', 'SUSPENDED', 'INACTIVE');--> statement-breakpoint
-CREATE TYPE "public"."permission" AS ENUM('ALL', 'BAN_USERS', 'MANAGE_PLANS');--> statement-breakpoint
+CREATE TYPE "public"."list_priority" AS ENUM('Estandar', 'Media', 'Alta');--> statement-breakpoint
+CREATE TYPE "public"."notification_type" AS ENUM('PRODUCT_AVAILABLE', 'PLAN_EXPIRING', 'PLAN_EXPIRED', 'PAYMENT_RECEIVED', 'ACCOUNT_VERIFIED', 'REPORT_RESOLVED');--> statement-breakpoint
+CREATE TYPE "public"."permission" AS ENUM('ALL', 'BAN_USERS', 'MANAGE_PLANS', 'MANAGE_PAYMENTS', 'MODERATE_CONTENT', 'VIEW_ANALYTICS');--> statement-breakpoint
 CREATE TYPE "public"."plan_status" AS ENUM('ACTIVE', 'INACTIVE', 'CANCELLED', 'EXPIRED');--> statement-breakpoint
 CREATE TYPE "public"."plan_type" AS ENUM('FREE', 'BASIC', 'PREMIUM');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('ADMIN', 'USER', 'BUSINESS', 'SUPER_ADMIN');--> statement-breakpoint
@@ -13,27 +15,54 @@ CREATE TABLE "analytics" (
 	CONSTRAINT "analytics_date_unique" UNIQUE("date")
 );
 --> statement-breakpoint
-CREATE TABLE "log" (
+CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
-	"timestamp" timestamp DEFAULT now() NOT NULL,
-	"business_id" text,
-	"admin_id" text,
-	"action" text NOT NULL,
-	"entity_type" text,
-	"entity_id" text,
-	"details" json
+	"account_id" text NOT NULL,
+	"provider_id" text NOT NULL,
+	"user_id" text NOT NULL,
+	"access_token" text,
+	"refresh_token" text,
+	"id_token" text,
+	"access_token_expires_at" timestamp,
+	"refresh_token_expires_at" timestamp,
+	"scope" text,
+	"password" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "webhook_event" (
+CREATE TABLE "session" (
 	"id" text PRIMARY KEY NOT NULL,
-	"request_id" text NOT NULL,
-	"event_type" text NOT NULL,
-	"mp_id" text,
-	"payload" json NOT NULL,
-	"processed" boolean DEFAULT false NOT NULL,
-	"processed_at" timestamp,
+	"expires_at" timestamp NOT NULL,
+	"token" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "webhook_event_request_id_unique" UNIQUE("request_id")
+	"updated_at" timestamp NOT NULL,
+	"ip_address" text,
+	"user_agent" text,
+	"user_id" text NOT NULL,
+	CONSTRAINT "session_token_unique" UNIQUE("token")
+);
+--> statement-breakpoint
+CREATE TABLE "user" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"email" text NOT NULL,
+	"email_verified" boolean DEFAULT false NOT NULL,
+	"image" text,
+	"user_role" "user_role" DEFAULT 'USER' NOT NULL,
+	"is_banned" boolean DEFAULT false,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "user_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
+CREATE TABLE "verification" (
+	"id" text PRIMARY KEY NOT NULL,
+	"identifier" text NOT NULL,
+	"value" text NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "business" (
@@ -80,6 +109,7 @@ CREATE TABLE "current_plan" (
 	"expires_at" timestamp NOT NULL,
 	"activated_at" timestamp NOT NULL,
 	"is_active" boolean DEFAULT false NOT NULL,
+	"list_priority" "list_priority" DEFAULT 'Estandar' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "current_plan_business_id_unique" UNIQUE("business_id")
@@ -90,14 +120,18 @@ CREATE TABLE "plan" (
 	"name" text NOT NULL,
 	"description" text NOT NULL,
 	"price" double precision NOT NULL,
+	"discount" integer DEFAULT 0 NOT NULL,
 	"features" text[] NOT NULL,
 	"max_products" integer NOT NULL,
-	"max_images" integer NOT NULL,
+	"max_images_per_product" integer NOT NULL,
 	"has_statistics" boolean DEFAULT false NOT NULL,
 	"can_feature_products" boolean DEFAULT false NOT NULL,
+	"details" json NOT NULL,
+	"popular" boolean DEFAULT false NOT NULL,
 	"is_active" boolean DEFAULT true NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	"list_priority" "list_priority" DEFAULT 'Estandar' NOT NULL,
 	CONSTRAINT "plan_type_unique" UNIQUE("type")
 );
 --> statement-breakpoint
@@ -142,6 +176,30 @@ CREATE TABLE "image" (
 	CONSTRAINT "image_avatar_id_unique" UNIQUE("avatar_id")
 );
 --> statement-breakpoint
+CREATE TABLE "log" (
+	"id" text PRIMARY KEY NOT NULL,
+	"timestamp" timestamp DEFAULT now() NOT NULL,
+	"business_id" text,
+	"admin_id" text,
+	"action" text NOT NULL,
+	"entity_type" text,
+	"entity_id" text,
+	"details" json
+);
+--> statement-breakpoint
+CREATE TABLE "notification" (
+	"id" text PRIMARY KEY NOT NULL,
+	"type" "notification_type" NOT NULL,
+	"title" text NOT NULL,
+	"message" text NOT NULL,
+	"read" boolean DEFAULT false NOT NULL,
+	"user_id" text NOT NULL,
+	"action_url" text,
+	"metadata" json,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"read_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE "payment" (
 	"id" text PRIMARY KEY NOT NULL,
 	"amount" double precision NOT NULL,
@@ -162,7 +220,7 @@ CREATE TABLE "product" (
 	"name" text NOT NULL,
 	"description" text,
 	"price" double precision,
-	"featured" boolean DEFAULT false NOT NULL,
+	"discount" integer DEFAULT 0 NOT NULL,
 	"active" boolean DEFAULT true NOT NULL,
 	"stock" integer DEFAULT 0,
 	"brand" text,
@@ -245,23 +303,40 @@ CREATE TABLE "profile" (
 	CONSTRAINT "profile_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "user_role" "user_role" DEFAULT 'USER' NOT NULL;--> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "is_banned" boolean DEFAULT false;--> statement-breakpoint
-CREATE INDEX "log_timestamp_idx" ON "log" USING btree ("timestamp");--> statement-breakpoint
-CREATE INDEX "log_businessId_idx" ON "log" USING btree ("business_id");--> statement-breakpoint
-CREATE INDEX "log_adminId_idx" ON "log" USING btree ("admin_id");--> statement-breakpoint
-CREATE INDEX "log_entityType_idx" ON "log" USING btree ("entity_type");--> statement-breakpoint
-CREATE INDEX "log_entityId_idx" ON "log" USING btree ("entity_id");--> statement-breakpoint
+CREATE TABLE "webhook_event" (
+	"id" text PRIMARY KEY NOT NULL,
+	"request_id" text NOT NULL,
+	"event_type" text NOT NULL,
+	"mp_id" text,
+	"payload" json NOT NULL,
+	"processed" boolean DEFAULT false NOT NULL,
+	"processed_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "webhook_event_request_id_unique" UNIQUE("request_id")
+);
+--> statement-breakpoint
+ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
 CREATE INDEX "business_categoryId_idx" ON "business" USING btree ("category_id");--> statement-breakpoint
 CREATE INDEX "business_view_businessId_idx" ON "business_view" USING btree ("business_id");--> statement-breakpoint
 CREATE INDEX "current_plan_planType_idx" ON "current_plan" USING btree ("plan_type");--> statement-breakpoint
 CREATE INDEX "image_productId_idx" ON "image" USING btree ("product_id");--> statement-breakpoint
 CREATE INDEX "image_coverBusinessId_idx" ON "image" USING btree ("cover_business_id");--> statement-breakpoint
 CREATE INDEX "image_logoBusinessId_idx" ON "image" USING btree ("logo_business_id");--> statement-breakpoint
+CREATE INDEX "log_timestamp_idx" ON "log" USING btree ("timestamp");--> statement-breakpoint
+CREATE INDEX "log_businessId_idx" ON "log" USING btree ("business_id");--> statement-breakpoint
+CREATE INDEX "log_adminId_idx" ON "log" USING btree ("admin_id");--> statement-breakpoint
+CREATE INDEX "log_entityType_idx" ON "log" USING btree ("entity_type");--> statement-breakpoint
+CREATE INDEX "log_entityId_idx" ON "log" USING btree ("entity_id");--> statement-breakpoint
+CREATE INDEX "notification_userId_idx" ON "notification" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "notification_read_idx" ON "notification" USING btree ("read");--> statement-breakpoint
+CREATE INDEX "notification_type_idx" ON "notification" USING btree ("type");--> statement-breakpoint
 CREATE INDEX "payment_businessId_idx" ON "payment" USING btree ("business_id");--> statement-breakpoint
 CREATE INDEX "payment_status_idx" ON "payment" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "product_businessId_idx" ON "product" USING btree ("business_id");--> statement-breakpoint
-CREATE INDEX "product_featured_idx" ON "product" USING btree ("featured");--> statement-breakpoint
 CREATE INDEX "product_active_idx" ON "product" USING btree ("active");--> statement-breakpoint
 CREATE INDEX "product_categoryId_idx" ON "product" USING btree ("category_id");--> statement-breakpoint
 CREATE INDEX "product_view_productId_idx" ON "product_view" USING btree ("product_id");--> statement-breakpoint

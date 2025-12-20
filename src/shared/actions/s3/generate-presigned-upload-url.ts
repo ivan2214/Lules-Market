@@ -1,7 +1,7 @@
 "use server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { v4 as uuidv4 } from "uuid";
 import { s3Client } from "@/lib/s3";
 import { BUCKET_NAME } from "@/shared/constants/s3";
@@ -15,11 +15,11 @@ export const generatePresignedUploadUrl = os
     // Validaciones
     if (size > 10 * 1024 * 1024) {
       // 10MB
-      throw new Error("El archivo es demasiado grande. Máximo 10MB.");
+      throw new ORPCError("El archivo es demasiado grande. Máximo 10MB.");
     }
 
     if (!contentType.startsWith("image/")) {
-      throw new Error("Solo se permiten imágenes.");
+      throw new ORPCError("Solo se permiten imágenes.");
     }
 
     // Generar key único
@@ -45,7 +45,7 @@ export const generatePresignedUploadUrl = os
       };
     } catch (error) {
       console.error("Error generating presigned URL:", error);
-      throw new Error("Error al generar URL de subida");
+      throw new ORPCError("Error al generar URL de subida");
     }
   })
   .actionable();

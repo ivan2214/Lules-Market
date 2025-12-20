@@ -28,7 +28,7 @@ export const product = pgTable(
     name: text("name").notNull(),
     description: text("description"),
     price: doublePrecision("price"),
-    featured: boolean("featured").default(false).notNull(),
+    discount: integer("discount").default(0).notNull(),
     active: boolean("active").default(true).notNull(),
     stock: integer("stock").default(0),
     brand: text("brand"),
@@ -44,7 +44,6 @@ export const product = pgTable(
   },
   (table) => [
     index("product_businessId_idx").on(table.businessId),
-    index("product_featured_idx").on(table.featured),
     index("product_active_idx").on(table.active),
     index("product_categoryId_idx").on(table.categoryId),
   ],

@@ -11,7 +11,12 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { category } from "./category-schema";
-import { businessStatusEnum, planStatusEnum, planTypeEnum } from "./enums";
+import {
+  businessStatusEnum,
+  listPriorityEnum,
+  planStatusEnum,
+  planTypeEnum,
+} from "./enums";
 import { image } from "./image-schema";
 import { payment } from "./payment-schema";
 import { product } from "./product-schema";
@@ -75,6 +80,9 @@ export const currentPlan = pgTable(
     expiresAt: timestamp("expires_at").notNull(),
     activatedAt: timestamp("activated_at").notNull(),
     isActive: boolean("is_active").default(false).notNull(),
+    listPriority: listPriorityEnum("list_priority")
+      .default("Estandar")
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -104,6 +112,7 @@ export const plan = pgTable("plan", {
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date()),
+  listPriority: listPriorityEnum("list_priority").default("Estandar").notNull(),
 });
 
 export const trial = pgTable("trial", {

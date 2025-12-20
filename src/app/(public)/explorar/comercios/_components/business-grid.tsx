@@ -27,10 +27,10 @@ export const BusinessGrid = ({
   } = useSuspenseQuery(
     orpcTanstack.business.listAllBusinesses.queryOptions({
       input: {
+        category,
         limit: currentLimit,
         page: currentPage,
         search,
-        category,
         sortBy,
       },
     }),

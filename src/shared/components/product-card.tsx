@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import type { ProductWithRelations } from "@/db/types";
+import { cn } from "@/lib/utils";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -28,7 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/producto/${product.id}`}>
         <div className="relative aspect-4/3 overflow-hidden bg-muted">
           <ImageWithSkeleton
-            src={mainImage(product.images) || "/placeholder.svg"}
+            src={mainImage({ images: product.images }) || "/placeholder.svg"}
             alt={product.name}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
@@ -57,13 +58,29 @@ export function ProductCard({ product }: ProductCardProps) {
         </CardTitle>
 
         <div className="mt-4 flex items-baseline gap-2">
-          <span className="font-bold text-2xl text-primary">
+          <span
+            className={cn(
+              "font-bold text-2xl",
+              product.discount > 0
+                ? "text-gray-400 text-xl line-through"
+                : "text-primary",
+            )}
+          >
             {formatCurrency(product.price || 0, "ARS")}
           </span>
-          {isPremium && (
-            <span className="font-semibold text-xs text-yellow-600 uppercase tracking-wide dark:text-yellow-400">
-              Oferta
-            </span>
+
+          {product.discount > 0 && (
+            <>
+              <span className="font-bold text-2xl text-primary">
+                {formatCurrency(
+                  (product.price || 0) * (1 - product.discount / 100),
+                  "ARS",
+                )}
+              </span>
+              <span className="rounded bg-yellow-500 px-2 py-1 font-semibold text-sm text-white dark:bg-yellow-600">
+                -{product.discount}%
+              </span>
+            </>
           )}
         </div>
       </CardContent>

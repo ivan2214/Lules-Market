@@ -37,15 +37,6 @@ const checkCanAddProduct = (currentBusiness: {
   return productsUsed < maxProducts;
 };
 
-const checkCanFeatureProduct = (currentBusiness: {
-  currentPlan?: {
-    canFeatureProducts?: boolean;
-  } | null;
-}) => {
-  const { canFeatureProducts } = currentBusiness?.currentPlan || {};
-  return !!canFeatureProducts;
-};
-
 // ==========================================
 // CREATE PRODUCT
 // ==========================================
@@ -70,12 +61,6 @@ export const createProduct = businessAuthorized
     if (!checkCanAddProduct(currentBusiness)) {
       throw new ORPCError("FORBIDDEN", {
         message: "Has alcanzado el límite de productos para tu plan",
-      });
-    }
-
-    if (input.featured && !checkCanFeatureProduct(currentBusiness)) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Tu plan no permite destacar productos",
       });
     }
 
@@ -114,7 +99,6 @@ export const createProduct = businessAuthorized
         name: input.name,
         description: input.description,
         price: Number(input.price),
-        featured: input.featured,
         businessId: currentBusiness.id,
       })
       .returning();
@@ -204,12 +188,6 @@ export const updateProduct = businessAuthorized
       throw new ORPCError("NOT_FOUND", { message: "Producto no encontrado" });
     }
 
-    if (data.featured && !checkCanFeatureProduct(currentBusiness)) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Tu plan no permite destacar productos",
-      });
-    }
-
     // Images logic
     const existingImages = await db.query.image.findMany({
       where: eq(schema.image.productId, productId),
@@ -280,7 +258,7 @@ export const updateProduct = businessAuthorized
         description: data.description,
         price: data.price,
         categoryId,
-        featured: data.featured,
+
         active: data.active,
       })
       .where(eq(schema.product.id, productId))

@@ -1,6 +1,6 @@
 "use server";
 
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { updateTag } from "next/cache";
 import { db, schema } from "@/db";
 import { CACHE_TAGS } from "@/shared/constants/cache-tags";
@@ -20,7 +20,7 @@ export const clearUsersCache = os
       return { success: true };
     } catch (error) {
       console.error("Error al borrar usuarios", error);
-      throw new Error("Error al borrar usuarios");
+      throw new ORPCError("Error al borrar usuarios");
     }
   })
   .actionable();

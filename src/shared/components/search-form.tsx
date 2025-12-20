@@ -96,7 +96,7 @@ export const SearchForm = () => {
                 <div className="h-12 w-12">
                   <ImageWithSkeleton
                     src={
-                      mainImage(product.images || []) ||
+                      mainImage({ images: product.images }) ||
                       product.images?.[0].url ||
                       ""
                     }

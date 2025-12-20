@@ -1,17 +1,17 @@
-import { ArrowRight, Check, Crown, Sparkles, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { orpc } from "@/lib/orpc";
-import { Badge } from "@/shared/components/ui/badge";
+import { orpcTanstack } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { ComparisonTable } from "./_components/comparison-table";
+import { PlanCards } from "./_components/plan-cards";
 
 export const metadata: Metadata = {
   title: "Planes y Precios - Lules Market",
@@ -37,7 +37,9 @@ export const metadata: Metadata = {
 };
 
 export default async function PlanesPage() {
-  const plans = await orpc.plan.getAllPlans();
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery(orpcTanstack.plan.getAllPlans.queryOptions());
 
   return (
     <div className="container mx-auto py-16">
@@ -51,129 +53,14 @@ export default async function PlanesPage() {
         </p>
       </div>
 
-      <div className="mx-auto mb-16 grid max-w-6xl gap-8 md:grid-cols-3">
-        {plans.map((plan) => {
-          const Icon =
-            plan.type === "FREE"
-              ? Sparkles
-              : plan.type === "BASIC"
-                ? Zap
-                : Crown;
-          return (
-            <Card
-              key={plan.name}
-              className={
-                plan.popular ? "relative border-primary shadow-lg" : ""
-              }
-            >
-              {plan.popular && (
-                <Badge className="-top-3 -translate-x-1/2 absolute left-1/2">
-                  Más Popular
-                </Badge>
-              )}
-              <CardHeader>
-                <Icon className="mb-4 h-10 w-10 text-primary" />
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <span className="font-bold text-4xl">
-                    ${plan.price.toLocaleString()}
-                  </span>
-                  {plan.price > 0 && (
-                    <span className="text-muted-foreground">/mes</span>
-                  )}
-                </div>
-
-                <ul className="space-y-3">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  asChild
-                  className="w-full"
-                  variant={plan.popular ? "default" : "outline"}
-                >
-                  <Link href="/signup">
-                    Comenzar Ahora
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
-      </div>
+      <HydrateClient client={queryClient}>
+        <PlanCards />
+      </HydrateClient>
 
       {/* Comparison Table */}
-      <div className="mx-auto max-w-5xl">
-        <h2 className="mb-8 text-center font-bold text-3xl">
-          Comparación Detallada
-        </h2>
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="p-4 text-left font-semibold">
-                      Característica
-                    </th>
-                    <th className="p-4 text-center font-semibold">Gratuito</th>
-                    <th className="bg-primary/5 p-4 text-center font-semibold">
-                      Básico
-                    </th>
-                    <th className="p-4 text-center font-semibold">Premium</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="p-4">Cantidad de Productos</td>
-                    <td className="p-4 text-center">10</td>
-                    <td className="bg-primary/5 p-4 text-center">50</td>
-                    <td className="p-4 text-center font-bold">Ilimitados</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Imágenes por producto</td>
-                    <td className="p-4 text-center">1</td>
-                    <td className="bg-primary/5 p-4 text-center">3</td>
-                    <td className="p-4 text-center">5</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Prioridad en listados</td>
-                    <td className="p-4 text-center">Estándar</td>
-                    <td className="bg-primary/5 p-4 text-center">Media</td>
-                    <td className="p-4 text-center font-bold">Alta</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-4">Estadísticas de visitas</td>
-                    <td className="p-4 text-center">-</td>
-                    <td className="bg-primary/5 p-4 text-center">Básicas</td>
-                    <td className="p-4 text-center">Avanzadas</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4">Soporte técnico</td>
-                    <td className="p-4 text-center">Email</td>
-                    <td className="bg-primary/5 p-4 text-center">
-                      Email Rápido
-                    </td>
-                    <td className="p-4 text-center font-medium text-primary">
-                      WhatsApp Directo
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <HydrateClient client={queryClient}>
+        <ComparisonTable />
+      </HydrateClient>
 
       {/* FAQ */}
       <div className="mx-auto mt-16 max-w-3xl">

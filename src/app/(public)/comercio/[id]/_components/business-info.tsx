@@ -144,7 +144,7 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
                       <div className="aspect-square overflow-hidden">
                         <ImageWithSkeleton
                           src={
-                            mainImage(product.images) ||
+                            mainImage({ images: product.images }) ||
                             "/placeholder.svg?height=400&width=400&query=product"
                           }
                           alt={product.name}

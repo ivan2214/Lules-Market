@@ -7,6 +7,7 @@ import {
   eq,
   ilike,
   inArray,
+  ne,
   or,
   type SQL,
   sql,
@@ -17,7 +18,6 @@ import { db } from "@/db";
 import {
   business,
   currentPlan,
-  plan,
   product,
   category as schemaCategory,
 } from "@/db/schema";
@@ -43,9 +43,22 @@ export async function listAllProductsCache(
   "use cache";
   cacheTag(CACHE_TAGS.PRODUCT.GET_ALL);
   cacheLife("hours");
-  const { search, category, businessId, page, limit, sort } = input ?? {};
+  const {
+    search,
+    category,
+    businessId,
+    page = 1,
+    limit = 12,
+    sort,
+  } = input ?? {};
+
   // Build where conditions
-  const conditions: SQL<unknown>[] = [eq(product.active, true)];
+  const conditions: SQL<unknown>[] = [
+    eq(product.active, true),
+    eq(product.isBanned, false),
+    eq(business.isActive, true),
+    eq(business.isBanned, false),
+  ];
 
   if (businessId) {
     conditions.push(eq(product.businessId, businessId));
@@ -73,6 +86,13 @@ export async function listAllProductsCache(
   // Build order by
   const orderBy = [];
 
+  const prioritySort = sql`CASE
+    WHEN ${currentPlan.listPriority} = 'Alta' THEN 3
+    WHEN ${currentPlan.listPriority} = 'Media' THEN 2
+    WHEN ${currentPlan.listPriority} = 'Estandar' THEN 1
+    ELSE 0
+  END DESC`;
+
   if (sort) {
     const [field, direction] = sort.split("_");
     if (field === "price") {
@@ -84,38 +104,68 @@ export async function listAllProductsCache(
         direction === "asc" ? asc(product.name) : desc(product.name),
       );
     }
+  } else {
+    // Default sort: Priority
+    orderBy.push(prioritySort);
   }
 
-  orderBy.push(desc(product.featured));
-  orderBy.push(desc(product.createdAt));
+  orderBy.push(desc(product.createdAt), desc(product.id));
 
-  const [products, totalResult] = await Promise.all([
-    db.query.product.findMany({
-      where: whereClause,
-      with: {
-        business: {
-          with: {
-            currentPlan: {
-              with: {
-                plan: true,
-              },
-            },
-            logo: true,
-          },
-        },
-        images: true,
-        category: true,
-      },
-      orderBy,
-      ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
-    }),
-    db.select({ count: count() }).from(product).where(whereClause),
+  const [idsResult, totalResult] = await Promise.all([
+    db
+      .select({ id: product.id })
+      .from(product)
+      .innerJoin(business, eq(product.businessId, business.id))
+      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .where(whereClause)
+      .orderBy(...orderBy)
+      .offset((page - 1) * limit)
+      .limit(limit),
+    db
+      .select({ count: count() })
+      .from(product)
+      .innerJoin(business, eq(product.businessId, business.id))
+      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .where(whereClause),
   ]);
 
   const total = totalResult[0]?.count ?? 0;
 
+  if (idsResult.length === 0) {
+    return {
+      products: [],
+      total,
+      ...(limit ? { pages: Math.ceil(total / limit) } : {}),
+      ...(page ? { currentPage: page } : {}),
+    };
+  }
+
+  const ids = idsResult.map((row) => row.id);
+
+  const products = await db.query.product.findMany({
+    where: inArray(product.id, ids),
+    with: {
+      business: {
+        with: {
+          currentPlan: {
+            with: {
+              plan: true,
+            },
+          },
+          logo: true,
+        },
+      },
+      images: true,
+      category: true,
+    },
+  });
+
+  const orderedProducts = products.sort((a, b) => {
+    return ids.indexOf(a.id) - ids.indexOf(b.id);
+  });
+
   return {
-    products: products as ProductWithRelations[],
+    products: orderedProducts as ProductWithRelations[],
     total,
     ...(limit ? { pages: Math.ceil(total / limit) } : {}),
     ...(page ? { currentPage: page } : {}),
@@ -133,7 +183,6 @@ export async function recentProductsCache() {
     .from(product)
     .innerJoin(business, eq(product.businessId, business.id))
     .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
-    .innerJoin(plan, eq(currentPlan.planType, plan.type))
     .where(
       and(
         eq(product.active, true),
@@ -144,9 +193,9 @@ export async function recentProductsCache() {
     )
     .orderBy(
       sql`CASE
-        WHEN ${plan.type} = 'PREMIUM' THEN 3
-        WHEN ${plan.type} = 'BASIC' THEN 2
-        WHEN ${plan.type} = 'FREE' THEN 1
+        WHEN ${currentPlan.listPriority} = 'Alta' THEN 3
+        WHEN ${currentPlan.listPriority} = 'Media' THEN 2
+        WHEN ${currentPlan.listPriority} = 'Estandar' THEN 1
         ELSE 0
       END DESC`,
       desc(product.createdAt),
@@ -192,12 +241,38 @@ export async function getSimilarProductsCache(
   cacheTag(CACHE_TAGS.PRODUCT.GET_SIMILAR(currentProductId));
   cacheLife("hours");
 
+  const similarIds = await db
+    .select({ id: product.id })
+    .from(product)
+    .innerJoin(business, eq(product.businessId, business.id))
+    .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+    .where(
+      and(
+        eq(product.active, true),
+        eq(product.isBanned, false),
+        eq(product.categoryId, categoryId),
+        ne(product.id, currentProductId),
+        eq(business.isActive, true),
+        eq(business.isBanned, false),
+      ),
+    )
+    .orderBy(
+      sql`CASE
+        WHEN ${currentPlan.listPriority} = 'Alta' THEN 3
+        WHEN ${currentPlan.listPriority} = 'Media' THEN 2
+        WHEN ${currentPlan.listPriority} = 'Estandar' THEN 1
+        ELSE 0
+      END DESC`,
+      desc(product.createdAt),
+    )
+    .limit(4);
+
+  if (similarIds.length === 0) return [];
+
+  const ids = similarIds.map((row) => row.id);
+
   const similar = await db.query.product.findMany({
-    where: and(
-      eq(product.active, true),
-      eq(product.categoryId, categoryId),
-      // ne(product.id, currentProductId) // 'ne' is not exported by drizzle-orm? use not(eq(...))
-    ),
+    where: inArray(product.id, ids),
     with: {
       images: true,
       business: {
@@ -207,13 +282,12 @@ export async function getSimilarProductsCache(
               plan: true,
             },
           },
+          logo: true,
         },
       },
       category: true,
     },
-    limit: 4,
-    orderBy: desc(product.createdAt),
   });
 
-  return similar.filter((p) => p.id !== currentProductId);
+  return similar.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
 }

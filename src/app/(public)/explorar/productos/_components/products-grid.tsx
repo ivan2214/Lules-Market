@@ -31,11 +31,11 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   } = useSuspenseQuery(
     orpcTanstack.products.listAllProducts.queryOptions({
       input: {
+        businessId,
+        category,
         limit: currentLimit,
         page: currentPage,
         search,
-        category,
-        businessId,
         sort,
       },
     }),

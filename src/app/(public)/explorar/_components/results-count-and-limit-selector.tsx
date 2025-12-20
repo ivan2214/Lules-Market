@@ -4,21 +4,58 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { LimitSelector } from "@/app/(public)/explorar/_components/limit-selector";
 import { orpcTanstack } from "@/lib/orpc";
 
+type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
+type SortByBusiness = "newest" | "oldest";
+
+type Params = {
+  search?: string;
+  sortBy?: SortByProduct | SortByBusiness;
+  category?: string;
+  page?: string;
+  limit?: string;
+  businessId?: string;
+};
+
 interface ResultsCountAndLimitSelectorProps {
   typeExplorer: "comercios" | "productos";
   currentLimit: number;
+  currentPage: number;
+  params: Params;
 }
 
 export const ResultsCountAndLimitSelector: React.FC<
   ResultsCountAndLimitSelectorProps
-> = ({ typeExplorer, currentLimit }) => {
+> = ({ typeExplorer, currentLimit, currentPage, params }) => {
+  const { category, search, sortBy, businessId } = params;
   const {
     data: { businesses, total },
-  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+  } = useSuspenseQuery(
+    orpcTanstack.business.listAllBusinesses.queryOptions({
+      input: {
+        category,
+        search,
+        sort: sortBy as SortByBusiness,
+        limit: currentLimit,
+        page: currentPage,
+        businessId,
+      },
+    }),
+  );
 
   const {
     data: { products, total: totalProducts },
-  } = useSuspenseQuery(orpcTanstack.products.listAllProducts.queryOptions());
+  } = useSuspenseQuery(
+    orpcTanstack.products.listAllProducts.queryOptions({
+      input: {
+        category,
+        search,
+        sort: sortBy as SortByProduct,
+        limit: currentLimit,
+        page: currentPage,
+        businessId,
+      },
+    }),
+  );
 
   if (typeExplorer === "comercios") {
     <div className="mb-4 flex items-center justify-between">
