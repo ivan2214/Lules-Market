@@ -140,10 +140,16 @@ export default async function BusinessPage({
   }
 
   // Comercios de la misma categoría
-  const { businesses: similarBusinesses } =
-    await orpc.business.listAllBusinessesByCategories({
+  // Comercios de la misma categoría
+  let similarBusinesses = null;
+  try {
+    const response = await orpc.business.listAllBusinessesByCategories({
       category: business.category?.value,
     });
+    similarBusinesses = response.businesses;
+  } catch (error) {
+    console.error("Error fetching similar businesses:", error);
+  }
 
   return (
     <div className="container mx-auto space-y-8 py-8">
