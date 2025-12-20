@@ -66,15 +66,15 @@ export default async function HomePage() {
   await connection();
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.analytics.getHomePageStats.queryOptions(),
   );
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.business.featuredBusinesses.queryOptions(),
   );
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.products.recentProducts.queryOptions(),
   );
 

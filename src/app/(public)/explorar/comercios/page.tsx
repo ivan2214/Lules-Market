@@ -25,7 +25,7 @@ export default async function ComerciosPage({
 
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.business.listAllBusinesses.queryOptions({
       input: {
         category,
@@ -37,7 +37,7 @@ export default async function ComerciosPage({
     }),
   );
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.category.listAllCategories.queryOptions(),
   );
 
@@ -74,6 +74,14 @@ export default async function ComerciosPage({
       <ResultsCountAndLimitSelector
         typeExplorer="comercios"
         currentLimit={currentLimit}
+        currentPage={currentPage}
+        params={{
+          search,
+          category,
+          page,
+          limit,
+          sortBy,
+        }}
       />
 
       <HydrateClient client={queryClient}>

@@ -5,10 +5,11 @@ import { LimitSelector } from "@/app/(public)/explorar/_components/limit-selecto
 import { orpcTanstack } from "@/lib/orpc";
 
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
+type SortByBusiness = "newest" | "oldest";
 
 type Params = {
   search?: string;
-  sortBy?: SortByProduct;
+  sortBy?: SortByProduct | SortByBusiness;
   category?: string;
   page?: string;
   limit?: string;
@@ -28,7 +29,18 @@ export const ResultsCountAndLimitSelector: React.FC<
   const { category, search, sortBy, businessId } = params;
   const {
     data: { businesses, total },
-  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+  } = useSuspenseQuery(
+    orpcTanstack.business.listAllBusinesses.queryOptions({
+      input: {
+        category,
+        search,
+        sort: sortBy as SortByBusiness,
+        limit: currentLimit,
+        page: currentPage,
+        businessId,
+      },
+    }),
+  );
 
   const {
     data: { products, total: totalProducts },
@@ -37,7 +49,7 @@ export const ResultsCountAndLimitSelector: React.FC<
       input: {
         category,
         search,
-        sort: sortBy,
+        sort: sortBy as SortByProduct,
         limit: currentLimit,
         page: currentPage,
         businessId,

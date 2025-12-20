@@ -18,10 +18,12 @@ export default async function AdminDashboard() {
   await connection();
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.admin.getAdminDashboardStats.queryOptions(),
   );
-  queryClient.prefetchQuery(orpcTanstack.admin.getAnalyticsData.queryOptions());
+  await queryClient.prefetchQuery(
+    orpcTanstack.admin.getAnalyticsData.queryOptions(),
+  );
 
   return (
     <div className="space-y-6">

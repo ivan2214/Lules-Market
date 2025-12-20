@@ -86,7 +86,7 @@ export async function listAllProductsCache(
     }
   }
 
-  orderBy.push(desc(product.createdAt));
+  orderBy.push(desc(product.createdAt), desc(product.id));
 
   const [products, totalResult] = await Promise.all([
     db.query.product.findMany({

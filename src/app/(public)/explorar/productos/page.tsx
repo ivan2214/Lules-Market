@@ -26,7 +26,7 @@ export default async function ProductosPage({
   const currentLimit = limit ? parseInt(limit, 10) : 12;
   const queryClient = getQueryClient();
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.products.listAllProducts.queryOptions({
       input: {
         category,
@@ -39,7 +39,7 @@ export default async function ProductosPage({
     }),
   );
 
-  queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     orpcTanstack.business.listAllBusinesses.queryOptions(),
   );
 
