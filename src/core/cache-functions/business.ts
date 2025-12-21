@@ -106,7 +106,7 @@ export async function listAllBusinessesCache(
 }
 
 // Optimized function for static params generation
-export async function getAllBusinessIdsCache() {
+export async function getAllBusinessIdsCache(limit?: number) {
   "use cache";
   cacheTag("business-ids"); // Specific tag for IDs
   cacheLife("hours");
@@ -114,7 +114,8 @@ export async function getAllBusinessIdsCache() {
   const businesses = await db
     .select({ id: business.id })
     .from(business)
-    .where(eq(business.isActive, true));
+    .where(eq(business.isActive, true))
+    .limit(limit || 300); // Default safe limit if not provided, though we expect caller to provide it.
 
   return businesses;
 }

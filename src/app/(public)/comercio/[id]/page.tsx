@@ -118,7 +118,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const businesses = await orpc.business.getAllBusinessIds();
+  const businesses = await orpc.business.getAllBusinessIds({ limit: 100 });
 
   // fallback si no hay negocios
   if (!businesses.length) {

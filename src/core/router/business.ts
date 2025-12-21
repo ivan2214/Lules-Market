@@ -45,9 +45,10 @@ export const getAllBusinessIds = os
     summary: "Get all business IDs",
     tags: ["Business"],
   })
+  .input(z.object({ limit: z.number().optional() }).optional())
   .output(z.array(z.object({ id: z.string() })))
-  .handler(async () => {
-    return await getAllBusinessIdsCache();
+  .handler(async ({ input }) => {
+    return await getAllBusinessIdsCache(input?.limit);
   });
 
 export const getBusinessById = os
