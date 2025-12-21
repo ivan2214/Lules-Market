@@ -1,8 +1,11 @@
+import { eq } from "drizzle-orm";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { db } from "@/db";
+import { business } from "@/db/schema";
 import { env } from "@/env";
 import { orpc } from "@/lib/orpc";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
@@ -117,8 +120,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+const getAllBusiness = async () => {
+  const businesses = await db
+    .select()
+    .from(business)
+    .where(eq(business.isActive, true));
+
+  return businesses;
+};
+
 export async function generateStaticParams() {
-  const businesses = await orpc.business.getAllBusinessIds({ limit: 100 });
+  const businesses = await getAllBusiness();
 
   // fallback si no hay negocios
   if (!businesses.length) {
