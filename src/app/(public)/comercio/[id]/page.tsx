@@ -1,12 +1,9 @@
-import { eq } from "drizzle-orm";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 // Importar directamente desde la DB para generateStaticParams
-import { db } from "@/db";
-import { business } from "@/db/schema";
 import { env } from "@/env";
 import { orpc } from "@/lib/orpc";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
@@ -119,34 +116,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "business:contact_data:website": business.website || "",
     },
   };
-}
-
-export async function generateStaticParams() {
-  try {
-    const businesses = await db
-      .select({ id: business.id })
-      .from(business)
-      .where(eq(business.isActive, true))
-      .limit(100);
-
-    if (!businesses) {
-      return [
-        {
-          id: "__placeholder__",
-        },
-      ];
-    }
-
-    return businesses.map((b) => ({ id: b.id }));
-  } catch (error) {
-    console.error("[generateStaticParams] Error fetching businesses:", error);
-
-    return [
-      {
-        id: "__placeholder__",
-      },
-    ];
-  }
 }
 
 export default async function BusinessPage({ params }: Props) {
