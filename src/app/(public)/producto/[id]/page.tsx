@@ -60,10 +60,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const { products } = await orpc.products.listAllProducts();
-  if (!products.length) return [{ id: "static-fallback" }];
-  return products.map((product) => ({ id: product.id }));
+  try {
+    // Intentar obtener la lista de productos
+    const { products } = await orpc.products.listAllProducts();
+
+    // Si hay productos, generar params para cada uno
+    if (products && products.length > 0) {
+      return products.map((product) => ({ id: product.id }));
+    }
+
+    // Si no hay productos, retornar array vacío
+    return [];
+  } catch (error) {
+    // Log del error para debugging
+    console.error("[generateStaticParams] Error fetching products:", error);
+
+    // Retornar array vacío para permitir generación dinámica
+    return [];
+  }
 }
+
+// Habilitar generación dinámica para páginas no pre-renderizadas
+export const dynamicParams = true;
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
@@ -89,7 +107,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-background pb-12">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <ProductViewTracker productId={product.id} />
       </Suspense>
       <ProductSchema
