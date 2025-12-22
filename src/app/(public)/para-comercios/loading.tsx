@@ -1,58 +1,10 @@
-/* Pagina para comercios donde le indica que tiene que iniciar sesion o registrarse */
-
 import { ArrowRight, Store, TrendingUp, Zap } from "lucide-react";
-import type { Metadata } from "next";
-
 import Link from "next/link";
-import { orpcTanstack } from "@/lib/orpc";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { PlanPricingPreview } from "./_components/plan-pricing.preview";
+import { PlanPricingPreviewSkeleton } from "./_components/plan-pricing-preview-skeleton";
 
-export const metadata: Metadata = {
-  title: "Para Comercios - Lules Market | Tu Vitrina Digital",
-  description:
-    "¿Tienes un comercio local? Lleva tu negocio al mundo digital. Publica tus productos, aumenta tu visibilidad y atrae más clientes. Comenzar es gratis.",
-  keywords:
-    "comercios locales, vitrina digital, negocios, emprendedores, vender online, marketplace local, Argentina",
-  openGraph: {
-    title: "Para Comercios - Lules Market | Tu Vitrina Digital",
-    description:
-      "Lleva tu comercio local al mundo digital. Aumenta tu visibilidad y atrae más clientes.",
-    url: "https://lules-market.vercel.app/para-comercios",
-    siteName: "Lules Market",
-    images: [
-      {
-        url: "https://lules-market.vercel.app/logo.webp",
-        width: 1200,
-        height: 630,
-        alt: "Lules Market - Para Comercios",
-      },
-    ],
-    locale: "es_AR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Para Comercios - Lules Market | Tu Vitrina Digital",
-    description:
-      "Lleva tu comercio local al mundo digital. Aumenta tu visibilidad y atrae más clientes.",
-    images: ["https://lules-market.vercel.app/logo.webp"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: "https://lules-market.vercel.app/para-comercios",
-  },
-};
-
-export default async function ForBusinessPage() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(orpcTanstack.plan.getAllPlans.queryOptions());
-
+export default function Loading() {
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">
       {/* Hero Section */}
@@ -157,9 +109,7 @@ export default async function ForBusinessPage() {
             </p>
           </div>
 
-          <HydrateClient client={queryClient}>
-            <PlanPricingPreview />
-          </HydrateClient>
+          <PlanPricingPreviewSkeleton />
         </div>
       </section>
 

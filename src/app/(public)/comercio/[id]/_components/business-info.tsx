@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ExternalLink,
   Heart,
@@ -29,7 +27,7 @@ import { SimilarBusinesses } from "./similar-businesses";
 
 type BusinessInfoProps = {
   business: BusinessWithRelations;
-  similarBusinesses?: BusinessWithRelations[];
+  similarBusinesses?: BusinessWithRelations[] | null;
 };
 
 export const BusinessInfo: React.FC<BusinessInfoProps> = ({

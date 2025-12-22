@@ -59,12 +59,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  const { products } = await orpc.products.listAllProducts();
-  if (!products.length) return [{ id: "static-fallback" }];
-  return products.map((product) => ({ id: product.id }));
-}
-
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const { product } = await orpc.products.getProductById({ id });
@@ -89,7 +83,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-background pb-12">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <ProductViewTracker productId={product.id} />
       </Suspense>
       <ProductSchema

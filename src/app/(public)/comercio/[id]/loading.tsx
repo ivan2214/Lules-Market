@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -10,63 +8,72 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <main className="container px-4 py-4 md:py-8">
-      {/* Hero image */}
-      <div className="mb-6 md:mb-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="aspect-4/3 overflow-hidden rounded-xl md:aspect-video md:rounded-2xl">
-            <Skeleton className="h-full w-full" />
+    <section className="container px-4 py-4 md:py-8">
+      {/* Cover + logo */}
+      <div className="mb-8 md:mb-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="relative w-full">
+            <div className="aspect-video overflow-hidden rounded-2xl shadow-xl md:aspect-21/9">
+              <Skeleton className="h-full w-full" />
+            </div>
+
+            <div className="absolute bottom-0 left-6 translate-y-1/2 md:left-8">
+              <Skeleton className="h-24 w-24 rounded-2xl md:h-32 md:w-32" />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mb-6 grid gap-4 md:mb-8 md:gap-6 lg:grid-cols-3">
-        {/* Left column */}
-        <div className="flex flex-col gap-4 lg:col-span-2">
-          {/* Business header */}
-          <Card>
-            <CardHeader className="flex items-center justify-between gap-4">
-              <Skeleton className="h-6 w-1/2" />
-              <div className="flex gap-2">
-                <Skeleton className="h-9 w-9 rounded-md" />
-                <Skeleton className="h-9 w-9 rounded-md" />
+      <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
+        {/* Main content */}
+        <div className="flex flex-col gap-6 md:gap-8 lg:col-span-2">
+          {/* Business info */}
+          <Card className="shadow-md">
+            <CardHeader className="space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-8 w-3/4" />
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+                <div className="flex gap-2">
+                  <Skeleton className="h-9 w-9 rounded-md" />
+                  <Skeleton className="h-9 w-9 rounded-md" />
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-            </CardContent>
-            <CardFooter className="flex flex-col items-start gap-3">
-              <Skeleton className="h-5 w-48" />
+
+            <CardFooter className="flex flex-col items-start gap-3 border-t pt-6">
+              <Skeleton className="h-4 w-40" />
               <div className="flex flex-wrap gap-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-6 w-20 rounded-full" />
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-6 w-24 rounded-full" />
                 ))}
               </div>
             </CardFooter>
           </Card>
 
           {/* Products */}
-          <Card>
+          <Card className="shadow-md">
             <CardHeader className="space-y-2">
-              <Skeleton className="h-6 w-56" />
-              <Skeleton className="h-4 w-72" />
+              <Skeleton className="h-6 w-64" />
+              <Skeleton className="h-4 w-80" />
             </CardHeader>
-            <CardContent className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
-              {Array.from({ length: 4 }).map((_, i) => (
+
+            <CardContent className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-full overflow-hidden rounded-md border"
+                  className="overflow-hidden rounded-xl border bg-card"
                 >
-                  <Skeleton className="h-48 w-full" />
-                  <div className="space-y-3 p-4">
-                    <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="aspect-square w-full" />
+                  <div className="flex flex-col gap-3 p-4">
+                    <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                    <div className="flex items-center justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-8 w-28" />
+                    <div className="flex items-center justify-between pt-2">
+                      <Skeleton className="h-5 w-24" />
+                      <Skeleton className="h-8 w-20 rounded-md" />
                     </div>
                   </div>
                 </div>
@@ -75,16 +82,17 @@ export default function Loading() {
           </Card>
         </div>
 
-        {/* Right column – contact */}
-        <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-          <Card>
+        {/* Sidebar */}
+        <div className="space-y-6 lg:sticky lg:top-4 lg:self-start">
+          <Card className="shadow-md">
             <CardHeader>
-              <Skeleton className="h-6 w-60" />
+              <Skeleton className="h-6 w-56" />
             </CardHeader>
+
             <CardContent className="space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex gap-3">
-                  <Skeleton className="h-5 w-5 rounded-full" />
+                <div key={i} className="flex items-start gap-3">
+                  <Skeleton className="h-10 w-10 rounded-lg" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-full" />
@@ -92,13 +100,14 @@ export default function Loading() {
                 </div>
               ))}
             </CardContent>
-            <CardFooter className="flex-col gap-2">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
+
+            <CardFooter className="flex-col gap-3 border-t pt-6">
+              <Skeleton className="h-11 w-full rounded-md" />
+              <Skeleton className="h-11 w-full rounded-md" />
             </CardFooter>
           </Card>
         </div>
       </div>
-    </main>
+    </section>
   );
 }
