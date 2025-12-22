@@ -1,8 +1,12 @@
+import { eq } from "drizzle-orm";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+// Importar directamente desde la DB para generateStaticParams
+import { db } from "@/db";
+import { business } from "@/db/schema";
 import { env } from "@/env";
 import { orpc } from "@/lib/orpc";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
@@ -119,22 +123,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   try {
-    // Intentar obtener la lista de comercios
-    const { businesses } = await orpc.business.listAllBusinesses();
+    const businesses = await db
+      .select({ id: business.id })
+      .from(business)
+      .where(eq(business.isActive, true))
+      .limit(100);
 
-    // Si hay comercios, generar params para cada uno
-    if (businesses && businesses.length > 0) {
-      return businesses.map((business) => ({ id: business.id }));
+    if (!businesses) {
+      return [
+        {
+          id: "__placeholder__",
+        },
+      ];
     }
 
-    // Si no hay comercios, retornar array vacío
-    return [];
+    return businesses.map((b) => ({ id: b.id }));
   } catch (error) {
-    // Log del error para debugging
     console.error("[generateStaticParams] Error fetching businesses:", error);
 
-    // Retornar array vacío para permitir generación dinámica
-    return [];
+    return [
+      {
+        id: "__placeholder__",
+      },
+    ];
   }
 }
 

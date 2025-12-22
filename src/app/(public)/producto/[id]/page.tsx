@@ -1,3 +1,4 @@
+import { and, eq } from "drizzle-orm";
 import {
   CheckCircle2,
   ChevronRight,
@@ -8,6 +9,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { db } from "@/db";
+import { product } from "@/db/schema";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "@/shared/components/product-card";
@@ -61,22 +64,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   try {
-    // Intentar obtener la lista de productos
-    const { products } = await orpc.products.listAllProducts();
+    // Usar Drizzle directamente - NO usar orpc aquí
+    // generateStaticParams se ejecuta en build time, antes de que exista el servidor HTTP
+    const products = await db
+      .select({ id: product.id })
+      .from(product)
+      .where(and(eq(product.active, true), eq(product.isBanned, false)))
+      .limit(100);
 
-    // Si hay productos, generar params para cada uno
-    if (products && products.length > 0) {
-      return products.map((product) => ({ id: product.id }));
+    if (!products) {
+      return [{ id: "__placeholder__" }];
     }
 
-    // Si no hay productos, retornar array vacío
-    return [];
+    return products.map((p) => ({ id: p.id }));
   } catch (error) {
-    // Log del error para debugging
     console.error("[generateStaticParams] Error fetching products:", error);
-
-    // Retornar array vacío para permitir generación dinámica
-    return [];
+    // Retornar array vacío permite fallback a generación dinámica (ISR)
+    return [{ id: "__placeholder__" }];
   }
 }
 
