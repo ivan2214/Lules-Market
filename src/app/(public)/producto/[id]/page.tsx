@@ -80,9 +80,6 @@ export async function generateStaticParams() {
   }
 }
 
-// Habilitar generación dinámica para páginas no pre-renderizadas
-export const dynamicParams = true;
-
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const { product } = await orpc.products.getProductById({ id });
