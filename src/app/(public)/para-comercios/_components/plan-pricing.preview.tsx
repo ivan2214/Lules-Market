@@ -9,7 +9,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { formatCurrency } from "@/shared/utils/format";
 
-export const PlanPricingPreview = async () => {
+export const PlanPricingPreview = () => {
   const { data: plans } = useSuspenseQuery(
     orpcTanstack.plan.getAllPlans.queryOptions(),
   );
