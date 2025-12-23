@@ -35,6 +35,32 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          APP_URL: ${{ secrets.APP_URL }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets.AWS_ENDPOINT_URL_S3 }}
+          AWS_ENDPOINT_URL_IAM: ${{ secrets.AWS_ENDPOINT_URL_IAM }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          MP_WEBHOOK_SECRET: ${{ secrets.MP_WEBHOOK_SECRET }}
+          MP_ACCESS_TOKEN: ${{ secrets.MP_ACCESS_TOKEN }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPER_ADMIN_EMAIL: ${{ secrets.SUPER_ADMIN_EMAIL }}
+          SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
+          SUPER_ADMIN_NAME: ${{ secrets.SUPER_ADMIN_NAME }}
+          NEXT_PUBLIC_BETTER_AUTH_URL: ${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
   build:
     name: Build App
@@ -93,3 +119,4 @@ jobs:
           SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
           SUPER_ADMIN_NAME: ${{ secrets.SUPER_ADMIN_NAME }}
           NEXT_PUBLIC_BETTER_AUTH_URL: ${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}

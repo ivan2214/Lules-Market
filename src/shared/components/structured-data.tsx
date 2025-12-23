@@ -3,6 +3,8 @@
  * Mejora el SEO y la visibilidad en motores de búsqueda
  */
 
+import { env } from "@/env";
+
 interface OrganizationSchemaProps {
   name: string;
   description: string;
@@ -22,7 +24,7 @@ export function OrganizationSchema({
     name,
     description,
     url,
-    logo: logo || "https://lules-market.vercel.app/logo.webp",
+    logo: logo || `${env.NEXT_PUBLIC_APP_URL}/logo.webp`,
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
@@ -72,7 +74,7 @@ export function ProductSchema({
     "@type": "Product",
     name,
     description: description || name,
-    image: image || "https://lules-market.vercel.app/logo.webp",
+    image: image || `${env.NEXT_PUBLIC_APP_URL}/logo.webp`,
     offers: price
       ? {
           "@type": "Offer",
@@ -124,7 +126,7 @@ export function LocalBusinessSchema({
     "@type": "LocalBusiness",
     name,
     description: description || `${name} - Comercio local en Argentina`,
-    image: image || "https://lules-market.vercel.app/logo.webp",
+    image: image || `${env.NEXT_PUBLIC_APP_URL}/logo.webp`,
     url,
     address: address
       ? {

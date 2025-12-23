@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
+import { env } from "@/env";
 import { orpc } from "@/lib/orpc";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://lules-market.vercel.app";
+  const baseUrl = env.APP_URL;
 
   // Páginas estáticas
   const staticPages: MetadataRoute.Sitemap = [

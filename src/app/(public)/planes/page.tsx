@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { env } from "@/env";
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     title: "Planes y Precios - Lules Market",
     description:
       "Conoce nuestros planes y elige el que mejor se adapte a tu negocio.",
-    url: "https://lules-market.vercel.app/planes",
+    url: `${env.APP_URL}/planes`,
     type: "website",
   },
   twitter: {
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
       "Conoce nuestros planes y elige el que mejor se adapte a tu negocio.",
   },
   alternates: {
-    canonical: "https://lules-market.vercel.app/planes",
+    canonical: `${env.APP_URL}/planes`,
   },
 };
 

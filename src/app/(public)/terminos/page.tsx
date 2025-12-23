@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { env } from "@/env";
 import { Badge } from "@/shared/components/ui/badge";
 import {
   Card,
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Términos y Condiciones - Lules Market",
     description: "Conoce nuestros términos y condiciones de uso.",
-    url: "https://lules-market.vercel.app/terminos",
+    url: `${env.APP_URL}/terminos`,
     type: "website",
   },
   twitter: {
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
     description: "Conoce nuestros términos y condiciones de uso.",
   },
   alternates: {
-    canonical: "https://lules-market.vercel.app/terminos",
+    canonical: `${env.APP_URL}/terminos`,
   },
 };
 
