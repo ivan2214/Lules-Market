@@ -51,10 +51,10 @@ test.describe("Authentication & Account Management", () => {
     await page.getByRole("button", { name: "Crear Cuenta" }).click();
 
     // 10. Verify success message or redirect to business setup page
-    const successMessage = await page
+    /* const successMessage = await page
       .locator("text=Por favor, verifica tu email")
       .isVisible()
-      .catch(() => false);
+      .catch(() => false); */
     // Verify form submission was successful or handle gracefully
     // The page should show confirmation or an error
     await expect(page.getByRole("main")).toBeVisible();
