@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { env } from "@/env";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "@/shared/components/product-card";
@@ -98,9 +99,9 @@ export default async function ProductPage({ params }: Props) {
         currency="MXN"
         seller={{
           name: product.business?.name || "Sin nombre",
-          url: `https://lules-market.vercel.app/producto/${product.id}`,
+          url: `${env.APP_URL}/producto/${product.id}`,
         }}
-        url={`https://lules-market.vercel.app/producto/${product.id}`}
+        url={`${env.APP_URL}/producto/${product.id}`}
       />
       {/* Breadcrumb */}
       <div className="border-b bg-muted/30">

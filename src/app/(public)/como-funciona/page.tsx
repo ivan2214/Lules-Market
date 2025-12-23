@@ -1,6 +1,7 @@
 import { BarChart3, QrCode, Star, Store, Users, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { env } from "@/env";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     title: "Cómo Funciona - Lules Market",
     description:
       "Descubre lo fácil que es llevar tu negocio local al mundo digital en solo 3 pasos.",
-    url: "https://lules-market.vercel.app/como-funciona",
+    url: `${env.APP_URL}/como-funciona`,
     type: "website",
   },
   twitter: {
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
       "Descubre lo fácil que es llevar tu negocio local al mundo digital en solo 3 pasos.",
   },
   alternates: {
-    canonical: "https://lules-market.vercel.app/como-funciona",
+    canonical: `${env.APP_URL}/como-funciona`,
   },
 };
 

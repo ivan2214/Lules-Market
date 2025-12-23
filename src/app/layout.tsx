@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     "servicios",
     "vitrina digital",
   ],
+  verification: {
+    google: "8NkhaNOxnwiM0xa44M867a1R-phEJqisP8XMcJYaQfE",
+  },
 };
 
 export default function RootLayout({

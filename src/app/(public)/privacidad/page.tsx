@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { env } from "@/env";
 import { Badge } from "@/shared/components/ui/badge";
 import {
   Card,
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Política de Privacidad - Lules Market",
     description: "Cómo protegemos tus datos personales.",
-    url: "https://lules-market.vercel.app/privacidad",
+    url: `${env.APP_URL}/privacidad`,
     type: "website",
   },
   twitter: {
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     description: "Cómo protegemos tus datos personales.",
   },
   alternates: {
-    canonical: "https://lules-market.vercel.app/privacidad",
+    canonical: `${env.APP_URL}/privacidad`,
   },
 };
 

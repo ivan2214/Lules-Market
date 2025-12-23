@@ -4,6 +4,7 @@ import { ArrowRight, Store, TrendingUp, Zap } from "lucide-react";
 import type { Metadata } from "next";
 
 import Link from "next/link";
+import { env } from "@/env";
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
@@ -20,11 +21,11 @@ export const metadata: Metadata = {
     title: "Para Comercios - Lules Market | Tu Vitrina Digital",
     description:
       "Lleva tu comercio local al mundo digital. Aumenta tu visibilidad y atrae más clientes.",
-    url: "https://lules-market.vercel.app/para-comercios",
+    url: `${env.APP_URL}/para-comercios`,
     siteName: "Lules Market",
     images: [
       {
-        url: "https://lules-market.vercel.app/logo.webp",
+        url: `${env.APP_URL}/logo.webp`,
         width: 1200,
         height: 630,
         alt: "Lules Market - Para Comercios",
@@ -38,14 +39,14 @@ export const metadata: Metadata = {
     title: "Para Comercios - Lules Market | Tu Vitrina Digital",
     description:
       "Lleva tu comercio local al mundo digital. Aumenta tu visibilidad y atrae más clientes.",
-    images: ["https://lules-market.vercel.app/logo.webp"],
+    images: [`${env.APP_URL}/logo.webp`],
   },
   robots: {
     index: true,
     follow: true,
   },
   alternates: {
-    canonical: "https://lules-market.vercel.app/para-comercios",
+    canonical: `${env.APP_URL}/para-comercios`,
   },
 };
 

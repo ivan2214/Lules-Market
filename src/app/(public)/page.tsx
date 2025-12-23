@@ -13,6 +13,7 @@ import { connection } from "next/server";
 import { DynamicStats } from "@/app/(public)/_components/sections/dynamic-stats";
 import { FeaturedBusinesses } from "@/app/(public)/_components/sections/featured-businesses";
 import { RecentProducts } from "@/app/(public)/_components/sections/recent-products";
+import { env } from "@/env";
 import { orpcTanstack } from "@/lib/orpc";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
@@ -33,11 +34,11 @@ export const metadata: Metadata = {
     title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
     description:
       "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio.",
-    url: "https://lules-market.vercel.app",
+    url: env.APP_URL,
     siteName: "Lules Market",
     images: [
       {
-        url: "https://lules-market.vercel.app/logo.webp",
+        url: `${env.APP_URL}/logo.webp`,
         width: 1200,
         height: 630,
         alt: "Lules Market - Plataforma para comercios locales",
@@ -51,14 +52,14 @@ export const metadata: Metadata = {
     title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
     description:
       "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio.",
-    images: ["https://lules-market.vercel.app/logo.webp"],
+    images: [`${env.APP_URL}/logo.webp`],
   },
   robots: {
     index: true,
     follow: true,
   },
   alternates: {
-    canonical: "https://lules-market.vercel.app",
+    canonical: env.APP_URL,
   },
 };
 
