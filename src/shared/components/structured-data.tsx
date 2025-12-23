@@ -24,7 +24,7 @@ export function OrganizationSchema({
     name,
     description,
     url,
-    logo: logo || `${env.APP_URL}/logo.webp`,
+    logo: logo || `${env.NEXT_PUBLIC_APP_URL}/logo.webp`,
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
@@ -74,7 +74,7 @@ export function ProductSchema({
     "@type": "Product",
     name,
     description: description || name,
-    image: image || `${env.APP_URL}/logo.webp`,
+    image: image || `${env.NEXT_PUBLIC_APP_URL}/logo.webp`,
     offers: price
       ? {
           "@type": "Offer",
@@ -126,7 +126,7 @@ export function LocalBusinessSchema({
     "@type": "LocalBusiness",
     name,
     description: description || `${name} - Comercio local en Argentina`,
-    image: image || `${env.APP_URL}/logo.webp`,
+    image: image || `${env.NEXT_PUBLIC_APP_URL}/logo.webp`,
     url,
     address: address
       ? {

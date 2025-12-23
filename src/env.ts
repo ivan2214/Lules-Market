@@ -37,6 +37,7 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string(),
+    NEXT_PUBLIC_APP_URL: z.string(),
   },
   runtimeEnv: {
     APP_URL: process.env.APP_URL,
@@ -62,5 +63,6 @@ export const env = createEnv({
     SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD,
     SUPER_ADMIN_NAME: process.env.SUPER_ADMIN_NAME,
     NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
 });
