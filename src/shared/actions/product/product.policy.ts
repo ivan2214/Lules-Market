@@ -37,10 +37,3 @@ export async function canAddProduct(): Promise<boolean> {
   if (!maxProducts) return false;
   return productsUsed < maxProducts;
 }
-
-export async function canFeatureProduct(): Promise<boolean> {
-  const { currentBusiness } = await getCurrentBusiness();
-
-  const { canFeatureProducts } = currentBusiness?.currentPlan || {};
-  return !!canFeatureProducts;
-}

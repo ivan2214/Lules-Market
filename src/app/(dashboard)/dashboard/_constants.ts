@@ -23,6 +23,11 @@ export const subscriptionErrors: Record<
     description: "Necesitas una suscripción para acceder a esta funcionalidad.",
     variant: "warning",
   },
+  subscription_limit_reached: {
+    title: "Has alcanzado el límite de productos para tu plan",
+    description: "Mejora tu plan para agregar más productos.",
+    variant: "warning",
+  },
 };
 
 export const navigation: navigationItem[] = [

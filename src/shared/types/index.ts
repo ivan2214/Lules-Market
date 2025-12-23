@@ -5,7 +5,6 @@ import type { ForwardRefExoticComponent, RefAttributes } from "react";
 
 export interface PlanLimits {
   maxProducts: number;
-  canFeatureProducts: boolean;
   hasAnalytics: boolean;
   hasAdvancedAnalytics: boolean;
   priorityInSearch: boolean;

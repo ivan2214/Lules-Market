@@ -1,9 +1,15 @@
-import { Package } from "lucide-react";
+import { MessageCircleWarningIcon, Package } from "lucide-react";
 import Link from "next/link";
 import { ProductCardDashboard } from "@/features/(dashboard)/dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features/(dashboard)/dashboard/_components/product-form-dialog";
+import { subscriptionErrors } from "@/features/(dashboard)/dashboard/_constants";
 import { orpc } from "@/lib/orpc";
 import { getCurrentBusiness } from "@/shared/actions/business/get-current-business";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/shared/components/ui/alert";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export async function ProductsContent() {
@@ -26,26 +32,26 @@ export async function ProductsContent() {
           </p>
         </div>
         <ProductFormDialog
-          canFeature={currentPlan?.canFeatureProducts || false}
           categories={categories}
+          maxImagesPerProduct={currentPlan?.imagesUsed || 0}
         />
       </div>
 
       {!canAdd && (
-        <Card className="border-amber-500 bg-amber-50 dark:bg-amber-950">
-          <CardContent className="pt-6">
-            <p className="text-amber-900 text-sm dark:text-amber-100">
-              Has alcanzado el límite de productos para tu plan.{" "}
-              <Link
-                href="/dashboard/subscription"
-                className="font-medium underline"
-              >
-                Mejora tu plan
-              </Link>{" "}
-              para agregar más productos.
-            </p>
-          </CardContent>
-        </Card>
+        <Alert variant="warning">
+          <AlertTitle className="flex items-center">
+            <MessageCircleWarningIcon className="mr-2 h-4 w-4" />
+            Has alcanzado el límite de productos para tu plan
+          </AlertTitle>
+          <AlertDescription>
+            <Link
+              href={`/dashboard/subscription?error=${subscriptionErrors.subscription_limit_reached}`}
+              className="font-medium underline"
+            >
+              Mejora tu plan para agregar más productos.
+            </Link>
+          </AlertDescription>
+        </Alert>
       )}
 
       {products.length === 0 ? (
@@ -58,8 +64,8 @@ export async function ProductsContent() {
             </p>
             <div className="mt-4">
               <ProductFormDialog
-                canFeature={currentPlan?.canFeatureProducts || false}
                 categories={categories}
+                maxImagesPerProduct={currentPlan?.imagesUsed || 0}
               />
             </div>
           </CardContent>
@@ -70,8 +76,8 @@ export async function ProductsContent() {
             <ProductCardDashboard
               key={product.id}
               product={product}
-              canFeature={currentPlan?.canFeatureProducts || false}
               categories={categories}
+              maxImagesPerProduct={currentPlan?.imagesUsed || 0}
             />
           ))}
         </div>

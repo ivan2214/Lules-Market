@@ -7,7 +7,8 @@ export type ProductUpdateInput = z.infer<typeof ProductUpdateSchema>;
 
 export type SubscriptionErrorType =
   | "subscription_required"
-  | "subscription_expired";
+  | "subscription_expired"
+  | "subscription_limit_reached";
 export type SubscriptionErrorConfig = {
   title: string;
   description: string;

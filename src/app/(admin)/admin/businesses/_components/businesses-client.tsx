@@ -1,11 +1,14 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Facebook, Instagram, MessageCircle, Store } from "lucide-react";
 import { useState } from "react";
-
+import { toast } from "sonner";
 import type { BusinessWithRelations } from "@/db/types";
+import { orpcTanstack } from "@/lib/orpc";
 import { DataTable } from "@/shared/components/table/data-table";
+import { DataTableColumnHeader } from "@/shared/components/table/data-table-column-header";
 import { Badge } from "@/shared/components/ui/badge";
 import {
   Card,
@@ -14,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { Checkbox } from "@/shared/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -42,32 +46,67 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
     }
   };
 
+  const mutate = useMutation(
+    orpcTanstack.admin.deleteBusinessByIds.mutationOptions({
+      onSuccess: ({ success }) => {
+        if (success) {
+          toast.success("Negocio eliminado correctamente");
+        } else {
+          toast.error("Error al eliminar el negocio");
+        }
+      },
+      onError: () => {
+        toast.error("Error al eliminar el negocio");
+      },
+    }),
+  );
+
   const columns: ColumnDef<BusinessWithRelations>[] = [
     {
-      accessorKey: "name",
-      header: "Negocio",
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
       cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.original.name}</div>
-        </div>
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Negocio" />
       ),
     },
     {
       accessorKey: "email",
-      header: "Email del negocio",
-      cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.original.email}</div>
-        </div>
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Email" />
       ),
     },
     {
       accessorKey: "user.name",
-      header: "Propietario",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Propietario" />
+      ),
     },
     {
       accessorKey: "currentPlan.planType",
-      header: "Plan",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Plan" />
+      ),
       cell: ({ row }) => {
         const variant =
           row.original.currentPlan?.planType === "PREMIUM"
@@ -81,21 +120,40 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       },
     },
     {
-      accessorKey: "productsCount",
-      header: "Productos",
+      accessorKey: "user.emailVerified",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Email Verificado" />
+      ),
+      cell: ({ row }) => {
+        return row.original.user?.emailVerified ? (
+          <Badge variant="default">Verificado</Badge>
+        ) : (
+          <Badge variant="secondary">No Verificado</Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "products",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Productos" />
+      ),
       cell: ({ row }) => (
         <span className="font-medium">{row.original.products?.length}</span>
       ),
     },
     {
       accessorKey: "createdAt",
-      header: "Fecha de Creación",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Fecha de Creación" />
+      ),
       cell: ({ row }) =>
         new Date(row.original.createdAt).toLocaleDateString("es-AR"),
     },
     {
       id: "status",
-      header: "Estado",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Estado" />
+      ),
       cell: ({ row }) => {
         if (row.original.bannedBusiness)
           return <Badge variant="destructive">Baneado</Badge>;
@@ -130,6 +188,7 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
             data={businesses}
             columns={columns}
             searchPlaceholder="Buscar por nombre o propietario..."
+            onRowAction={mutate}
           />
         </CardContent>
       </Card>

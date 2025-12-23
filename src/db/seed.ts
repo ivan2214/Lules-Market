@@ -7,14 +7,14 @@
  */
 
 import { faker } from "@faker-js/faker";
-import { addDays, addMonths, subMonths } from "date-fns";
+import { addDays, subMonths } from "date-fns";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import type {
   ImageInsert,
   PaymentInsert,
+  Plan,
   PlanInsert,
-  PlanPriority,
   ProductInsert,
   WebhookEventInsert,
 } from "@/db/types";
@@ -43,7 +43,6 @@ const PLAN_TYPE = {
 const PERMISSIONS = ["ALL", "BAN_USERS", "MANAGE_PLANS"] as const;
 
 type PlanType = (typeof PLAN_TYPE)[keyof typeof PLAN_TYPE];
-type PlanStatus = (typeof PLAN_STATUS)[keyof typeof PLAN_STATUS];
 
 interface CreatedBusiness {
   id: string;
@@ -102,38 +101,10 @@ async function createUser(
   return user;
 }
 
-function pickPlanForBusiness(): {
-  planType: PlanType;
-  planStatus: PlanStatus;
-  expiresAt: Date;
-  hasStatistics: boolean;
-  listPriority: PlanPriority;
-} {
-  const roll = Math.random();
-  if (roll < 0.55) {
-    return {
-      planType: PLAN_TYPE.FREE,
-      planStatus: PLAN_STATUS.ACTIVE,
-      expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
-      hasStatistics: false,
-      listPriority: "Estandar",
-    };
-  }
-  if (roll < 0.85) {
-    return {
-      planType: PLAN_TYPE.BASIC,
-      planStatus: PLAN_STATUS.ACTIVE,
-      expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 6 })),
-      hasStatistics: true,
-      listPriority: "Media",
-    };
-  }
+async function pickPlanForBusiness(): Promise<{ plan: Plan }> {
+  const allPlans = await db.query.plan.findMany();
   return {
-    planType: PLAN_TYPE.PREMIUM,
-    planStatus: PLAN_STATUS.ACTIVE,
-    expiresAt: addMonths(new Date(), faker.number.int({ min: 1, max: 12 })),
-    hasStatistics: true,
-    listPriority: "Alta",
+    plan: randomFrom(allPlans),
   };
 }
 
@@ -201,7 +172,7 @@ async function seedPlans(): Promise<PlanInsert[]> {
       popular: false,
       isActive: true,
       hasStatistics: false,
-      canFeatureProducts: false,
+
       listPriority: "Estandar",
     },
     {
@@ -226,7 +197,7 @@ async function seedPlans(): Promise<PlanInsert[]> {
       popular: true,
       isActive: true,
       hasStatistics: true,
-      canFeatureProducts: false,
+
       listPriority: "Media",
     },
     {
@@ -252,7 +223,7 @@ async function seedPlans(): Promise<PlanInsert[]> {
       popular: false,
       isActive: true,
       hasStatistics: true,
-      canFeatureProducts: true,
+
       listPriority: "Alta",
     },
   ];
@@ -420,8 +391,9 @@ async function seedBusinesses(
 
   for (let i = 0; i < count; i++) {
     const category = faker.helpers.arrayElement(categories);
-    const { planType, planStatus, expiresAt, hasStatistics, listPriority } =
-      pickPlanForBusiness();
+    const {
+      plan: { type: planType, listPriority, hasStatistics },
+    } = await pickPlanForBusiness();
     const plan = plans.find((p) => p.type === planType);
 
     if (!plan) continue;
@@ -469,22 +441,40 @@ async function seedBusinesses(
       // Total images used is tricky with per-product limit, but we'll approximate for now or just set 0
       const imagesUsed = 0;
 
+      // Fix: Trial logic. Free is not a trial. Trial is a temporary Premium/Basic access.
+      // Randomly assign trial to some non-free plans
+      const isTrial =
+        planType !== "FREE" && faker.datatype.boolean({ probability: 0.1 });
+
       const currentPlanInsert = await db
         .insert(schema.currentPlan)
         .values({
           businessId: id,
           planType,
-          planStatus,
-          expiresAt,
+          planStatus: "ACTIVE",
+          expiresAt: isTrial
+            ? addDays(new Date(), 14) // Trial usage
+            : faker.date.future(),
           activatedAt: new Date(),
           isActive: true,
-          isTrial: planType === "FREE",
+          isTrial,
           imagesUsed,
           productsUsed,
           hasStatistics,
           listPriority,
         })
         .returning({ id: schema.currentPlan.id });
+
+      // If trial, also insert into trial table if it exists (it was deleted in deleteAllData)
+      if (isTrial) {
+        await db.insert(schema.trial).values({
+          businessId: id,
+          plan: planType,
+          expiresAt: faker.date.future({ years: 0.1 }),
+          activatedAt: new Date(),
+          isActive: true,
+        });
+      }
 
       await db
         .update(schema.user)
@@ -561,10 +551,31 @@ async function seedProducts(
   const planUpdates: Record<string, { images: number; products: number }> = {};
 
   for (const negocio of businesses) {
-    const productsCount = faker.number.int({
-      min: 1,
-      max: Math.min(negocio.maxProducts, 20),
-    });
+    // Determine product count based on plan limits
+    // We increase the hardcap from 20 to allow Basic plans to fill up (50) and Premium to show more.
+    // However, we avoid generating 9999 for Premium to keep seed fast.
+    const maxSeed = negocio.maxProducts > 100 ? 60 : negocio.maxProducts;
+
+    // Scenario: Some businesses are purely empty, others full, others random
+    const rand = Math.random();
+    let productsCount = 0;
+
+    if (rand < 0.1) {
+      // 10% empty
+      productsCount = 0;
+    } else if (rand < 0.2) {
+      // 10% exactly max (or max seed cap)
+      productsCount = maxSeed;
+    } else {
+      // 80% random
+      productsCount = faker.number.int({
+        min: 1,
+        max: maxSeed,
+      });
+    }
+
+    // Ensure we don't exceed the actual plan limit (redundant if maxSeed is correct but safe)
+    productsCount = Math.min(productsCount, negocio.maxProducts);
 
     for (let i = 1; i <= productsCount; i++) {
       const category = faker.helpers.arrayElement(categories);
@@ -606,6 +617,10 @@ async function seedProducts(
         min: 1,
         max: negocio.maxImagesPerProduct,
       });
+
+      // Scenario: Some products have NO images if the system allows (though currently we force min 1 per original seed logic, let's keep min 1 unless schema forbids)
+      // Actually schema allows null productId in images but product relation might expect images.
+      // We will stick to min 1 as requested "respect the amount... per plan" which usually implies max.
 
       for (let idx = 0; idx < imgCount; idx++) {
         imagesData.push({
@@ -847,6 +862,7 @@ async function applyScenarios(
       .set({
         planStatus: PLAN_STATUS.CANCELLED,
         expiresAt: addDays(new Date(), -1),
+        isActive: false,
       })
       .where(eq(schema.currentPlan.id, negocio.currentPlanId));
   }
@@ -862,6 +878,28 @@ async function applyScenarios(
       .set({
         planStatus: PLAN_STATUS.EXPIRED,
         expiresAt: addDays(new Date(), -10),
+        isActive: false,
+      })
+      .where(eq(schema.currentPlan.id, negocio.currentPlanId));
+
+    // Also expire trial if applicable
+    await db
+      .update(schema.trial)
+      .set({ isActive: false })
+      .where(eq(schema.trial.businessId, negocio.id));
+  }
+
+  // Inactive plans (5%) - Scenario added
+  const toInactive = faker.helpers.arrayElements(
+    businesses.filter((b) => !toCancel.includes(b) && !toExpire.includes(b)), // Avoid overlapping too much
+    Math.floor(businesses.length * 0.05),
+  );
+  for (const negocio of toInactive) {
+    await db
+      .update(schema.currentPlan)
+      .set({
+        planStatus: PLAN_STATUS.INACTIVE,
+        isActive: false,
       })
       .where(eq(schema.currentPlan.id, negocio.currentPlanId));
   }
