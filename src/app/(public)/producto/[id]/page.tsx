@@ -1,6 +1,7 @@
 import {
   CheckCircle2,
   ChevronRight,
+  MapIcon,
   MessageCircle,
   Share2,
 } from "lucide-react";
@@ -82,7 +83,7 @@ export default async function ProductPage({ params }: Props) {
   );
 
   return (
-    <div className="min-h-screen bg-background pb-12">
+    <div className="container mx-auto overflow-hidden">
       <Suspense fallback={null}>
         <ProductViewTracker productId={product.id} />
       </Suspense>
@@ -101,6 +102,7 @@ export default async function ProductPage({ params }: Props) {
         }}
         url={`https://lules-market.vercel.app/producto/${product.id}`}
       />
+      {/* Breadcrumb */}
       <div className="border-b bg-muted/30">
         <div className="container mx-auto px-4 py-5">
           <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -136,15 +138,16 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="container mx-auto px-0 py-0 md:px-4 md:py-6">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+          {/* Images */}
           <div className="lg:col-span-7">
             <ProductImages images={product.images} name={product.name} />
           </div>
 
-          <div className="space-y-6 lg:col-span-5">
-            <div>
-              <div className="mb-4 flex flex-wrap items-center gap-2">
+          <div className="flex flex-col gap-4 px-8 lg:col-span-5 lg:px-0">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {product.category && (
                   <Badge variant="secondary" className="font-semibold text-sm">
                     {product.category.label}
@@ -156,10 +159,10 @@ export default async function ProductPage({ params }: Props) {
                   </Badge>
                 )}
               </div>
-              <h1 className="mb-3 font-bold text-3xl leading-tight tracking-tight md:text-4xl">
+              <h1 className="font-bold text-xl leading-tight tracking-tight md:text-2xl lg:text-3xl">
                 {product.name}
               </h1>
-              <div className="prose prose-neutral dark:prose-invert mb-3 max-w-none">
+              <div className="prose prose-neutral dark:prose-invert max-w-none">
                 <p className="whitespace-pre-line text-base text-muted-foreground leading-relaxed">
                   {product.description ||
                     "El vendedor no ha proporcionado una descripción detallada para este producto."}
@@ -167,11 +170,34 @@ export default async function ProductPage({ params }: Props) {
               </div>
             </div>
 
-            <Separator />
+            <Separator className="my-0" />
 
-            <div className="rounded-lg bg-muted/50 p-5">
-              <div className="mb-1.5 font-bold text-4xl text-primary md:text-5xl">
-                {formatCurrency(product.price || 0, "ARS")}
+            <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-5">
+              <div className="flex items-baseline gap-2">
+                <span
+                  className={cn(
+                    "font-bold text-2xl",
+                    product.discount > 0
+                      ? "text-gray-400 text-xl line-through"
+                      : "text-primary",
+                  )}
+                >
+                  {formatCurrency(product.price || 0, "ARS")}
+                </span>
+
+                {product.discount > 0 && (
+                  <>
+                    <span className="font-bold text-2xl text-primary">
+                      {formatCurrency(
+                        (product.price || 0) * (1 - product.discount / 100),
+                        "ARS",
+                      )}
+                    </span>
+                    <span className="rounded bg-yellow-500 px-2 py-1 font-semibold text-sm text-white dark:bg-yellow-600">
+                      -{product.discount}%
+                    </span>
+                  </>
+                )}
               </div>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Precio sujeto a modificaciones. Consultar vigencia.
@@ -179,25 +205,17 @@ export default async function ProductPage({ params }: Props) {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Button
-                size="lg"
-                className="h-14 w-full gap-2 font-semibold text-base shadow-lg shadow-primary/30 transition-all hover:shadow-primary/40 hover:shadow-xl"
-                asChild
-              >
-                <a
+              <Button asChild>
+                <Link
                   href={`https://wa.me/${product.business?.whatsapp || product.business?.phone}?text=${whatsappMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <MessageCircle className="h-5 w-5" />
                   Consultar por WhatsApp
-                </a>
+                </Link>
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="h-12 w-full gap-2 bg-transparent font-semibold"
-              >
+              <Button variant="outline">
                 <Share2 className="h-4 w-4" />
                 Compartir
               </Button>
@@ -206,13 +224,13 @@ export default async function ProductPage({ params }: Props) {
             {product.business && (
               <div
                 className={cn(
-                  "rounded-xl border-2 p-5 transition-all hover:shadow-lg",
+                  "flex flex-col gap-4 rounded-xl border-2 p-5 transition-all hover:shadow-lg",
                   isPremium
                     ? "border-yellow-500/40 bg-linear-to-br from-yellow-500/10 to-yellow-500/5"
                     : "border-border bg-muted/40",
                 )}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-start gap-4">
                   <Avatar className="h-14 w-14 border-2">
                     <AvatarImage
                       src={product.business.logo?.url || "/placeholder.svg"}
@@ -221,8 +239,8 @@ export default async function ProductPage({ params }: Props) {
                       {product.business.name[0]}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-start gap-2">
                       <h3 className="truncate font-bold text-base">
                         {product.business.name}
                       </h3>
@@ -230,16 +248,14 @@ export default async function ProductPage({ params }: Props) {
                         <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                       )}
                     </div>
-                    <p className="mt-0.5 truncate text-muted-foreground text-sm">
+                    <p className="flex items-center gap-2 truncate text-muted-foreground text-sm">
+                      <MapIcon className="h-4 w-4" />{" "}
                       {product.business.address || "Dirección no disponible"}
                     </p>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="shrink-0 font-semibold"
-                    asChild
-                  >
+                </div>
+                <div className="w-full">
+                  <Button asChild className="w-full">
                     <Link href={`/comercio/${product.business.id}`}>
                       Ver perfil
                     </Link>
@@ -253,11 +269,11 @@ export default async function ProductPage({ params }: Props) {
         <Separator className="my-12" />
 
         {similarProducts.length > 0 && (
-          <div className="mt-16">
-            <h2 className="mb-8 font-bold text-2xl tracking-tight">
+          <div className="flex flex-col gap-4 px-8 lg:px-0">
+            <h2 className="flex flex-col gap-2 font-bold text-2xl tracking-tight">
               Productos similares
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:gap-6">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] place-items-center gap-4">
               {similarProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
