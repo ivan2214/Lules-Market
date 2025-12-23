@@ -120,6 +120,19 @@ export const BusinessesClient: React.FC<BusinessesClientProps> = ({
       },
     },
     {
+      accessorKey: "user.emailVerified",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Email Verificado" />
+      ),
+      cell: ({ row }) => {
+        return row.original.user?.emailVerified ? (
+          <Badge variant="default">Verificado</Badge>
+        ) : (
+          <Badge variant="secondary">No Verificado</Badge>
+        );
+      },
+    },
+    {
       accessorKey: "products",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Productos" />
