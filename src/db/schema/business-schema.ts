@@ -74,9 +74,7 @@ export const currentPlan = pgTable(
     productsUsed: integer("products_used").default(0).notNull(),
     imagesUsed: integer("images_used").default(0).notNull(),
     hasStatistics: boolean("has_statistics").default(false).notNull(),
-    canFeatureProducts: boolean("can_feature_products")
-      .default(false)
-      .notNull(),
+
     expiresAt: timestamp("expires_at").notNull(),
     activatedAt: timestamp("activated_at").notNull(),
     isActive: boolean("is_active").default(false).notNull(),
@@ -102,7 +100,6 @@ export const plan = pgTable("plan", {
   maxProducts: integer("max_products").notNull(),
   maxImagesPerProduct: integer("max_images_per_product").notNull(),
   hasStatistics: boolean("has_statistics").default(false).notNull(),
-  canFeatureProducts: boolean("can_feature_products").default(false).notNull(),
   details: json("details")
     .$type<{ products: string; images: string; priority: string }>()
     .notNull(),

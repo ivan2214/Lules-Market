@@ -43,6 +43,5 @@ export const PlanFormSchema = z.object({
   }),
   popular: z.boolean().default(false).optional(),
   hasStatistics: z.boolean().optional(),
-  canFeatureProducts: z.boolean().optional(),
   isActive: z.boolean().optional(),
 }) satisfies z.ZodType<PlanInsert>;

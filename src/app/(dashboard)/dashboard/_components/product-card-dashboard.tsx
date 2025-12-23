@@ -27,14 +27,15 @@ import { ProductFormDialog } from "./product-form-dialog";
 
 interface ProductCardProps {
   product: ProductWithRelations;
-  canFeature: boolean;
+
   categories: CategoryWithRelations[];
+  maxImagesPerProduct: number;
 }
 
 export function ProductCardDashboard({
   product,
-  canFeature = false,
   categories,
+  maxImagesPerProduct,
 }: ProductCardProps) {
   const router = useRouter();
 
@@ -96,9 +97,9 @@ export function ProductCardDashboard({
       </CardContent>
       <CardFooter className="flex gap-2 p-4 pt-0">
         <ProductFormDialog
-          canFeature={canFeature}
           product={product}
           categories={categories}
+          maxImagesPerProduct={maxImagesPerProduct}
           trigger={
             <Button
               variant="outline"

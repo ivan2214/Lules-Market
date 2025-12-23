@@ -51,7 +51,7 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
     },
     popular: false,
     discount: 0,
-    canFeatureProducts: false,
+
     hasStatistics: false,
     isActive: false,
   };
@@ -319,32 +319,6 @@ export const PlanForm = ({ selectedPlan }: { selectedPlan?: Plan | null }) => {
               </FieldContent>
               <Switch
                 id="plan-create-has-statistics"
-                name={field.name}
-                checked={field.value}
-                onCheckedChange={field.onChange}
-                aria-invalid={fieldState.invalid}
-              />
-            </Field>
-          )}
-        />
-        <Controller
-          name="canFeatureProducts"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field orientation="horizontal" data-invalid={fieldState.invalid}>
-              <FieldContent>
-                <FieldLabel htmlFor="plan-create-can-feature-products">
-                  Destacar Productos
-                </FieldLabel>
-                <FieldDescription>
-                  Habilitar la posibilidad de destacar productos en este plan.
-                </FieldDescription>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </FieldContent>
-              <Switch
-                id="plan-create-can-feature-products"
                 name={field.name}
                 checked={field.value}
                 onCheckedChange={field.onChange}

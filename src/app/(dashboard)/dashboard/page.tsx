@@ -96,9 +96,7 @@ async function DashboardContent() {
           </CardHeader>
           <CardContent className="space-y-2">
             <ProductFormDialog
-              canFeature={
-                currentBusiness.currentPlan?.canFeatureProducts || false
-              }
+              maxImagesPerProduct={currentBusiness.currentPlan?.imagesUsed || 0}
               className="w-full"
               categories={categories}
             />
@@ -164,8 +162,8 @@ async function DashboardContent() {
                     </p>
                   </div>
                   <ProductFormDialog
-                    canFeature={
-                      currentBusiness.currentPlan?.canFeatureProducts || false
+                    maxImagesPerProduct={
+                      currentBusiness.currentPlan?.imagesUsed || 0
                     }
                     product={product}
                     trigger={
