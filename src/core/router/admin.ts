@@ -1,9 +1,9 @@
 import "server-only";
-import { os } from "@orpc/server";
-import { eq } from "drizzle-orm";
+import { ORPCError, os } from "@orpc/server";
+import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { admin, plan, log as schemaLog } from "@/db/schema";
+import { admin, business, plan, log as schemaLog } from "@/db/schema";
 import type { Log, LogInsert, Permission, Plan, PlanInsert } from "@/db/types";
 import {
   getAdminDashboardStatsCache,
@@ -238,6 +238,40 @@ export const checkAdminPermission = os
     }
   });
 
+export const deleteBusinessByIds = adminAuthorized
+  .route({
+    method: "DELETE",
+    path: "/admin/business/:id",
+    summary: "Delete business by id",
+    description: "Delete business by id",
+    tags: ["Admin"],
+  })
+  .input(
+    z.object({
+      id: z.array(z.string()),
+    }),
+  )
+  .output(
+    z.object({
+      success: z.boolean(),
+    }),
+  )
+  .handler(async ({ input }) => {
+    try {
+      const businesFoundToBeDeleted = await db.query.business.findMany({
+        where: inArray(business.id, input.id),
+      });
+      if (businesFoundToBeDeleted.length === 0) {
+        throw new ORPCError("Business not found");
+      }
+      await db.delete(business).where(inArray(business.id, input.id));
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting business:", error);
+      throw new ORPCError("Error deleting business");
+    }
+  });
+
 export const adminRoute = {
   createLog,
   createPlan,
@@ -246,4 +280,5 @@ export const adminRoute = {
   getAnalyticsData,
   getAllPlans,
   checkAdminPermission,
+  deleteBusinessByIds,
 };
