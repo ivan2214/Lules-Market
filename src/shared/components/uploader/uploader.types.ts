@@ -6,8 +6,8 @@ export interface UploaderProps {
   maxSize?: number; // in MB
   accept?: string[];
   preview?: "grid" | "list";
-  onChange: (files: (ImageInsert | ImageInsert[]) | null) => void;
-  value?: ImageInsert | ImageInsert[] | null;
+  onChange: (files: ImageInsert | ImageInsert[] | null) => void;
+  value: ImageInsert | ImageInsert[];
   disabled?: boolean;
   className?: string;
   placeholder?: string;

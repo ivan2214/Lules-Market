@@ -31,8 +31,8 @@ export const BusinessSetupSchema = z.object({
   whatsapp: z.string().optional(),
   facebook: z.string().optional(),
   instagram: z.string().optional(),
-  logo: ImageInputSchema.optional(),
-  coverImage: ImageInputSchema.optional(),
+  logo: ImageInputSchema,
+  coverImage: ImageInputSchema,
   tags: z.array(z.string()).optional(),
 });
 

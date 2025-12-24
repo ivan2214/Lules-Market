@@ -6,7 +6,9 @@ import type { LogInsert } from "@/db/types";
 // ==========================================
 
 export const ImageInputSchema = z.object({
-  url: z.string().url("La URL de la imagen es inválida"),
+  url: z
+    .url("La URL de la imagen es inválida")
+    .min(1, "La URL de la imagen es requerida"),
   key: z.string().min(1, "La llave de la imagen es requerida"),
   name: z.string(),
   isMainImage: z.boolean(),

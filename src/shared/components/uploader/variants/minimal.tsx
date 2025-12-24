@@ -30,30 +30,31 @@ export function MinimalVariant(props: VariantCommonProps) {
     getInputProps,
     canUploadMoreFiles,
     removeFile,
+    isDragActive,
   }: VariantCommonProps = props;
-
-  const canUpload = canUploadMoreFiles(value, props.maxFiles);
 
   return (
     <div className={cn("space-y-2", className)}>
-      {!uploading?.isLoading && !uploading?.isDeleting && canUpload && (
-        <div
-          {...getRootProps()}
-          className={cn(
-            "cursor-pointer rounded-lg border-2 border-dashed p-4 text-center transition-colors",
-            props.isDragActive
-              ? "border-red-500 bg-red-50"
-              : "border-gray-300 hover:border-gray-400",
-            disabled && "cursor-not-allowed opacity-50",
-          )}
-        >
-          <input {...getInputProps()} />
-          <Upload className="mx-auto mb-2 h-6 w-6 text-gray-400" />
-          <p className="text-gray-600 text-sm">
-            {placeholder || "Arrastra archivos o haz clic para seleccionar"}
-          </p>
-        </div>
-      )}
+      {!uploading?.isLoading &&
+        !uploading?.isDeleting &&
+        canUploadMoreFiles && (
+          <div
+            {...getRootProps()}
+            className={cn(
+              "cursor-pointer rounded-lg border-2 border-dashed p-4 text-center transition-colors",
+              isDragActive
+                ? "border-red-500 bg-red-50"
+                : "border-gray-300 hover:border-gray-400",
+              disabled && "cursor-not-allowed opacity-50",
+            )}
+          >
+            <input {...getInputProps()} />
+            <Upload className="mx-auto mb-2 h-6 w-6 text-gray-400" />
+            <p className="text-gray-600 text-sm">
+              {placeholder || "Arrastra archivos o haz clic para seleccionar"}
+            </p>
+          </div>
+        )}
 
       {uploading?.isLoading && (
         <div className="space-y-2">

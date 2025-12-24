@@ -34,18 +34,23 @@ export function DefaultVariant(props: VariantCommonProps) {
     getInputProps,
     canUploadMoreFiles,
     removeFile,
+    maxFiles,
+    preview,
+    handleMainImage,
+    isDragActive,
+    maxSize,
   }: VariantCommonProps = props;
 
   return (
     <div className={cn("space-y-4", className)}>
       {!uploading?.isLoading &&
         !uploading?.isDeleting &&
-        canUploadMoreFiles(value, props.maxFiles) && (
+        canUploadMoreFiles && (
           <div
             {...getRootProps()}
             className={cn(
               "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
-              props.isDragActive
+              isDragActive
                 ? "border-red-500 bg-red-50"
                 : "border-gray-300 hover:border-gray-400",
               disabled && "cursor-not-allowed opacity-50",
@@ -61,7 +66,7 @@ export function DefaultVariant(props: VariantCommonProps) {
 
               <div>
                 <p className="mb-2 font-medium text-gray-700 text-lg">
-                  {props.isDragActive
+                  {isDragActive
                     ? "Suelta los archivos aquí"
                     : placeholder || "Arrastra archivos aquí"}
                 </p>
@@ -69,9 +74,9 @@ export function DefaultVariant(props: VariantCommonProps) {
                   o haz clic para seleccionar archivos
                 </p>
                 <div className="flex justify-center gap-4 text-gray-400 text-xs">
-                  <span>Máximo {props.maxFiles} archivos</span>
+                  <span>Máximo {maxFiles} archivos</span>
                   <span>•</span>
-                  <span>Hasta {props.maxSize}MB cada uno</span>
+                  <span>Hasta {maxSize}MB cada uno</span>
                 </div>
               </div>
 
@@ -120,11 +125,11 @@ export function DefaultVariant(props: VariantCommonProps) {
               Archivos subidos ({value?.length})
             </h4>
             <Badge variant="secondary">
-              {value?.length}/{props.maxFiles}
+              {value?.length}/{maxFiles}
             </Badge>
           </div>
 
-          {props.preview === "grid" ? (
+          {preview === "grid" ? (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {value
                 ?.toSorted(
@@ -208,7 +213,7 @@ export function DefaultVariant(props: VariantCommonProps) {
                         variant="outline"
                         disabled={disabled}
                         className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        onClick={() => props.handleMainImage?.(file.key)}
+                        onClick={() => handleMainImage?.(file.key)}
                       >
                         <StarIcon className="h-4 w-4 text-yellow-500" />
                       </Button>
@@ -255,15 +260,40 @@ export function DefaultVariant(props: VariantCommonProps) {
                           <Check className="h-3 w-3" />
                           Subido
                         </Badge>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeFile(file.key)}
-                          disabled={disabled}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="h-6 w-6 opacity-100 transition-opacity group-hover:opacity-100 md:opacity-0"
+                              disabled={disabled}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Estas seguro de eliminar esta imagen?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta acción no se puede deshacer. Es permanente.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-destructive text-white hover:bg-destructive/90"
+                                onClick={() =>
+                                  removeFile((file as ImageInsert).key)
+                                }
+                              >
+                                Eliminar
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </CardContent>
@@ -274,9 +304,10 @@ export function DefaultVariant(props: VariantCommonProps) {
         </div>
       ) : (
         value &&
+        (value as ImageInsert)?.url?.length > 0 &&
         !Array.isArray(value) && (
           <div className="space-y-2">
-            <Card key={(value as ImageInsert).key}>
+            <Card className="group" key={(value as ImageInsert).key}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   {isImage(value as ImageInsert) ? (
@@ -312,15 +343,40 @@ export function DefaultVariant(props: VariantCommonProps) {
                       <Check className="h-3 w-3" />
                       Subido
                     </Badge>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeFile((value as ImageInsert).key)}
-                      disabled={disabled}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="h-6 w-6 opacity-100 transition-opacity group-hover:opacity-100 md:opacity-0"
+                          disabled={disabled}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Estas seguro de eliminar esta imagen?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer. Es permanente.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-white hover:bg-destructive/90"
+                            onClick={() =>
+                              removeFile((value as ImageInsert).key)
+                            }
+                          >
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </div>
               </CardContent>
