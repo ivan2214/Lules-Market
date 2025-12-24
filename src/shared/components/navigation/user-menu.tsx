@@ -100,7 +100,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           <DropdownMenuItem asChild>
             <Link
               onClick={() => setOpen(false)}
-              href={`/comercios/${businessId}`}
+              href={`/comercio/${businessId}`}
               className="cursor-pointer"
             >
               <Store className="mr-2 h-4 w-4" />

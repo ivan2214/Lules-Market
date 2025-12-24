@@ -27,20 +27,22 @@ export function AvatarVariant(props: VariantCommonProps) {
     uploading,
     getRootProps,
     getInputProps,
-
     removeFile,
+    isDragActive,
+    canUploadMoreFiles,
   }: VariantCommonProps = props;
 
   return (
     <div className={cn("space-y-2", className)}>
       {!uploading?.isLoading &&
       !uploading?.isDeleting &&
+      canUploadMoreFiles &&
       !(value as ImageInsert)?.url ? (
         <div
           {...getRootProps()}
           className={cn(
             "h-32 w-32 cursor-pointer rounded-full border-2 border-dashed p-4 text-center transition-colors",
-            props.isDragActive
+            isDragActive
               ? "border-red-500 bg-red-50"
               : "border-gray-300 hover:border-gray-400",
             disabled && "cursor-not-allowed opacity-50",

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { os } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
@@ -13,8 +12,9 @@ import {
   listAllProductsCache,
   recentProductsCache,
 } from "../cache-functions/products";
+import { base } from "./middlewares/base";
 
-export const recentProducts = os
+export const recentProducts = base
   .route({
     path: "/products/recent",
     method: "GET",
@@ -27,7 +27,7 @@ export const recentProducts = os
     return await recentProductsCache();
   });
 
-export const listAllProducts = os
+export const listAllProducts = base
   .route({
     path: "/products/list",
     method: "GET",
@@ -48,7 +48,7 @@ export const listAllProducts = os
     return await listAllProductsCache(input);
   });
 
-export const getProductById = os
+export const getProductById = base
   .route({
     path: "/products/:id",
     method: "GET",
@@ -87,7 +87,7 @@ export const getProductById = os
     };
   });
 
-export const trackProductView = os
+export const trackProductView = base
   .route({
     path: "/products/:id/view",
     method: "POST",
@@ -117,7 +117,7 @@ export const trackProductView = os
     }
   });
 
-export const getSimilarProducts = os
+export const getSimilarProducts = base
   .route({
     path: "/products/:id/similar",
     method: "GET",

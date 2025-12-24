@@ -1,19 +1,21 @@
 import "server-only";
-import { os } from "@orpc/server";
+import { revalidateTag } from "next/cache";
 import z from "zod";
 import { db } from "@/db";
 import { businessView } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
+import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 import {
   featuredBusinessesCache,
   getBusinessByIdCache,
   ListAllBusinessesInputSchema,
   ListAllBusinessesOutputSchema,
-  listAllBusinessesByCategoriesCache,
   listAllBusinessesCache,
+  listAllSimilarBusinessesCache,
 } from "../cache-functions/business";
+import { base } from "./middlewares/base";
 
-export const featuredBusinesses = os
+export const featuredBusinesses = base
   .route({
     method: "GET",
     summary: "Obtener negocios destacados",
@@ -25,7 +27,7 @@ export const featuredBusinesses = os
     return await featuredBusinessesCache();
   });
 
-export const listAllBusinesses = os
+export const listAllBusinesses = base
   .route({
     method: "GET",
     summary: "Listar todos los negocios",
@@ -38,7 +40,7 @@ export const listAllBusinesses = os
     return await listAllBusinessesCache(input);
   });
 
-export const getBusinessById = os
+export const getBusinessById = base
   .route({
     method: "GET",
     summary: "Get business by id",
@@ -49,13 +51,13 @@ export const getBusinessById = os
     return getBusinessByIdCache(input.id);
   });
 
-export const listAllBusinessesByCategories = os
+export const listAllSimilarBusinesses = base
   .route({
     method: "GET",
     summary: "List all businesses by categories",
     tags: ["Business"],
   })
-  .input(z.object({ category: z.string().nullish() }))
+  .input(z.object({ category: z.string().nullish(), businessId: z.string() }))
   .output(
     z.object({
       businesses: z.array(z.custom<BusinessWithRelations>()).nullish(),
@@ -65,13 +67,14 @@ export const listAllBusinessesByCategories = os
     if (!input.category) {
       return { businesses: null };
     }
-    const businesses = await listAllBusinessesByCategoriesCache({
+    const businesses = await listAllSimilarBusinessesCache({
       category: input.category,
+      businessId: input.businessId,
     });
     return businesses;
   });
 
-export const trackBusinessView = os
+export const trackBusinessView = base
   .route({
     method: "POST",
     summary: "Track business view",
@@ -83,12 +86,13 @@ export const trackBusinessView = os
       businessId: input.businessId,
       referrer: "unknown",
     });
+    revalidateTag(CACHE_TAGS.ANALYTICS.GET_STATS, "max");
   });
 
 export const businessRoute = {
   featuredBusinesses,
   listAllBusinesses,
   getBusinessById,
-  listAllBusinessesByCategories,
+  listAllSimilarBusinesses,
   trackBusinessView,
 };

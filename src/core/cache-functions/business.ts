@@ -7,6 +7,7 @@ import {
   eq,
   ilike,
   inArray,
+  not,
   or,
   type SQL,
   sql,
@@ -175,8 +176,9 @@ export async function getBusinessByIdCache(id: string) {
   return { business: businessData as BusinessWithRelations | undefined };
 }
 
-export async function listAllBusinessesByCategoriesCache(input: {
+export async function listAllSimilarBusinessesCache(input: {
   category: string;
+  businessId: string;
 }): Promise<{ businesses: BusinessWithRelations[] }> {
   "use cache";
   cacheTag(CACHE_TAGS.BUSINESS.GET_ALL);
@@ -192,6 +194,8 @@ export async function listAllBusinessesByCategoriesCache(input: {
     where: and(
       eq(business.categoryId, categoryId.id),
       eq(business.isActive, true),
+      // todos menos el negocio que se esta viendo
+      not(eq(business.id, input.businessId)),
     ),
     limit: 4,
     with: {

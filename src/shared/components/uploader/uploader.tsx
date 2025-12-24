@@ -248,8 +248,11 @@ export function Uploader({
         getRootProps={getRootProps}
         getInputProps={getInputProps}
         isDragActive={isDragActive}
-        canUploadMoreFiles={canUploadMoreFiles}
+        canUploadMoreFiles={canUploadMoreFiles(value, maxFiles)}
         removeFile={removeFile}
+        preview={preview}
+        maxFiles={maxFiles}
+        maxSize={maxSize}
       />
     );
   }
@@ -266,7 +269,7 @@ export function Uploader({
         getRootProps={getRootProps}
         getInputProps={getInputProps}
         isDragActive={isDragActive}
-        canUploadMoreFiles={canUploadMoreFiles}
+        canUploadMoreFiles={canUploadMoreFiles(value, maxFiles)}
         removeFile={removeFile}
         maxFiles={maxFiles}
         maxSize={maxSize}
@@ -288,7 +291,7 @@ export function Uploader({
       getRootProps={getRootProps}
       getInputProps={getInputProps}
       isDragActive={isDragActive}
-      canUploadMoreFiles={canUploadMoreFiles}
+      canUploadMoreFiles={canUploadMoreFiles(value, maxFiles)}
       removeFile={removeFile}
       handleMainImage={handleMainImage}
       preview={preview}

@@ -11,7 +11,7 @@ export type VariantCommonProps = {
   maxFiles?: number | undefined;
   maxSize?: number | undefined;
   preview?: "grid" | "list" | undefined;
-  value?: ImageInsert | ImageInsert[] | null | undefined;
+  value: ImageInsert | ImageInsert[];
   uploading?:
     | {
         isLoading: boolean;
@@ -27,10 +27,7 @@ export type VariantCommonProps = {
   getInputProps: (
     props?: React.InputHTMLAttributes<HTMLInputElement>,
   ) => React.InputHTMLAttributes<HTMLInputElement>;
-  canUploadMoreFiles: (
-    value: ImageInsert | ImageInsert[] | null | undefined,
-    max?: number,
-  ) => boolean;
+  canUploadMoreFiles: boolean;
   removeFile: (key: string) => void;
   handleMainImage?: (key: string) => void;
 };

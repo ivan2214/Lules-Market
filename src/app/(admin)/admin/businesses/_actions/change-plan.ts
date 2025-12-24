@@ -3,7 +3,7 @@
 import { ORPCError, os } from "@orpc/server";
 import { addDays } from "date-fns";
 import { eq } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { db, schema } from "@/db";
 import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 import { ChangePlanInputSchema } from "../../_validations";
@@ -72,8 +72,8 @@ export const changePlan = os
           })
           .where(eq(schema.currentPlan.businessId, businessId));
 
-        updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
-        updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+        revalidateTag(CACHE_TAGS.BUSINESS.GET_ALL, "max");
+        revalidateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId), "max");
 
         return { ok: true, message: "Trial activado correctamente" };
       }
@@ -90,8 +90,8 @@ export const changePlan = os
         })
         .where(eq(schema.currentPlan.businessId, businessId));
 
-      updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
-      updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+      revalidateTag(CACHE_TAGS.BUSINESS.GET_ALL, "max");
+      revalidateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId), "max");
 
       return { ok: true, message: "Plan actualizado correctamente" };
     } catch (error) {

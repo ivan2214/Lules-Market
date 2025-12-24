@@ -10,7 +10,8 @@ import {
   getAnalyticsDataCache,
   getPlansCache,
 } from "../cache-functions/admin";
-import { adminAuthorized } from "./middlewares/authorized";
+import { requireAdminMiddleware } from "./middlewares/admin";
+import { base } from "./middlewares/base";
 
 // ====================== 📘 Tipos auxiliares ======================
 
@@ -48,7 +49,8 @@ const DashboardStatsSchema = z.object({
   }),
 });
 
-export const createLog = adminAuthorized
+export const createLog = base
+  .use(requireAdminMiddleware)
   .route({
     method: "POST",
     path: "/admin/createLog",
@@ -74,7 +76,9 @@ export const createLog = adminAuthorized
     }
   });
 
-export const createPlan = adminAuthorized
+export const createPlan = base
+
+  .use(requireAdminMiddleware)
   .route({
     method: "POST",
     path: "/admin/plans/createPlan",
@@ -99,7 +103,8 @@ export const createPlan = adminAuthorized
     }
   });
 
-export const deleteAllLogs = adminAuthorized
+export const deleteAllLogs = base
+  .use(requireAdminMiddleware)
   .route({
     method: "POST",
     path: "/admin/deleteAllLogs",
@@ -123,7 +128,8 @@ export const deleteAllLogs = adminAuthorized
     }
   });
 
-export const getAdminDashboardStats = adminAuthorized
+export const getAdminDashboardStats = base
+  .use(requireAdminMiddleware)
   .route({
     method: "GET",
     path: "/admin/dashboard/stats",
@@ -173,7 +179,9 @@ const PlanDistributionSchema = z.object({
   PREMIUM: PlanValueSchema,
 });
 
-export const getAnalyticsData = adminAuthorized
+export const getAnalyticsData = base
+
+  .use(requireAdminMiddleware)
   .route({
     method: "GET",
     path: "/admin/dashboard/analytics",
@@ -192,7 +200,9 @@ export const getAnalyticsData = adminAuthorized
     return getAnalyticsDataCache();
   });
 
-export const getAllPlans = adminAuthorized
+export const getAllPlans = base
+
+  .use(requireAdminMiddleware)
   .route({
     method: "GET",
     path: "/admin/plans",
@@ -238,7 +248,9 @@ export const checkAdminPermission = os
     }
   });
 
-export const deleteBusinessByIds = adminAuthorized
+export const deleteBusinessByIds = base
+
+  .use(requireAdminMiddleware)
   .route({
     method: "DELETE",
     path: "/admin/business/:id",

@@ -2,9 +2,10 @@
 import { ORPCError, os } from "@orpc/server";
 import { APIError } from "better-auth";
 import { eq } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
+import { env } from "@/env";
 import { auth } from "@/lib/auth";
 import { orpc } from "@/lib/orpc";
 import { syncUserRole } from "@/shared/actions/user/sync-user-role";
@@ -33,14 +34,44 @@ const businessSignInProcedure = os
 
     try {
       // Verificar si existe el usuario
-      const existingUser = await orpc.user.getUserByEmail({ email });
+      const existingUser: {
+        email: string;
+        id: string;
+        name: string;
+      } | null = await orpc.user.getUserByEmail({ email });
+      const isAdminOrSuperAdmin =
+        env.ADMIN_EMAIL === email || env.SUPER_ADMIN_EMAIL === email;
 
-      if (!existingUser) {
+      if (!existingUser && !isAdminOrSuperAdmin) {
         throw new ORPCError("El usuario no existe.");
+      }
+      let user: {
+        email: string;
+        id: string;
+        name: string;
+      } = existingUser || {
+        email: "",
+        id: "",
+        name: "",
+      };
+
+      if (isAdminOrSuperAdmin && !existingUser) {
+        const { user: userBetterAuth } = await auth.api.signUpEmail({
+          body: {
+            email,
+            password,
+            name: env.ADMIN_NAME || env.SUPER_ADMIN_NAME,
+          },
+        });
+        user = {
+          email: userBetterAuth.email,
+          id: userBetterAuth.id,
+          name: userBetterAuth.name,
+        };
       }
 
       // Sincronizar rol de usuario
-      const syncUserRoleResult = await syncUserRole(existingUser);
+      const syncUserRoleResult = await syncUserRole(user);
 
       if (syncUserRoleResult.success) {
         await auth.api.signInEmail({
@@ -48,7 +79,7 @@ const businessSignInProcedure = os
         });
 
         return {
-          message: `Bienvenido de nuevo ${existingUser.name}! Has iniciado sesión correctamente`,
+          message: `Bienvenido de nuevo ${user.name}! Has iniciado sesión correctamente`,
           hasVerified: true,
           isAdmin: true,
           hasBusiness: false,
@@ -61,7 +92,7 @@ const businessSignInProcedure = os
       });
 
       // Consultas paralelas para mejor performance
-      const [user, hasBusiness, isAdmin] = await Promise.all([
+      const [userDb, hasBusiness, isAdmin] = await Promise.all([
         db.query.user.findFirst({
           where: eq(schema.user.id, res.user.id),
         }),
@@ -77,7 +108,7 @@ const businessSignInProcedure = os
         message: `Bienvenido de nuevo ${res.user.name}! Has iniciado sesión correctamente`,
         hasBusiness: !!hasBusiness,
         isAdmin: !!isAdmin,
-        hasVerified: !!user?.emailVerified,
+        hasVerified: !!userDb?.emailVerified,
       };
     } catch (error) {
       // Mapeo de errores de better-auth
@@ -139,7 +170,7 @@ const businessSignUpProcedure = os
       const syncUserRoleResult = await syncUserRole(res.user);
 
       if (syncUserRoleResult.success) {
-        updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
+        revalidateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL, "max");
 
         return {
           message: `Bienvenido ${res.user.name}! Has iniciado sesión correctamente`,
@@ -157,7 +188,7 @@ const businessSignUpProcedure = os
         throw new ORPCError("Error al crear el usuario");
       }
 
-      updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
+      revalidateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL, "max");
 
       return {
         message:

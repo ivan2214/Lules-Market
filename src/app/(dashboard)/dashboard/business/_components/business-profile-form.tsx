@@ -1,11 +1,12 @@
 ﻿"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { startTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-
+import { toast } from "sonner";
 import type { BusinessWithRelations, ImageInsert } from "@/db/types";
-import { orpc } from "@/lib/orpc";
+import { orpcTanstack } from "@/lib/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Field,
@@ -113,11 +114,34 @@ export function BusinessProfileForm({
     defaultValues,
   });
 
-  const [pending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation(
+    orpcTanstack.business.update.mutationOptions({
+      onSuccess() {
+        toast.success("Negocio actualizado correctamente");
+        queryClient.invalidateQueries({
+          queryKey: orpcTanstack.business.listAllBusinesses.queryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: orpcTanstack.business.listAllSimilarBusinesses.queryKey({
+            input: {
+              category: form.getValues("category") ?? "",
+              businessId: business.id ?? "",
+            },
+          }),
+        });
+      },
+
+      onError() {
+        toast.error("Error al actualizar el negocio");
+      },
+    }),
+  );
 
   const onSubmit = async (data: BusinessUpdateInput) => {
     startTransition(async () => {
-      await orpc.business.update(data);
+      mutate(data);
     });
   };
 
@@ -150,7 +174,7 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="Nombre del negocio"
                 aria-invalid={fieldState.invalid}
-                disabled={pending}
+                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -176,7 +200,7 @@ export function BusinessProfileForm({
               <Select
                 value={field.value.toLocaleLowerCase() || ""}
                 onValueChange={(val) => field.onChange(val)}
-                disabled={pending}
+                disabled={isPending}
                 aria-invalid={fieldState.invalid}
               >
                 <SelectTrigger id="category" className="min-w-[120px]">
@@ -216,7 +240,7 @@ export function BusinessProfileForm({
               placeholder="Describe tu negocio..."
               className="min-h-[120px] resize-none"
               aria-invalid={fieldState.invalid}
-              disabled={pending}
+              disabled={isPending}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -245,7 +269,7 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="Calle 123, Ciudad"
                 aria-invalid={fieldState.invalid}
-                disabled={pending}
+                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -274,7 +298,7 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="+54 11 1234-5678"
                 aria-invalid={fieldState.invalid}
-                disabled={pending}
+                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -305,7 +329,7 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="contacto@negocio.com"
                 aria-invalid={fieldState.invalid}
-                disabled={pending}
+                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -334,7 +358,7 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="https://minegocio.com"
                 aria-invalid={fieldState.invalid}
-                disabled={pending}
+                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -376,7 +400,7 @@ export function BusinessProfileForm({
                       name === "whatsapp" ? "+54 11 1234-5678" : "@minegocio"
                     }
                     aria-invalid={fieldState.invalid}
-                    disabled={pending}
+                    disabled={isPending}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -420,7 +444,7 @@ export function BusinessProfileForm({
                   maxSize={1024 * 1024 * 5}
                   maxFiles={1}
                   value={field.value}
-                  disabled={fieldState.invalid || pending}
+                  disabled={fieldState.invalid || isPending}
                   aria-invalid={fieldState.invalid}
                 />
                 {fieldState.invalid && (
@@ -457,7 +481,7 @@ export function BusinessProfileForm({
                   maxSize={1024 * 1024 * 5}
                   maxFiles={1}
                   value={field.value}
-                  disabled={fieldState.invalid || pending}
+                  disabled={fieldState.invalid || isPending}
                   aria-invalid={fieldState.invalid}
                 />
                 {fieldState.invalid && (
@@ -470,10 +494,10 @@ export function BusinessProfileForm({
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" disabled={pending}>
+        <Button type="button" variant="outline" disabled={isPending}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={isPending}>
           Guardar Cambios
         </Button>
       </div>

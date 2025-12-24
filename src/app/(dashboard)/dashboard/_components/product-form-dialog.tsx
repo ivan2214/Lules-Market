@@ -137,13 +137,15 @@ export function ProductFormDialog({
     resolver: zodResolver(schema),
   });
 
-  const execute = form.handleSubmit((data) => {
+  const execute = () => {
+    const data = form.getValues();
+    if (isViewMode) return;
     if (product) {
       updateProductMutation.mutate(data as ProductUpdateInput);
     } else {
       createProductMutation.mutate(data as ProductCreateInput);
     }
-  });
+  };
 
   const pending =
     createProductMutation.isPending || updateProductMutation.isPending;
@@ -176,15 +178,7 @@ export function ProductFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form
-          aria-disabled={isViewMode}
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (isViewMode) return;
-            execute();
-          }}
-          className="space-y-4"
-        >
+        <form aria-disabled={isViewMode} action={execute} className="space-y-4">
           <FieldGroup>
             {/* Nombre */}
             <Controller

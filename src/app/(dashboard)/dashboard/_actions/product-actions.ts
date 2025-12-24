@@ -1,9 +1,10 @@
 import "server-only";
 import { ORPCError } from "@orpc/server";
 import { and, eq, inArray } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import z from "zod";
-import { businessAuthorized } from "@/core/router/middlewares/authorized";
+import { base } from "@/core/router/middlewares/base";
+import { requiredBusinessMiddleware } from "@/core/router/middlewares/business";
 import { db, schema } from "@/db";
 import type { Product, ProductWithRelations } from "@/db/types";
 import { deleteS3Object } from "@/shared/actions/s3/delete-s3-object";
@@ -15,9 +16,9 @@ import {
 } from "../_validations";
 
 const invalidateProducts = (productId?: string) => {
-  updateTag(CACHE_TAGS.PRODUCT.GET_ALL);
+  revalidateTag(CACHE_TAGS.PRODUCT.GET_ALL, "max");
   if (productId) {
-    updateTag(CACHE_TAGS.PRODUCT.GET_BY_ID(productId));
+    revalidateTag(CACHE_TAGS.PRODUCT.GET_BY_ID(productId), "max");
   }
 };
 
@@ -41,7 +42,8 @@ const checkCanAddProduct = (currentBusiness: {
 // CREATE PRODUCT
 // ==========================================
 
-export const createProduct = businessAuthorized
+export const createProduct = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Crear un nuevo producto",
@@ -153,7 +155,8 @@ export const createProduct = businessAuthorized
 // UPDATE PRODUCT
 // ==========================================
 
-export const updateProduct = businessAuthorized
+export const updateProduct = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "PUT",
     description: "Actualizar un producto",
@@ -273,7 +276,8 @@ export const updateProduct = businessAuthorized
 // DELETE PRODUCT
 // ==========================================
 
-export const deleteProduct = businessAuthorized
+export const deleteProduct = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "DELETE",
     description: "Eliminar un producto",
@@ -323,7 +327,8 @@ export const deleteProduct = businessAuthorized
     return { success: true };
   });
 
-export const listProductsByBusinessId = businessAuthorized
+export const listProductsByBusinessId = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "GET",
     description: "Listar productos por negocio",
@@ -338,6 +343,7 @@ export const listProductsByBusinessId = businessAuthorized
       where: eq(schema.product.businessId, currentBusiness.id),
       with: {
         images: true,
+        category: true,
       },
     });
 
