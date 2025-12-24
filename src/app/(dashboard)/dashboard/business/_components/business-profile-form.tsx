@@ -124,12 +124,12 @@ export function BusinessProfileForm({
           queryKey: orpcTanstack.business.listAllBusinesses.queryKey(),
         });
         queryClient.invalidateQueries({
-          queryKey:
-            orpcTanstack.business.listAllBusinessesByCategories.queryKey({
-              input: {
-                category: form.getValues("category") ?? "",
-              },
-            }),
+          queryKey: orpcTanstack.business.listAllSimilarBusinesses.queryKey({
+            input: {
+              category: form.getValues("category") ?? "",
+              businessId: business.id ?? "",
+            },
+          }),
         });
       },
 

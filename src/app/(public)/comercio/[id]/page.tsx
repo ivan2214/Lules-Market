@@ -127,8 +127,9 @@ export default async function BusinessPage({ params }: Props) {
   }
 
   const { businesses: similarBusinesses } =
-    await orpc.business.listAllBusinessesByCategories({
+    await orpc.business.listAllSimilarBusinesses({
       category: business.category?.value,
+      businessId: id,
     });
 
   return (

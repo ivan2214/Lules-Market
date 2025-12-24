@@ -10,8 +10,8 @@ import {
   getBusinessByIdCache,
   ListAllBusinessesInputSchema,
   ListAllBusinessesOutputSchema,
-  listAllBusinessesByCategoriesCache,
   listAllBusinessesCache,
+  listAllSimilarBusinessesCache,
 } from "../cache-functions/business";
 import { base } from "./middlewares/base";
 
@@ -51,13 +51,13 @@ export const getBusinessById = base
     return getBusinessByIdCache(input.id);
   });
 
-export const listAllBusinessesByCategories = base
+export const listAllSimilarBusinesses = base
   .route({
     method: "GET",
     summary: "List all businesses by categories",
     tags: ["Business"],
   })
-  .input(z.object({ category: z.string().nullish() }))
+  .input(z.object({ category: z.string().nullish(), businessId: z.string() }))
   .output(
     z.object({
       businesses: z.array(z.custom<BusinessWithRelations>()).nullish(),
@@ -67,8 +67,9 @@ export const listAllBusinessesByCategories = base
     if (!input.category) {
       return { businesses: null };
     }
-    const businesses = await listAllBusinessesByCategoriesCache({
+    const businesses = await listAllSimilarBusinessesCache({
       category: input.category,
+      businessId: input.businessId,
     });
     return businesses;
   });
@@ -92,6 +93,6 @@ export const businessRoute = {
   featuredBusinesses,
   listAllBusinesses,
   getBusinessById,
-  listAllBusinessesByCategories,
+  listAllSimilarBusinesses,
   trackBusinessView,
 };
