@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, File, StarIcon, Upload, X } from "lucide-react";
+import { Fragment } from "react/jsx-runtime";
 import type { ImageInsert } from "@/db/types";
 import { cn } from "@/lib/utils";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
@@ -19,6 +20,17 @@ import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Progress } from "@/shared/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from "../../ui/item";
 import { formatFileSize, isImage } from "../uploader.helpers";
 import type { VariantCommonProps } from "./types";
 
@@ -222,37 +234,52 @@ export function DefaultVariant(props: VariantCommonProps) {
                 ))}
             </div>
           ) : (
-            <div className="space-y-2">
-              {value?.map((file) => (
-                <Card key={file.key}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      {isImage(file) ? (
-                        <div className="relative h-12 w-12 overflow-hidden rounded bg-gray-100">
-                          <ImageWithSkeleton
-                            src={file.url || "/placeholder.svg"}
-                            alt={file.name || "Imagen"}
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded bg-gray-100">
-                          <File className="h-6 w-6 text-gray-400" />
-                        </div>
+            <ItemGroup>
+              {value
+                ?.toSorted((a) => (a.isMainImage ? -1 : 1))
+                .map((file, index) => (
+                  <Fragment key={file.key}>
+                    <Item
+                      variant="outline"
+                      className={cn(
+                        "group relative mt-1 hover:bg-yellow-500/50 hover:text-white",
+                        file.isMainImage && "bg-yellow-500/50 text-white",
                       )}
-
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-sm">
-                          {file.name || "Archivo"}
-                        </p>
-                        {file.size != null && (
-                          <p className="text-gray-500 text-xs">
-                            {formatFileSize(file.size)}
-                          </p>
+                    >
+                      {file.isMainImage && (
+                        <Badge
+                          className="-top-2 -left-4 absolute"
+                          variant="secondary"
+                        >
+                          Principal
+                        </Badge>
+                      )}
+                      <ItemMedia>
+                        {isImage(file) ? (
+                          <Avatar>
+                            <AvatarImage
+                              src={file.url || "/placeholder.svg"}
+                              className="grayscale"
+                            />
+                            <AvatarFallback>
+                              {file.name?.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <div className="flex h-12 w-12 items-center justify-center rounded bg-gray-100">
+                            <File className="h-6 w-6 text-gray-400" />
+                          </div>
                         )}
-                      </div>
-
-                      <div className="flex items-center gap-2">
+                      </ItemMedia>
+                      <ItemContent className="gap-1">
+                        <ItemTitle>{file.name || "Archivo"}</ItemTitle>
+                        {file.size != null && (
+                          <ItemDescription>
+                            {formatFileSize(file.size)}
+                          </ItemDescription>
+                        )}
+                      </ItemContent>
+                      <ItemActions>
                         <Badge
                           variant="secondary"
                           className="flex items-center gap-1"
@@ -294,94 +321,118 @@ export function DefaultVariant(props: VariantCommonProps) {
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+
+                        {!file.isMainImage && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="absolute top-2 left-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                                disabled={disabled}
+                              >
+                                <StarIcon className="h-4 w-4 text-yellow-500" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Estas seguro de establecer esta imagen como
+                                  principal?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Confirma que deseas establecer esta imagen
+                                  como principal.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleMainImage?.(file.key)}
+                                  className="bg-yellow-500 text-white hover:bg-yellow-500/90"
+                                >
+                                  Establecer como principal
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                      </ItemActions>
+                    </Item>
+                    {index !== value.length - 1 && (
+                      <ItemSeparator className="my-1" />
+                    )}
+                  </Fragment>
+                ))}
+            </ItemGroup>
           )}
         </div>
       ) : (
         value &&
         (value as ImageInsert)?.url?.length > 0 &&
         !Array.isArray(value) && (
-          <div className="space-y-2">
-            <Card className="group" key={(value as ImageInsert).key}>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  {isImage(value as ImageInsert) ? (
-                    <div className="relative h-12 w-12 overflow-hidden rounded bg-gray-100">
-                      <ImageWithSkeleton
-                        src={(value as ImageInsert).url || "/placeholder.svg"}
-                        alt={(value as ImageInsert).name || "Imagen"}
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded bg-gray-100">
-                      <File className="h-6 w-6 text-gray-400" />
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-sm">
-                      {(value as ImageInsert).name || "Archivo"}
-                    </p>
-                    {(value as ImageInsert).size != null && (
-                      <p className="text-gray-500 text-xs">
-                        {formatFileSize((value as ImageInsert).size as number)}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center gap-1"
-                    >
-                      <Check className="h-3 w-3" />
-                      Subido
-                    </Badge>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="h-6 w-6 opacity-100 transition-opacity group-hover:opacity-100 md:opacity-0"
-                          disabled={disabled}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Estas seguro de eliminar esta imagen?
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Esta acción no se puede deshacer. Es permanente.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            className="bg-destructive text-white hover:bg-destructive/90"
-                            onClick={() =>
-                              removeFile((value as ImageInsert).key)
-                            }
-                          >
-                            Eliminar
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
+          <Item variant="outline">
+            <ItemMedia>
+              {isImage(value) ? (
+                <Avatar>
+                  <AvatarImage
+                    src={value.url || "/placeholder.svg"}
+                    className="grayscale"
+                  />
+                  <AvatarFallback>{value.name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded bg-gray-100">
+                  <File className="h-6 w-6 text-gray-400" />
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              )}
+            </ItemMedia>
+            <ItemContent className="gap-1">
+              <ItemTitle>{value.name || "Archivo"}</ItemTitle>
+              {value.size != null && (
+                <ItemDescription>{formatFileSize(value.size)}</ItemDescription>
+              )}
+            </ItemContent>
+            <ItemActions>
+              <Badge variant="secondary" className="flex items-center gap-1">
+                <Check className="h-3 w-3" />
+                Subido
+              </Badge>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="h-6 w-6"
+                    disabled={disabled}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Estas seguro de eliminar esta imagen?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción no se puede deshacer. Es permanente.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-white hover:bg-destructive/90"
+                      onClick={() => removeFile((value as ImageInsert).key)}
+                    >
+                      Eliminar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </ItemActions>
+          </Item>
         )
       )}
     </div>

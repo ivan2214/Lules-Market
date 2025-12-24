@@ -343,6 +343,7 @@ export const listProductsByBusinessId = base
       where: eq(schema.product.businessId, currentBusiness.id),
       with: {
         images: true,
+        category: true,
       },
     });
 
