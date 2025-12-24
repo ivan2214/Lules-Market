@@ -2,7 +2,7 @@
 import { ORPCError, os } from "@orpc/server";
 import { APIError } from "better-auth";
 import { eq } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { env } from "@/env";
@@ -170,7 +170,7 @@ const businessSignUpProcedure = os
       const syncUserRoleResult = await syncUserRole(res.user);
 
       if (syncUserRoleResult.success) {
-        updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
+        revalidateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL, "max");
 
         return {
           message: `Bienvenido ${res.user.name}! Has iniciado sesión correctamente`,
@@ -188,7 +188,7 @@ const businessSignUpProcedure = os
         throw new ORPCError("Error al crear el usuario");
       }
 
-      updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
+      revalidateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL, "max");
 
       return {
         message:

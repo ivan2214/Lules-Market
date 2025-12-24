@@ -27,6 +27,7 @@ const nextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
+  allowedDevOrigins: [],
 };
 
 export default nextConfig;

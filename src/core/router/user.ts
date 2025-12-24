@@ -1,5 +1,4 @@
 import "server-only";
-import { os } from "@orpc/server";
 import z from "zod";
 import type { ProfileWithRelations, User } from "@/db/types";
 import {
@@ -7,8 +6,9 @@ import {
   getUserByEmailCached,
   getUserByIdCached,
 } from "../cache-functions/user";
+import { base } from "./middlewares/base";
 
-export const getPublicProfile = os
+export const getPublicProfile = base
   .route({
     method: "GET",
   })
@@ -22,7 +22,7 @@ export const getPublicProfile = os
     return await getPublicProfileCached(input.userId);
   });
 
-export const getUserByEmail = os
+export const getUserByEmail = base
   .route({
     method: "GET",
   })
@@ -36,7 +36,7 @@ export const getUserByEmail = os
     return await getUserByEmailCached(input.email);
   });
 
-export const getUserById = os
+export const getUserById = base
   .route({
     method: "GET",
   })
@@ -50,8 +50,8 @@ export const getUserById = os
     return await getUserByIdCached(input.id);
   });
 
-export const userRoute = os.router({
+export const userRoute = {
   getPublicProfile,
   getUserByEmail,
   getUserById,
-});
+};

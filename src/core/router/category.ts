@@ -1,10 +1,11 @@
 import "server-only";
-import { os } from "@orpc/server";
+
 import z from "zod";
 import type { CategoryWithRelations } from "@/db/types";
 import { listAllCategoriesCache } from "../cache-functions/category";
+import { base } from "./middlewares/base";
 
-export const listAllCategories = os
+export const listAllCategories = base
   .route({
     method: "GET",
     description: "Listar todas las categorías",

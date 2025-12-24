@@ -1,5 +1,4 @@
 import "server-only";
-import { os } from "@orpc/server";
 import { z } from "zod";
 import type { Product } from "@/db/types";
 import {
@@ -7,13 +6,15 @@ import {
   getProductStatsCache,
   getStatsCache,
 } from "../cache-functions/analytics";
-import { businessAuthorized } from "./middlewares/authorized";
+import { requiredAuthMiddleware } from "./middlewares/auth";
+import { base } from "./middlewares/base";
+import { requiredBusinessMiddleware } from "./middlewares/business";
 
 const AnalyticsPeriodSchema = z.enum(["7d", "30d", "90d"]).default("30d");
 
 export type AnalyticsPeriod = z.infer<typeof AnalyticsPeriodSchema>;
 
-export const getHomePageStats = os
+export const getHomePageStats = base
   .route({
     method: "GET",
     description: "Get home page stats",
@@ -33,7 +34,9 @@ export const getHomePageStats = os
     return getHomePageStatsCache();
   });
 
-export const getStats = businessAuthorized
+export const getStats = base
+  .use(requiredAuthMiddleware)
+  .use(requiredBusinessMiddleware)
   .route({
     method: "GET",
     description: "Get stats",
@@ -63,7 +66,9 @@ export const getStats = businessAuthorized
     return getStatsCache(context.business.id, input);
   });
 
-export const getProductStats = businessAuthorized
+export const getProductStats = base
+  .use(requiredAuthMiddleware)
+  .use(requiredBusinessMiddleware)
   .route({
     method: "GET",
     description: "Get product stats",

@@ -1,10 +1,10 @@
 import "server-only";
-import { os } from "@orpc/server";
 import z from "zod";
 import type { Plan } from "@/db/types";
 import { getPlansCache } from "../cache-functions/plan";
+import { base } from "./middlewares/base";
 
-export const getAllPlans = os
+export const getAllPlans = base
   .route({
     method: "GET",
     description: "Obtiene todos los planes de precios",

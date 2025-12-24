@@ -3,10 +3,12 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 import { db, schema } from "@/db";
 import type { User } from "@/db/types";
-import { authorizedLogged } from "./middlewares/authorized";
+import { requiredAuthMiddleware } from "./middlewares/auth";
+import { base } from "./middlewares/base";
 import { AccountUpdateSchema } from "./schemas";
 
-export const updateAccount = authorizedLogged
+export const updateAccount = base
+  .use(requiredAuthMiddleware)
   .route({
     method: "PATCH",
     description: "Update account",
@@ -27,7 +29,8 @@ export const updateAccount = authorizedLogged
     return updated;
   });
 
-export const deleteAccount = authorizedLogged
+export const deleteAccount = base
+  .use(requiredAuthMiddleware)
   .route({
     method: "DELETE",
     description: "Delete account",

@@ -323,7 +323,7 @@ Lules Market is a local commerce marketplace platform that connects buyers with 
   - Images are clear and properly sized
   - Pricing calculations are correct
   - Business link is clickable and functional
-  - Contact information is present and actionable
+  - Contact information is present 
   - Page responsiveness on mobile and desktop
 
 #### 3.4. Product Sorting and Pagination

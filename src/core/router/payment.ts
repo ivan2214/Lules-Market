@@ -1,7 +1,7 @@
 import "server-only";
-import { ORPCError, os } from "@orpc/server";
+import { ORPCError } from "@orpc/server";
 import { eq } from "drizzle-orm";
-import { cacheTag, updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import type {
@@ -9,36 +9,22 @@ import type {
   Payment,
   PaymentWithRelations,
   Plan,
-  PlanType,
 } from "@/db/types";
 import { env } from "@/env";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import { CACHE_TAGS } from "@/shared/constants/cache-tags";
-
-import { businessAuthorized } from "./middlewares/authorized";
+import { getPlanCache } from "../cache-functions/plan";
+import { base } from "./middlewares/base";
+import { requiredBusinessMiddleware } from "./middlewares/business";
 
 const invalidateBusiness = (businessId: string) => {
-  updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
-  updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
+  revalidateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId), "max");
+  revalidateTag(CACHE_TAGS.BUSINESS.GET_ALL, "max");
 };
 
 const PlanTypeSchema = z.enum(["FREE", "BASIC", "PREMIUM"]);
 
-export async function getPlanCache(planType: PlanType): Promise<Plan | null> {
-  "use cache";
-  cacheTag(CACHE_TAGS.PLAN.GET_BY_ID(planType));
-  try {
-    const result = await db.query.plan.findFirst({
-      where: eq(schema.plan.type, planType),
-    });
-    return result ?? null;
-  } catch (error) {
-    console.error("Error al obtener el plan:", error);
-    return null;
-  }
-}
-
-export const getPlan = os
+export const getPlan = base
   .route({
     method: "GET",
     description: "Get a plan",
@@ -52,7 +38,8 @@ export const getPlan = os
     return await getPlanCache(planType);
   });
 
-export const createPreference = businessAuthorized
+export const createPreference = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Create a Mercado Pago preference",
@@ -147,7 +134,8 @@ export const createPreference = businessAuthorized
     };
   });
 
-export const upgrade = businessAuthorized
+export const upgrade = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Upgrade to a plan",
@@ -189,7 +177,8 @@ export const upgrade = businessAuthorized
     return { updated };
   });
 
-export const cancel = businessAuthorized
+export const cancel = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Cancel a plan",
@@ -220,7 +209,8 @@ export const cancel = businessAuthorized
     return updated;
   });
 
-export const history = businessAuthorized
+export const history = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "GET",
     description: "Get payment history",
@@ -239,7 +229,8 @@ export const history = businessAuthorized
     return payments;
   });
 
-export const startTrial = businessAuthorized
+export const startTrial = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Start a trial",
@@ -311,7 +302,8 @@ export const startTrial = businessAuthorized
     return { message: "Trial iniciado con éxito", expiresAt };
   });
 
-export const failure = businessAuthorized
+export const failure = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Handle payment failure",
@@ -347,7 +339,8 @@ export const failure = businessAuthorized
       .where(eq(schema.payment.id, paymentIdDB));
   });
 
-export const getPayment = businessAuthorized
+export const getPayment = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "GET",
     description: "Get payment",
@@ -380,7 +373,8 @@ export const getPayment = businessAuthorized
     }
   });
 
-export const success = businessAuthorized
+export const success = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Handle payment success",

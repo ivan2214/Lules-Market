@@ -2,7 +2,7 @@
 
 import { ORPCError, os } from "@orpc/server";
 import { eq } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { db, schema } from "@/db";
 import { orpc } from "@/lib/orpc";
 import { getCurrentAdmin } from "@/shared/actions/admin/get-current-admin";
@@ -82,8 +82,8 @@ export const bannedBusiness = os
           .where(eq(schema.business.id, businessId));
       });
 
-      updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
-      updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+      revalidateTag(CACHE_TAGS.BUSINESS.GET_ALL, "max");
+      revalidateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId), "max");
 
       return {
         ok: true,
@@ -158,8 +158,8 @@ export const unbannedBusiness = os
           .where(eq(schema.business.id, businessId));
       });
 
-      updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
-      updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
+      revalidateTag(CACHE_TAGS.BUSINESS.GET_ALL, "max");
+      revalidateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId), "max");
 
       return {
         ok: true,

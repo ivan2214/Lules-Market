@@ -1,5 +1,4 @@
 import "server-only";
-import { os } from "@orpc/server";
 import z from "zod";
 import { db } from "@/db";
 import { businessView } from "@/db/schema";
@@ -12,8 +11,9 @@ import {
   listAllBusinessesByCategoriesCache,
   listAllBusinessesCache,
 } from "../cache-functions/business";
+import { base } from "./middlewares/base";
 
-export const featuredBusinesses = os
+export const featuredBusinesses = base
   .route({
     method: "GET",
     summary: "Obtener negocios destacados",
@@ -25,7 +25,7 @@ export const featuredBusinesses = os
     return await featuredBusinessesCache();
   });
 
-export const listAllBusinesses = os
+export const listAllBusinesses = base
   .route({
     method: "GET",
     summary: "Listar todos los negocios",
@@ -38,7 +38,7 @@ export const listAllBusinesses = os
     return await listAllBusinessesCache(input);
   });
 
-export const getBusinessById = os
+export const getBusinessById = base
   .route({
     method: "GET",
     summary: "Get business by id",
@@ -49,7 +49,7 @@ export const getBusinessById = os
     return getBusinessByIdCache(input.id);
   });
 
-export const listAllBusinessesByCategories = os
+export const listAllBusinessesByCategories = base
   .route({
     method: "GET",
     summary: "List all businesses by categories",
@@ -71,7 +71,7 @@ export const listAllBusinessesByCategories = os
     return businesses;
   });
 
-export const trackBusinessView = os
+export const trackBusinessView = base
   .route({
     method: "POST",
     summary: "Track business view",

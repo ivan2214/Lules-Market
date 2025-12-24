@@ -1,29 +1,35 @@
 import "server-only";
 import { ORPCError } from "@orpc/server";
 import { desc, eq, inArray } from "drizzle-orm";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { BusinessSetupSchema } from "@/app/(auth)/_validations";
 import { BusinessUpdateSchema } from "@/app/(dashboard)/dashboard/business/_validations";
-import { db, schema } from "@/db";
+import { db } from "@/db";
+import {
+  account,
+  business,
+  category,
+  currentPlan,
+  image,
+  plan,
+  product,
+  session,
+  trial,
+  user,
+} from "@/db/schema";
 import type { Business, ProductWithRelations } from "@/db/types";
 import { deleteS3Object } from "@/shared/actions/s3/delete-s3-object";
 import { CACHE_TAGS } from "@/shared/constants/cache-tags";
-import { authorizedLogged, businessAuthorized } from "./middlewares/authorized";
-
-// Helper for invalidation
-const invalidateBusiness = (businessId?: string) => {
-  updateTag(CACHE_TAGS.BUSINESS.GET_ALL);
-  if (businessId) {
-    updateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(businessId));
-  }
-};
+import { base } from "./middlewares/base";
+import { requiredBusinessMiddleware } from "./middlewares/business";
 
 // ==========================================
 // BUSINESS SETUP
 // ==========================================
 
-export const businessSetup = authorizedLogged
+export const businessSetup = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "POST",
     description: "Setup business",
@@ -41,7 +47,7 @@ export const businessSetup = authorizedLogged
     const { user } = context;
 
     const alreadyEmailBusiness = await db.query.business.findFirst({
-      where: eq(schema.business.email, user.email),
+      where: eq(business.email, user.email),
     });
 
     if (alreadyEmailBusiness) {
@@ -51,7 +57,7 @@ export const businessSetup = authorizedLogged
     }
 
     const freePlan = await db.query.plan.findFirst({
-      where: eq(schema.plan.type, "FREE"),
+      where: eq(plan.type, "FREE"),
     });
 
     if (!freePlan) {
@@ -61,8 +67,8 @@ export const businessSetup = authorizedLogged
     }
 
     // Create business
-    const [business] = await db
-      .insert(schema.business)
+    const [businessDB] = await db
+      .insert(business)
       .values({
         name: user.name,
         description: input.description,
@@ -81,25 +87,25 @@ export const businessSetup = authorizedLogged
 
     // Create logo if provided
     if (input.logo) {
-      await db.insert(schema.image).values({
+      await db.insert(image).values({
         key: input.logo.key,
         url: input.logo.url,
         name: input.logo.name,
         size: input.logo.size,
         isMainImage: input.logo.isMainImage,
-        logoBusinessId: business.id,
+        logoBusinessId: businessDB.id,
       });
     }
 
     // Create cover image if provided
     if (input.coverImage) {
-      await db.insert(schema.image).values({
+      await db.insert(image).values({
         key: input.coverImage.key,
         url: input.coverImage.url,
         name: input.coverImage.name,
         size: input.coverImage.size,
         isMainImage: input.coverImage.isMainImage,
-        coverBusinessId: business.id,
+        coverBusinessId: businessDB.id,
       });
     }
 
@@ -107,8 +113,8 @@ export const businessSetup = authorizedLogged
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    await db.insert(schema.trial).values({
-      businessId: business.id,
+    await db.insert(trial).values({
+      businessId: businessDB.id,
       plan: freePlan.type,
       expiresAt: expiresAt,
       activatedAt: new Date(),
@@ -116,8 +122,8 @@ export const businessSetup = authorizedLogged
     });
 
     // Create current plan
-    await db.insert(schema.currentPlan).values({
-      businessId: business.id,
+    await db.insert(currentPlan).values({
+      businessId: businessDB.id,
       planType: freePlan.type,
       expiresAt: expiresAt,
       activatedAt: new Date(),
@@ -127,17 +133,17 @@ export const businessSetup = authorizedLogged
 
     // Handle category
     const categoryDB = await db.query.category.findFirst({
-      where: eq(schema.category.value, input.category.toLowerCase()),
+      where: eq(category.value, input.category.toLowerCase()),
     });
 
     if (categoryDB) {
       await db
-        .update(schema.business)
+        .update(business)
         .set({ categoryId: categoryDB.id })
-        .where(eq(schema.business.id, business.id));
+        .where(eq(business.id, businessDB.id));
     } else {
       const [newCategory] = await db
-        .insert(schema.category)
+        .insert(category)
         .values({
           value: input.category.toLowerCase(),
           label: input.category,
@@ -145,16 +151,14 @@ export const businessSetup = authorizedLogged
         .returning();
 
       await db
-        .update(schema.business)
+        .update(business)
         .set({ categoryId: newCategory.id })
-        .where(eq(schema.business.id, business.id));
+        .where(eq(business.id, businessDB.id));
     }
-
-    invalidateBusiness(business.id);
 
     return {
       success: true,
-      business,
+      business: businessDB,
     };
   });
 
@@ -162,13 +166,8 @@ export const businessSetup = authorizedLogged
 // UPDATE BUSINESS
 // ==========================================
 
-export const updateBusiness = businessAuthorized
-  .route({
-    method: "PATCH",
-    description: "Update business",
-    summary: "Update business",
-    tags: ["Business"],
-  })
+export const updateBusiness = base
+  .use(requiredBusinessMiddleware)
   .input(BusinessUpdateSchema)
   .output(z.object({ success: z.boolean(), business: z.custom<Business>() }))
   .handler(async ({ context, input }) => {
@@ -177,15 +176,15 @@ export const updateBusiness = businessAuthorized
     // Delete previous logo if being replaced
     if (input.logo) {
       await db
-        .delete(schema.image)
-        .where(eq(schema.image.logoBusinessId, currentBusiness.id));
+        .delete(image)
+        .where(eq(image.logoBusinessId, currentBusiness.id));
       if (currentBusiness.logo?.key) {
         await deleteS3Object({ key: currentBusiness.logo.key }).catch(
           console.error,
         );
       }
       // Create new logo
-      await db.insert(schema.image).values({
+      await db.insert(image).values({
         key: input.logo.key,
         url: input.logo.url,
         name: input.logo.name,
@@ -197,15 +196,15 @@ export const updateBusiness = businessAuthorized
 
     if (input.coverImage) {
       await db
-        .delete(schema.image)
-        .where(eq(schema.image.coverBusinessId, currentBusiness.id));
+        .delete(image)
+        .where(eq(image.coverBusinessId, currentBusiness.id));
       if (currentBusiness.coverImage?.key) {
         await deleteS3Object({ key: currentBusiness.coverImage.key }).catch(
           console.error,
         );
       }
       // Create new cover image
-      await db.insert(schema.image).values({
+      await db.insert(image).values({
         key: input.coverImage.key,
         url: input.coverImage.url,
         name: input.coverImage.name,
@@ -219,14 +218,14 @@ export const updateBusiness = businessAuthorized
     let categoryId = currentBusiness.categoryId;
 
     const categoryDB = await db.query.category.findFirst({
-      where: eq(schema.category.value, input.category.toLowerCase()),
+      where: eq(category.value, input.category.toLowerCase()),
     });
 
     if (categoryDB) {
       categoryId = categoryDB.id;
     } else {
       const [newCategory] = await db
-        .insert(schema.category)
+        .insert(category)
         .values({
           value: input.category.toLowerCase(),
           label: input.category,
@@ -236,7 +235,7 @@ export const updateBusiness = businessAuthorized
     }
 
     const [updated] = await db
-      .update(schema.business)
+      .update(business)
       .set({
         name: input.name,
         description: input.description,
@@ -249,10 +248,10 @@ export const updateBusiness = businessAuthorized
         address: input.address,
         categoryId,
       })
-      .where(eq(schema.business.id, currentBusiness.id))
+      .where(eq(business.id, currentBusiness.id))
       .returning();
 
-    invalidateBusiness(currentBusiness.id);
+    revalidateTag(CACHE_TAGS.BUSINESS.GET_BY_ID(updated.id), "max");
 
     return {
       success: true,
@@ -260,7 +259,8 @@ export const updateBusiness = businessAuthorized
     };
   });
 
-export const deleteBusiness = businessAuthorized
+export const deleteBusiness = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "DELETE",
     description: "Delete business",
@@ -278,7 +278,7 @@ export const deleteBusiness = businessAuthorized
     try {
       // Get all products
       const products = await db.query.product.findMany({
-        where: eq(schema.product.businessId, currentBusiness.id),
+        where: eq(product.businessId, currentBusiness.id),
         columns: { id: true },
       });
 
@@ -288,18 +288,18 @@ export const deleteBusiness = businessAuthorized
       const imagesProducts =
         productIds.length > 0
           ? await db.query.image.findMany({
-              where: inArray(schema.image.productId, productIds),
+              where: inArray(image.productId, productIds),
               columns: { key: true },
             })
           : [];
 
       // Get logo and cover images
       const logoImage = await db.query.image.findFirst({
-        where: eq(schema.image.logoBusinessId, currentBusiness.id),
+        where: eq(image.logoBusinessId, currentBusiness.id),
       });
 
       const coverImage = await db.query.image.findFirst({
-        where: eq(schema.image.coverBusinessId, currentBusiness.id),
+        where: eq(image.coverBusinessId, currentBusiness.id),
       });
 
       const allImages = [
@@ -310,42 +310,26 @@ export const deleteBusiness = businessAuthorized
 
       // Delete images from S3 and DB
       await Promise.all(
-        allImages.map(async (image) => {
+        allImages.map(async (img) => {
           await Promise.all([
-            deleteS3Object({ key: image.key }).catch(console.error),
-            db
-              .delete(schema.image)
-              .where(eq(schema.image.key, image.key))
-              .catch(console.error),
+            deleteS3Object({ key: img.key }).catch(console.error),
+            db.delete(image).where(eq(image.key, img.key)).catch(console.error),
           ]);
         }),
       );
 
       // Delete related records
       await Promise.all([
-        db
-          .delete(schema.product)
-          .where(eq(schema.product.businessId, currentBusiness.id)),
-        db
-          .delete(schema.session)
-          .where(eq(schema.session.userId, currentBusiness.userId)),
-        db
-          .delete(schema.account)
-          .where(eq(schema.account.userId, currentBusiness.userId)),
+        db.delete(product).where(eq(product.businessId, currentBusiness.id)),
+        db.delete(session).where(eq(session.userId, currentBusiness.userId)),
+        db.delete(account).where(eq(account.userId, currentBusiness.userId)),
       ]);
 
       // Delete business
-      await db
-        .delete(schema.business)
-        .where(eq(schema.business.id, currentBusiness.id));
+      await db.delete(business).where(eq(business.id, currentBusiness.id));
 
       // Delete user
-      await db
-        .delete(schema.user)
-        .where(eq(schema.user.id, currentBusiness.userId));
-
-      invalidateBusiness(currentBusiness.id);
-      updateTag(CACHE_TAGS.PRODUCT.GET_ALL);
+      await db.delete(user).where(eq(user.id, currentBusiness.userId));
 
       return { success: true };
     } catch (error) {
@@ -360,7 +344,8 @@ export const deleteBusiness = businessAuthorized
 // GET MY BUSINESS PRODUCTS
 // ==========================================
 
-export const getMyBusinessProducts = businessAuthorized
+export const getMyBusinessProducts = base
+  .use(requiredBusinessMiddleware)
   .route({
     method: "GET",
     description: "Get my business products",
@@ -378,10 +363,10 @@ export const getMyBusinessProducts = businessAuthorized
     const { business: currentBusiness } = context;
 
     const products = await db.query.product.findMany({
-      where: eq(schema.product.businessId, currentBusiness.id),
+      where: eq(product.businessId, currentBusiness.id),
       limit: input.limit,
       offset: input.offset,
-      orderBy: [desc(schema.product.createdAt)],
+      orderBy: [desc(product.createdAt)],
       with: {
         images: true,
       },
