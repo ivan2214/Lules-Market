@@ -1,8 +1,10 @@
 import "server-only";
+import { revalidateTag } from "next/cache";
 import z from "zod";
 import { db } from "@/db";
 import { businessView } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
+import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 import {
   featuredBusinessesCache,
   getBusinessByIdCache,
@@ -83,6 +85,7 @@ export const trackBusinessView = base
       businessId: input.businessId,
       referrer: "unknown",
     });
+    revalidateTag(CACHE_TAGS.ANALYTICS.GET_STATS, "max");
   });
 
 export const businessRoute = {
