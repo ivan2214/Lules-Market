@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { env } from "@/env";
 import { paymentClient } from "@/lib/mercadopago";
+import { orpc } from "@/lib/orpc";
 
 /**
  * Webhook handler Mercado Pago
@@ -34,15 +35,28 @@ export async function POST(request: Request) {
 
     // Intentar crear registro de evento; si existe, devolvemos 200 (ya procesado o en proceso)
     try {
-      await db.insert(schema.webhookEvent).values({
-        requestId: requestId || buildRequestId(body),
-        eventType: body.type || body.type || "unknown",
-        mpId: getMpIdFromBody(body),
-        payload: body,
+      const webhookEvent = await db
+        .insert(schema.webhookEvent)
+        .values({
+          requestId: requestId || buildRequestId(body),
+          eventType: body.type || body.type || "unknown",
+          mpId: getMpIdFromBody(body),
+          payload: body,
+        })
+        .returning({
+          id: schema.webhookEvent.id,
+        });
+      await orpc.admin.createLog({
+        action: "webhook",
+        details: JSON.stringify(body),
+        timestamp: new Date(),
+        entityType: "WebhookEvent",
+        entityId: webhookEvent[0].id,
       });
       // biome-ignore lint/suspicious/noExplicitAny: <reason>
     } catch (err: any) {
       // Si la creación falla por unique constraint -> ya procesado
+      console.error("Error creating webhookEvent:", err);
       if (isUniqueConstraintError(err)) {
         return new Response(JSON.stringify({ received: true }), {
           status: 200,

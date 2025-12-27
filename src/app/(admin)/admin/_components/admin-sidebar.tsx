@@ -41,6 +41,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
           const isActive = pathname === item.href;
           return (
             <Link
+              prefetch={true}
               key={item.name}
               href={item.href}
               className={cn(

@@ -19,6 +19,7 @@ import type {
   WebhookEventInsert,
 } from "@/db/types";
 import { auth } from "@/lib/auth";
+import { PaymentStatusMP } from "@/shared/types";
 import * as schema from "./schema";
 
 // ===============================================================
@@ -26,13 +27,6 @@ import * as schema from "./schema";
 // ===============================================================
 
 const PASSWORD = "test2214";
-
-const PLAN_STATUS = {
-  ACTIVE: "ACTIVE",
-  INACTIVE: "INACTIVE",
-  CANCELLED: "CANCELLED",
-  EXPIRED: "EXPIRED",
-} as const;
 
 const PLAN_TYPE = {
   FREE: "FREE",
@@ -548,36 +542,22 @@ async function seedProducts(
   const allProducts: CreatedProduct[] = [];
   const productsData: ProductInsert[] = [];
   const imagesData: ImageInsert[] = [];
-  const planUpdates: Record<string, { images: number; products: number }> = {};
 
   for (const negocio of businesses) {
     // Determine product count based on plan limits
     // We increase the hardcap from 20 to allow Basic plans to fill up (50) and Premium to show more.
     // However, we avoid generating 9999 for Premium to keep seed fast.
-    const maxSeed = negocio.maxProducts > 100 ? 60 : negocio.maxProducts;
+    const maxSeedProducts =
+      negocio.maxProducts > 100 ? 50 : negocio.maxProducts;
 
-    // Scenario: Some businesses are purely empty, others full, others random
-    const rand = Math.random();
-    let productsCount = 0;
-
-    if (rand < 0.1) {
-      // 10% empty
-      productsCount = 0;
-    } else if (rand < 0.2) {
-      // 10% exactly max (or max seed cap)
-      productsCount = maxSeed;
-    } else {
-      // 80% random
-      productsCount = faker.number.int({
-        min: 1,
-        max: maxSeed,
-      });
-    }
+    const planUpdate = {
+      imagesUsed: 0,
+      productsUsed: maxSeedProducts,
+    };
 
     // Ensure we don't exceed the actual plan limit (redundant if maxSeed is correct but safe)
-    productsCount = Math.min(productsCount, negocio.maxProducts);
 
-    for (let i = 1; i <= productsCount; i++) {
+    for (let i = 1; i <= maxSeedProducts; i++) {
       const category = faker.helpers.arrayElement(categories);
       const productId = crypto.randomUUID();
       const createdAt = faker.datatype.boolean({
@@ -613,16 +593,13 @@ async function seedProducts(
 
       allProducts.push({ id: productId, businessId: negocio.id });
 
-      const imgCount = faker.number.int({
+      const maxSeedImages = faker.number.int({
         min: 1,
         max: negocio.maxImagesPerProduct,
       });
+      planUpdate.imagesUsed += maxSeedImages;
 
-      // Scenario: Some products have NO images if the system allows (though currently we force min 1 per original seed logic, let's keep min 1 unless schema forbids)
-      // Actually schema allows null productId in images but product relation might expect images.
-      // We will stick to min 1 as requested "respect the amount... per plan" which usually implies max.
-
-      for (let idx = 0; idx < imgCount; idx++) {
+      for (let idx = 0; idx < maxSeedImages; idx++) {
         imagesData.push({
           key: crypto.randomUUID(),
           productId,
@@ -630,14 +607,16 @@ async function seedProducts(
           isMainImage: idx === 0,
         });
       }
-
-      // Acumular updates
-      if (!planUpdates[negocio.currentPlanId]) {
-        planUpdates[negocio.currentPlanId] = { images: 0, products: 0 };
-      }
-      planUpdates[negocio.currentPlanId].images += imgCount;
-      planUpdates[negocio.currentPlanId].products += 1;
     }
+
+    // BATCH UPDATE: Plans
+    await db
+      .update(schema.currentPlan)
+      .set({
+        imagesUsed: planUpdate.imagesUsed,
+        productsUsed: planUpdate.productsUsed,
+      })
+      .where(eq(schema.currentPlan.id, negocio.currentPlanId));
   }
 
   // BATCH INSERT: Products
@@ -657,17 +636,6 @@ async function seedProducts(
       const chunk = imagesData.slice(i, i + chunkSize);
       await db.insert(schema.image).values(chunk);
     }
-  }
-
-  // BATCH UPDATE: Plans
-  for (const [planId, counts] of Object.entries(planUpdates)) {
-    await db
-      .update(schema.currentPlan)
-      .set({
-        imagesUsed: sql`${schema.currentPlan.imagesUsed} + ${counts.images}`,
-        productsUsed: sql`${schema.currentPlan.productsUsed} + ${counts.products}`,
-      })
-      .where(eq(schema.currentPlan.id, planId));
   }
 
   return allProducts;
@@ -722,11 +690,12 @@ async function seedPaymentsAndWebhooks(
   console.log("💳 Creando pagos y webhooks...");
 
   const paymentStatuses = ["pending", "approved", "rejected"] as const;
-  const mpStatuses = {
-    pending: "pending",
-    approved: "approved",
-    rejected: "rejected",
-  };
+  const mpStatuses: Record<(typeof paymentStatuses)[number], PaymentStatusMP> =
+    {
+      pending: PaymentStatusMP.PENDING,
+      approved: PaymentStatusMP.APPROVED,
+      rejected: PaymentStatusMP.REJECTED,
+    };
 
   const paymentsData: PaymentInsert[] = [];
   const webhooksData: WebhookEventInsert[] = [];
@@ -737,8 +706,9 @@ async function seedPaymentsAndWebhooks(
     const payCount = faker.number.int({ min: 0, max: 4 });
 
     for (let p = 0; p < payCount; p++) {
-      const status = randomFrom([...paymentStatuses]);
       const plan = randomFrom(plans);
+      const status =
+        plan.type === "FREE" ? "approved" : randomFrom([...paymentStatuses]);
       const amount = plan.price;
       const createdAt = faker.datatype.boolean({
         probability: 0.7,
@@ -752,15 +722,18 @@ async function seedPaymentsAndWebhooks(
         : new Date();
       const mpPaymentId = crypto.randomUUID();
       const paymentId = crypto.randomUUID();
+      const paymentMethod = randomFrom(["mercadopago", "card", "cash"]);
+      const mpStatus: PaymentStatusMP =
+        plan.type === "FREE" ? PaymentStatusMP.APPROVED : mpStatuses[status];
 
       paymentsData.push({
         id: paymentId,
         amount,
         currency: "ARS",
         status,
-        paymentMethod: randomFrom(["mercadopago", "card", "cash"]),
+        paymentMethod,
         mpPaymentId,
-        mpStatus: mpStatuses[status],
+        mpStatus,
         plan: plan.type,
         businessId: negocio.id,
         createdAt,
@@ -842,122 +815,38 @@ async function seedAnalytics(payments: CreatedPayment[]): Promise<void> {
 }
 
 // ===============================================================
-// APPLY SCENARIOS (BATCH UPDATES)
-// ===============================================================
-
-async function applyScenarios(
-  businesses: CreatedBusiness[],
-  products: CreatedProduct[],
-): Promise<void> {
-  console.log("⚙️ Aplicando escenarios...");
-
-  // Cancelar planes (8%)
-  const toCancel = faker.helpers.arrayElements(
-    businesses,
-    Math.floor(businesses.length * 0.08),
-  );
-  for (const negocio of toCancel) {
-    await db
-      .update(schema.currentPlan)
-      .set({
-        planStatus: PLAN_STATUS.CANCELLED,
-        expiresAt: addDays(new Date(), -1),
-        isActive: false,
-      })
-      .where(eq(schema.currentPlan.id, negocio.currentPlanId));
-  }
-
-  // Expirar planes (5%)
-  const toExpire = faker.helpers.arrayElements(
-    businesses,
-    Math.floor(businesses.length * 0.05),
-  );
-  for (const negocio of toExpire) {
-    await db
-      .update(schema.currentPlan)
-      .set({
-        planStatus: PLAN_STATUS.EXPIRED,
-        expiresAt: addDays(new Date(), -10),
-        isActive: false,
-      })
-      .where(eq(schema.currentPlan.id, negocio.currentPlanId));
-
-    // Also expire trial if applicable
-    await db
-      .update(schema.trial)
-      .set({ isActive: false })
-      .where(eq(schema.trial.businessId, negocio.id));
-  }
-
-  // Inactive plans (5%) - Scenario added
-  const toInactive = faker.helpers.arrayElements(
-    businesses.filter((b) => !toCancel.includes(b) && !toExpire.includes(b)), // Avoid overlapping too much
-    Math.floor(businesses.length * 0.05),
-  );
-  for (const negocio of toInactive) {
-    await db
-      .update(schema.currentPlan)
-      .set({
-        planStatus: PLAN_STATUS.INACTIVE,
-        isActive: false,
-      })
-      .where(eq(schema.currentPlan.id, negocio.currentPlanId));
-  }
-
-  // Banear negocios (3%)
-  const toBan = faker.helpers.arrayElements(
-    businesses,
-    Math.floor(businesses.length * 0.03),
-  );
-  for (const negocio of toBan) {
-    await db
-      .update(schema.business)
-      .set({ isBanned: true })
-      .where(eq(schema.business.id, negocio.id));
-  }
-
-  // Banear negocios random (10%)
-  const toBanRandom = businesses.filter(() => Math.random() < 0.1);
-  for (const negocio of toBanRandom) {
-    await db
-      .update(schema.business)
-      .set({ isBanned: true })
-      .where(eq(schema.business.id, negocio.id));
-  }
-
-  // Banear productos random (5%)
-  const productsToBan = products.filter(() => Math.random() < 0.05);
-  for (const product of productsToBan) {
-    await db
-      .update(schema.product)
-      .set({ isBanned: true })
-      .where(eq(schema.product.id, product.id));
-  }
-}
-
-// ===============================================================
 // MAIN SEED FUNCTION
 // ===============================================================
-
 async function main(): Promise<void> {
   console.log("🌱 Iniciando seed optimizado...\n");
-  const startTime = Date.now();
+  const startTime = performance.now();
 
   try {
-    await deleteAllData();
-    const plans = await seedPlans();
-    const categories = await seedCategories();
-    await seedNormalUsers();
-    await seedAdmins();
-    const businesses = await seedBusinesses(categories, plans);
-    await addBusinessImages(businesses);
-    const products = await seedProducts(businesses, categories);
-    await seedViews(products, businesses);
-    const payments = await seedPaymentsAndWebhooks(businesses);
-    await seedAnalytics(payments);
-    await applyScenarios(businesses, products);
+    await measure("Delete all data", deleteAllData);
+    const plans = await measure("Seed plans", seedPlans);
+    const categories = await measure("Seed categories", seedCategories);
+    await measure("Seed users", seedNormalUsers);
+    await measure("Seed admins", seedAdmins);
 
-    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    const businesses = await measure("Seed businesses", () =>
+      seedBusinesses(categories, plans),
+    );
+
+    await measure("Add business images", () => addBusinessImages(businesses));
+
+    const products = await measure("Seed products", () =>
+      seedProducts(businesses, categories),
+    );
+
+    await measure("Seed views", () => seedViews(products, businesses));
+
+    const payments = await measure("Seed payments", () =>
+      seedPaymentsAndWebhooks(businesses),
+    );
+
+    await measure("Seed analytics", () => seedAnalytics(payments));
+
+    const duration = ((performance.now() - startTime) / 1000).toFixed(2);
     console.log(`\n✅ SEED COMPLETADO en ${duration}s`);
   } catch (error) {
     console.error("❌ Error durante el seed:", error);
@@ -974,3 +863,11 @@ main()
     console.log("🔌 Conexión cerrada.");
     process.exit(0);
   });
+
+async function measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  const start = performance.now();
+  const result = await fn();
+  const time = ((performance.now() - start) / 1000).toFixed(2);
+  console.log(`⏱️ ${label}: ${time}s`);
+  return result;
+}

@@ -3,8 +3,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 import { useState } from "react";
-import type { PaymentWithRelations, WebhookEvent } from "@/db/types";
 import { DataTable } from "@/shared/components/table/data-table";
+import { DataTableColumnHeader } from "@/shared/components/table/data-table-column-header";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { Checkbox } from "@/shared/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +23,6 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
-import type { PaymentStatusMP } from "@/shared/types";
 
 const getProcessedBadge = (processed: boolean) => {
   if (processed) {
@@ -31,7 +31,7 @@ const getProcessedBadge = (processed: boolean) => {
   return <Badge variant="destructive">Pendiente</Badge>; // Asume variante 'destructive'
 };
 
-const getStatusBadge = (status: PaymentStatusMP) => {
+const getStatusBadge = (status: "approved" | "pending" | "rejected") => {
   switch (status) {
     case "approved":
       return <Badge className="bg-green-600 text-white">Aprobado</Badge>;
@@ -42,19 +42,45 @@ const getStatusBadge = (status: PaymentStatusMP) => {
   }
 };
 
-type PaymentsClientProps = {
-  payments: PaymentWithRelations[];
-  webhookEvents: WebhookEvent[];
+type PaymentColumn = {
+  id: string;
+  businessName: string;
+  plan: string;
+  amount: number;
+  paymentMethod: string;
+  status: string;
+  createdAt: Date;
 };
+
+type WebhookEventColumn = {
+  id: string;
+  eventType: string;
+  payload: string;
+  createdAt: Date;
+  requestId: string;
+  mpId: string | null;
+  processed: boolean;
+  processedAt: Date | null;
+};
+
+type PaymentsClientProps = {
+  payments: PaymentColumn[];
+  webhookEvents: WebhookEventColumn[];
+};
+
+type PaymentColumnDef = ColumnDef<PaymentColumn>;
+
+type WebhookEventColumnDef = ColumnDef<WebhookEventColumn>;
 
 export const PaymentsClient: React.FC<PaymentsClientProps> = ({
   payments,
   webhookEvents,
 }) => {
-  const [selectedPayment, setSelectedPayment] =
-    useState<PaymentWithRelations | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentColumn | null>(
+    null,
+  );
   const [selectedWebhookEvent, setSelectedWebhookEvent] =
-    useState<WebhookEvent | null>(null);
+    useState<WebhookEventColumn | null>(null);
 
   const [open, setOpen] = useState(false);
   const [openWebhookEvent, setOpenWebhookEvent] = useState(false);
@@ -73,10 +99,34 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
     }
   };
 
-  const paymentColumns: ColumnDef<PaymentWithRelations>[] = [
+  const paymentColumns: PaymentColumnDef[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "id",
-      header: "ID Externo",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="ID Externo" />
+      ),
       cell: ({ row }) => (
         <span className="font-mono text-sm">
           #{row.original.id.slice(0, 6)}
@@ -84,18 +134,25 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
       ),
     },
     {
-      accessorKey: "business.name",
-      header: "Negocio",
-      cell: ({ row }) => row.original.business?.name || "N/A",
+      accessorKey: "businessName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Negocio" />
+      ),
+      cell: ({ row }) =>
+        `${row.original.businessName.slice(0, 20)}...` || "N/A",
     },
     {
       accessorKey: "plan",
-      header: "Plan",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Plan" />
+      ),
       cell: ({ row }) => <Badge variant="outline">{row.original.plan}</Badge>,
     },
     {
       accessorKey: "amount",
-      header: "Monto",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Monto" />
+      ),
       cell: ({ row }) => (
         <span className="font-medium">
           ${(row.original.amount / 100).toFixed(2)}
@@ -104,17 +161,26 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
     },
     {
       accessorKey: "paymentMethod",
-      header: "Método",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Método" />
+      ),
       cell: ({ row }) => row.original.paymentMethod || "N/A",
     },
     {
       accessorKey: "status",
-      header: "Estado",
-      cell: ({ row }) => getStatusBadge(row.original.status as PaymentStatusMP),
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Estado" />
+      ),
+      cell: ({ row }) =>
+        getStatusBadge(
+          row.original.status as "approved" | "pending" | "rejected",
+        ),
     },
     {
       accessorKey: "createdAt",
-      header: "Fecha",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Fecha" />
+      ),
       cell: ({ row }) =>
         new Date(row.original.createdAt).toLocaleDateString("es-AR"),
     },
@@ -136,16 +202,42 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
     },
   ];
 
-  const webhookColumns: ColumnDef<WebhookEvent>[] = [
+  const webhookColumns: WebhookEventColumnDef[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "createdAt",
-      header: "Fecha",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Fecha" />
+      ),
       cell: ({ row }) =>
         new Date(row.original.createdAt).toLocaleString("es-AR"),
     },
     {
       accessorKey: "eventType",
-      header: "Tipo",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Tipo" />
+      ),
       cell: ({ row }) => (
         <Badge variant="outline">{row.original.eventType}</Badge>
       ),
@@ -153,10 +245,12 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
 
     {
       accessorKey: "payload",
-      header: "Payload",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Payload" />
+      ),
       cell: ({ row }) => (
         <code className="rounded bg-muted px-2 py-1 text-xs">
-          {JSON.stringify(row.original.payload).substring(0, 50)}...
+          {row.original.payload.substring(0, 50)}...
         </code>
       ),
     },
@@ -221,13 +315,18 @@ export const PaymentsClient: React.FC<PaymentsClientProps> = ({
                 <p className="font-medium text-muted-foreground text-sm">
                   Estado
                 </p>
-                {getStatusBadge(selectedPayment?.status as PaymentStatusMP)}
+                {getStatusBadge(
+                  selectedPayment?.status as
+                    | "approved"
+                    | "pending"
+                    | "rejected",
+                )}
               </div>
               <div>
                 <p className="font-medium text-muted-foreground text-sm">
                   Negocio
                 </p>
-                <p>{selectedPayment?.business?.name}</p>
+                <p>{selectedPayment?.businessName}</p>
               </div>
               <div>
                 <p className="font-medium text-muted-foreground text-sm">

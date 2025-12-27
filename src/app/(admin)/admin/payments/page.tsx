@@ -93,7 +93,27 @@ export default async function PaymentsPage() {
         </Card>
       </div>
 
-      <PaymentsClient payments={payments} webhookEvents={webhookEvents} />
+      <PaymentsClient
+        payments={payments.map((p) => ({
+          amount: p.amount,
+          businessName: p.business.name || "N/A",
+          createdAt: p.createdAt,
+          id: p.id,
+          plan: p.plan || "N/A",
+          paymentMethod: p.paymentMethod || "N/A",
+          status: p.status,
+        }))}
+        webhookEvents={webhookEvents.map((p) => ({
+          createdAt: p.createdAt,
+          eventType: p.eventType,
+          id: p.id,
+          payload: JSON.stringify(p.payload),
+          requestId: p.requestId,
+          mpId: p.mpId,
+          processed: p.processed,
+          processedAt: p.processedAt,
+        }))}
+      />
     </div>
   );
 }
