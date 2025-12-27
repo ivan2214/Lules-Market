@@ -45,6 +45,7 @@ export const CACHE_TAGS = {
       GET_ALL: "admin-trials-get-all",
       GET_BY_ID: (id: string) => `admin-trials-get-by-id-${id}`,
       CREATE_TRIAL: "admin-trials-create-trial",
+      GET_TRIALS_AND_ACTIVE_COUNT: "admin-trials-get-trials-and-active-count",
     },
     ANALYTICS: {
       GET_ALL: "admin-analytics-get-all",

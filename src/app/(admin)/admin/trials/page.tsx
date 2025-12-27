@@ -1,59 +1,19 @@
-import { eq } from "drizzle-orm";
-import { cacheLife, cacheTag } from "next/cache";
-import { Suspense } from "react";
-import { db, schema } from "@/db";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import { CACHE_TAGS } from "@/shared/constants/cache-tags";
+import { orpcTanstack } from "@/lib/orpc";
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { TrialColumns } from "./_components/trial-columns";
 import { TrialCreateFormDialog } from "./_components/trial-create-form-dialog";
-
-async function getTrialsAndActiveCount() {
-  /* TODO: MOVER A CACHE-FUNCTIONS Y A ORPC */
-  "use cache";
-  cacheLife("hours");
-  cacheTag(CACHE_TAGS.ADMIN.TRIALS.GET_ALL);
-
-  const now = new Date();
-
-  const [trials, activeTrials] = await Promise.all([
-    db.query.trial.findMany({
-      with: { business: true },
-    }),
-    db.query.trial.findMany({
-      where: eq(schema.trial.isActive, true),
-    }),
-  ]);
-
-  const calculateDaysRemaining = (endDate: Date) => {
-    const end = new Date(endDate);
-    return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-  };
-
-  return {
-    trials: trials.map((t) => ({
-      ...t,
-      daysRemaining: calculateDaysRemaining(t.expiresAt),
-    })),
-    activeTrials: activeTrials.map((t) => ({
-      ...t,
-      daysRemaining: calculateDaysRemaining(t.expiresAt),
-    })),
-  };
-}
+import { TrialStats } from "./_components/trial-stats";
 
 export default async function TrialsPage() {
-  const { activeTrials, trials } = await getTrialsAndActiveCount();
+  const queryClient = getQueryClient();
 
-  const expiringSoon = activeTrials.filter(
-    (t) => t.daysRemaining <= 3 && t.daysRemaining > 0,
-  ).length;
+  await queryClient.prefetchQuery(
+    orpcTanstack.admin.getTrialsAndActiveCount.queryOptions(),
+  );
+
+  await queryClient.prefetchQuery(
+    orpcTanstack.admin.getAllPlans.queryOptions(),
+  );
 
   return (
     <div className="space-y-6">
@@ -66,65 +26,18 @@ export default async function TrialsPage() {
             Gestiona las pruebas gratuitas de los negocios
           </p>
         </div>
-        <TrialCreateFormDialog />
+        <HydrateClient client={queryClient}>
+          <TrialCreateFormDialog />
+        </HydrateClient>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Total Trials
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">{trials.length}</div>
-          </CardContent>
-        </Card>
+      <HydrateClient client={queryClient}>
+        <TrialStats />
+      </HydrateClient>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Trials Activos
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl text-green-600">
-              {activeTrials.length}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-medium text-muted-foreground text-sm">
-              Por Expirar (3 días)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl text-yellow-600">
-              <Suspense fallback={<Skeleton className="h-8 w-8" />}>
-                {expiringSoon}
-              </Suspense>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Pruebas Gratuitas</CardTitle>
-          <CardDescription>{trials.length} trials registrados</CardDescription>
-        </CardHeader>
-
-        <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
-          <TrialColumns
-            trials={trials.map((trial) => ({
-              ...trial,
-              businessName: trial.business?.name ?? "Sin negocio",
-            }))}
-          />
-        </CardContent>
-      </Card>
+      <HydrateClient client={queryClient}>
+        <TrialColumns />
+      </HydrateClient>
     </div>
   );
 }

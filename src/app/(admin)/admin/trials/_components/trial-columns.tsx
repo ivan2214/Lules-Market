@@ -1,12 +1,21 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Calendar, XCircle } from "lucide-react";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import type { TrialWithRelations } from "@/db/types";
+import { orpcTanstack } from "@/lib/orpc";
 import { DataTable } from "@/shared/components/table/data-table";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import { TrialExtendDialog } from "./trial-extend-dialog";
 import { TrialFinishAlertDialog } from "./trial-finish-alert-dialog";
 
@@ -141,10 +150,27 @@ function TrialColumnsInner({ trials }: { trials: TrialWithRelations[] }) {
   );
 }
 
-export function TrialColumns({ trials }: { trials: TrialWithRelations[] }) {
+export function TrialColumns() {
+  const {
+    data: { trials },
+  } = useSuspenseQuery(
+    orpcTanstack.admin.getTrialsAndActiveCount.queryOptions(),
+  );
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
-      <TrialColumnsInner trials={trials} />
-    </Suspense>
+    <Card>
+      <CardHeader>
+        <CardTitle>Lista de Pruebas Gratuitas</CardTitle>
+        <CardDescription>{trials.length} trials registrados</CardDescription>
+      </CardHeader>
+
+      <CardContent className="mx-auto max-w-xs overflow-x-hidden lg:max-w-full">
+        <TrialColumnsInner
+          trials={trials.map((trial) => ({
+            ...trial,
+            businessName: trial.business?.name ?? "Sin negocio",
+          }))}
+        />
+      </CardContent>
+    </Card>
   );
 }

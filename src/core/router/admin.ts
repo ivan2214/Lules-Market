@@ -3,12 +3,22 @@ import { ORPCError, os } from "@orpc/server";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { admin, business, plan, log as schemaLog } from "@/db/schema";
-import type { Log, LogInsert, Permission, Plan, PlanInsert } from "@/db/types";
+import { admin, business, plan, log as schemaLog, trial } from "@/db/schema";
+import type {
+  Log,
+  LogInsert,
+  Permission,
+  Plan,
+  PlanInsert,
+  Trial,
+  TrialWithRelations,
+} from "@/db/types";
+import { orpc } from "@/lib/orpc";
 import {
   getAdminDashboardStatsCache,
   getAnalyticsDataCache,
   getPlansCache,
+  getTrialsAndActiveCountCache,
 } from "../cache-functions/admin";
 import { requireAdminMiddleware } from "./middlewares/admin";
 import { base } from "./middlewares/base";
@@ -201,7 +211,6 @@ export const getAnalyticsData = base
   });
 
 export const getAllPlans = base
-
   .use(requireAdminMiddleware)
   .route({
     method: "GET",
@@ -284,6 +293,104 @@ export const deleteBusinessByIds = base
     }
   });
 
+type ActiveTrial = Trial & { daysRemaining: number };
+
+export const getTrialsAndActiveCount = base
+  .use(requireAdminMiddleware)
+  .route({
+    method: "GET",
+    path: "/admin/trials/get-trials-and-active-count",
+    summary: "Get trials and active count",
+    description: "Get trials and active count",
+    tags: ["Admin"],
+  })
+  .output(
+    z.object({
+      trials: z.array(z.custom<TrialWithRelations>()),
+      activeTrials: z.array(z.custom<ActiveTrial>()),
+    }),
+  )
+  .handler(async () => {
+    return getTrialsAndActiveCountCache();
+  });
+
+export const createTrial = base
+  .use(requireAdminMiddleware)
+  .route({
+    method: "POST",
+    path: "/admin/trials/create-trial",
+    summary: "Create trial",
+    description: "Create trial",
+    tags: ["Admin"],
+  })
+  .input(
+    z.object({
+      businessId: z.string().min(1),
+      planType: z.enum(["FREE", "BASIC", "PREMIUM"]),
+      endDate: z.date().min(new Date()),
+    }),
+  )
+  .output(
+    z.object({
+      success: z.boolean(),
+    }),
+  )
+  .handler(async ({ input, context }) => {
+    try {
+      const { businessId, planType, endDate } = input;
+      const businessDB = await db.query.business.findFirst({
+        where: eq(business.id, businessId),
+      });
+      if (!businessDB) {
+        throw new ORPCError("Business not found");
+      }
+      const planDB = await db.query.plan.findFirst({
+        where: eq(plan.type, planType),
+      });
+      if (!planDB) {
+        throw new ORPCError("Plan not found");
+      }
+      // verificamos si ya tiene un trial
+      const alreadyHasTrial = await db.query.trial.findFirst({
+        where: eq(trial.businessId, businessId),
+      });
+      if (alreadyHasTrial) {
+        throw new ORPCError("Business already has a trial");
+      }
+
+      // creamos el nuevo trial
+      const newTrial = await db
+        .insert(trial)
+        .values({
+          businessId,
+          plan: planType,
+          isActive: true,
+          expiresAt: endDate,
+          activatedAt: new Date(),
+        })
+        .returning();
+
+      // creamos log
+      await orpc.admin.createLog({
+        businessId,
+        entityType: "TRIAL",
+        action: "CREATE",
+        entityId: newTrial[0].id,
+        adminId: context.admin.userId,
+        timestamp: new Date(),
+        details: {
+          planType,
+          endDate,
+        },
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error creating trial:", error);
+      throw new ORPCError("Error creating trial");
+    }
+  });
+
 export const adminRoute = {
   createLog,
   createPlan,
@@ -293,4 +400,5 @@ export const adminRoute = {
   getAllPlans,
   checkAdminPermission,
   deleteBusinessByIds,
+  getTrialsAndActiveCount,
 };

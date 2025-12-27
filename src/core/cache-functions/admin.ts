@@ -12,7 +12,7 @@ import {
   product,
   trial,
 } from "@/db/schema";
-import type { Plan } from "@/db/types";
+import type { Plan, Trial, TrialWithRelations } from "@/db/types";
 import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 import type { Analytics } from "@/shared/types";
 import { calcTrend } from "@/shared/utils/calc-trend";
@@ -299,4 +299,42 @@ export async function getPlansCache(): Promise<Plan[]> {
   const plans = await db.query.plan.findMany();
 
   return plans;
+}
+
+type ActiveTrial = Trial & { daysRemaining: number };
+
+export async function getTrialsAndActiveCountCache(): Promise<{
+  trials: TrialWithRelations[];
+  activeTrials: ActiveTrial[];
+}> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CACHE_TAGS.ADMIN.TRIALS.GET_TRIALS_AND_ACTIVE_COUNT);
+
+  const now = new Date();
+
+  const [trials, activeTrials] = await Promise.all([
+    db.query.trial.findMany({
+      with: { business: true },
+    }),
+    db.query.trial.findMany({
+      where: eq(trial.isActive, true),
+    }),
+  ]);
+
+  const calculateDaysRemaining = (endDate: Date) => {
+    const end = new Date(endDate);
+    return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
+  return {
+    trials: trials.map((t) => ({
+      ...t,
+      daysRemaining: calculateDaysRemaining(t.expiresAt),
+    })),
+    activeTrials: activeTrials.map((t) => ({
+      ...t,
+      daysRemaining: calculateDaysRemaining(t.expiresAt),
+    })),
+  };
 }
