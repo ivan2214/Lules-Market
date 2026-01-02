@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Activity, startTransition, useEffect, useRef, useState } from "react";
 import type { ProductWithRelations } from "@/db/types";
-import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
+import { client } from "@/orpc";
 import { formatCurrency } from "@/shared/utils/format";
 import { mainImage } from "@/shared/utils/main-image";
 import { ImageWithSkeleton } from "./image-with-skeleton";
@@ -45,9 +45,10 @@ export const SearchForm = () => {
     }
     debounceRef.current = window.setTimeout(() => {
       startTransition(async () => {
-        const { products, total } = await orpc.products.listAllProducts({
-          search: value,
-        });
+        const { products, total } =
+          await client.products.public.listAllProducts({
+            search: value,
+          });
         setResults({ products, total });
       });
     }, 300);

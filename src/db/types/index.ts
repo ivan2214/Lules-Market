@@ -17,18 +17,13 @@ import type {
   account,
   admin,
   analytics,
-  bannedBusiness,
-  bannedImages,
-  bannedProduct,
   business,
   businessView,
   category,
   currentPlan,
-  emailVerificationToken,
   image,
   log,
   notification,
-  passwordResetToken,
   payment,
   plan,
   product,
@@ -106,23 +101,6 @@ export type Profile = InferSelectModel<typeof profile>;
 /** Admin */
 export type Admin = InferSelectModel<typeof admin>;
 
-/** Token de verificación de email */
-export type EmailVerificationToken = InferSelectModel<
-  typeof emailVerificationToken
->;
-
-/** Token de reset de password */
-export type PasswordResetToken = InferSelectModel<typeof passwordResetToken>;
-
-/** Negocio baneado */
-export type BannedBusiness = InferSelectModel<typeof bannedBusiness>;
-
-/** Producto baneado */
-export type BannedProduct = InferSelectModel<typeof bannedProduct>;
-
-/** Imagen baneada */
-export type BannedImages = InferSelectModel<typeof bannedImages>;
-
 // ===============================================================
 // INSERT TYPES (Tipos para CREATE)
 // ===============================================================
@@ -187,25 +165,6 @@ export type ProfileInsert = InferInsertModel<typeof profile>;
 /** Datos para crear admin */
 export type AdminInsert = InferInsertModel<typeof admin>;
 
-/** Datos para crear token de verificación de email */
-export type EmailVerificationTokenInsert = InferInsertModel<
-  typeof emailVerificationToken
->;
-
-/** Datos para crear token de reset de password */
-export type PasswordResetTokenInsert = InferInsertModel<
-  typeof passwordResetToken
->;
-
-/** Datos para crear negocio baneado */
-export type BannedBusinessInsert = InferInsertModel<typeof bannedBusiness>;
-
-/** Datos para crear producto baneado */
-export type BannedProductInsert = InferInsertModel<typeof bannedProduct>;
-
-/** Datos para crear imagen baneada */
-export type BannedImagesInsert = InferInsertModel<typeof bannedImages>;
-
 // ===============================================================
 // UPDATE TYPES (Tipos para UPDATE - todos los campos opcionales)
 // ===============================================================
@@ -268,8 +227,7 @@ export interface UserWithRelations extends User {
   business?: BusinessWithRelations | null;
   admin?: AdminWithRelations | null;
   profile?: ProfileWithRelations | null;
-  emailVerificationTokens?: EmailVerificationToken[];
-  passwordResetTokens?: PasswordResetToken[];
+
   notifications?: Notification[];
 }
 
@@ -283,7 +241,7 @@ export interface BusinessWithRelations extends Business {
   coverImage?: Image | null;
   products?: ProductWithRelations[];
   payments?: Payment[];
-  bannedBusiness?: BannedBusiness | null;
+
   businessViews?: BusinessView[];
   trial?: Trial | null;
   category?: Category | null;
@@ -302,7 +260,7 @@ export interface CurrentPlanWithRelations extends CurrentPlan {
  */
 export interface ProductWithRelations extends Product {
   business?: BusinessWithRelations | null;
-  bannedProduct?: BannedProduct | null;
+
   images?: Image[];
   productViews?: ProductView[];
   category?: Category | null;
@@ -324,7 +282,6 @@ export interface ImageWithRelations extends Image {
   logoBusiness?: Business | null;
   coverBusiness?: Business | null;
   avatar?: Profile | null;
-  bannedImages?: BannedImages | null;
 }
 
 /**
@@ -340,9 +297,6 @@ export interface ProfileWithRelations extends Profile {
  */
 export interface AdminWithRelations extends Admin {
   user?: User | null;
-  bannedBusinesses?: BannedBusiness[];
-  bannedProducts?: BannedProduct[];
-  bannedImages?: BannedImages[];
 }
 
 /**

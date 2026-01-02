@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { business } from "./business-schema";
 import { product } from "./product-schema";
-import { bannedImages, profile } from "./user-schema";
+import { profile } from "./profile-schema";
 
 /**
  * ===============================================================
@@ -30,7 +30,7 @@ export const image = pgTable(
     logoBusinessId: text("logo_business_id").unique(),
     coverBusinessId: text("cover_business_id").unique(),
     avatarId: text("avatar_id").unique(),
-    isBanned: boolean("is_banned").default(false),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -68,9 +68,5 @@ export const imageRelations = relations(image, ({ one }) => ({
   avatar: one(profile, {
     fields: [image.avatarId],
     references: [profile.userId],
-  }),
-  bannedImages: one(bannedImages, {
-    fields: [image.key],
-    references: [bannedImages.imageKey],
   }),
 }));

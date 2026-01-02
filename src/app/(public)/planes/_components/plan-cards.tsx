@@ -3,7 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Badge, Check, Crown, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
-import { orpcTanstack } from "@/lib/orpc";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -16,7 +16,7 @@ import {
 
 export const PlanCards = () => {
   const { data: plans } = useSuspenseQuery(
-    orpcTanstack.plan.getAllPlans.queryOptions(),
+    orpc.plan.getAllPlans.queryOptions(),
   );
   return (
     <div className="mx-auto mb-16 grid max-w-6xl gap-8 md:grid-cols-3">
@@ -63,7 +63,7 @@ export const PlanCards = () => {
                 className="w-full"
                 variant={plan.popular ? "default" : "outline"}
               >
-                <Link href="/signup">
+                <Link href="/auth/sign-up">
                   Comenzar Ahora
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>

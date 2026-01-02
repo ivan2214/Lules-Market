@@ -1,4 +1,5 @@
 import { index, json, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+
 export const log = pgTable(
   "log",
   {

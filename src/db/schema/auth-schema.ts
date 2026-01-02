@@ -1,14 +1,9 @@
 import { relations } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { admin } from "./admin-schema";
 import { business } from "./business-schema";
-import { userRoleEnum } from "./enums";
 import { notification } from "./notification-schema";
-import {
-  admin,
-  emailVerificationToken,
-  passwordResetToken,
-  profile,
-} from "./user-schema";
+import { profile } from "./profile-schema";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -16,13 +11,16 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
-  userRole: userRoleEnum("user_role").default("USER").notNull(),
-  isBanned: boolean("is_banned").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  role: text("role"),
+  banned: boolean("banned").default(false),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
 });
 
 export const session = pgTable(
@@ -40,6 +38,7 @@ export const session = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    impersonatedBy: text("impersonated_by"),
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
@@ -84,9 +83,26 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const twoFactor = pgTable(
+  "two_factor",
+  {
+    id: text("id").primaryKey(),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    index("twoFactor_secret_idx").on(table.secret),
+    index("twoFactor_userId_idx").on(table.userId),
+  ],
+);
+
 export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
+  twoFactors: many(twoFactor),
   business: one(business, {
     fields: [user.id],
     references: [business.userId],
@@ -99,8 +115,6 @@ export const userRelations = relations(user, ({ many, one }) => ({
     fields: [user.id],
     references: [profile.userId],
   }),
-  emailVerificationTokens: many(emailVerificationToken),
-  passwordResetTokens: many(passwordResetToken),
   notifications: many(notification),
 }));
 
@@ -114,6 +128,13 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
+    references: [user.id],
+  }),
+}));
+
+export const twoFactorRelations = relations(twoFactor, ({ one }) => ({
+  user: one(user, {
+    fields: [twoFactor.userId],
     references: [user.id],
   }),
 }));

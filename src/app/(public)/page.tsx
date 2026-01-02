@@ -10,12 +10,13 @@ import {
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
-import { DynamicStats } from "@/app/(public)/_components/sections/dynamic-stats";
-import { FeaturedBusinesses } from "@/app/(public)/_components/sections/featured-businesses";
-import { RecentProducts } from "@/app/(public)/_components/sections/recent-products";
-import { env } from "@/env";
-import { orpcTanstack } from "@/lib/orpc";
+import { env } from "@/env/server";
+import { DynamicStats } from "@/features/(public)/_components/sections/dynamic-stats";
+import { FeaturedBusinesses } from "@/features/(public)/_components/sections/featured-businesses";
+import { RecentProducts } from "@/features/(public)/_components/sections/recent-products";
+
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -68,15 +69,15 @@ export default async function HomePage() {
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery(
-    orpcTanstack.analytics.getHomePageStats.queryOptions(),
+    orpc.analytics.getHomePageStats.queryOptions(),
   );
 
   await queryClient.prefetchQuery(
-    orpcTanstack.business.featuredBusinesses.queryOptions(),
+    orpc.business.public.featuredBusinesses.queryOptions(),
   );
 
   await queryClient.prefetchQuery(
-    orpcTanstack.products.recentProducts.queryOptions(),
+    orpc.products.public.recentProducts.queryOptions(),
   );
 
   return (
@@ -249,7 +250,7 @@ export default async function HomePage() {
               className="gap-2 shadow-primary/20 shadow-xl transition-all hover:scale-105"
               asChild
             >
-              <Link href="/business-setup">
+              <Link href="/auth/business-setup">
                 Registrar mi Comercio GRATIS
                 <ArrowRight className="h-5 w-5" />
               </Link>

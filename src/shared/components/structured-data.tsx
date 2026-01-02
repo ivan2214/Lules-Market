@@ -3,7 +3,7 @@
  * Mejora el SEO y la visibilidad en motores de búsqueda
  */
 
-import { env } from "@/env";
+import { env } from "@/env/client";
 
 interface OrganizationSchemaProps {
   name: string;

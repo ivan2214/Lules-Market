@@ -16,8 +16,6 @@ export const ClearCacheDb = ({
     accounts: number;
     businesses: number;
     admin: number;
-    emailVerificationToken: number;
-    passwordResetToken: number;
     account: number;
   };
 }) => {
@@ -75,16 +73,6 @@ export const ClearCacheDb = ({
               label="Sesiones"
               value={data.sessions}
               variant="secondary"
-            />
-            <StatRow
-              label="Tokens (Email)"
-              value={data.emailVerificationToken}
-              variant="outline"
-            />
-            <StatRow
-              label="Tokens (Pass)"
-              value={data.passwordResetToken}
-              variant="outline"
             />
           </div>
         </div>

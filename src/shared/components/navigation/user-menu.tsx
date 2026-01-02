@@ -3,7 +3,7 @@ import { LayoutDashboard, LogOut, Settings, Store } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signOut } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import {
   Avatar,
   AvatarFallback,
@@ -39,7 +39,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const handleSignOut = async () => {
-    await signOut();
+    await authClient.signOut();
     setOpen(false);
     router.push("/");
     router.refresh();

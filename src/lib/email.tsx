@@ -1,16 +1,7 @@
 ﻿import { render } from "@react-email/components";
-import nodemailer from "nodemailer";
-import { env } from "@/env";
+import { transporter } from "@/config/mail.config";
+import { env } from "@/env/server";
 import { EmailTemplate } from "@/shared/components/email-template";
-
-export const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: env.EMAIL_USER,
-    pass: env.EMAIL_PASS,
-  },
-  secure: true,
-});
 
 export async function sendEmail({
   to,

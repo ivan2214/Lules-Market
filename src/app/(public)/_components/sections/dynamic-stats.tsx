@@ -1,8 +1,8 @@
 ﻿"use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, Store } from "lucide-react";
-import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
+import { orpc } from "@/orpc";
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ export function DynamicStats() {
       productsTotal,
       productsLastMonth,
     },
-  } = useSuspenseQuery(orpcTanstack.analytics.getHomePageStats.queryOptions());
+  } = useSuspenseQuery(orpc.analytics.getHomePageStats.queryOptions());
 
   const stats = {
     businesses: {

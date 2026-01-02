@@ -4,8 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 // Importar directamente desde la DB para generateStaticParams
-import { env } from "@/env";
-import { orpc } from "@/lib/orpc";
+import { env } from "@/env/server";
+import { client } from "@/orpc";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
 import { BusinessInfo } from "./_components/business-info";
@@ -17,7 +17,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { business } = await orpc.business.getBusinessById({ id });
+  const { business } = await client.business.public.getBusinessById({ id });
 
   if (!business) {
     notFound();
@@ -120,14 +120,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
-  const { business } = await orpc.business.getBusinessById({ id });
+  const { business } = await client.business.public.getBusinessById({ id });
 
   if (!business) {
     notFound();
   }
 
   const { businesses: similarBusinesses } =
-    await orpc.business.listAllSimilarBusinesses({
+    await client.business.public.listAllSimilarBusinesses({
       category: business.category?.value,
       businessId: id,
     });

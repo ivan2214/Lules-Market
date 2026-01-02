@@ -1,7 +1,7 @@
 import { BarChart3, QrCode, Star, Store, Users, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { env } from "@/env";
+import { env } from "@/env/server";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 

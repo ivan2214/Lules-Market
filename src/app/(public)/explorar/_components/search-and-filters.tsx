@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { orpcTanstack } from "@/lib/orpc";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -51,10 +51,10 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 }) => {
   const {
     data: { businesses },
-  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+  } = useSuspenseQuery(orpc.business.public.listAllBusinesses.queryOptions());
 
   const { data: categories } = useSuspenseQuery(
-    orpcTanstack.category.listAllCategories.queryOptions(),
+    orpc.category.listAllCategories.queryOptions(),
   );
 
   const { search, sortBy, businessId, category } = params || {};

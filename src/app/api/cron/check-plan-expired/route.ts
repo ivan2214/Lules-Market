@@ -1,9 +1,10 @@
 import { and, eq, lt } from "drizzle-orm";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { db, schema } from "@/db";
-import { env } from "@/env";
-import { orpc } from "@/lib/orpc";
+import { db } from "@/db";
+import { currentPlan } from "@/db/schema";
+import { env } from "@/env/server";
+import { client } from "@/orpc";
 
 /**
  * Cron job para verificar y desactivar planes expirados
@@ -22,8 +23,8 @@ export async function GET(req: NextRequest) {
     // Buscar todos los planes activos que ya vencieron
     const vencidos = await db.query.currentPlan.findMany({
       where: and(
-        eq(schema.currentPlan.isActive, true),
-        lt(schema.currentPlan.expiresAt, now),
+        eq(currentPlan.isActive, true),
+        lt(currentPlan.expiresAt, now),
       ),
       with: {
         business: {
@@ -53,9 +54,9 @@ export async function GET(req: NextRequest) {
     for (const plan of vencidos) {
       // Desactivar el plan vencido
       await db
-        .update(schema.currentPlan)
+        .update(currentPlan)
         .set({ isActive: false })
-        .where(eq(schema.currentPlan.id, plan.id));
+        .where(eq(currentPlan.id, plan.id));
 
       // enviar email informando el vencimiento del plan
       if (plan.business?.user?.email && plan.plan && plan.expiresAt) {
@@ -72,7 +73,7 @@ export async function GET(req: NextRequest) {
       }
 
       // Registrar log de la desactivación
-      await orpc.admin.createLog({
+      await client.admin.createLog({
         adminId: "SYSTEM",
         action: "PLAN_EXPIRED",
         entityType: "PlanActive",
@@ -103,7 +104,7 @@ export async function GET(req: NextRequest) {
     console.error("❌ Error en cron check-plan-expired:", err);
 
     // Registrar error en logs
-    await orpc.admin.createLog({
+    await client.admin.createLog({
       adminId: "SYSTEM",
       action: "PLAN_EXPIRATION_CHECK_FAILED",
       details: { error: err.message },

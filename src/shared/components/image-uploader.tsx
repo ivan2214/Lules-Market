@@ -1,0 +1,117 @@
+"use client";
+
+import { Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ImageUploadInput } from "@/shared/components/image-upload-input";
+import { Button } from "@/shared/components/ui/button";
+
+export function ImageUploader(
+  props: React.PropsWithChildren<{
+    value: string | null | undefined;
+    onValueChange: (value: File | null) => unknown;
+  }>,
+) {
+  const [image, setImage] = useState(props.value);
+
+  const { setValue, register } = useForm<{
+    value: string | null | FileList;
+  }>({
+    defaultValues: {
+      value: props.value,
+    },
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+
+  const control = register("value");
+
+  const onClear = useCallback(() => {
+    props.onValueChange(null);
+    setValue("value", null);
+    setImage("");
+  }, [props, setValue]);
+
+  const onValueChange = useCallback(
+    ({ image, file }: { image: string; file: File }) => {
+      props.onValueChange(file);
+
+      setImage(image);
+    },
+    [props],
+  );
+
+  const Input = () => (
+    <ImageUploadInput
+      {...control}
+      accept={"image/*"}
+      className={"absolute h-full w-full"}
+      visible={false}
+      multiple={false}
+      onValueChange={onValueChange}
+    />
+  );
+
+  useEffect(() => {
+    setImage(props.value);
+  }, [props.value]);
+
+  if (!image) {
+    return (
+      <FallbackImage descriptionSection={props.children}>
+        <Input />
+      </FallbackImage>
+    );
+  }
+
+  return (
+    <div className={"flex items-center space-x-4"}>
+      <label
+        htmlFor={control.name}
+        className={"fade-in zoom-in-50 relative h-20 w-20 animate-in"}
+      >
+        <Image
+          id={control.name}
+          decoding="async"
+          className={"h-20 w-20 rounded-full object-cover"}
+          src={image}
+          alt={""}
+          width={80}
+          height={80}
+        />
+
+        <Input />
+      </label>
+
+      <div>
+        <Button onClick={onClear} size={"sm"} variant={"ghost"}>
+          Clear
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function FallbackImage(
+  props: React.PropsWithChildren<{
+    descriptionSection?: React.ReactNode;
+  }>,
+) {
+  return (
+    <div className={"flex items-center space-x-4"}>
+      {/** biome-ignore lint/a11y/noLabelWithoutControl: <temp> */}
+      <label
+        className={
+          "fade-in zoom-in-50 relative flex h-20 w-20 animate-in cursor-pointer flex-col items-center justify-center rounded-full border border-border hover:border-primary"
+        }
+      >
+        <ImageIcon className={"h-8 text-primary"} />
+
+        {props.children}
+      </label>
+
+      {props.descriptionSection}
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { env } from "@/env";
-import { orpc } from "@/lib/orpc";
+import { env } from "@/env/server";
+import { client } from "@/orpc";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.APP_URL;
@@ -83,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Obtener productos dinámicos
-  const { products } = await orpc.products.listAllProducts();
+  const { products } = await client.products.public.listAllProducts();
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${baseUrl}/producto/${product.id}`,
     lastModified: product.updatedAt,
@@ -92,7 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Obtener comercios dinámicos
-  const { businesses } = await orpc.business.listAllBusinesses();
+  const { businesses } = await client.business.public.listAllBusinesses();
   const businessPages: MetadataRoute.Sitemap = businesses.map((business) => ({
     url: `${baseUrl}/comercio/${business.id}`,
     lastModified: business.updatedAt,

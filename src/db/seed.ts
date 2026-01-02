@@ -116,11 +116,8 @@ async function deleteAllData(): Promise<void> {
   await db.delete(schema.businessView);
   await db.delete(schema.productView);
   await db.delete(schema.payment);
-  await db.delete(schema.bannedImages);
   await db.delete(schema.image);
-  await db.delete(schema.bannedProduct);
   await db.delete(schema.product);
-  await db.delete(schema.bannedBusiness);
   await db.delete(schema.currentPlan);
   await db.delete(schema.business);
   await db.delete(schema.profile);
@@ -128,8 +125,7 @@ async function deleteAllData(): Promise<void> {
   await db.delete(schema.session);
   await db.delete(schema.account);
   await db.delete(schema.verification);
-  await db.delete(schema.emailVerificationToken);
-  await db.delete(schema.passwordResetToken);
+
   await db.delete(schema.user);
   await db.delete(schema.category);
   await db.delete(schema.plan);
@@ -324,7 +320,7 @@ async function seedNormalUsers(count: number = 10): Promise<void> {
     await db
       .update(schema.user)
       .set({
-        userRole: "USER",
+        role: "user",
         emailVerified: faker.datatype.boolean(),
       })
       .where(eq(schema.user.id, user.id));
@@ -351,7 +347,7 @@ async function seedAdmins(count: number = 3): Promise<void> {
       await db
         .update(schema.user)
         .set({
-          userRole: "ADMIN",
+          role: "admin",
           emailVerified: true,
         })
         .where(eq(schema.user.id, user.id));
@@ -474,7 +470,7 @@ async function seedBusinesses(
         .update(schema.user)
         .set({
           emailVerified: faker.datatype.boolean(),
-          userRole: "BUSINESS",
+          role: "business",
         })
         .where(eq(schema.user.id, owner.id));
 
@@ -584,7 +580,7 @@ async function seedProducts(
         stock: faker.number.int({ min: 0, max: 150 }),
         brand: getRandomBrandName(),
         businessId: negocio.id,
-        isBanned: false,
+
         categoryId: category.id,
         tags: faker.lorem.words(3).split(" "),
         createdAt,

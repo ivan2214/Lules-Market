@@ -1,10 +1,11 @@
 ﻿import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { connection } from "next/server";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
-import { db, schema } from "@/db";
-import { getCurrentUser } from "@/shared/actions/user/get-current-user";
+import pathsConfig from "@/config/paths.config";
+import { db } from "@/db";
+import { admin, business, notification, profile } from "@/db/schema";
+import { requireSession } from "@/orpc/actions/user/require-session";
 import { SearchForm } from "@/shared/components/search-form";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -33,8 +34,13 @@ export const NavigationWrapper = async () => {
 };
 
 const NavigationWrapperContent = async () => {
-  await connection();
-  const session = await getCurrentUser();
+  const [error, session] = await requireSession();
+
+  if (error) {
+    redirect(pathsConfig.auth.signIn);
+  }
+
+  const { user } = session;
 
   if (!session)
     return (
@@ -46,8 +52,8 @@ const NavigationWrapperContent = async () => {
       </>
     );
 
-  const admin = await db.query.admin.findFirst({
-    where: eq(schema.admin.userId, session.id),
+  const adminDB = await db.query.admin.findFirst({
+    where: eq(admin.userId, user.id),
     with: {
       user: {
         columns: {
@@ -58,29 +64,29 @@ const NavigationWrapperContent = async () => {
     },
   });
 
-  const business = await db.query.business.findFirst({
-    where: eq(schema.business.id, session.id),
+  const businessDB = await db.query.business.findFirst({
+    where: eq(business.id, user.id),
     with: { logo: true, coverImage: true },
   });
 
   const userProfile = await db.query.profile.findFirst({
-    where: eq(schema.profile.userId, session.id),
+    where: eq(profile.userId, user.id),
     with: { avatar: true, user: true },
   });
 
   const notificationsForUser = await db.query.notification.findMany({
-    where: eq(schema.notification.userId, session.id),
-    orderBy: [desc(schema.notification.createdAt)],
+    where: eq(notification.userId, user.id),
+    orderBy: [desc(notification.createdAt)],
   });
 
-  const avatar = userProfile?.avatar?.url || business?.logo?.url;
+  const avatar = userProfile?.avatar?.url || businessDB?.logo?.url;
   const email =
-    userProfile?.user?.email || business?.email || admin?.user?.email;
-  const name = userProfile?.name || business?.name || admin?.user?.name;
+    userProfile?.user?.email || businessDB?.email || adminDB?.user?.email;
+  const name = userProfile?.name || businessDB?.name || adminDB?.user?.name;
 
-  const isBusiness = !!business;
+  const isBusiness = !!businessDB;
 
-  const isAdmin = !!admin;
+  const isAdmin = !!adminDB;
 
   return (
     <div className="flex items-center gap-2">
@@ -92,7 +98,7 @@ const NavigationWrapperContent = async () => {
           name={name}
           isBusiness={isBusiness}
           isAdmin={isAdmin}
-          businessId={business?.id}
+          businessId={businessDB?.id}
         />
       )}
       {/* Mobile Menu */}

@@ -1,5 +1,5 @@
 import { MercadoPagoConfig, Payment, Preference } from "mercadopago";
-import { env } from "@/env";
+import { env } from "@/env/server";
 
 if (!env.MP_ACCESS_TOKEN) {
   throw new Error("MP_ACCESS_TOKEN is not defined");

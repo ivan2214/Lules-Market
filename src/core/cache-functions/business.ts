@@ -12,7 +12,6 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
-import { cacheLife, cacheTag } from "next/cache";
 import z from "zod";
 import { db } from "@/db";
 import {
@@ -23,7 +22,6 @@ import {
   product,
 } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
-import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 
 export const ListAllBusinessesInputSchema = z
   .object({
@@ -43,9 +41,6 @@ export const ListAllBusinessesOutputSchema = z.object({
 export async function listAllBusinessesCache(
   input: z.infer<typeof ListAllBusinessesInputSchema>,
 ): Promise<z.infer<typeof ListAllBusinessesOutputSchema>> {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_ALL);
-  cacheLife("minutes");
   const { search, category, page, limit, sortBy } = input ?? {};
   // Build where conditions
   const conditions = [eq(business.isActive, true)];
@@ -107,17 +102,13 @@ export async function listAllBusinessesCache(
 }
 
 export async function featuredBusinessesCache() {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_FEATURED);
-  cacheLife("hours");
-
   // 1. Obtener IDs ordenados por prioridad del plan y fecha de creación
   const sortedIds = await db
     .select({ id: business.id })
     .from(business)
     .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
     .innerJoin(plan, eq(currentPlan.planType, plan.type))
-    .where(and(eq(business.isActive, true), eq(business.isBanned, false)))
+    .where(and(eq(business.isActive, true)))
     .orderBy(
       sql`CASE
         WHEN ${plan.type} = 'PREMIUM' THEN 3
@@ -152,10 +143,6 @@ export async function featuredBusinessesCache() {
 }
 
 export async function getBusinessByIdCache(id: string) {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_BY_ID(id));
-  cacheLife("hours");
-
   const businessData = await db.query.business.findFirst({
     where: eq(business.id, id),
     with: {
@@ -180,10 +167,6 @@ export async function listAllSimilarBusinessesCache(input: {
   category: string;
   businessId: string;
 }): Promise<{ businesses: BusinessWithRelations[] }> {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_ALL);
-  cacheLife("hours");
-
   const categoryId = await db.query.category.findFirst({
     where: eq(categorySchema.value, input.category),
   });

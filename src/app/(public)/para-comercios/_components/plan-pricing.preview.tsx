@@ -2,8 +2,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import Link from "next/link";
-import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
+import { orpc } from "@/orpc";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -11,7 +11,7 @@ import { formatCurrency } from "@/shared/utils/format";
 
 export const PlanPricingPreview = () => {
   const { data: plans } = useSuspenseQuery(
-    orpcTanstack.plan.getAllPlans.queryOptions(),
+    orpc.plan.getAllPlans.queryOptions(),
   );
   return (
     <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
@@ -44,7 +44,7 @@ export const PlanPricingPreview = () => {
               className="w-full"
               variant={plan.type === "BASIC" ? "default" : "outline"}
             >
-              <Link href="/signup">Comenzar Gratis</Link>
+              <Link href="/auth/sign-up">Comenzar Gratis</Link>
             </Button>
             {plan.type === "BASIC" && (
               <Badge className="-top-3 -right-3 absolute">Más Popular</Badge>

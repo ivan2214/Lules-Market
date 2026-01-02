@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
-import { orpcTanstack } from "@/lib/orpc";
+import { orpc } from "@/orpc";
 
 const STORAGE_KEY = "visited_businesses";
 const EXPIRY_DAYS = 30; // 1 mes = 30 días
@@ -13,7 +13,7 @@ type VisitRecord = {
 
 export function BusinessViewTracker({ businessId }: { businessId: string }) {
   const { mutate } = useMutation(
-    orpcTanstack.business.trackBusinessView.mutationOptions(),
+    orpc.business.public.trackBusinessView.mutationOptions(),
   );
 
   const hasExecuted = useRef(false);

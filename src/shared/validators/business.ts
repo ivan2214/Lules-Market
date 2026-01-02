@@ -1,0 +1,21 @@
+import z from "zod";
+import { ImageInputSchema } from "@/shared/validators/image";
+
+export const BusinessSetupSchema = z.object({
+  category: z.string().min(1, "La categoría es requerida"),
+  description: z.string().min(1, "La descripción es requerida"),
+  address: z.string().min(1, "La dirección es requerida"),
+  phone: z.string().optional(),
+  website: z.string().optional(),
+  whatsapp: z.string().optional(),
+  facebook: z.string().optional(),
+  instagram: z.string().optional(),
+  logo: ImageInputSchema,
+  coverImage: ImageInputSchema,
+  tags: z.array(z.string()).optional(),
+});
+
+export const BusinessUpdateSchema = BusinessSetupSchema.extend({
+  name: z.string().min(1, "El nombre es requerido"),
+  email: z.email("El email es requerido"),
+});

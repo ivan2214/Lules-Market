@@ -16,7 +16,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "pnpm exec tsx src/db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "db:reset": "pnpm exec tsx src/db/reset.ts && pnpm db:generate && pnpm db:migrate && pnpm db:seed",
+    "db:reset": "pnpm exec tsx src/db/reset.ts && pnpm db:generate && pnpm db:migrate",
     "test:unit": "vitest",
     "test:e2e": "pnpm exec playwright test",
     "test:e2e:ui": "pnpm exec playwright test --ui",
@@ -29,7 +29,8 @@
     "overrides": {
       "esbuild": "0.25.0",
       "@types/react": "19.2.7",
-      "@types/react-dom": "19.2.3"
+      "@types/react-dom": "19.2.3",
+      "qs": "^6.14.1"
     }
   },
   "lint-staged": {
@@ -40,6 +41,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.948.0",
     "@aws-sdk/s3-request-presigner": "3.948.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "5.2.2",
     "@neondatabase/serverless": "1.0.2",
     "@orpc/client": "^1.12.3",
@@ -69,7 +74,8 @@
     "@radix-ui/react-tabs": "1.1.13",
     "@radix-ui/react-tooltip": "1.2.8",
     "@react-email/components": "1.0.1",
-    "@t3-oss/env-nextjs": "0.13.10",
+    "@t3-oss/env-core": "^0.13.1",
+    "@t3-oss/env-nextjs": "^0.13.1",
     "@tanstack/react-form": "1.27.4",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.91.1",
@@ -88,9 +94,12 @@
     "embla-carousel-react": "8.6.0",
     "lucide-react": "0.561.0",
     "mercadopago": "2.11.0",
+    "motion": "^12.23.26",
+    "nanoid": "^5.1.6",
     "next": "16.1.0",
     "next-themes": "0.4.6",
     "nodemailer": "7.0.11",
+    "nuqs": "^2.8.6",
     "pg": "8.16.3",
     "prettier": "3.7.4",
     "react": "19.2.3",
@@ -103,6 +112,7 @@
     "server-only": "^0.0.1",
     "sonner": "2.0.7",
     "tailwind-merge": "3.4.0",
+    "ua-parser-js": "^2.0.7",
     "uuid": "13.0.0",
     "zod": "4.2.0"
   },

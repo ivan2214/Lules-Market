@@ -12,17 +12,15 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
-import { cacheLife, cacheTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import {
-  business,
-  currentPlan,
-  product,
-  category as schemaCategory,
+  business as businessSchema,
+  category as categoryShema,
+  currentPlan as currentPlanSchema,
+  product as productSchema,
 } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
-import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 
 export const ListAllProductsInputSchema = z
   .object({
@@ -40,9 +38,6 @@ export const ListAllProductsInputSchema = z
 export async function listAllProductsCache(
   input: z.infer<typeof ListAllProductsInputSchema>,
 ) {
-  "use cache";
-  cacheTag(CACHE_TAGS.PRODUCT.GET_ALL);
-  cacheLife("hours");
   const {
     search,
     category,
@@ -54,31 +49,30 @@ export async function listAllProductsCache(
 
   // Build where conditions
   const conditions: SQL<unknown>[] = [
-    eq(product.active, true),
-    eq(product.isBanned, false),
-    eq(business.isActive, true),
-    eq(business.isBanned, false),
+    eq(productSchema.active, true),
+
+    eq(businessSchema.isActive, true),
   ];
 
   if (businessId) {
-    conditions.push(eq(product.businessId, businessId));
+    conditions.push(eq(productSchema.businessId, businessId));
   }
 
   if (search) {
     conditions.push(
       or(
-        ilike(product.name, `%${search}%`),
-        ilike(product.description, `%${search}%`),
+        ilike(productSchema.name, `%${search}%`),
+        ilike(productSchema.description, `%${search}%`),
       ) as SQL<string>,
     );
   }
 
   if (category) {
     const categoryDB = await db.query.category.findFirst({
-      where: eq(schemaCategory.value, category),
+      where: eq(categoryShema.value, category),
     });
 
-    categoryDB && conditions.push(eq(product.categoryId, categoryDB?.id));
+    categoryDB && conditions.push(eq(productSchema.categoryId, categoryDB?.id));
   }
 
   const whereClause = and(...conditions);
@@ -87,9 +81,9 @@ export async function listAllProductsCache(
   const orderBy = [];
 
   const prioritySort = sql`CASE
-    WHEN ${currentPlan.listPriority} = 'Alta' THEN 3
-    WHEN ${currentPlan.listPriority} = 'Media' THEN 2
-    WHEN ${currentPlan.listPriority} = 'Estandar' THEN 1
+    WHEN ${currentPlanSchema.listPriority} = 'Alta' THEN 3
+    WHEN ${currentPlanSchema.listPriority} = 'Media' THEN 2
+    WHEN ${currentPlanSchema.listPriority} = 'Estandar' THEN 1
     ELSE 0
   END DESC`;
 
@@ -97,11 +91,15 @@ export async function listAllProductsCache(
     const [field, direction] = sort.split("_");
     if (field === "price") {
       orderBy.push(
-        direction === "asc" ? asc(product.price) : desc(product.price),
+        direction === "asc"
+          ? asc(productSchema.price)
+          : desc(productSchema.price),
       );
     } else if (field === "name") {
       orderBy.push(
-        direction === "asc" ? asc(product.name) : desc(product.name),
+        direction === "asc"
+          ? asc(productSchema.name)
+          : desc(productSchema.name),
       );
     }
   } else {
@@ -109,23 +107,35 @@ export async function listAllProductsCache(
     orderBy.push(prioritySort);
   }
 
-  orderBy.push(desc(product.createdAt), desc(product.id));
+  orderBy.push(desc(productSchema.createdAt), desc(productSchema.id));
 
   const [idsResult, totalResult] = await Promise.all([
     db
-      .select({ id: product.id })
-      .from(product)
-      .innerJoin(business, eq(product.businessId, business.id))
-      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .select({ id: productSchema.id })
+      .from(productSchema)
+      .innerJoin(
+        businessSchema,
+        eq(productSchema.businessId, businessSchema.id),
+      )
+      .innerJoin(
+        currentPlanSchema,
+        eq(businessSchema.id, currentPlanSchema.businessId),
+      )
       .where(whereClause)
       .orderBy(...orderBy)
       .offset((page - 1) * limit)
       .limit(limit),
     db
       .select({ count: count() })
-      .from(product)
-      .innerJoin(business, eq(product.businessId, business.id))
-      .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+      .from(productSchema)
+      .innerJoin(
+        businessSchema,
+        eq(productSchema.businessId, businessSchema.id),
+      )
+      .innerJoin(
+        currentPlanSchema,
+        eq(businessSchema.id, currentPlanSchema.businessId),
+      )
       .where(whereClause),
   ]);
 
@@ -143,7 +153,7 @@ export async function listAllProductsCache(
   const ids = idsResult.map((row) => row.id);
 
   const products = await db.query.product.findMany({
-    where: inArray(product.id, ids),
+    where: inArray(productSchema.id, ids),
     with: {
       business: {
         with: {
@@ -173,32 +183,26 @@ export async function listAllProductsCache(
 }
 
 export async function recentProductsCache() {
-  "use cache";
-  cacheTag(CACHE_TAGS.PRODUCT.GET_RECENT);
-  cacheLife("hours");
-
   // 1. Obtener IDs ordenados por prioridad del plan del negocio y fecha de creación del producto
   const sortedIds = await db
-    .select({ id: product.id })
-    .from(product)
-    .innerJoin(business, eq(product.businessId, business.id))
-    .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+    .select({ id: productSchema.id })
+    .from(productSchema)
+    .innerJoin(businessSchema, eq(productSchema.businessId, businessSchema.id))
+    .innerJoin(
+      currentPlanSchema,
+      eq(businessSchema.id, currentPlanSchema.businessId),
+    )
     .where(
-      and(
-        eq(product.active, true),
-        eq(product.isBanned, false),
-        eq(business.isActive, true),
-        eq(business.isBanned, false),
-      ),
+      and(eq(productSchema.active, true), eq(businessSchema.isActive, true)),
     )
     .orderBy(
       sql`CASE
-        WHEN ${currentPlan.listPriority} = 'Alta' THEN 3
-        WHEN ${currentPlan.listPriority} = 'Media' THEN 2
-        WHEN ${currentPlan.listPriority} = 'Estandar' THEN 1
+        WHEN ${currentPlanSchema.listPriority} = 'Alta' THEN 3
+        WHEN ${currentPlanSchema.listPriority} = 'Media' THEN 2
+        WHEN ${currentPlanSchema.listPriority} = 'Estandar' THEN 1
         ELSE 0
       END DESC`,
-      desc(product.createdAt),
+      desc(productSchema.createdAt),
     )
     .limit(8);
 
@@ -208,7 +212,7 @@ export async function recentProductsCache() {
 
   // 2. Obtener data completa
   const products = await db.query.product.findMany({
-    where: inArray(product.id, ids),
+    where: inArray(productSchema.id, ids),
     with: {
       images: true,
       business: {
@@ -237,33 +241,30 @@ export async function getSimilarProductsCache(
   categoryId: string,
   currentProductId: string,
 ) {
-  "use cache";
-  cacheTag(CACHE_TAGS.PRODUCT.GET_SIMILAR(currentProductId));
-  cacheLife("hours");
-
   const similarIds = await db
-    .select({ id: product.id })
-    .from(product)
-    .innerJoin(business, eq(product.businessId, business.id))
-    .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
+    .select({ id: productSchema.id })
+    .from(productSchema)
+    .innerJoin(businessSchema, eq(productSchema.businessId, businessSchema.id))
+    .innerJoin(
+      currentPlanSchema,
+      eq(businessSchema.id, currentPlanSchema.businessId),
+    )
     .where(
       and(
-        eq(product.active, true),
-        eq(product.isBanned, false),
-        eq(product.categoryId, categoryId),
-        ne(product.id, currentProductId),
-        eq(business.isActive, true),
-        eq(business.isBanned, false),
+        eq(productSchema.active, true),
+        eq(productSchema.categoryId, categoryId),
+        ne(productSchema.id, currentProductId),
+        eq(businessSchema.isActive, true),
       ),
     )
     .orderBy(
       sql`CASE
-        WHEN ${currentPlan.listPriority} = 'Alta' THEN 3
-        WHEN ${currentPlan.listPriority} = 'Media' THEN 2
-        WHEN ${currentPlan.listPriority} = 'Estandar' THEN 1
+        WHEN ${currentPlanSchema.listPriority} = 'Alta' THEN 3
+        WHEN ${currentPlanSchema.listPriority} = 'Media' THEN 2
+        WHEN ${currentPlanSchema.listPriority} = 'Estandar' THEN 1
         ELSE 0
       END DESC`,
-      desc(product.createdAt),
+      desc(productSchema.createdAt),
     )
     .limit(4);
 
@@ -272,7 +273,7 @@ export async function getSimilarProductsCache(
   const ids = similarIds.map((row) => row.id);
 
   const similar = await db.query.product.findMany({
-    where: inArray(product.id, ids),
+    where: inArray(productSchema.id, ids),
     with: {
       images: true,
       business: {

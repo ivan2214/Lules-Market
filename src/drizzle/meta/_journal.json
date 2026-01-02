@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1766260860114,
-      "tag": "0000_grey_warpath",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1766454458192,
-      "tag": "0001_violet_valeria_richards",
+      "when": 1767211603902,
+      "tag": "0000_equal_ultimo",
       "breakpoints": true
     }
   ]

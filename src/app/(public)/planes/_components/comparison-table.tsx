@@ -1,12 +1,12 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { orpcTanstack } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
+import { orpc } from "@/orpc";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export const ComparisonTable = () => {
   const { data: plans } = useSuspenseQuery(
-    orpcTanstack.plan.getAllPlans.queryOptions(),
+    orpc.plan.getAllPlans.queryOptions(),
   );
   return (
     <div className="mx-auto max-w-5xl">

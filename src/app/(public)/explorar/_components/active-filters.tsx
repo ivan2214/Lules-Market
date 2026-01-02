@@ -3,7 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { orpcTanstack } from "@/lib/orpc";
+import { orpc } from "@/orpc";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
@@ -33,7 +33,7 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
 }) => {
   const {
     data: { businesses },
-  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+  } = useSuspenseQuery(orpc.business.public.listAllBusinesses.queryOptions());
   const router = useRouter();
   const { createUrl } = useSearchUrl({ currentParams: params, typeExplorer });
 

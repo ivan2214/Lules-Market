@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { deleteS3Object } from "../actions/s3/delete-s3-object";
-import { generatePresignedUploadUrl } from "../actions/s3/generate-presigned-upload-url";
+import { deleteS3Object } from "../../orpc/actions/s3/delete-s3-object";
+import { generatePresignedUploadUrl } from "../../orpc/actions/s3/generate-presigned-upload-url";
 
 interface UseS3UploaderResult {
   uploadToS3: (
