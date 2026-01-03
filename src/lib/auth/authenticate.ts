@@ -1,24 +1,18 @@
 "use server";
 
+import type { Route } from "next";
 import { headers } from "next/headers";
-
+import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
 import { getSession } from "@/orpc/actions/user/get-session";
-
 import { auth } from ".";
 import type { Permissions, Role } from "./roles";
 
-export async function authenticate(
-  args?:
-    | {
-        permissions: Permissions;
-        role?: never;
-      }
-    | {
-        role: Role;
-
-        permissions?: never;
-      },
-) {
+export async function authenticate(args?: {
+  permissions?: Permissions;
+  role?: Role;
+  redirect?: Route;
+}) {
   const [error, data] = await getSession();
 
   if (error) {
@@ -35,7 +29,7 @@ export async function authenticate(
         user,
       };
     }
-    throw new Error("Unauthorized");
+    redirect(args?.redirect || pathsConfig.auth.signIn);
   }
 
   const is = await auth.api.userHasPermission({
@@ -50,5 +44,5 @@ export async function authenticate(
       user: data?.user,
     };
   }
-  throw new Error("Unauthorized");
+  redirect(args?.redirect || pathsConfig.auth.signIn);
 }

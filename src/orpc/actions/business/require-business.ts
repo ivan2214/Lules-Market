@@ -1,4 +1,5 @@
 "use server";
+import { ORPCError } from "@orpc/client";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
@@ -11,7 +12,7 @@ export const requireBusiness = oa
     const [error, session] = await requireSession();
 
     if (error) {
-      throw error;
+      throw new ORPCError(error.message);
     }
 
     const business = await db.query.business.findFirst({
@@ -27,7 +28,7 @@ export const requireBusiness = oa
     }
 
     if (!business) {
-      redirect("/auth/business-setup");
+      redirect("/dashboard/setup");
     }
 
     return {

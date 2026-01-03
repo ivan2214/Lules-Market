@@ -1,8 +1,8 @@
 import { MessageCircleWarningIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { ProductCardDashboard } from "@/features/(dashboard)/dashboard/_components/product-card-dashboard";
-import { ProductFormDialog } from "@/features/(dashboard)/dashboard/_components/product-form-dialog";
-import { subscriptionErrors } from "@/features/(dashboard)/dashboard/_constants";
+import { ProductCardDashboard } from "@/features//dashboard/_components/product-card-dashboard";
+import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
+import { subscriptionErrors } from "@/features//dashboard/_constants";
 import { client } from "@/orpc";
 import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import {

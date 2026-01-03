@@ -1,5 +1,6 @@
+import pathsConfig from "@/config/paths.config";
 import { client } from "@/orpc";
-import { requireSession } from "@/orpc/actions/user/require-session";
+import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import {
   Card,
   CardContent,
@@ -7,10 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { BusinessSetupForm } from "./_components/business-setup-form";
+import { BusinessSetupFormTwo } from "./_components/form";
 
-export default async function BusinessSetup() {
-  await requireSession();
+async function BusinessSetup() {
   const categories = await client.category.listAllCategories();
   return (
     <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center p-4">
@@ -23,9 +23,13 @@ export default async function BusinessSetup() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <BusinessSetupForm categories={categories} />
+          <BusinessSetupFormTwo categories={categories} />
         </CardContent>
       </Card>
     </div>
   );
 }
+export default withAuthenticate(BusinessSetup, {
+  role: "user",
+  redirect: pathsConfig.auth.setup,
+});

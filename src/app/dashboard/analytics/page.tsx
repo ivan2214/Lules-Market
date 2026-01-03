@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { CurrentPlan } from "@/db/types";
-import { PeriodSelector } from "@/features/(dashboard)/dashboard/_components/period-selector";
+import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
 import { client } from "@/orpc";
 import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import { subscriptionErrors } from "../_constants";

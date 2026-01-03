@@ -55,12 +55,7 @@ const NavigationWrapperContent = async () => {
   const adminDB = await db.query.admin.findFirst({
     where: eq(admin.userId, user.id),
     with: {
-      user: {
-        columns: {
-          email: true,
-          name: true,
-        },
-      },
+      user: true,
     },
   });
 
@@ -79,10 +74,18 @@ const NavigationWrapperContent = async () => {
     orderBy: [desc(notification.createdAt)],
   });
 
-  const avatar = userProfile?.avatar?.url || businessDB?.logo?.url;
+  const avatar =
+    userProfile?.avatar?.url ||
+    businessDB?.logo?.url ||
+    adminDB?.user?.image ||
+    user.image;
   const email =
-    userProfile?.user?.email || businessDB?.email || adminDB?.user?.email;
-  const name = userProfile?.name || businessDB?.name || adminDB?.user?.name;
+    userProfile?.user?.email ||
+    businessDB?.email ||
+    adminDB?.user?.email ||
+    user.email;
+  const name =
+    userProfile?.name || businessDB?.name || adminDB?.user?.name || user.name;
 
   const isBusiness = !!businessDB;
 
@@ -90,7 +93,7 @@ const NavigationWrapperContent = async () => {
 
   return (
     <div className="flex items-center gap-2">
-      <Notifications notifications={notificationsForUser} />
+      {email && name && <Notifications notifications={notificationsForUser} />}
       {email && name && (
         <UserMenu
           avatar={avatar}

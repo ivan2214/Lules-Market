@@ -1,4 +1,5 @@
 "use server";
+import { ORPCError } from "@orpc/client";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { business as businessSchema } from "@/db/schema";
@@ -10,7 +11,7 @@ export const getCurrentBusiness = oa
     const [error, result] = await requireBusiness();
 
     if (error || !result) {
-      throw error;
+      throw new ORPCError(error.message);
     }
 
     const business = await db.query.business.findFirst({
@@ -29,7 +30,7 @@ export const getCurrentBusiness = oa
     });
 
     if (!business) {
-      throw new Error("Business not found");
+      throw new ORPCError("Business not found");
     }
 
     return {

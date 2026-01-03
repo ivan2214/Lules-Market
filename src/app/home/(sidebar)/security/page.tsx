@@ -20,7 +20,7 @@ async function AccountPage() {
   }
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <UpdateAccountPasswordForm />
       <AccountSessions sessionId={response.session.id} sessions={sessions} />
       <TwoFactorContainer session={response} />
@@ -28,4 +28,7 @@ async function AccountPage() {
   );
 }
 
-export default withAuthenticate(AccountPage);
+export default withAuthenticate(AccountPage, {
+  role: "user",
+  redirect: pathsConfig.auth.signIn,
+});

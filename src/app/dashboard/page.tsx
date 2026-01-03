@@ -13,12 +13,11 @@ import {
 } from "@/shared/components/ui/card";
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
-// ✅ Componente separado para contenido con auth
 async function DashboardContent() {
   const [error, result] = await getCurrentBusiness();
 
   if (error || !result.currentBusiness) {
-    redirect(pathsConfig.auth.signIn);
+    redirect(pathsConfig.dashboard.setup);
   }
   const { currentBusiness } = result;
 

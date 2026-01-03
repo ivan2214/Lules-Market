@@ -13,7 +13,7 @@ export const auth = betterAuth({
   ...authConfig,
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false,
+    requireEmailVerification: true,
     async sendResetPassword({ url, user }) {
       const { sendEmail } = await import("../email");
       await sendEmail({

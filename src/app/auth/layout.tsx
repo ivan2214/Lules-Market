@@ -10,7 +10,7 @@ async function AuthLayout({ children }: React.PropsWithChildren) {
   });
 
   if (session?.user) {
-    redirect(pathsConfig.app.home);
+    redirect(pathsConfig.dashboard.root);
   }
 
   return (

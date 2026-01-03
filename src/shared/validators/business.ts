@@ -2,6 +2,7 @@ import z from "zod";
 import { ImageInputSchema } from "@/shared/validators/image";
 
 export const BusinessSetupSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido"),
   category: z.string().min(1, "La categoría es requerida"),
   description: z.string().min(1, "La descripción es requerida"),
   address: z.string().min(1, "La dirección es requerida"),

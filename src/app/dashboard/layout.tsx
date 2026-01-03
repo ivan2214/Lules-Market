@@ -1,27 +1,24 @@
 import type React from "react";
-import { Suspense } from "react";
-import { DashboardHeaderWrapper } from "@/features/(dashboard)/dashboard/_components/dashboard-header-wrapper";
-import { DashboardSidebar } from "@/features/(dashboard)/dashboard/_components/dashboard-sidebar";
+import pathsConfig from "@/config/paths.config";
+import { DashboardHeaderWrapper } from "@/features/dashboard/_components/dashboard-header-wrapper";
+import { DashboardSidebar } from "@/features/dashboard/_components/dashboard-sidebar";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
-import { DashboardHeaderSkeleton } from "@/shared/components/skeletons/dashboard-header-skeleton";
-import { DashboardSidebarSkeleton } from "@/shared/components/skeletons/dashboard-sidebar-skeleton";
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen">
       <div className="hidden lg:flex">
-        <Suspense fallback={<DashboardSidebarSkeleton />}>
-          <DashboardSidebar />
-        </Suspense>
+        <DashboardSidebar />
       </div>
       <div className="flex flex-1 flex-col">
-        <Suspense fallback={<DashboardHeaderSkeleton />}>
-          <DashboardHeaderWrapper />
-        </Suspense>
+        <DashboardHeaderWrapper />
         <main className="flex-1 bg-muted/20 p-4 md:p-6">{children}</main>
       </div>
     </div>
   );
 }
 
-export default withAuthenticate(DashboardLayout);
+export default withAuthenticate(DashboardLayout, {
+  role: "business",
+  redirect: pathsConfig.setup,
+});

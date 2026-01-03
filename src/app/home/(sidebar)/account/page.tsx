@@ -17,7 +17,7 @@ export default async function AccountPage() {
   const user = response.user;
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <UpdateAccountImage />
       <UpdateAccountDetailsForm />
       <UpdateAccountEmailForm email={user.email} />

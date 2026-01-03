@@ -1,6 +1,4 @@
-import { redirect } from "next/navigation";
-
-import pathsConfig from "@/config/paths.config";
+import type { Route } from "next";
 import { authenticate } from "@/lib/auth/authenticate";
 import type { Permissions, Role } from "@/lib/auth/roles";
 
@@ -8,15 +6,11 @@ type LayoutOrPageComponent<Params> = React.ComponentType<Params>;
 
 export function withAuthenticate<Params extends object>(
   Component: LayoutOrPageComponent<Params>,
-  args?:
-    | {
-        permissions: Permissions;
-        role?: never;
-      }
-    | {
-        role: Role;
-        permissions?: never;
-      },
+  args?: {
+    permissions?: Permissions;
+    role?: Role;
+    redirect?: Route;
+  },
 ) {
   return async function AuthenticateServerComponentWrapper(params: Params) {
     try {
@@ -27,9 +21,16 @@ export function withAuthenticate<Params extends object>(
       }
 
       return <Component user={response.user} {...params} />;
-    } catch (error) {
+      // biome-ignore lint/suspicious/noExplicitAny: <necessary>
+    } catch (error: any) {
+      if (
+        error?.message === "NEXT_REDIRECT" ||
+        error?.digest?.startsWith("NEXT_REDIRECT")
+      ) {
+        throw error;
+      }
+      console.log("error", error);
       console.error(error);
-      redirect(pathsConfig.auth.signIn);
     }
   };
 }

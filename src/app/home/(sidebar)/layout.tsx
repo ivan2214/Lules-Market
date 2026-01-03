@@ -1,5 +1,5 @@
 import type { User } from "better-auth";
-
+import pathsConfig from "@/config/paths.config";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
 import { Separator } from "@/shared/components/ui/separator";
@@ -37,4 +37,7 @@ async function UserLayout({
   );
 }
 
-export default withAuthenticate(UserLayout);
+export default withAuthenticate(UserLayout, {
+  role: "user",
+  redirect: pathsConfig.auth.signIn,
+});

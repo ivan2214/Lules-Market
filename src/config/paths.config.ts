@@ -9,6 +9,7 @@ const PathsSchema = z.object({
     resetPassword: z.custom<Route>(),
     twoFactor: z.custom<Route>(),
   }),
+  setup: z.custom<Route>(),
   app: z.object({
     home: z.custom<Route>(),
     account: z.custom<Route>(),
@@ -18,6 +19,14 @@ const PathsSchema = z.object({
   admin: z.object({
     root: z.custom<Route>(),
     users: z.custom<Route>(),
+  }),
+  dashboard: z.object({
+    root: z.custom<Route>(),
+    products: z.custom<Route>(),
+    subscription: z.object({
+      root: z.custom<Route>(),
+      success: z.custom<Route>(),
+    }),
   }),
 });
 
@@ -29,6 +38,7 @@ const pathsConfig = PathsSchema.parse({
     resetPassword: "/auth/reset-password",
     twoFactor: "/auth/two-factor",
   },
+  setup: "/setup",
   app: {
     home: "/home",
     account: "/home/account",
@@ -38,6 +48,14 @@ const pathsConfig = PathsSchema.parse({
   admin: {
     root: "/admin",
     users: "/admin/users",
+  },
+  dashboard: {
+    root: "/dashboard",
+    products: "/dashboard/products",
+    subscription: {
+      root: "/dashboard/subscription/success",
+      success: "/dashboard/subscription/success",
+    },
   },
 } satisfies z.infer<typeof PathsSchema>);
 

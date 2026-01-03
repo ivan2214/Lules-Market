@@ -124,7 +124,7 @@ export interface Analytics {
 
 export type navigationItem = {
   name: string;
-  href: string;
+  href: Route;
   icon?: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
@@ -140,6 +140,7 @@ export type ContactMethod = {
 };
 
 import type { SQL } from "drizzle-orm";
+import type { Route } from "next";
 
 export type Prettify<T> = {
   [K in keyof T]: T[K];
