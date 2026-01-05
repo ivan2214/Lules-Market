@@ -1,5 +1,5 @@
 {
-  "id": "0d62430d-11ea-4717-bb44-e7a36b17f11b",
+  "id": "60d562c6-1bbe-4547-8664-d6afc60bb03d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -609,12 +609,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "website": {
           "name": "website",
           "type": "text",
@@ -707,11 +701,6 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "business_email_unique": {
-          "name": "business_email_unique",
-          "nullsNotDistinct": false,
-          "columns": ["email"]
-        },
         "business_user_id_unique": {
           "name": "business_user_id_unique",
           "nullsNotDistinct": false,

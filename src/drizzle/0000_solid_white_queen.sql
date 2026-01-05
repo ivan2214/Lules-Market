@@ -91,7 +91,6 @@ CREATE TABLE "business" (
 	"description" text,
 	"phone" text,
 	"whatsapp" text,
-	"email" text NOT NULL,
 	"website" text,
 	"facebook" text,
 	"instagram" text,
@@ -103,7 +102,6 @@ CREATE TABLE "business" (
 	"category_id" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "business_email_unique" UNIQUE("email"),
 	CONSTRAINT "business_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
