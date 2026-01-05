@@ -1,7 +1,7 @@
 import "server-only";
+import { ORPCError } from "@orpc/client";
 import { eq } from "drizzle-orm";
 import z from "zod";
-
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import type { User } from "@/db/types";
@@ -57,15 +57,22 @@ export const deleteAccount = o
     try {
       const { user } = context;
 
+      const userFound = await db
+        .select()
+        .from(schema.user)
+        .where(eq(schema.user.id, user.id));
+
+      if (!userFound.length) {
+        throw new ORPCError("No se encontro el usuario.");
+      }
+
       await db.delete(schema.user).where(eq(schema.user.id, user.id));
       return {
         successMessage: "Tu cuenta ha sido eliminada correctamente.",
       };
     } catch (error) {
       console.error("Error deleting account:", error);
-      return {
-        errorMessage: "Hubo un error al eliminar tu cuenta.",
-      };
+      throw new ORPCError("Hubo un error al eliminar tu cuenta.");
     }
   });
 

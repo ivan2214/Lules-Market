@@ -38,7 +38,7 @@ export function DangerZone() {
 
   const handleDeleteAccount = () => {
     startTransition(async () => {
-      mutate();
+      mutate({});
     });
   };
 

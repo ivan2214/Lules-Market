@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import pathsConfig from "@/config/paths.config";
 import { db } from "@/db";
 import { admin, business, notification, profile } from "@/db/schema";
-import { requireSession } from "@/orpc/actions/user/require-session";
+import { getSession } from "@/orpc/actions/user/get-session";
 import { SearchForm } from "@/shared/components/search-form";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -34,15 +34,15 @@ export const NavigationWrapper = async () => {
 };
 
 const NavigationWrapperContent = async () => {
-  const [error, session] = await requireSession();
+  const [error, session] = await getSession();
 
   if (error) {
     redirect(pathsConfig.auth.signIn);
   }
 
-  const { user } = session;
+  const { user } = session || {};
 
-  if (!session)
+  if (!user)
     return (
       <>
         <Button asChild className="hidden md:flex">
@@ -79,11 +79,7 @@ const NavigationWrapperContent = async () => {
     businessDB?.logo?.url ||
     adminDB?.user?.image ||
     user.image;
-  const email =
-    userProfile?.user?.email ||
-    businessDB?.email ||
-    adminDB?.user?.email ||
-    user.email;
+  const email = userProfile?.user?.email || adminDB?.user?.email || user.email;
   const name =
     userProfile?.name || businessDB?.name || adminDB?.user?.name || user.name;
 

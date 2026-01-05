@@ -1,5 +1,7 @@
 import { MessageCircleWarningIcon, Package } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
 import { ProductCardDashboard } from "@/features//dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features//dashboard/_constants";
@@ -13,7 +15,12 @@ import {
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export async function ProductsContent() {
-  const { currentBusiness } = await getCurrentBusiness();
+  const [error, result] = await getCurrentBusiness();
+
+  if (error || !result.currentBusiness) {
+    redirect(pathsConfig.auth.signUp);
+  }
+  const { currentBusiness } = result;
   const products = await client.products.private.listProductsByBusinessId();
 
   const currentPlan = currentBusiness.currentPlan;

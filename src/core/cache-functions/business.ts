@@ -41,64 +41,72 @@ export const ListAllBusinessesOutputSchema = z.object({
 export async function listAllBusinessesCache(
   input: z.infer<typeof ListAllBusinessesInputSchema>,
 ): Promise<z.infer<typeof ListAllBusinessesOutputSchema>> {
-  const { search, category, page, limit, sortBy } = input ?? {};
-  // Build where conditions
-  const conditions = [eq(business.isActive, true)];
+  try {
+    const { search, category, page, limit, sortBy } = input ?? {};
+    // Build where conditions
+    const conditions = [eq(business.isActive, true)];
 
-  let orderBy: ReturnType<typeof asc> | ReturnType<typeof desc> | undefined;
+    let orderBy: ReturnType<typeof asc> | ReturnType<typeof desc> | undefined;
 
-  if (search) {
-    conditions.push(
-      or(
-        ilike(business.name, `%${search}%`),
-        ilike(business.description, `%${search}%`),
-      ) as SQL<string>,
-    );
-  }
-
-  if (category) {
-    const categoryId = await db.query.category.findFirst({
-      where: eq(categorySchema.value, category),
-    });
-
-    if (categoryId) {
-      conditions.push(eq(business.categoryId, categoryId.id));
+    if (search) {
+      conditions.push(
+        or(
+          ilike(business.name, `%${search}%`),
+          ilike(business.description, `%${search}%`),
+        ) as SQL<string>,
+      );
     }
-  }
 
-  if (sortBy === "oldest") {
-    orderBy = asc(business.createdAt);
-  } else {
-    orderBy = desc(business.createdAt); // default newest
-  }
+    if (category) {
+      const categoryId = await db.query.category.findFirst({
+        where: eq(categorySchema.value, category),
+      });
 
-  const whereClause = and(...conditions);
+      if (categoryId) {
+        conditions.push(eq(business.categoryId, categoryId.id));
+      }
+    }
 
-  const [businesses, totalResult] = await Promise.all([
-    db.query.business.findMany({
-      where: whereClause,
-      with: {
-        products: {
-          where: eq(product.active, true),
-          with: {
-            images: true,
+    if (sortBy === "oldest") {
+      orderBy = asc(business.createdAt);
+    } else {
+      orderBy = desc(business.createdAt); // default newest
+    }
+
+    const whereClause = and(...conditions);
+
+    const [businesses, totalResult] = await Promise.all([
+      db.query.business.findMany({
+        where: whereClause,
+        with: {
+          products: {
+            where: eq(product.active, true),
+            with: {
+              images: true,
+            },
           },
+          category: true,
+          logo: true,
         },
-        category: true,
-        logo: true,
-      },
-      orderBy,
-      ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
-    }),
-    db.select({ count: count() }).from(business).where(whereClause),
-  ]);
+        orderBy,
+        ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
+      }),
+      db.select({ count: count() }).from(business).where(whereClause),
+    ]);
 
-  const total = totalResult[0]?.count ?? 0;
+    const total = totalResult[0]?.count ?? 0;
 
-  return {
-    businesses: businesses as BusinessWithRelations[],
-    total,
-  };
+    return {
+      businesses: businesses as BusinessWithRelations[],
+      total,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      businesses: [],
+      total: 0,
+    };
+  }
 }
 
 export async function featuredBusinessesCache() {

@@ -54,7 +54,7 @@ export function DashboardHeader({
         name={business?.name}
         isAdmin={false}
         isBusiness
-        email={business?.email as string}
+        email={business?.user?.email as string}
         businessId={business?.id}
       />
     </header>

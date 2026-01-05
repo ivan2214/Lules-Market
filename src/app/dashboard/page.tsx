@@ -17,7 +17,7 @@ async function DashboardContent() {
   const [error, result] = await getCurrentBusiness();
 
   if (error || !result.currentBusiness) {
-    redirect(pathsConfig.dashboard.setup);
+    redirect(pathsConfig.auth.signUp);
   }
   const { currentBusiness } = result;
 

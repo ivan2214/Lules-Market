@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     category: business.category?.value,
     other: {
       "business:contact_data:street_address": business.address || "",
-      "business:contact_data:email": business.email || "",
+      "business:contact_data:email": business.user?.email || "",
       "business:contact_data:phone_number": business.phone || "",
       "business:contact_data:website": business.website || "",
     },
@@ -143,7 +143,7 @@ export default async function BusinessPage({ params }: Props) {
         description={business.description || ""}
         address={business.address || ""}
         phone={business.phone || ""}
-        email={business.email || ""}
+        email={business.user?.email || ""}
         image={business.logo?.url || ""}
         url={`${env.APP_URL}/comercio/${id}`}
       />

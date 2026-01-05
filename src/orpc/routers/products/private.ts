@@ -6,6 +6,7 @@ import z from "zod";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import type { Product, ProductWithRelations } from "@/db/types";
+import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import { deleteS3Object } from "@/orpc/actions/s3/delete-s3-object";
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
@@ -54,16 +55,15 @@ export const createProduct = o
       product: z.custom<Product>(),
     }),
   )
-  .handler(async ({ context, input }) => {
-    const {
-      user: { email },
-    } = context;
-    const currentBusiness = await db.query.business.findFirst({
-      where: eq(schema.business.email, email),
-      with: {
-        currentPlan: true,
-      },
-    });
+  .handler(async ({ input }) => {
+    const [error, result] = await getCurrentBusiness();
+
+    if (error || !result.currentBusiness) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Negocio no encontrado",
+      });
+    }
+    const { currentBusiness } = result;
 
     if (!currentBusiness) {
       throw new ORPCError("NOT_FOUND", {
@@ -185,16 +185,15 @@ export const updateProduct = o
       product: z.custom<Product>(),
     }),
   )
-  .handler(async ({ context, input }) => {
-    const {
-      user: { email },
-    } = context;
-    const currentBusiness = await db.query.business.findFirst({
-      where: eq(schema.business.email, email),
-      with: {
-        currentPlan: true,
-      },
-    });
+  .handler(async ({ input }) => {
+    const [error, result] = await getCurrentBusiness();
+
+    if (error || !result.currentBusiness) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Negocio no encontrado",
+      });
+    }
+    const { currentBusiness } = result;
 
     if (!currentBusiness) {
       throw new ORPCError("NOT_FOUND", {
@@ -324,16 +323,15 @@ export const deleteProduct = o
       success: z.boolean(),
     }),
   )
-  .handler(async ({ context, input }) => {
-    const {
-      user: { email },
-    } = context;
-    const currentBusiness = await db.query.business.findFirst({
-      where: eq(schema.business.email, email),
-      with: {
-        currentPlan: true,
-      },
-    });
+  .handler(async ({ input }) => {
+    const [error, result] = await getCurrentBusiness();
+
+    if (error || !result.currentBusiness) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Negocio no encontrado",
+      });
+    }
+    const { currentBusiness } = result;
 
     if (!currentBusiness) {
       throw new ORPCError("NOT_FOUND", {
@@ -389,16 +387,15 @@ export const listProductsByBusinessId = o
     tags: ["Products"],
   })
   .output(z.array(z.custom<ProductWithRelations>()))
-  .handler(async ({ context }) => {
-    const {
-      user: { email },
-    } = context;
-    const currentBusiness = await db.query.business.findFirst({
-      where: eq(schema.business.email, email),
-      with: {
-        currentPlan: true,
-      },
-    });
+  .handler(async () => {
+    const [error, result] = await getCurrentBusiness();
+
+    if (error || !result.currentBusiness) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Negocio no encontrado",
+      });
+    }
+    const { currentBusiness } = result;
 
     if (!currentBusiness) {
       throw new ORPCError("NOT_FOUND", {

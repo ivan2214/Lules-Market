@@ -45,9 +45,10 @@ export function BusinessProfileForm({
         description: business.description ?? "",
         address: business.address ?? "",
         phone: business.phone ?? "",
-        email: business.email ?? "",
         website: business.website ?? "",
-
+        email: business.user?.email ?? "",
+        userEmail: business.user?.email ?? "",
+        tags: business.tags ?? [],
         whatsapp: business.whatsapp ?? "",
         facebook: business.facebook ?? "",
         instagram: business.instagram ?? "",
@@ -81,6 +82,7 @@ export function BusinessProfileForm({
             },
       }
     : {
+        userEmail: "",
         name: "",
         description: "",
         address: "",
@@ -198,7 +200,7 @@ export function BusinessProfileForm({
               </FieldContent>
 
               <Select
-                value={field.value.toLocaleLowerCase() || ""}
+                value={field.value?.toLocaleLowerCase() || ""}
                 onValueChange={(val) => field.onChange(val)}
                 disabled={isPending}
                 aria-invalid={fieldState.invalid}

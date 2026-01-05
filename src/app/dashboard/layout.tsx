@@ -20,5 +20,5 @@ async function DashboardLayout({ children }: { children: React.ReactNode }) {
 
 export default withAuthenticate(DashboardLayout, {
   role: "business",
-  redirect: pathsConfig.setup,
+  redirect: pathsConfig.auth.signIn,
 });

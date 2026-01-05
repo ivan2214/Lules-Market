@@ -188,6 +188,12 @@ export const businessSetup = o
         .where(eq(business.id, businessDB.id));
     }
 
+    // Update user role to business
+    await db
+      .update(userSchema)
+      .set({ role: "business" })
+      .where(eq(userSchema.id, userId));
+
     return {
       success: true,
       business: businessDB,

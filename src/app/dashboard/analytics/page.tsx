@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
 import type { CurrentPlan } from "@/db/types";
 import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
 import { client } from "@/orpc";
@@ -17,7 +18,13 @@ export default async function AnalyticsPage({
   const params = await searchParams;
   const period = params.period || "30d";
 
-  const { currentBusiness } = await getCurrentBusiness();
+  const [error, result] = await getCurrentBusiness();
+
+  if (error || !result.currentBusiness) {
+    redirect(pathsConfig.auth.signUp);
+  }
+  const { currentBusiness } = result;
+
   const currentPlan: CurrentPlan | null | undefined =
     currentBusiness.currentPlan;
 
