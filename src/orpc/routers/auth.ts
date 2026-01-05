@@ -5,7 +5,7 @@ import { signUpSchema } from "@/shared/validators/auth";
 import type { BusinessSetupSchema } from "@/shared/validators/business";
 import { o } from "../context";
 
-const sigup = o
+const signup = o
   .route({
     method: "POST",
     path: "/sign-up",
@@ -76,5 +76,5 @@ const sigup = o
   });
 
 export const authRouter = {
-  sigup,
+  signup,
 };

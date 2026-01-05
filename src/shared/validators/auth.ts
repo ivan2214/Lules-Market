@@ -51,9 +51,26 @@ export const signUpSchema = z
     isBusiness: z.boolean().optional(),
     businessData: BusinessSetupSchema.optional(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Las contraseñas no coinciden",
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Las contraseñas no coinciden",
+        path: ["confirmPassword"],
+      });
+    }
+
+    if (data.isBusiness) {
+      const result = BusinessSetupSchema.safeParse(data.businessData);
+      if (!result.success) {
+        result.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            ...issue,
+            path: ["businessData", ...issue.path],
+          });
+        });
+      }
+    }
   });
 
 export type SignUpSchema = z.infer<typeof signUpSchema>;

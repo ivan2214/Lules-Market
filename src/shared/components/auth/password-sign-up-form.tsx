@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { type JSX, useState } from "react";
 import type z from "zod";
 import type { Category, ImageInsert } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
@@ -79,12 +79,12 @@ const defaultValues: SignUpSchema = {
 };
 
 export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
-  const [isBusiness, setIsBusiness] = useState(true);
+  const [isBusiness, setIsBusiness] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { mutate, isSuccess, error, isError, isPending } = useMutation(
-    orpc.auth.sigup.mutationOptions({
+    orpc.auth.signup.mutationOptions({
       onSuccess(data, variables, onMutateResult, context) {
         console.log(data, variables, onMutateResult, context);
       },
@@ -113,34 +113,38 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         tags,
         website,
         whatsapp,
-      } = businessData as z.infer<typeof BusinessSetupSchema>;
+      } = (isBusiness ? businessData : {}) as z.infer<
+        typeof BusinessSetupSchema
+      >;
 
       mutate({
-        name,
+        name: data.value.name,
         email: data.value.email,
         password: data.value.password,
 
         isBusiness,
-        businessData: {
-          address,
-          category,
-          coverImage,
-          description,
-          logo,
-          name,
-          facebook,
-          instagram,
-          phone,
-          tags,
-          website,
-          whatsapp,
-          userEmail: data.value.email,
-        },
+        businessData: isBusiness
+          ? {
+              address,
+              category,
+              coverImage,
+              description,
+              logo,
+              name,
+              facebook,
+              instagram,
+              phone,
+              tags,
+              website,
+              whatsapp,
+              userEmail: data.value.email,
+            }
+          : undefined,
       });
     },
   });
 
-  const stepsFields = [
+  const stepsFields: { fields: string[]; component: JSX.Element }[] = [
     {
       fields: ["name", "email"],
       component: (
@@ -263,7 +267,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </FieldGroup>
       ),
     },
-    {
+    isBusiness && {
       fields: ["name", "description", "category"],
       component: (
         <FieldGroup className="col-span-6">
@@ -344,7 +348,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </FieldGroup>
       ),
     },
-    {
+    isBusiness && {
       fields: ["address", "phone", "tags"],
       component: (
         <FieldGroup className="col-span-6">
@@ -430,7 +434,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </FieldGroup>
       ),
     },
-    {
+    isBusiness && {
       fields: [
         "businessData.whatsapp",
         "businessData.facebook",
@@ -539,7 +543,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </FieldGroup>
       ),
     },
-    {
+    isBusiness && {
       fields: ["logo", "coverImage"],
       component: (
         <FieldGroup className="col-span-6">
@@ -643,7 +647,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </FieldGroup>
       ),
     },
-  ];
+  ].filter(Boolean) as { fields: string[]; component: JSX.Element }[];
 
   return (
     <>
