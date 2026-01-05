@@ -8,12 +8,13 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
 import { ac, allRoles } from "@/lib/auth/roles";
+import { syncUserRole } from "@/orpc/actions/user/sync-user-role";
 
 export const auth = betterAuth({
   ...authConfig,
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
     async sendResetPassword({ url, user }) {
       const { sendEmail } = await import("../email");
       await sendEmail({
@@ -59,6 +60,85 @@ export const auth = betterAuth({
           userFirstname: user.name.split(" ")[0],
           title: "Confirmar Borrado de Cuenta",
         });
+      },
+    },
+    additionalFields: {
+      isBusiness: {
+        type: "boolean",
+        defaultValue: false,
+        required: true,
+      },
+      businessName: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessCategory: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessDescription: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessAddress: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessPhone: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessWebsite: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessWhatsapp: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessFacebook: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessInstagram: {
+        type: "string",
+        defaultValue: "",
+        required: false,
+      },
+      businessLogo: {
+        type: "json",
+        defaultValue: {
+          url: "",
+          key: "",
+          name: "",
+          isMainImage: false,
+          size: 0,
+        },
+        required: false,
+      },
+      businessCoverImage: {
+        type: "json",
+        defaultValue: {
+          url: "",
+          key: "",
+          name: "",
+          isMainImage: false,
+          size: 0,
+        },
+        required: false,
+      },
+      businessTags: {
+        type: "string[]",
+        defaultValue: [],
+        required: false,
       },
     },
   },
@@ -119,4 +199,21 @@ export const auth = betterAuth({
     openAPI({}),
     nextCookies(),
   ],
+  databaseHooks: {
+    user: {
+      create: {
+        async before(_user) {},
+        async after(user) {
+          const { id, email } = user;
+
+          await syncUserRole({
+            email,
+            id,
+          });
+        },
+      },
+    },
+  },
 });
+
+export type Session = typeof auth.$Infer.Session;

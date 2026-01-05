@@ -8,14 +8,14 @@ import { db } from "@/db";
 import {
   account,
   business,
-  category,
+  category as categorySchema,
   currentPlan,
   image,
   plan,
   product,
   session,
   trial,
-  user,
+  user as userSchema,
 } from "@/db/schema";
 import type { Business, ProductWithRelations } from "@/db/types";
 import { deleteS3Object } from "@/orpc/actions/s3/delete-s3-object";
@@ -49,18 +49,33 @@ export const businessSetup = o
       business: z.custom<Business>(),
     }),
   )
-  .handler(async ({ context, input }) => {
-    const { user } = context;
-
-    const alreadyEmailBusiness = await db.query.business.findFirst({
-      where: eq(business.email, user.email),
+  .handler(async ({ input }) => {
+    const {
+      userEmail,
+      name,
+      description,
+      phone,
+      whatsapp,
+      website,
+      facebook,
+      instagram,
+      address,
+      category,
+      tags,
+      logo,
+      coverImage,
+    } = input;
+    const user = await db.query.user.findFirst({
+      where: eq(userSchema.email, userEmail),
     });
 
-    if (alreadyEmailBusiness) {
-      throw new ORPCError("CONFLICT", {
-        message: "Ya tienes un negocio registrado con este email",
+    if (!user) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Usuario no encontrado",
       });
     }
+
+    const userId = user.id;
 
     const freePlan = await db.query.plan.findFirst({
       where: eq(plan.type, "FREE"),
@@ -76,23 +91,22 @@ export const businessSetup = o
     const [businessDB] = await db
       .insert(business)
       .values({
-        name: user.name,
-        description: input.description,
-        phone: input.phone,
-        whatsapp: input.whatsapp,
-        email: user.email,
-        website: input.website,
-        facebook: input.facebook,
-        instagram: input.instagram,
-        address: input.address,
-        userId: user.id,
+        name,
+        description,
+        phone,
+        whatsapp,
+        website,
+        facebook,
+        instagram,
+        address,
+        userId,
         status: "ACTIVE",
-        tags: input.tags,
+        tags,
       })
       .returning();
 
     // Create logo if provided
-    if (input.logo) {
+    if (logo) {
       await db.insert(image).values({
         key: input.logo.key,
         url: input.logo.url,
@@ -104,12 +118,12 @@ export const businessSetup = o
     }
 
     // Create cover image if provided
-    if (input.coverImage) {
+    if (coverImage) {
       await db.insert(image).values({
-        key: input.coverImage.key,
-        url: input.coverImage.url,
-        name: input.coverImage.name,
-        size: input.coverImage.size,
+        key: coverImage.key,
+        url: coverImage.url,
+        name: coverImage.name,
+        size: coverImage.size,
         isMainImage: input.coverImage.isMainImage,
         coverBusinessId: businessDB.id,
       });
@@ -138,21 +152,33 @@ export const businessSetup = o
     });
 
     // Handle category
-    const categoryDB = await db.query.category.findFirst({
-      where: eq(category.value, input.category.toLowerCase()),
-    });
+    let categoryDB:
+      | {
+          createdAt: Date;
+          updatedAt: Date;
+          id: string;
+          value: string;
+          label: string;
+        }
+      | undefined;
+
+    if (category) {
+      categoryDB = await db.query.category.findFirst({
+        where: eq(categorySchema.value, category?.toLowerCase()),
+      });
+    }
 
     if (categoryDB) {
       await db
         .update(business)
         .set({ categoryId: categoryDB.id })
         .where(eq(business.id, businessDB.id));
-    } else {
+    } else if (category) {
       const [newCategory] = await db
-        .insert(category)
+        .insert(categorySchema)
         .values({
-          value: input.category.toLowerCase(),
-          label: input.category,
+          value: category?.toLowerCase(),
+          label: category,
         })
         .returning();
 
@@ -182,9 +208,10 @@ export const updateBusiness = o
   .output(z.object({ success: z.boolean(), business: z.custom<Business>() }))
   .handler(async ({ context, input }) => {
     const { user } = context;
+    const { category } = input;
 
     const currentBusiness = await db.query.business.findFirst({
-      where: eq(business.email, user.email),
+      where: eq(business.userId, user.id),
       with: {
         logo: true,
         coverImage: true,
@@ -241,18 +268,30 @@ export const updateBusiness = o
     // Handle category
     let categoryId = currentBusiness.categoryId;
 
-    const categoryDB = await db.query.category.findFirst({
-      where: eq(category.value, input.category.toLowerCase()),
-    });
+    let categoryDB:
+      | {
+          createdAt: Date;
+          updatedAt: Date;
+          id: string;
+          value: string;
+          label: string;
+        }
+      | undefined;
+
+    if (category) {
+      categoryDB = await db.query.category.findFirst({
+        where: eq(categorySchema.value, category?.toLowerCase()),
+      });
+    }
 
     if (categoryDB) {
       categoryId = categoryDB.id;
-    } else {
+    } else if (category) {
       const [newCategory] = await db
-        .insert(category)
+        .insert(categorySchema)
         .values({
-          value: input.category.toLowerCase(),
-          label: input.category,
+          value: category?.toLowerCase(),
+          label: category,
         })
         .returning();
       categoryId = newCategory.id;
@@ -265,7 +304,7 @@ export const updateBusiness = o
         description: input.description,
         phone: input.phone,
         whatsapp: input.whatsapp,
-        email: input.email,
+
         website: input.website,
         facebook: input.facebook,
         instagram: input.instagram,
@@ -301,12 +340,10 @@ export const deleteBusiness = o
     }),
   )
   .handler(async ({ context }) => {
-    const {
-      user: { email },
-    } = context;
+    const { user } = context;
 
     const currentBusiness = await db.query.business.findFirst({
-      where: eq(business.email, email),
+      where: eq(business.userId, user.id),
       with: {
         logo: true,
         coverImage: true,
@@ -373,7 +410,9 @@ export const deleteBusiness = o
       await db.delete(business).where(eq(business.id, currentBusiness.id));
 
       // Delete user
-      await db.delete(user).where(eq(user.id, currentBusiness.userId));
+      await db
+        .delete(userSchema)
+        .where(eq(userSchema.id, currentBusiness.userId));
 
       return { success: true };
     } catch (error) {
@@ -411,7 +450,7 @@ export const getMyBusinessProducts = o
     const { user } = context;
 
     const currentBusiness = await db.query.business.findFirst({
-      where: eq(business.email, user.email),
+      where: eq(business.userId, user.id),
       with: {
         logo: true,
         coverImage: true,

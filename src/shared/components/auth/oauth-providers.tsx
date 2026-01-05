@@ -48,6 +48,7 @@ export function OAuthProviders({ isBusiness }: OAuthProvidersProps) {
           onClick={() => {
             authClient.signIn.social({
               provider: provider.id,
+
               callbackURL: isBusiness
                 ? "/auth/business-setup"
                 : pathsConfig.app.home,

@@ -1,10 +1,9 @@
 import type { RouterClient } from "@orpc/server";
-import type { User } from "better-auth";
 
 import { o } from "@/orpc/context";
-import { authMiddleware } from "@/orpc/middlewares";
 import { adminRouter } from "./admin";
 import { analyticsRouter } from "./analytics";
+import { authRouter } from "./auth";
 import { businessPrivateRouter } from "./business/private";
 import { businessPublicRouter } from "./business/public";
 import { categoryRouter } from "./category";
@@ -27,21 +26,7 @@ export const appRouter = {
     .handler(() => {
       return "OK";
     }),
-  privateData: o
-    .route({
-      method: "GET",
-      path: "/private",
-      summary: "Get Private Data",
-      description: "Returns private data for authenticated users",
-      tags: ["Auth"],
-    })
-    .use(authMiddleware({ role: "user" }))
-    .handler(({ context }) => {
-      return {
-        message: "This is private",
-        user: context?.user as User,
-      };
-    }),
+  auth: authRouter,
   business: {
     public: businessPublicRouter,
     private: businessPrivateRouter,

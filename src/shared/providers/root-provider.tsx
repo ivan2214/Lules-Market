@@ -20,7 +20,7 @@ export function RootProviders({
           attribute="class"
           enableSystem
           disableTransitionOnChange
-          defaultTheme="system"
+          defaultTheme="light"
           enableColorScheme={false}
         >
           {children}

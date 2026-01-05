@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BusinessSetupSchema } from "./business";
 
 export const forgotPasswordSchema = z.object({
   email: z.email(),
@@ -28,17 +29,32 @@ export const resetPasswordSchema = z
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
 export const signInSchema = z.object({
-  email: z.email(),
-  password: z.string().min(8),
+  email: z.email().min(1, "El email es requerido"),
+  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   rememberMe: z.boolean().optional(),
 });
 
 export type SignInSchema = z.infer<typeof signInSchema>;
 
-export const signUpSchema = z.object({
-  email: z.email(),
-  password: z.string().min(8),
-});
+export const signUpSchema = z
+  .object({
+    name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+    email: z
+      .email("Dirección de correo electrónico inválida")
+      .min(1, "El email es requerido"),
+    password: z
+      .string()
+      .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    confirmPassword: z
+      .string()
+      .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    isBusiness: z.boolean().optional(),
+    businessData: BusinessSetupSchema.optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Las contraseñas no coinciden",
+  });
 
 export type SignUpSchema = z.infer<typeof signUpSchema>;
 

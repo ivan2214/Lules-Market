@@ -27,7 +27,6 @@ export const business = pgTable(
     description: text("description"),
     phone: text("phone"),
     whatsapp: text("whatsapp"),
-    email: text("email").notNull().unique(),
     website: text("website"),
     facebook: text("facebook"),
     instagram: text("instagram"),

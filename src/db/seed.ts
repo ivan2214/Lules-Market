@@ -414,7 +414,6 @@ async function seedBusinesses(
               })
             : new Date(),
           facebook: faker.internet.url(),
-          email: owner.email,
           tags: faker.lorem.words(3).split(" "),
           website: faker.internet.url(),
           whatsapp: faker.phone.number(),

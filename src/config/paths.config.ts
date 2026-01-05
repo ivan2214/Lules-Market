@@ -9,7 +9,7 @@ const PathsSchema = z.object({
     resetPassword: z.custom<Route>(),
     twoFactor: z.custom<Route>(),
   }),
-  setup: z.custom<Route>(),
+
   app: z.object({
     home: z.custom<Route>(),
     account: z.custom<Route>(),
@@ -38,7 +38,7 @@ const pathsConfig = PathsSchema.parse({
     resetPassword: "/auth/reset-password",
     twoFactor: "/auth/two-factor",
   },
-  setup: "/setup",
+
   app: {
     home: "/home",
     account: "/home/account",
