@@ -2,6 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
+import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { orpc } from "@/orpc";
 import { Badge } from "@/shared/components/ui/badge";
@@ -55,7 +56,7 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   };
 
   const handleRemoveFilter = (key: string) => {
-    router.push(createUrl({ [key]: undefined }));
+    router.push(createUrl({ [key]: undefined }) as Route);
   };
 
   const handleClearAll = () => {

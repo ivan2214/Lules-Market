@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { Category } from "@/db/types";
@@ -32,7 +33,7 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
   return (
     <div className="mb-6 flex flex-wrap gap-2">
       <Badge variant="outline" className="cursor-pointer px-4 py-2" asChild>
-        <Link href={createUrl({ category: undefined })}>Todo</Link>
+        <Link href={createUrl({ category: undefined }) as Route}>Todo</Link>
       </Badge>
       {categories.map((cat) => {
         const isActive = category?.toLowerCase() === cat.value.toLowerCase();
@@ -43,7 +44,9 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
             className="cursor-pointer px-4 py-2"
             asChild
           >
-            <Link href={createUrl({ category: cat.value })}>{cat.value}</Link>
+            <Link href={createUrl({ category: cat.value }) as Route}>
+              {cat.value}
+            </Link>
           </Badge>
         );
       })}

@@ -690,15 +690,12 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
                 Next <ChevronRight />
               </NextButton>
               <SubmitButton type="submit" disabled={isPending}>
-                {isPending ? "Submitting..." : "Submit"}
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isPending ? "Registrando..." : "Registrarse"}
               </SubmitButton>
             </FormFooter>
           </MultiStepFormContent>
         </MultiStepFormProvider>
-        <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isPending ? "Registrando..." : "Registrarse"}
-        </Button>
       </form>
 
       {!isBusiness && (

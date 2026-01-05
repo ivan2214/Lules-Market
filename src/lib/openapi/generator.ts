@@ -17,7 +17,7 @@ export async function generateOpenAPISpec() {
     },
     servers: [
       {
-        url: "/api/rpc",
+        url: "/api",
         description: "API Server",
       },
     ],
