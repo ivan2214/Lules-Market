@@ -13,7 +13,7 @@ const signup = o
   .input(signUpSchema.omit({ confirmPassword: true }))
   .output(z.object({ success: z.boolean() }))
   .handler(async ({ input }) => {
-    const { name, email, password, businessData, isBusiness } = input;
+    const { name, email, password, businessData } = input;
     const {
       address,
       category,
@@ -29,7 +29,7 @@ const signup = o
       whatsapp,
     } = businessData as z.infer<typeof BusinessSetupSchema>;
 
-    if (!isBusiness) {
+    /*  if (!isBusiness) {
       const { user } = await auth.api.signUpEmail({
         body: {
           name,
@@ -40,7 +40,7 @@ const signup = o
       return {
         success: !!user,
       };
-    }
+    } */
     const { user } = await auth.api.signUpEmail({
       body: {
         name,

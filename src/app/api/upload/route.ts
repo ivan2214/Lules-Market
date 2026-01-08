@@ -12,7 +12,7 @@ const router: Router = {
   }), // or cloudflare(), backblaze(), tigris(), ...
   bucketName: env.S3_BUCKET_NAME,
   routes: {
-    businessCoverAndLogo: route({
+    businessCover: route({
       fileTypes: ["image/*"],
       multipleFiles: false,
       onBeforeUpload: async ({ req: { body }, file, clientMetadata }) => {
@@ -22,6 +22,20 @@ const router: Router = {
         return {
           objectInfo: {
             key: `business-cover/${file.name}`,
+          },
+        };
+      },
+    }),
+    businessLogo: route({
+      fileTypes: ["image/*"],
+      multipleFiles: false,
+      onBeforeUpload: async ({ req: { body }, file, clientMetadata }) => {
+        console.log({ clientMetadata });
+        console.log({ body });
+
+        return {
+          objectInfo: {
+            key: `business-logo/${file.name}`,
           },
         };
       },

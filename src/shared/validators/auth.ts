@@ -36,42 +36,17 @@ export const signInSchema = z.object({
 
 export type SignInSchema = z.infer<typeof signInSchema>;
 
-export const signUpSchema = z
-  .object({
-    name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-    email: z
-      .email("Dirección de correo electrónico inválida")
-      .min(1, "El email es requerido"),
-    password: z
-      .string()
-      .min(8, "La contraseña debe tener al menos 8 caracteres"),
-    confirmPassword: z
-      .string()
-      .min(8, "La contraseña debe tener al menos 8 caracteres"),
-    isBusiness: z.boolean().optional(),
-    businessData: BusinessSetupSchema.optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.confirmPassword) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Las contraseñas no coinciden",
-        path: ["confirmPassword"],
-      });
-    }
-
-    if (data.isBusiness) {
-      const result = BusinessSetupSchema.safeParse(data.businessData);
-      if (!result.success) {
-        result.error.issues.forEach((issue) => {
-          ctx.addIssue({
-            ...issue,
-            path: ["businessData", ...issue.path],
-          });
-        });
-      }
-    }
-  });
+export const signUpSchema = z.object({
+  name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+  email: z
+    .email("Dirección de correo electrónico inválida")
+    .min(1, "El email es requerido"),
+  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+  confirmPassword: z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres"),
+  businessData: BusinessSetupSchema,
+});
 
 export type SignUpSchema = z.infer<typeof signUpSchema>;
 

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { type JSX, useState } from "react";
+import { toast } from "sonner";
 import type z from "zod";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
@@ -56,7 +57,7 @@ const defaultValues: SignUpSchema = {
   email: "",
   password: "",
   confirmPassword: "",
-  isBusiness: true,
+
   businessData: {
     address: "",
     category: "",
@@ -95,21 +96,27 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   );
 
   const uploaderCover = useUploadFiles({
-    route: "businessCoverAndLogo",
+    route: "businessCover",
     onUploadComplete: ({ files }) => {
       form.setFieldValue(
         "businessData.coverImage.objectKeys",
         files.map((file) => file.objectInfo.key),
       );
     },
+    onError(error) {
+      toast.error(error.message);
+    },
   });
   const uploaderLogo = useUploadFiles({
-    route: "businessCoverAndLogo",
+    route: "businessLogo",
     onUploadComplete: ({ files }) => {
       form.setFieldValue(
         "businessData.logo.objectKeys",
         files.map((file) => file.objectInfo.key),
       );
+    },
+    onError(error) {
+      toast.error(error.message);
     },
   });
 
@@ -117,9 +124,10 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     defaultValues,
     validators: {
       onSubmit: signUpSchema,
-      onChange: signUpSchema,
     },
     onSubmit: async (data) => {
+      console.log(data);
+      const { email, password } = data.value;
       const { businessData } = data.value;
       const {
         address,
@@ -135,26 +143,51 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         website,
         whatsapp,
       } = businessData as z.infer<typeof BusinessSetupSchema>;
-      const { files: _files } = await uploaderCover.upload(coverImage.file);
+      const { files: uploadedCoverFiles } = await uploaderCover.upload(
+        coverImage.file,
+      );
+      const { files: uploadedLogoFiles } = await uploaderLogo.upload(logo.file);
 
-      const { files: _files2 } = await uploaderLogo.upload(logo.file);
+      const coverImageWithKeys = {
+        ...coverImage,
+        objectKeys: uploadedCoverFiles.map((f) => f.objectInfo.key),
+      };
+
+      const logoWithKeys = {
+        ...logo,
+        objectKeys: uploadedLogoFiles.map((f) => f.objectInfo.key),
+      };
 
       console.log({
-        coverImage: _files,
-        logo: _files2,
+        name,
+        email,
+        password,
+        businessData: {
+          address,
+          category,
+          coverImage: coverImageWithKeys,
+          description,
+          logo: logoWithKeys,
+          name,
+          facebook,
+          instagram,
+          phone,
+          tags,
+          website,
+          whatsapp,
+        },
       });
 
       mutate({
         name: data.value.name,
         email: data.value.email,
         password: data.value.password,
-        isBusiness: true,
         businessData: {
           address,
           category,
-          coverImage,
+          coverImage: coverImageWithKeys,
           description,
-          logo,
+          logo: logoWithKeys,
           name,
           facebook,
           instagram,
@@ -166,12 +199,30 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
       });
     },
     listeners: {
+      onSubmit(props) {
+        console.log(props);
+      },
       onChange({ formApi }) {
         const values = formApi.state.values;
-        const errors = formApi.state.errors;
+        const errorsArray = formApi.getAllErrors().form.errors;
+        const errors = Object.values(errorsArray);
         console.log("values", values);
         console.log("errors", errors);
       },
+    },
+    onSubmitInvalid(props) {
+      const errorsArray = props.formApi.getAllErrors().form.errors;
+      const errors = Object.values(errorsArray);
+      toast.error("Por favor, corrige los errores", {
+        description() {
+          return (
+            <pre>
+              <code>{JSON.stringify(errors, null, 2)}</code>
+            </pre>
+          );
+        },
+      });
+      console.log("errors", errors);
     },
   });
 
@@ -828,9 +879,8 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
                 disabled={
                   isPending ||
                   form.state.isSubmitting ||
-                  !form.state.isValid ||
-                  !uploaderCover.isPending ||
-                  !uploaderLogo.isPending
+                  uploaderCover.isPending ||
+                  uploaderLogo.isPending
                 }
               >
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
