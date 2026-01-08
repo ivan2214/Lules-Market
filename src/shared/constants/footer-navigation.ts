@@ -34,11 +34,11 @@ export const footerNavigation: {
   comercio: [
     {
       name: "Registrar Comercio",
-      href: "/signup",
+      href: "/auth/sign-up",
     },
     {
       name: "Iniciar Sesión",
-      href: "/signin",
+      href: "/auth/sign-in",
     },
     {
       name: "Panel de Control",

@@ -42,7 +42,6 @@ import {
 } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { Uploader } from "@/shared/components/uploader/uploader";
 import {
   ProductCreateSchema,
   ProductUpdateSchema,
@@ -64,7 +63,7 @@ export function ProductFormDialog({
   className,
   isViewMode = false,
   categories,
-  maxImagesPerProduct,
+  maxImagesPerProduct: _maxImagesPerProduct,
 }: ProductFormDialogProps) {
   const [open, setOpen] = useState(false);
 
@@ -329,7 +328,7 @@ export function ProductFormDialog({
               render={({ field, fieldState }) => (
                 <Field data-invalid={!!fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Imágenes</FieldLabel>
-                  <Uploader
+                  {/*       <Uploader
                     folder="products"
                     onChange={(value) => {
                       const images = (
@@ -349,7 +348,7 @@ export function ProductFormDialog({
                     value={field.value}
                     disabled={isViewMode || pending}
                     aria-invalid={!!fieldState.invalid}
-                  />
+                  /> */}
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}

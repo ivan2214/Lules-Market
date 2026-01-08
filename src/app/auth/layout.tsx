@@ -19,10 +19,10 @@ async function AuthLayout({ children }: React.PropsWithChildren) {
     <main>
       <Navigation />
       <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-        <div className="flex flex-col gap-6">
+        <section className="flex w-full flex-1 flex-col items-center justify-center gap-6">
           <AppLogo />
           {children}
-        </div>
+        </section>
       </section>
       <Footer />
     </main>

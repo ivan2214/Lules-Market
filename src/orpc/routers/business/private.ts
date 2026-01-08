@@ -18,7 +18,7 @@ import {
   user as userSchema,
 } from "@/db/schema";
 import type { Business, ProductWithRelations } from "@/db/types";
-import { deleteS3Object } from "@/orpc/actions/s3/delete-s3-object";
+
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
 import {
@@ -42,7 +42,11 @@ export const businessSetup = o
     summary: "Setup business",
     tags: ["Business"],
   })
-  .input(BusinessSetupSchema)
+  .input(
+    BusinessSetupSchema.extend({
+      userEmail: z.string(),
+    }),
+  )
   .output(
     z.object({
       success: z.boolean(),
@@ -51,7 +55,6 @@ export const businessSetup = o
   )
   .handler(async ({ input }) => {
     const {
-      userEmail,
       name,
       description,
       phone,
@@ -64,6 +67,7 @@ export const businessSetup = o
       tags,
       logo,
       coverImage,
+      userEmail,
     } = input;
     const user = await db.query.user.findFirst({
       where: eq(userSchema.email, userEmail),
@@ -235,11 +239,7 @@ export const updateBusiness = o
       await db
         .delete(image)
         .where(eq(image.logoBusinessId, currentBusiness.id));
-      if (currentBusiness.logo?.key) {
-        await deleteS3Object({ key: currentBusiness.logo.key }).catch(
-          console.error,
-        );
-      }
+
       // Create new logo
       await db.insert(image).values({
         key: input.logo.key,
@@ -255,11 +255,6 @@ export const updateBusiness = o
       await db
         .delete(image)
         .where(eq(image.coverBusinessId, currentBusiness.id));
-      if (currentBusiness.coverImage?.key) {
-        await deleteS3Object({ key: currentBusiness.coverImage.key }).catch(
-          console.error,
-        );
-      }
       // Create new cover image
       await db.insert(image).values({
         key: input.coverImage.key,
@@ -399,7 +394,6 @@ export const deleteBusiness = o
       await Promise.all(
         allImages.map(async (img) => {
           await Promise.all([
-            deleteS3Object({ key: img.key }).catch(console.error),
             db.delete(image).where(eq(image.key, img.key)).catch(console.error),
           ]);
         }),

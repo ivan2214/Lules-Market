@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
+import pathsConfig from "@/config/paths.config";
 import { auth } from "@/lib/auth";
 
 export default async function proxy(request: NextRequest) {
@@ -9,11 +10,13 @@ export default async function proxy(request: NextRequest) {
 
   // Protect dashboard routes
   if (
-    request.nextUrl.pathname.startsWith("/dashboard") ||
-    request.nextUrl.pathname.startsWith("/admin")
+    request.nextUrl.pathname.startsWith(pathsConfig.dashboard.root) ||
+    request.nextUrl.pathname.startsWith(pathsConfig.admin.root)
   ) {
     if (!session) {
-      return NextResponse.redirect(new URL("/signin", request.url));
+      return NextResponse.redirect(
+        new URL(pathsConfig.auth.signIn, request.url),
+      );
     }
   }
 

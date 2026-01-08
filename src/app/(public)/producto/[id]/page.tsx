@@ -61,6 +61,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export async function generateStaticParams() {
+  const { products } = await client.products.public.listAllProducts();
+  if (!products.length) {
+    return [];
+  }
+  return products.map((product) => ({ id: product.id }));
+}
+
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const { product } = await client.products.public.getProductById({ id });

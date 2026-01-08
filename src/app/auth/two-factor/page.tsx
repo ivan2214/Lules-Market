@@ -15,7 +15,7 @@ import {
 
 export default function TwoFactorPage() {
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader>
         <CardTitle>Verificación TOTP</CardTitle>
         <CardDescription>

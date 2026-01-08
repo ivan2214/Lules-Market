@@ -11,7 +11,7 @@ import {
 
 export default function ForgotPasswordPage() {
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Restablecer contraseña</CardTitle>
         <CardDescription>

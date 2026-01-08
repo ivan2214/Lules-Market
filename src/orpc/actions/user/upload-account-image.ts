@@ -4,7 +4,6 @@ import { ORPCError } from "@orpc/server";
 import { z } from "zod";
 
 import { actionContext, oa } from "@/orpc/middlewares";
-import { generatePresignedUploadUrl } from "../s3/generate-presigned-upload-url";
 
 const BUCKET_NAME = "account-image";
 
@@ -18,12 +17,13 @@ export const uploadAccountImage = oa
   )
   .output(z.string())
   .handler(async ({ input }) => {
-    const { file, key, folder } = input;
+    const { file, key } = input;
 
     try {
       const { name: filename, type: contentType, size } = file;
+      console.log(filename, contentType, size);
 
-      const [genError] = await generatePresignedUploadUrl({
+      /* const [genError] = await generatePresignedUploadUrl({
         filename,
         contentType,
         size,
@@ -34,7 +34,7 @@ export const uploadAccountImage = oa
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
           message: "Failed to generate presigned upload URL",
         });
-      }
+      } */
 
       /* const { uploadUrl } = genData;
 

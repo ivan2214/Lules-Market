@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { startTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { BusinessWithRelations, ImageInsert } from "@/db/types";
+import type { BusinessWithRelations } from "@/db/types";
 import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -26,7 +26,6 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { Uploader } from "@/shared/components/uploader/uploader";
 import { BusinessUpdateSchema } from "@/shared/validators/business";
 import type { BusinessUpdateInput } from "../_types";
 
@@ -47,7 +46,7 @@ export function BusinessProfileForm({
         phone: business.phone ?? "",
         website: business.website ?? "",
         email: business.user?.email ?? "",
-        userEmail: business.user?.email ?? "",
+
         tags: business.tags ?? [],
         whatsapp: business.whatsapp ?? "",
         facebook: business.facebook ?? "",
@@ -82,7 +81,6 @@ export function BusinessProfileForm({
             },
       }
     : {
-        userEmail: "",
         name: "",
         description: "",
         address: "",
@@ -424,7 +422,7 @@ export function BusinessProfileForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
-                <Uploader
+                {/*   <Uploader
                   folder="business/logos"
                   onChange={(files: ImageInsert | ImageInsert[] | null) => {
                     const isArray = Array.isArray(files);
@@ -448,7 +446,7 @@ export function BusinessProfileForm({
                   value={field.value}
                   disabled={fieldState.invalid || isPending}
                   aria-invalid={fieldState.invalid}
-                />
+                /> */}
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -462,7 +460,7 @@ export function BusinessProfileForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Imagen de Portada</FieldLabel>
-                <Uploader
+                {/*    <Uploader
                   folder="business/covers"
                   onChange={(files: ImageInsert | ImageInsert[] | null) => {
                     const isArray = Array.isArray(files);
@@ -485,7 +483,7 @@ export function BusinessProfileForm({
                   value={field.value}
                   disabled={fieldState.invalid || isPending}
                   aria-invalid={fieldState.invalid}
-                />
+                /> */}
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

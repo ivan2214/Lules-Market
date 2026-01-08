@@ -118,6 +118,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export async function generateStaticParams() {
+  const { businesses } = await client.business.public.listAllBusinesses();
+  if (!businesses.length) {
+    return [];
+  }
+  return businesses.map((business) => ({ id: business.id }));
+}
+
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
   const { business } = await client.business.public.getBusinessById({ id });

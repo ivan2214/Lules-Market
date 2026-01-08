@@ -11,7 +11,7 @@ import {
 
 export default function OtpPage() {
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader>
         <CardTitle>Verificación TOTP</CardTitle>
         <CardDescription>

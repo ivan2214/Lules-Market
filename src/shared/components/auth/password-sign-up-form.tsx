@@ -1,11 +1,20 @@
 "use client";
 
+import { useUploadFiles } from "@better-upload/client";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  Loader2,
+  X,
+} from "lucide-react";
+import Image from "next/image";
 import { type JSX, useState } from "react";
 import type z from "zod";
-import type { Category, ImageInsert } from "@/db/types";
+import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
 import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
@@ -24,7 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-import { Switch } from "@/shared/components/ui/switch";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { type SignUpSchema, signUpSchema } from "@/shared/validators/auth";
 import type { BusinessSetupSchema } from "@/shared/validators/business";
@@ -34,38 +42,34 @@ import {
   MultiStepFormContent,
   NextButton,
   PreviousButton,
+  ResetButton,
   StepFields,
   SubmitButton,
 } from "../multi-step-viewer";
 import { TagInput } from "../tag-input";
-import { Uploader } from "../uploader/uploader";
+import { UploadDropzone } from "../ui/upload-dropzone";
 import { AuthError } from "./auth-error";
 import { AuthSuccess } from "./auth-success";
-import { OAuthProviders } from "./oauth-providers";
 
 const defaultValues: SignUpSchema = {
   name: "",
   email: "",
   password: "",
   confirmPassword: "",
-  isBusiness: false,
+  isBusiness: true,
   businessData: {
     address: "",
     category: "",
     coverImage: {
       isMainImage: true,
-      key: "",
-      name: "",
-      size: 0,
-      url: "",
+      file: [],
+      objectKeys: [],
     },
     description: "",
     logo: {
       isMainImage: true,
-      key: "",
-      name: "",
-      size: 0,
-      url: "",
+      file: [],
+      objectKeys: [],
     },
     name: "",
     facebook: "",
@@ -74,12 +78,11 @@ const defaultValues: SignUpSchema = {
     tags: [],
     website: "",
     whatsapp: "",
-    userEmail: "",
   },
 };
 
 export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
-  const [isBusiness, setIsBusiness] = useState(false);
+  /* const [isBusiness, setIsBusiness] = useState(false); */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -91,14 +94,32 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     }),
   );
 
+  const uploaderCover = useUploadFiles({
+    route: "businessCoverAndLogo",
+    onUploadComplete: ({ files }) => {
+      form.setFieldValue(
+        "businessData.coverImage.objectKeys",
+        files.map((file) => file.objectInfo.key),
+      );
+    },
+  });
+  const uploaderLogo = useUploadFiles({
+    route: "businessCoverAndLogo",
+    onUploadComplete: ({ files }) => {
+      form.setFieldValue(
+        "businessData.logo.objectKeys",
+        files.map((file) => file.objectInfo.key),
+      );
+    },
+  });
+
   const form = useForm({
     defaultValues,
     validators: {
       onSubmit: signUpSchema,
       onChange: signUpSchema,
-      onBlur: signUpSchema,
     },
-    onSubmit: (data) => {
+    onSubmit: async (data) => {
       const { businessData } = data.value;
       const {
         address,
@@ -113,38 +134,525 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         tags,
         website,
         whatsapp,
-      } = (isBusiness ? businessData : {}) as z.infer<
-        typeof BusinessSetupSchema
-      >;
+      } = businessData as z.infer<typeof BusinessSetupSchema>;
+      const { files: _files } = await uploaderCover.upload(coverImage.file);
+
+      const { files: _files2 } = await uploaderLogo.upload(logo.file);
+
+      console.log({
+        coverImage: _files,
+        logo: _files2,
+      });
 
       mutate({
         name: data.value.name,
         email: data.value.email,
         password: data.value.password,
-
-        isBusiness,
-        businessData: isBusiness
-          ? {
-              address,
-              category,
-              coverImage,
-              description,
-              logo,
-              name,
-              facebook,
-              instagram,
-              phone,
-              tags,
-              website,
-              whatsapp,
-              userEmail: data.value.email,
-            }
-          : undefined,
+        isBusiness: true,
+        businessData: {
+          address,
+          category,
+          coverImage,
+          description,
+          logo,
+          name,
+          facebook,
+          instagram,
+          phone,
+          tags,
+          website,
+          whatsapp,
+        },
       });
+    },
+    listeners: {
+      onChange({ formApi }) {
+        const values = formApi.state.values;
+        const errors = formApi.state.errors;
+        console.log("values", values);
+        console.log("errors", errors);
+      },
     },
   });
 
-  const stepsFields: { fields: string[]; component: JSX.Element }[] = [
+  const stepsFieldsIsBusiness: { fields: string[]; component: JSX.Element }[] =
+    [
+      {
+        fields: [
+          "businessData.name",
+          "businessData.description",
+          "businessData.category",
+        ],
+        component: (
+          <FieldGroup className="col-span-6">
+            <form.Field name="businessData.name">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Nombre de su negocio *
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="San Expedito"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.description">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Descripcion *</FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="Venta de comestibles y productos varios"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.category">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Categoría *</FieldLabel>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={field.handleChange}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Seleccione una categoría " />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem
+                            key={category.value}
+                            value={category.value}
+                          >
+                            {category.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+        ),
+      },
+
+      {
+        fields: [
+          "businessData.address",
+          "businessData.phone",
+          "businessData.tags",
+        ],
+        component: (
+          <FieldGroup className="col-span-6">
+            <form.Field name="businessData.address">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Dirección *</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="9 de Julio 203"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.phone">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Telefono *</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="3812567687"
+                      type="tel"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.tags">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid} className="gap-1 [&_p]:pb-2">
+                    <FieldLabel>Etiquetas *</FieldLabel>
+                    <TagInput
+                      tags={
+                        field.state.value?.map((tag) => ({
+                          id: tag,
+                          text: tag,
+                        })) ?? []
+                      }
+                      setTags={(newTags) => {
+                        const value = field.state.value || [];
+                        const currentTags = value.map((tag) => ({
+                          id: tag,
+                          text: tag,
+                        }));
+                        const nextTags =
+                          typeof newTags === "function"
+                            ? newTags(currentTags)
+                            : newTags;
+                        field.handleChange(nextTags.map((t) => t.text));
+                      }}
+                      placeholder="comercio, comidas, comestible"
+                    />
+
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+        ),
+      },
+      {
+        fields: [
+          "businessData.whatsapp",
+          "businessData.facebook",
+          "businessData.instagram",
+          "businessData.website",
+        ],
+        component: (
+          <FieldGroup className="col-span-6">
+            <form.Field name="businessData.whatsapp">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field
+                    data-invalid={isInvalid}
+                    className="col-span-full gap-1"
+                  >
+                    <FieldLabel htmlFor="input-64a">Whatsapp </FieldLabel>
+                    <Input
+                      aria-invalid={isInvalid}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      type="text"
+                      placeholder="381324657"
+                    />
+                    <FieldDescription>Su numero de Whatsapp</FieldDescription>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.facebook">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field
+                    data-invalid={isInvalid}
+                    className="col-span-full gap-1"
+                  >
+                    <FieldLabel htmlFor="input-b9e">Facebook </FieldLabel>
+                    <Input
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      type="text"
+                      onChange={(e) => {
+                        field.handleChange(e.target.value);
+                      }}
+                      aria-invalid={isInvalid}
+                      placeholder="Enter your text"
+                    />
+                    <FieldDescription>URL de Facebook</FieldDescription>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.instagram">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field
+                    data-invalid={isInvalid}
+                    className="col-span-full gap-1"
+                  >
+                    <FieldLabel htmlFor="input-ead">Instagram </FieldLabel>
+                    <Input
+                      name={field.name}
+                      value={field.state.value}
+                      type="text"
+                      onChange={(e) => {
+                        field.handleChange(e.target.value);
+                      }}
+                      onBlur={field.handleBlur}
+                      aria-invalid={isInvalid}
+                      placeholder="Enter your text"
+                    />
+                    <FieldDescription>URL de Instagram</FieldDescription>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.website">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field
+                    data-invalid={isInvalid}
+                    className="col-span-full gap-1"
+                  >
+                    <FieldLabel htmlFor="website">Sitio Web </FieldLabel>
+                    <Input
+                      name={field.name}
+                      value={field.state.value}
+                      type="text"
+                      onChange={(e) => {
+                        field.handleChange(e.target.value);
+                      }}
+                      onBlur={field.handleBlur}
+                      aria-invalid={isInvalid}
+                      placeholder="Enter your text"
+                    />
+                    <FieldDescription>URL Sitio Web</FieldDescription>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+        ),
+      },
+      {
+        fields: ["businessData.logo", "businessData.coverImage"],
+        component: (
+          <FieldGroup className="col-span-6">
+            <form.Field name="businessData.logo">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
+                    {field.state.value && field.state.value.file.length > 0 ? (
+                      <div className="flex flex-col items-center justify-center">
+                        {field.state.value.file.map((file) => (
+                          /* imagen y boton para sacar la imagen subida */
+                          <div
+                            key={file.name}
+                            className="relative flex items-center gap-2"
+                          >
+                            <Image
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              width={100}
+                              height={100}
+                            />
+                            <Button
+                              variant="destructive"
+                              type="button"
+                              className="-top-5 -right-5 absolute h-6 w-6"
+                              onClick={() => {
+                                field.handleChange({
+                                  file:
+                                    field.state.value?.file?.filter(
+                                      (f) => f !== file,
+                                    ) || [],
+                                  isMainImage: true,
+                                  objectKeys: [],
+                                });
+                              }}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <UploadDropzone
+                        isAvatarVariant={true}
+                        id={field.name}
+                        control={uploaderLogo.control}
+                        description={{
+                          maxFiles: 5,
+                          maxFileSize: "5MB",
+                        }}
+                        uploadOverride={(files) => {
+                          field.handleChange({
+                            file: Array.from(files),
+                            isMainImage: true,
+                            objectKeys: [],
+                          });
+                        }}
+                      />
+                    )}
+                    {isInvalid && (
+                      <FieldError
+                        errors={
+                          uploaderLogo.error
+                            ? [{ message: uploaderLogo.error.message }]
+                            : field.state.meta.errors
+                        }
+                      />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="businessData.coverImage">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Imagen de portada
+                    </FieldLabel>
+                    {field.state.value && field.state.value.file.length > 0 ? (
+                      <div className="flex flex-col items-center justify-center">
+                        {field.state.value.file.map((file) => (
+                          /* imagen y boton para sacar la imagen subida */
+                          <div
+                            key={file.name}
+                            className="relative flex items-center gap-2"
+                          >
+                            <Image
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              width={100}
+                              height={100}
+                              className="aspect-auto h-full w-full object-cover"
+                            />
+                            <Button
+                              variant="destructive"
+                              type="button"
+                              className="-top-5 -right-5 absolute h-6 w-6"
+                              onClick={() => {
+                                field.handleChange({
+                                  file:
+                                    field.state.value?.file?.filter(
+                                      (f) => f !== file,
+                                    ) || [],
+                                  isMainImage: true,
+                                  objectKeys: [],
+                                });
+                              }}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <UploadDropzone
+                        id={field.name}
+                        control={uploaderCover.control}
+                        description={{
+                          maxFiles: 5,
+                          maxFileSize: "5MB",
+                        }}
+                        uploadOverride={(files) => {
+                          field.handleChange({
+                            file: Array.from(files),
+                            isMainImage: true,
+                            objectKeys: [],
+                          });
+                        }}
+                      />
+                    )}
+                    {isInvalid && (
+                      <FieldError
+                        errors={
+                          uploaderCover.error
+                            ? [{ message: uploaderCover.error.message }]
+                            : field.state.meta.errors
+                        }
+                      />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+        ),
+      },
+    ].filter(Boolean) as { fields: string[]; component: JSX.Element }[];
+
+  const stepsFieldsNoBusiness = [
     {
       fields: ["name", "email"],
       component: (
@@ -267,393 +775,13 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </FieldGroup>
       ),
     },
-    isBusiness && {
-      fields: ["name", "description", "category"],
-      component: (
-        <FieldGroup className="col-span-6">
-          <form.Field name="name">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Nombre *</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="San Expedito"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.description">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Descripcion *</FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="Venta de comestibles y productos varios"
-                  />
-                  <FieldDescription>
-                    A multi-line text input field
-                  </FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.category">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Categoría *</FieldLabel>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccione una categoría " />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-        </FieldGroup>
-      ),
-    },
-    isBusiness && {
-      fields: ["address", "phone", "tags"],
-      component: (
-        <FieldGroup className="col-span-6">
-          <form.Field name="businessData.address">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Dirección *</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="9 de Julio 203"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.phone">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Telefono *</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="3812567687"
-                    type="tel"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.tags">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid} className="gap-1 [&_p]:pb-2">
-                  <FieldLabel>Etiquetas *</FieldLabel>
-                  <TagInput
-                    tags={
-                      field.state.value?.map((tag) => ({
-                        id: tag,
-                        text: tag,
-                      })) ?? []
-                    }
-                    setTags={(newTags) => {
-                      const value = field.state.value || [];
-                      const currentTags = value.map((tag) => ({
-                        id: tag,
-                        text: tag,
-                      }));
-                      const nextTags =
-                        typeof newTags === "function"
-                          ? newTags(currentTags)
-                          : newTags;
-                      field.handleChange(nextTags.map((t) => t.text));
-                    }}
-                    placeholder="comercio, comidas, comestible"
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-        </FieldGroup>
-      ),
-    },
-    isBusiness && {
-      fields: [
-        "businessData.whatsapp",
-        "businessData.facebook",
-        "businessData.instagram",
-        "businessData.website",
-      ],
-      component: (
-        <FieldGroup className="col-span-6">
-          <form.Field name="businessData.whatsapp">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid} className="col-span-full gap-1">
-                  <FieldLabel htmlFor="input-64a">Whatsapp </FieldLabel>
-                  <Input
-                    aria-invalid={isInvalid}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    type="text"
-                    placeholder="381324657"
-                  />
-                  <FieldDescription>Su numero de Whatsapp</FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.facebook">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid} className="col-span-full gap-1">
-                  <FieldLabel htmlFor="input-b9e">Facebook </FieldLabel>
-                  <Input
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    type="text"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
-                    aria-invalid={isInvalid}
-                    placeholder="Enter your text"
-                  />
-                  <FieldDescription>URL de Facebook</FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.instagram">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid} className="col-span-full gap-1">
-                  <FieldLabel htmlFor="input-ead">Instagram </FieldLabel>
-                  <Input
-                    name={field.name}
-                    value={field.state.value}
-                    type="text"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
-                    onBlur={field.handleBlur}
-                    aria-invalid={isInvalid}
-                    placeholder="Enter your text"
-                  />
-                  <FieldDescription>URL de Instagram</FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.website">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid} className="col-span-full gap-1">
-                  <FieldLabel htmlFor="website">Sitio Web </FieldLabel>
-                  <Input
-                    name={field.name}
-                    value={field.state.value}
-                    type="text"
-                    onChange={(e) => {
-                      field.handleChange(e.target.value);
-                    }}
-                    onBlur={field.handleBlur}
-                    aria-invalid={isInvalid}
-                    placeholder="Enter your text"
-                  />
-                  <FieldDescription>URL Sitio Web</FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-        </FieldGroup>
-      ),
-    },
-    isBusiness && {
-      fields: ["logo", "coverImage"],
-      component: (
-        <FieldGroup className="col-span-6">
-          <form.Field name="businessData.logo">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={!!isInvalid}>
-                  <FieldLabel className="capitalize">Logo</FieldLabel>
-                  <Uploader
-                    folder="business/logos"
-                    variant="avatar"
-                    maxFiles={1}
-                    maxSize={5 * 1024 * 1024}
-                    value={
-                      (field.state.value as unknown as ImageInsert) ?? {
-                        url: "",
-                        key: "",
-                        name: "",
-                        isMainImage: true,
-                        size: 0,
-                      }
-                    }
-                    onChange={(files) => {
-                      const file = Array.isArray(files) ? files[0] : files;
-                      field.handleChange(
-                        file
-                          ? {
-                              url: file.url,
-                              key: file.key,
-                              name: file.name ?? "",
-                              isMainImage: !!file.isMainImage,
-                              size: file.size ?? 0,
-                            }
-                          : {
-                              url: "",
-                              key: "",
-                              name: "",
-                              isMainImage: false,
-                              size: 0,
-                            },
-                      );
-                    }}
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="businessData.coverImage">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={!!isInvalid}>
-                  <FieldLabel className="capitalize">
-                    Imagen de portada
-                  </FieldLabel>
-                  <Uploader
-                    folder={"business/covers"}
-                    variant={"minimal"}
-                    maxFiles={1}
-                    maxSize={5 * 1024 * 1024}
-                    value={
-                      (field.state.value as unknown as ImageInsert) ?? {
-                        url: "",
-                        key: "",
-                        name: "",
-                        isMainImage: true,
-                        size: 0,
-                      }
-                    }
-                    onChange={(files) => {
-                      const file = Array.isArray(files) ? files[0] : files;
-                      field.handleChange(
-                        file
-                          ? {
-                              url: file.url,
-                              key: file.key,
-                              name: file.name ?? "",
-                              isMainImage: !!file.isMainImage,
-                              size: file.size ?? 0,
-                            }
-                          : {
-                              url: "",
-                              key: "",
-                              name: "",
-                              isMainImage: false,
-                              size: 0,
-                            },
-                      );
-                    }}
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-        </FieldGroup>
-      ),
-    },
-  ].filter(Boolean) as { fields: string[]; component: JSX.Element }[];
+  ];
 
   return (
     <>
       {isError && <AuthError error={error.message} />}
       {isSuccess && <AuthSuccess message={"Registro exitoso"} />}
-      <div className="flex items-center gap-2">
+      {/*   <div className="flex items-center gap-2">
         <p>¿Es un negocio?</p>
         <Switch
           checked={isBusiness}
@@ -661,7 +789,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
             setIsBusiness(checked || false);
           }}
         />
-      </div>
+      </div> */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -670,13 +798,12 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         className="space-y-4"
       >
         <MultiStepFormProvider
-          stepsFields={stepsFields}
-          onStepValidation={() => {
-            const isValid = form.state.isValid;
-            console.log(isValid);
-
-            return isValid;
-          }}
+          /* stepsFields={
+            isBusiness
+              ? [...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]
+              : stepsFieldsNoBusiness
+          } */
+          stepsFields={[...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]}
         >
           <MultiStepFormContent>
             <FormHeader />
@@ -689,7 +816,23 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               <NextButton>
                 Next <ChevronRight />
               </NextButton>
-              <SubmitButton type="submit" disabled={isPending}>
+              <ResetButton
+                onClick={() => {
+                  form.reset();
+                  uploaderCover.reset();
+                  uploaderLogo.reset();
+                }}
+              />
+              <SubmitButton
+                type="submit"
+                disabled={
+                  isPending ||
+                  form.state.isSubmitting ||
+                  !form.state.isValid ||
+                  !uploaderCover.isPending ||
+                  !uploaderLogo.isPending
+                }
+              >
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isPending ? "Registrando..." : "Registrarse"}
               </SubmitButton>
@@ -698,7 +841,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         </MultiStepFormProvider>
       </form>
 
-      {!isBusiness && (
+      {/*   {!isBusiness && (
         <>
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
             <span className="relative z-10 bg-card px-2 text-muted-foreground">
@@ -712,7 +855,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
             </span>
           </div>
         </>
-      )}
+      )} */}
     </>
   );
 }

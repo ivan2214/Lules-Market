@@ -7,7 +7,7 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import type { Product, ProductWithRelations } from "@/db/types";
 import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
-import { deleteS3Object } from "@/orpc/actions/s3/delete-s3-object";
+
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
 import {
@@ -363,7 +363,6 @@ export const deleteProduct = o
     // Delete images
     for (const image of product.images) {
       await db.delete(schema.image).where(eq(schema.image.key, image.key));
-      await deleteS3Object({ key: image.key }).catch(console.error);
     }
 
     // Delete product

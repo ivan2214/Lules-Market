@@ -12,7 +12,7 @@ import {
 
 export default function SignInPage() {
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Iniciar sesión</CardTitle>
         <CardDescription>Ingresa a tu cuenta para continuar</CardDescription>

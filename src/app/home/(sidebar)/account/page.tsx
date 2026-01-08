@@ -5,7 +5,6 @@ import { AccountDangerZone } from "@/shared/components/user/account-danger-zone"
 import { AccountRoles } from "@/shared/components/user/account-roles";
 import { UpdateAccountDetailsForm } from "@/shared/components/user/update-account-details-form";
 import { UpdateAccountEmailForm } from "@/shared/components/user/update-account-email-form";
-import { UpdateAccountImage } from "@/shared/components/user/update-account-image";
 
 export default async function AccountPage() {
   const [error, response] = await requireSession();
@@ -18,7 +17,6 @@ export default async function AccountPage() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <UpdateAccountImage />
       <UpdateAccountDetailsForm />
       <UpdateAccountEmailForm email={user.email} />
       <AccountRoles roles={user.role?.split(",") ?? []} />

@@ -17,7 +17,7 @@ export default async function ResetPasswordPage({
   const { token } = await searchParams;
 
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Restablecer contraseña</CardTitle>
         <CardDescription>

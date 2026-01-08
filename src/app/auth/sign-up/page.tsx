@@ -13,7 +13,7 @@ import {
 export default async function SignUpPage() {
   const categories = await client.category.listAllCategories();
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Registrarse</CardTitle>
         <CardDescription>Registrate para comenzar</CardDescription>
