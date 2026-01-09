@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "Running lint-staged..."
-bun lint-staged
+bun run lint-staged
 
 echo "Security check (all deps)..."
 bun audit --audit-level=high || {

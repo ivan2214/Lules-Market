@@ -8,7 +8,7 @@ echo "Running Biome Check..."
 bun run biome-check
 
 echo "Running Security Audit..."
-bun run audit --audit-level=high || {
+bun audit --audit-level=high || {
   echo "❌ No se permite pushear con vulnerabilidades altas."
   exit 1
 }
