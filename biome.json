@@ -37,6 +37,9 @@
           "level": "error",
           "options": {}
         }
+      },
+      "complexity": {
+        "useOptionalChain": "off"
       }
     },
     "domains": {
