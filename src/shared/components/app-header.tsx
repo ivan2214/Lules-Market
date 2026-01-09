@@ -16,14 +16,17 @@ export async function AppHeader() {
   return (
     <header className="flex h-14 items-center justify-between border-b px-4">
       <div className="flex items-center gap-6">
-        <Link href="/home" className="flex items-center gap-2">
+        <Link
+          href={pathsConfig.dashboard.root}
+          className="flex items-center gap-2"
+        >
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm">
             ~
           </div>
           <span className="font-semibold">Next Bard</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          <Link href="/home">
+          <Link href={pathsConfig.dashboard.root}>
             <Button variant="ghost" size="sm" className="text-muted-foreground">
               <LayoutDashboard className="mr-2 h-4 w-4" />
               Dashboard

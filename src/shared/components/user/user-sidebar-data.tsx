@@ -9,7 +9,7 @@ import {
   Users,
   Users2,
 } from "lucide-react";
-
+import pathsConfig from "@/config/paths.config";
 import type { NavDocumentItem } from "@/shared/components/sidebar/nav-documents";
 import type { NavPrimaryItem } from "@/shared/components/sidebar/nav-primary";
 import type { NavResourceItem } from "@/shared/components/sidebar/nav-resources";
@@ -18,7 +18,7 @@ import type { NavSecondaryItem } from "@/shared/components/sidebar/nav-secondary
 export const navPrimaryData: Array<NavPrimaryItem> = [
   {
     title: "Dashboard",
-    url: "/home",
+    url: pathsConfig.dashboard.root,
     icon: LayoutDashboard,
   },
 ];
