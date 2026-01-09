@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "bun --bun next dev --turbopack",
+    "build": "bun --bun next build --turbopack",
+    "start": "bun --bun next start",
     "lint": "biome check",
     "format": "biome check --write",
     "check": "biome ci .",
@@ -15,25 +15,22 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:seed": "pnpm exec tsx src/db/seed.ts",
+    "db:seed": "bun src/db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "db:reset": "pnpm exec tsx src/db/reset.ts && pnpm db:generate && pnpm db:migrate && pnpm db:push",
+    "db:reset": "bun src/db/reset.ts && bun db:generate && bun db:migrate && bun db:push",
     "test:unit": "vitest",
-    "test:e2e": "pnpm exec playwright test",
-    "test:e2e:ui": "pnpm exec playwright test --ui",
-    "test:e2e:chromium": "pnpm exec playwright test --project=chromium",
-    "test:e2e:debug": "pnpm exec playwright test --debug",
-    "test:e2e:file": "pnpm exec playwright test",
-    "test:e2e:codegen": "pnpm exec playwright codegen"
+    "test:e2e": "bunx playwright test",
+    "test:e2e:ui": "bunx playwright test --ui",
+    "test:e2e:chromium": "bunx playwright test --project=chromium",
+    "test:e2e:debug": "bunx playwright test --debug",
+    "test:e2e:file": "bunx playwright test",
+    "test:e2e:codegen": "bunx playwright codegen"
   },
-  "pnpm": {
-    "overrides": {
-      "esbuild": "0.25.0",
-      "@types/react": "19.2.7",
-      "@types/react-dom": "19.2.3",
-      "qs": "^6.14.1"
-    }
-  },
+  "trustedDependencies": [
+    "@tailwindcss/oxide",
+    "esbuild",
+    "sharp"
+  ],
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
       "biome check --write --no-errors-on-unmatched"

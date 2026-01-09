@@ -7,7 +7,7 @@ Bienvenido al repositorio de **Lules Market**. Esta guía está diseñada para a
 Antes de comenzar, asegúrate de tener instalado el siguiente software en tu sistema:
 
 - **Node.js**: Se recomienda la versión LTS (v20 o superior) o v18 como mínimo.
-- **pnpm**: Utilizamos `pnpm` como gestor de paquetes por su rapidez y eficiencia.
+- **bun**: Utilizamos `bun` como gestor de paquetes por su rapidez y eficiencia.
 - **Docker** y **Docker Compose**: Necesarios para ejecutar la base de datos PostgreSQL localmente.
 - **Git**: Para el control de versiones.
 
@@ -27,7 +27,7 @@ cd Lules-Market
 Instala todas las librerías necesarias del proyecto:
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### 3. Configuración de Variables de Entorno
@@ -95,13 +95,13 @@ Utilizamos Docker para correr PostgreSQL sin necesidad de instalarlo directament
     Utilizamos Drizzle ORM para gestionar el esquema de la base de datos.
     ```bash
     # Sincronizar la BD con el esquema actual
-    pnpm db:migrate
+    bun db:migrate
     ```
 
 3.  **Poblar la base de datos (Seed):**
     Carga datos iniciales (roles, usuarios admin, etc.) para empezar a probar la app.
     ```bash
-    pnpm db:seed
+    bun db:seed
     ```
 
 ### 5. Ejecutar el Servidor de Desarrollo
@@ -109,7 +109,7 @@ Utilizamos Docker para correr PostgreSQL sin necesidad de instalarlo directament
 Una vez configurado todo, inicia el servidor de Next.js:
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
@@ -122,14 +122,14 @@ Aquí tienes una lista de los scripts más utilizados en el día a día:
 
 | Comando | Descripción |
 | :--- | :--- |
-| `pnpm dev` | Inicia el servidor de desarrollo con Turbopack. |
-| `pnpm build` | Crea la versión optimizada para producción. |
-| `pnpm start` | Inicia la versión de producción (requiere `build` previo). |
-| `pnpm type-check` | Ejecuta la comprobación de tipos de TypeScript. Útil para validar antes de hacer push. |
-| `pnpm lint` | Analiza el código en busca de errores y problemas de estilo usando Biome. |
-| `pnpm format` | Formatea automáticamente el código usando Biome. |
-| `pnpm db:studio` | Abre **Drizzle Studio** en el navegador para ver y editar la base de datos visualmente. |
-| `pnpm db:generate` | Genera nuevos archivos de migración basados en cambios en el esquema. |
+| `bun dev` | Inicia el servidor de desarrollo con Turbopack. |
+| `bun build` | Crea la versión optimizada para producción. |
+| `bun start` | Inicia la versión de producción (requiere `build` previo). |
+| `bun type-check` | Ejecuta la comprobación de tipos de TypeScript. Útil para validar antes de hacer push. |
+| `bun lint` | Analiza el código en busca de errores y problemas de estilo usando Biome. |
+| `bun format` | Formatea automáticamente el código usando Biome. |
+| `bun db:studio` | Abre **Drizzle Studio** en el navegador para ver y editar la base de datos visualmente. |
+| `bun db:generate` | Genera nuevos archivos de migración basados en cambios en el esquema. |
 
 ## 📂 Estructura del Proyecto
 
@@ -151,8 +151,8 @@ Se recomienda configurar tu editor (VS Code) para formatear al guardar y mostrar
 Para validar todo antes de subir cambios:
 
 ```bash
-pnpm check
-pnpm type-check
+bun check
+bun type-check
 ```
 
 ---

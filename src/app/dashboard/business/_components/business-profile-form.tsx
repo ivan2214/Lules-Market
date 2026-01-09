@@ -1,12 +1,7 @@
 ﻿"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { startTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { Controller } from "react-hook-form";
 import type { BusinessWithRelations } from "@/db/types";
-import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Field,
@@ -26,8 +21,6 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { BusinessUpdateSchema } from "@/shared/validators/business";
-import type { BusinessUpdateInput } from "../_types";
 
 interface BusinessProfileFormProps {
   business: BusinessWithRelations;
@@ -38,102 +31,13 @@ export function BusinessProfileForm({
   business,
   categories,
 }: BusinessProfileFormProps) {
-  const defaultValues: BusinessUpdateInput = business.id
-    ? {
-        name: business.name ?? "",
-        description: business.description ?? "",
-        address: business.address ?? "",
-        phone: business.phone ?? "",
-        website: business.website ?? "",
-        email: business.user?.email ?? "",
-        tags: business.tags ?? [],
-        whatsapp: business.whatsapp ?? "",
-        facebook: business.facebook ?? "",
-        instagram: business.instagram ?? "",
-        category: business.category?.value ?? "",
-        logo: business.logo,
-        coverImage: business.coverImage
-          ? {
-              isMainImage: business.coverImage.isMainImage,
-              key: business.coverImage.key,
-            }
-          : {
-              key: "",
-              file: [],
-              isMainImage: true,
-            },
-      }
-    : {
-        name: "",
-        description: "",
-        address: "",
-        phone: "",
-        email: "",
-        website: "",
-        logo: {
-          key: "",
-          file: [],
-          isMainImage: true,
-        },
-        coverImage: {
-          key: "",
-          file: [],
-          isMainImage: true,
-        },
-        whatsapp: "",
-        facebook: "",
-        instagram: "",
-
-        category: "",
-      };
-
-  const form = useForm<BusinessUpdateInput>({
-    resolver: zodResolver(BusinessUpdateSchema),
-    defaultValues,
-  });
-
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation(
-    orpc.business.private.update.mutationOptions({
-      onSuccess() {
-        toast.success("Negocio actualizado correctamente");
-        queryClient.invalidateQueries({
-          queryKey: orpc.business.public.listAllBusinesses.queryKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: orpc.business.public.listAllSimilarBusinesses.queryKey({
-            input: {
-              category: form.getValues("category") ?? "",
-              businessId: business.id ?? "",
-            },
-          }),
-        });
-      },
-
-      onError() {
-        toast.error("Error al actualizar el negocio");
-      },
-    }),
-  );
-
-  const onSubmit = async (data: BusinessUpdateInput) => {
-    startTransition(async () => {
-      mutate(data);
-    });
-  };
-
+  console.log(business);
   return (
-    <form
-      id="business-profile-form"
-      className="space-y-6"
-      onSubmit={form.handleSubmit(onSubmit)}
-    >
+    <form id="business-profile-form" className="space-y-6">
       <FieldGroup className="grid gap-6 md:grid-cols-2">
         {/* Nombre */}
         <Controller
           name="name"
-          control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
@@ -152,7 +56,6 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="Nombre del negocio"
                 aria-invalid={fieldState.invalid}
-                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -162,7 +65,6 @@ export function BusinessProfileForm({
         {/* Categoría */}
         <Controller
           name="category"
-          control={form.control}
           render={({ field, fieldState }) => (
             <Field orientation="vertical" data-invalid={fieldState.invalid}>
               <FieldContent>
@@ -178,7 +80,6 @@ export function BusinessProfileForm({
               <Select
                 value={field.value?.toLocaleLowerCase() || ""}
                 onValueChange={(val) => field.onChange(val)}
-                disabled={isPending}
                 aria-invalid={fieldState.invalid}
               >
                 <SelectTrigger id="category" className="min-w-[120px]">
@@ -204,7 +105,6 @@ export function BusinessProfileForm({
       {/* Descripción */}
       <Controller
         name="description"
-        control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldContent>
@@ -218,7 +118,6 @@ export function BusinessProfileForm({
               placeholder="Describe tu negocio..."
               className="min-h-[120px] resize-none"
               aria-invalid={fieldState.invalid}
-              disabled={isPending}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -229,7 +128,6 @@ export function BusinessProfileForm({
         {/* Dirección */}
         <Controller
           name="address"
-          control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
@@ -247,7 +145,6 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="Calle 123, Ciudad"
                 aria-invalid={fieldState.invalid}
-                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -257,7 +154,6 @@ export function BusinessProfileForm({
         {/* Teléfono */}
         <Controller
           name="phone"
-          control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
@@ -276,7 +172,6 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="+54 11 1234-5678"
                 aria-invalid={fieldState.invalid}
-                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -288,7 +183,6 @@ export function BusinessProfileForm({
         {/* Email */}
         <Controller
           name="email"
-          control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
@@ -307,7 +201,6 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="contacto@negocio.com"
                 aria-invalid={fieldState.invalid}
-                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -317,7 +210,6 @@ export function BusinessProfileForm({
         {/* Website */}
         <Controller
           name="website"
-          control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldContent>
@@ -336,7 +228,6 @@ export function BusinessProfileForm({
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="https://minegocio.com"
                 aria-invalid={fieldState.invalid}
-                disabled={isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -352,7 +243,6 @@ export function BusinessProfileForm({
             <Controller
               key={name}
               name={name as "whatsapp" | "instagram" | "facebook"}
-              control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldContent>
@@ -378,7 +268,6 @@ export function BusinessProfileForm({
                       name === "whatsapp" ? "+54 11 1234-5678" : "@minegocio"
                     }
                     aria-invalid={fieldState.invalid}
-                    disabled={isPending}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -396,7 +285,6 @@ export function BusinessProfileForm({
         <FieldGroup className="flex items-center justify-evenly">
           <Controller
             name="logo"
-            control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
@@ -434,7 +322,6 @@ export function BusinessProfileForm({
 
           <Controller
             name="coverImage"
-            control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Imagen de Portada</FieldLabel>
@@ -472,12 +359,10 @@ export function BusinessProfileForm({
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" disabled={isPending}>
+        <Button type="button" variant="outline">
           Cancelar
         </Button>
-        <Button type="submit" disabled={isPending}>
-          Guardar Cambios
-        </Button>
+        <Button type="submit">Guardar Cambios</Button>
       </div>
     </form>
   );

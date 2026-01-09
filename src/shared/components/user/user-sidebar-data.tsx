@@ -4,7 +4,6 @@ import {
   File,
   HelpCircle,
   LayoutDashboard,
-  List,
   Package,
   Table,
   Users,
@@ -21,12 +20,6 @@ export const navPrimaryData: Array<NavPrimaryItem> = [
     title: "Dashboard",
     url: "/home",
     icon: LayoutDashboard,
-  },
-  {
-    title: "Tasks",
-    url: "/home/tasks",
-    icon: List,
-    /* permission: { task: ["read"] }, */
   },
 ];
 

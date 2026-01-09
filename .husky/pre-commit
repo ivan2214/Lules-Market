@@ -2,10 +2,10 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "Running lint-staged..."
-pnpm lint-staged
+bun lint-staged
 
 echo "Security check (all deps)..."
-pnpm audit --audit-level=high || {
+bun audit --audit-level=high || {
   echo "❌ Vulnerabilidades detectadas. Arreglalas antes de commitear."
   exit 1
 }
