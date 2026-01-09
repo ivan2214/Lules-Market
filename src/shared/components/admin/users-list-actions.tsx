@@ -95,7 +95,8 @@ export function UserListActions({ row }: { row: Row<User> }) {
                   onClick={async () => {
                     const { error } = await authClient.admin.setRole({
                       userId: row.original.id,
-                      role: label,
+                      // biome-ignore lint/suspicious/noExplicitAny: <necessary>
+                      role: label as any,
                     });
 
                     if (error) {

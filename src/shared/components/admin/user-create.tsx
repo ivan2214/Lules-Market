@@ -61,7 +61,8 @@ export function UserCreateDialog() {
       email: data.email,
       password: data.password,
       name: data.name,
-      role: data.role as Role,
+      // biome-ignore lint/suspicious/noExplicitAny: <necessary>
+      role: data.role as any,
     });
 
     if (error) {
