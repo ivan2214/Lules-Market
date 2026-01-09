@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { db } from "@/db";
 // Importar directamente desde la DB para generateStaticParams
 import { env } from "@/env/server";
 import { client } from "@/orpc";
@@ -119,7 +120,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const { businesses } = await client.business.public.listAllBusinesses();
+  const businesses = await db.query.business.findMany();
   if (!businesses.length) {
     return [];
   }
