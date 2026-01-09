@@ -43,6 +43,11 @@ jobs:
           SUPER_ADMIN_NAME: ${{ secrets.SUPER_ADMIN_NAME }}
           NEXT_PUBLIC_BETTER_AUTH_URL: ${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          GITHUB_CLIENT_ID: ${{ secrets.GHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GHUB_CLIENT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          S3_BUCKET_URL: ${{ secrets.S3_BUCKET_URL }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
