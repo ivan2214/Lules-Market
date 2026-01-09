@@ -1,5 +1,6 @@
-import type { User } from "better-auth";
-
+import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
+import { getSession } from "@/orpc/actions/user/get-session";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AdminSidebar } from "@/shared/components/admin/admin-sidebar";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
@@ -10,13 +11,13 @@ import {
   SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
 
-async function AdminLayout({
-  children,
-  user,
-}: {
-  children: React.ReactNode;
-  user: User;
-}) {
+async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const [err, res] = await getSession();
+  const user = res?.user;
+  if (err || !user) {
+    return redirect(pathsConfig.auth.signIn);
+  }
+
   return (
     <SidebarProvider>
       <AdminSidebar user={user} />
@@ -39,4 +40,5 @@ async function AdminLayout({
 
 export default withAuthenticate(AdminLayout, {
   role: "admin",
+  redirect: pathsConfig.auth.signIn,
 });
