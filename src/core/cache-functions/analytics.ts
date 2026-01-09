@@ -2,21 +2,18 @@ import "server-only";
 import { ORPCError } from "@orpc/server";
 import { startOfMonth, subMonths } from "date-fns";
 import { and, count, eq, gte, lt } from "drizzle-orm";
-import { cacheLife, cacheTag } from "next/cache";
-import { db, schema } from "@/db";
-import { business, product } from "@/db/schema";
-import { CACHE_TAGS } from "@/shared/constants/cache-tags";
+import { db } from "@/db";
+import {
+  business,
+  businessView as businessViewSchema,
+  product,
+  product as productSchema,
+  productView as productViewSchema,
+} from "@/db/schema";
 
 export type AnalyticsPeriod = "7d" | "30d" | "90d";
 
 export async function getHomePageStatsCache() {
-  "use cache";
-  cacheTag(CACHE_TAGS.ANALYTICS.HOME_PAGE_STATS);
-  // revalidar cada 1 hora
-  cacheLife({
-    revalidate: 60 * 60,
-    expire: 60 * 60 * 24,
-  });
   const now = new Date();
   const startThisMonth = startOfMonth(now);
   const startLastMonth = startOfMonth(subMonths(now, 1));
@@ -31,7 +28,7 @@ export async function getHomePageStatsCache() {
     db
       .select({ count: count() })
       .from(business)
-      .where(and(eq(business.isActive, true), eq(business.isBanned, false))),
+      .where(and(eq(business.isActive, true))),
     // Negocios activos creados el mes pasado
     db
       .select({ count: count() })
@@ -39,7 +36,7 @@ export async function getHomePageStatsCache() {
       .where(
         and(
           eq(business.isActive, true),
-          eq(business.isBanned, false),
+
           gte(business.createdAt, startLastMonth),
           lt(business.createdAt, endLastMonth),
         ),
@@ -48,7 +45,7 @@ export async function getHomePageStatsCache() {
     db
       .select({ count: count() })
       .from(product)
-      .where(and(eq(product.active, true), eq(product.isBanned, false))),
+      .where(and(eq(product.active, true))),
     // Productos activos creados el mes pasado
     db
       .select({ count: count() })
@@ -56,7 +53,6 @@ export async function getHomePageStatsCache() {
       .where(
         and(
           eq(product.active, true),
-          eq(product.isBanned, false),
           gte(product.createdAt, startLastMonth),
           lt(product.createdAt, endLastMonth),
         ),
@@ -74,13 +70,6 @@ export async function getStatsCache(
   businessId: string,
   input: { period?: AnalyticsPeriod },
 ) {
-  "use cache";
-  cacheTag(CACHE_TAGS.ANALYTICS.GET_STATS);
-  cacheLife({
-    revalidate: 60 * 60,
-    expire: 60 * 60 * 24,
-  });
-
   const period = input.period ?? "30d";
 
   const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
@@ -89,7 +78,7 @@ export async function getStatsCache(
 
   // Get product views
   const productViews = await db.query.productView.findMany({
-    where: gte(schema.productView.createdAt, startDate),
+    where: gte(productViewSchema.createdAt, startDate),
     with: {
       product: {
         columns: {
@@ -109,8 +98,8 @@ export async function getStatsCache(
   // Get business views
   const businessViews = await db.query.businessView.findMany({
     where: and(
-      eq(schema.businessView.businessId, businessId),
-      gte(schema.businessView.createdAt, startDate),
+      eq(businessViewSchema.businessId, businessId),
+      gte(businessViewSchema.createdAt, startDate),
     ),
   });
 
@@ -185,21 +174,14 @@ export async function getProductStatsCache(
   businessId: string,
   input: { period?: AnalyticsPeriod; productId: string },
 ) {
-  "use cache";
-  cacheTag(CACHE_TAGS.ANALYTICS.GET_PRODUCT_STATS(input.productId));
-  cacheLife({
-    revalidate: 60 * 60,
-    expire: 60 * 60 * 24,
-  });
-
   const period = input.period ?? "30d";
   const productId = input.productId;
 
   // Verify product belongs to business
   const product = await db.query.product.findFirst({
     where: and(
-      eq(schema.product.id, productId),
-      eq(schema.product.businessId, businessId),
+      eq(productSchema.id, productId),
+      eq(productSchema.businessId, businessId),
     ),
   });
 
@@ -213,8 +195,8 @@ export async function getProductStatsCache(
 
   const views = await db.query.productView.findMany({
     where: and(
-      eq(schema.productView.productId, productId),
-      gte(schema.productView.createdAt, startDate),
+      eq(productViewSchema.productId, productId),
+      gte(productViewSchema.createdAt, startDate),
     ),
   });
 

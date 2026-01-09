@@ -1,8 +1,8 @@
-import { ActiveFilters } from "@/features/(public)/explorar/_components/active-filters";
-import { ResultsCountAndLimitSelector } from "@/features/(public)/explorar/_components/results-count-and-limit-selector";
-import { SearchAndFilters } from "@/features/(public)/explorar/_components/search-and-filters";
-import { orpcTanstack } from "@/lib/orpc";
+import { ActiveFilters } from "@/app/(public)/explorar/_components/active-filters";
+import { ResultsCountAndLimitSelector } from "@/app/(public)/explorar/_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "@/app/(public)/explorar/_components/search-and-filters";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/orpc";
 import { BusinessGrid } from "./_components/business-grid";
 
 type SearchParams = {
@@ -26,7 +26,7 @@ export default async function ComerciosPage({
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery(
-    orpcTanstack.business.listAllBusinesses.queryOptions({
+    orpc.business.public.listAllBusinesses.queryOptions({
       input: {
         category,
         limit: currentLimit,
@@ -38,7 +38,7 @@ export default async function ComerciosPage({
   );
 
   await queryClient.prefetchQuery(
-    orpcTanstack.category.listAllCategories.queryOptions(),
+    orpc.category.listAllCategories.queryOptions(),
   );
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;

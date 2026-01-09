@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { env } from "@/env";
+import { env } from "@/env/server";
 
 interface CreateMetadataOptions {
   title: string | { default: string; template: string };

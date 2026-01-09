@@ -11,7 +11,6 @@ import {
 import { business } from "./business-schema";
 import { category } from "./category-schema";
 import { image } from "./image-schema";
-import { bannedProduct } from "./user-schema";
 
 /**
  * ===============================================================
@@ -33,7 +32,7 @@ export const product = pgTable(
     stock: integer("stock").default(0),
     brand: text("brand"),
     businessId: text("business_id").notNull(),
-    isBanned: boolean("is_banned").default(false),
+
     categoryId: text("category_id"),
     tags: text("tags").array(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -73,10 +72,7 @@ export const productRelations = relations(product, ({ one, many }) => ({
     fields: [product.businessId],
     references: [business.id],
   }),
-  bannedProduct: one(bannedProduct, {
-    fields: [product.id],
-    references: [bannedProduct.productId],
-  }),
+
   images: many(image),
   productViews: many(productView),
   category: one(category, {

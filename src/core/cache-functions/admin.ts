@@ -1,19 +1,9 @@
 import "server-only";
 import { addMonths, format, startOfMonth, subMonths } from "date-fns";
 import { and, count, eq, gte, lt, sum } from "drizzle-orm";
-import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/db";
-import {
-  bannedBusiness,
-  bannedProduct,
-  business,
-  currentPlan,
-  payment,
-  product,
-  trial,
-} from "@/db/schema";
-import type { Plan } from "@/db/types";
-import { CACHE_TAGS } from "@/shared/constants/cache-tags";
+import { business, currentPlan, payment, product, trial } from "@/db/schema";
+import type { Plan, Trial, TrialWithRelations } from "@/db/types";
 import type { Analytics } from "@/shared/types";
 import { calcTrend } from "@/shared/utils/calc-trend";
 
@@ -32,10 +22,6 @@ const buildTrend = (current: number, prev: number): Trend => ({
 });
 
 export async function getAdminDashboardStatsCache() {
-  "use cache";
-  cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.STATS);
-  cacheLife("seconds");
-
   const now = new Date();
 
   const startCurrentMonth = startOfMonth(now);
@@ -45,8 +31,6 @@ export async function getAdminDashboardStatsCache() {
 
   const [
     totalBusinessesResult,
-    bannedBusinessesResult,
-    bannedProductsResult,
     totalProductsResult,
     totalApprovedPaymentsResult,
     totalPendingPaymentsResult,
@@ -58,16 +42,12 @@ export async function getAdminDashboardStatsCache() {
     businessesLastMonthResult,
     productsLastMonthResult,
     paymentsLastMonthResult,
+    activeBusinessesResult,
+    suspendedBusinessesResult,
+    activeProductsResult,
   ] = await Promise.all([
     db.select({ count: count() }).from(business),
-    db
-      .select({ count: count() })
-      .from(business)
-      .innerJoin(bannedBusiness, eq(business.id, bannedBusiness.businessId)),
-    db
-      .select({ count: count() })
-      .from(product)
-      .innerJoin(bannedProduct, eq(product.id, bannedProduct.productId)),
+
     db.select({ count: count() }).from(product),
     db
       .select({ count: count() })
@@ -128,12 +108,25 @@ export async function getAdminDashboardStatsCache() {
           lt(payment.createdAt, endLastMonth),
         ),
       ),
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(eq(business.status, "ACTIVE")),
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(eq(business.status, "SUSPENDED")),
+    db.select({ count: count() }).from(product).where(eq(product.active, true)),
   ]);
 
   const totalBusinesses = totalBusinessesResult[0]?.count ?? 0;
-  const bannedBusinesses = bannedBusinessesResult[0]?.count ?? 0;
-  const bannedProducts = bannedProductsResult[0]?.count ?? 0;
+  const activeBusinesses = activeBusinessesResult[0]?.count ?? 0;
+  const bannedBusinesses = suspendedBusinessesResult[0]?.count ?? 0;
+
   const totalProducts = totalProductsResult[0]?.count ?? 0;
+  const activeProducts = activeProductsResult[0]?.count ?? 0;
+  const bannedProducts = 0;
+
   const totalApprovedPayments = totalApprovedPaymentsResult[0]?.count ?? 0;
   const totalPendingPayments = totalPendingPaymentsResult[0]?.count ?? 0;
   const totalRejectedPayments = totalRejectedPaymentsResult[0]?.count ?? 0;
@@ -149,13 +142,13 @@ export async function getAdminDashboardStatsCache() {
   const stats = {
     businesses: {
       total: totalBusinesses,
-      active: totalBusinesses - bannedBusinesses,
+      active: activeBusinesses,
       banned: bannedBusinesses,
       trend: buildTrend(businessesCurrentMonth, businessesLastMonth),
     },
     products: {
       total: totalProducts,
-      active: totalProducts - bannedProducts,
+      active: activeProducts,
       banned: bannedProducts,
       trend: buildTrend(productsCurrentMonth, productsLastMonth),
     },
@@ -175,10 +168,6 @@ export async function getAdminDashboardStatsCache() {
 }
 
 export async function getAnalyticsDataCache() {
-  "use cache";
-  cacheTag(CACHE_TAGS.ADMIN.DASHBOARD.ANALYTICS);
-  cacheLife("seconds");
-
   // Count businesses by plan type
   const [freeResult, basicResult, premiumResult] = await Promise.all([
     db
@@ -292,11 +281,41 @@ export async function getAnalyticsDataCache() {
 }
 
 export async function getPlansCache(): Promise<Plan[]> {
-  "use cache";
-  cacheLife("days");
-  cacheTag(CACHE_TAGS.ADMIN.PLANS.GET_ALL);
-
   const plans = await db.query.plan.findMany();
 
   return plans;
+}
+
+type ActiveTrial = Trial & { daysRemaining: number };
+
+export async function getTrialsAndActiveCountCache(): Promise<{
+  trials: TrialWithRelations[];
+  activeTrials: ActiveTrial[];
+}> {
+  const now = new Date();
+
+  const [trials, activeTrials] = await Promise.all([
+    db.query.trial.findMany({
+      with: { business: true },
+    }),
+    db.query.trial.findMany({
+      where: eq(trial.isActive, true),
+    }),
+  ]);
+
+  const calculateDaysRemaining = (endDate: Date) => {
+    const end = new Date(endDate);
+    return Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
+  return {
+    trials: trials.map((t) => ({
+      ...t,
+      daysRemaining: calculateDaysRemaining(t.expiresAt),
+    })),
+    activeTrials: activeTrials.map((t) => ({
+      ...t,
+      daysRemaining: calculateDaysRemaining(t.expiresAt),
+    })),
+  };
 }

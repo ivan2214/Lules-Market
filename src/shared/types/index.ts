@@ -124,7 +124,7 @@ export interface Analytics {
 
 export type navigationItem = {
   name: string;
-  href: string;
+  href: Route;
   icon?: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
@@ -138,3 +138,26 @@ export type ContactMethod = {
   value?: string | null;
   href?: string | null;
 };
+
+import type { SQL } from "drizzle-orm";
+import type { Route } from "next";
+
+export type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
+
+export type EmptyProps<T extends React.ElementType> = Omit<
+  React.ComponentProps<T>,
+  keyof React.ComponentProps<T>
+>;
+
+export interface SearchParams {
+  [key: string]: string | string[] | undefined;
+}
+
+export interface QueryBuilderOpts {
+  where?: SQL;
+  orderBy?: SQL;
+  distinct?: boolean;
+  nullish?: boolean;
+}

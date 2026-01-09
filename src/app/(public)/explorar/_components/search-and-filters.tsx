@@ -2,10 +2,11 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { orpcTanstack } from "@/lib/orpc";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -51,10 +52,10 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 }) => {
   const {
     data: { businesses },
-  } = useSuspenseQuery(orpcTanstack.business.listAllBusinesses.queryOptions());
+  } = useSuspenseQuery(orpc.business.public.listAllBusinesses.queryOptions());
 
   const { data: categories } = useSuspenseQuery(
-    orpcTanstack.category.listAllCategories.queryOptions(),
+    orpc.category.listAllCategories.queryOptions(),
   );
 
   const { search, sortBy, businessId, category } = params || {};
@@ -66,19 +67,19 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const url = createUrl({ search: searchValue });
-    router.push(url);
+    router.push(url as Route);
   };
 
   const handleSortChange = (value: string) => {
     const url = createUrl({ sortBy: value });
-    router.push(url);
+    router.push(url as Route);
   };
 
   return (
     <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
       <form onSubmit={handleSubmit} className="relative flex-1">
         <Link
-          href={createUrl({ search: searchValue })}
+          href={createUrl({ search: searchValue }) as Route}
           className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground"
         >
           <Search className="h-4 w-4" />

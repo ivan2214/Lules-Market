@@ -1,8 +1,8 @@
-import { ActiveFilters } from "@/features/(public)/explorar/_components/active-filters";
-import { ResultsCountAndLimitSelector } from "@/features/(public)/explorar/_components/results-count-and-limit-selector";
-import { SearchAndFilters } from "@/features/(public)/explorar/_components/search-and-filters";
-import { orpcTanstack } from "@/lib/orpc";
+import { ActiveFilters } from "@/app/(public)/explorar/_components/active-filters";
+import { ResultsCountAndLimitSelector } from "@/app/(public)/explorar/_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "@/app/(public)/explorar/_components/search-and-filters";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/orpc";
 import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {
@@ -27,7 +27,7 @@ export default async function ProductosPage({
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery(
-    orpcTanstack.products.listAllProducts.queryOptions({
+    orpc.products.public.listAllProducts.queryOptions({
       input: {
         businessId,
         category,
@@ -40,7 +40,7 @@ export default async function ProductosPage({
   );
 
   await queryClient.prefetchQuery(
-    orpcTanstack.business.listAllBusinesses.queryOptions(),
+    orpc.business.public.listAllBusinesses.queryOptions(),
   );
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;

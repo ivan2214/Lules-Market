@@ -222,10 +222,10 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
                 <div className="flex-1">
                   <p className="font-medium text-sm">Email</p>
                   <a
-                    href={`mailto:${business?.email}`}
+                    href={`mailto:${business?.user?.email}`}
                     className="break-all text-primary text-sm hover:underline"
                   >
-                    {business?.email}
+                    {business?.user?.email}
                   </a>
                 </div>
               </div>

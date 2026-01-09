@@ -4,9 +4,9 @@ import { ArrowRight, Store, TrendingUp, Zap } from "lucide-react";
 import type { Metadata } from "next";
 
 import Link from "next/link";
-import { env } from "@/env";
-import { orpcTanstack } from "@/lib/orpc";
+import { env } from "@/env/server";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PlanPricingPreview } from "./_components/plan-pricing.preview";
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 
 export default async function ForBusinessPage() {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(orpcTanstack.plan.getAllPlans.queryOptions());
+  await queryClient.prefetchQuery(orpc.plan.getAllPlans.queryOptions());
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">
@@ -69,7 +69,7 @@ export default async function ForBusinessPage() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link href="/signup">
+                <Link href="/auth/sign-up">
                   Comenzar Gratis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -80,7 +80,7 @@ export default async function ForBusinessPage() {
                 variant="outline"
                 className="w-full sm:w-auto"
               >
-                <Link href="/signin">
+                <Link href="/auth/sign-in">
                   Iniciar sesión
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -177,7 +177,7 @@ export default async function ForBusinessPage() {
                 visibilidad y ventas
               </p>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/signup">
+                <Link href="/auth/sign-up">
                   Registrar mi Negocio
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>

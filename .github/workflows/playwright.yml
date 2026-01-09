@@ -10,15 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
+      - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
-        run: npm install -g pnpm && pnpm install
+        run: bun install --frozen-lockfile
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
+        run: bunx playwright install --with-deps
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: bunx playwright test
         env:
           NEXT_TELEMETRY_DISABLED: 1
           APP_URL: ${{ secrets.APP_URL }}
@@ -45,6 +43,11 @@ jobs:
           SUPER_ADMIN_NAME: ${{ secrets.SUPER_ADMIN_NAME }}
           NEXT_PUBLIC_BETTER_AUTH_URL: ${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          GITHUB_CLIENT_ID: ${{ secrets.GHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GHUB_CLIENT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          S3_BUCKET_URL: ${{ secrets.S3_BUCKET_URL }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

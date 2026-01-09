@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { Business } from "@/db/types";
@@ -31,7 +32,7 @@ export const BusinessesPills: React.FC<BusinessesPillsProps> = ({
   return (
     <div className="mb-6 flex flex-wrap gap-2">
       <Badge variant="outline" className="cursor-pointer px-4 py-2" asChild>
-        <Link href={createUrl({ businessId: undefined })}>Todo</Link>
+        <Link href={createUrl({ businessId: undefined }) as Route}>Todo</Link>
       </Badge>
       {businesses.map((business) => {
         const isActive = businessId === business.id.toLowerCase();
@@ -42,7 +43,7 @@ export const BusinessesPills: React.FC<BusinessesPillsProps> = ({
             className="cursor-pointer px-4 py-2"
             asChild
           >
-            <Link href={createUrl({ businessId: business.id })}>
+            <Link href={createUrl({ businessId: business.id }) as Route}>
               {business.name}
             </Link>
           </Badge>

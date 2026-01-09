@@ -2,14 +2,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { BusinessList } from "@/features/(public)/_components/business-list";
-import { orpcTanstack } from "@/lib/orpc";
+import { BusinessList } from "@/app/(public)/_components/business-list";
+import { orpc } from "@/orpc";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 
 export function FeaturedBusinesses() {
   const { data: featuredBusinesses } = useSuspenseQuery(
-    orpcTanstack.business.featuredBusinesses.queryOptions(),
+    orpc.business.public.featuredBusinesses.queryOptions(),
   );
 
   return (

@@ -1,9 +1,10 @@
 ﻿"use client";
-import { LayoutDashboard, LogOut, Settings, Store } from "lucide-react";
+import { LayoutDashboard, LogOut, StoreIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signOut } from "@/lib/auth-client";
+import { navigation } from "@/app/dashboard/_constants";
+import { authClient } from "@/lib/auth/auth-client";
 import {
   Avatar,
   AvatarFallback,
@@ -39,7 +40,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const handleSignOut = async () => {
-    await signOut();
+    await authClient.signOut();
     setOpen(false);
     router.push("/");
     router.refresh();
@@ -84,30 +85,33 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           </DropdownMenuLabel>
         </div>
         <DropdownMenuSeparator />
-        {isBusiness && (
-          <DropdownMenuItem asChild>
-            <Link
-              onClick={() => setOpen(false)}
-              href="/dashboard"
-              className="cursor-pointer"
-            >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Mi panel
-            </Link>
-          </DropdownMenuItem>
-        )}
-        {isBusiness && (
+
+        {businessId && isBusiness && (
           <DropdownMenuItem asChild>
             <Link
               onClick={() => setOpen(false)}
               href={`/comercio/${businessId}`}
-              className="cursor-pointer"
+              className="flex cursor-pointer items-center gap-2"
             >
-              <Store className="mr-2 h-4 w-4" />
+              <StoreIcon className="mr-2 h-4 w-4" />
               Perfil publico
             </Link>
           </DropdownMenuItem>
         )}
+
+        {isBusiness &&
+          navigation.map((item) => (
+            <DropdownMenuItem asChild key={item.href}>
+              <Link
+                onClick={() => setOpen(false)}
+                href={item.href}
+                className="cursor-pointer"
+              >
+                {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                {item.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
         {isAdmin && (
           <DropdownMenuItem asChild>
             <Link
@@ -120,16 +124,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             </Link>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem asChild>
-          <Link
-            onClick={() => setOpen(false)}
-            href="/dashboard/settings"
-            className="cursor-pointer"
-          >
-            <Settings className="mr-2 h-4 w-4" />
-            Configuración
-          </Link>
-        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleSignOut}

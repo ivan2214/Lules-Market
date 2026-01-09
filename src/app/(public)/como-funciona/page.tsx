@@ -1,7 +1,7 @@
 import { BarChart3, QrCode, Star, Store, Users, Zap } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { env } from "@/env";
+import { env } from "@/env/server";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
@@ -224,7 +224,7 @@ export default function ComoFuncionaPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button asChild size="lg">
-            <Link href="/signup">Crear Cuenta Gratis</Link>
+            <Link href="/auth/sign-up">Crear Cuenta Gratis</Link>
           </Button>
           <Button asChild variant="outline" size="lg">
             <Link href="/planes">Ver Planes</Link>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
@@ -23,7 +24,7 @@ export function LimitSelector({ currentLimit, total }: LimitSelectorProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("limit", value);
     params.set("page", "1"); // Reset to first page when limit changes
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}` as Route);
   };
 
   // Generar opciones automáticamente dividiendo el total

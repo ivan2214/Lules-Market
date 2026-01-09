@@ -163,7 +163,7 @@ src/
 import { Suspense } from 'react';
 import { getUser } from '@/lib/auth';
 import { FeatureCard } from './feature-card';
-import { LoadingSkeleton } from '@/components/ui/loading-skeleton';
+import { LoadingSkeleton } from '@/shared/components/ui/loading-skeleton';
 
 // Server Component by default
 export default async function FeaturePage() {
@@ -187,7 +187,7 @@ export default async function FeaturePage() {
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 
 interface FeatureComponentProps {
   initialData: FeatureData;

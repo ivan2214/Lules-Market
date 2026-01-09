@@ -2,20 +2,19 @@
 
 import { ORPCError, os } from "@orpc/server";
 import { updateTag } from "next/cache";
-import { db, schema } from "@/db";
+import { db } from "@/db";
+import { account, admin, business, session, user } from "@/db/schema";
 import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 
 export const clearUsersCache = os
   .handler(async () => {
     try {
       // Delete in proper order due to foreign key constraints
-      await db.delete(schema.session);
-      await db.delete(schema.emailVerificationToken);
-      await db.delete(schema.passwordResetToken);
-      await db.delete(schema.account);
-      await db.delete(schema.admin);
-      await db.delete(schema.business);
-      await db.delete(schema.user);
+      await db.delete(session);
+      await db.delete(account);
+      await db.delete(admin);
+      await db.delete(business);
+      await db.delete(user);
       updateTag(CACHE_TAGS.DEV_TOOLS.GET_ALL);
       return { success: true };
     } catch (error) {

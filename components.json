@@ -12,13 +12,15 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/src/shared/components",
-    "utils": "@/src/lib/utils",
-    "ui": "@/src/shared/components/ui",
-    "lib": "@/src/lib",
-    "hooks": "@/src/shared/hooks"
+    "components": "@/shared/components",
+    "utils": "@/lib/utils",
+    "ui": "@/shared/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/shared/hooks"
   },
   "registries": {
-    "@wandry-ui": "https://ui.wandry.com.ua/r/{name}.json"
+    "@wandry-ui": "https://ui.wandry.com.ua/r/{name}.json",
+    "@formcn": "https://formcn.dev/r/{name}.json",
+    "@better-upload": "https://better-upload.com/r/{name}.json"
   }
 }

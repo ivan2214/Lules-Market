@@ -9,7 +9,7 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import { env } from "@/env";
+import { env } from "@/env/server";
 
 interface EmailTemplateProps {
   userFirstname: string;

@@ -6,6 +6,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -41,7 +42,7 @@ export function PaginationControls({
         asChild
       >
         <Link
-          href={currentPage <= 1 ? "#" : createPageUrl(1)}
+          href={currentPage <= 1 ? "#" : (createPageUrl(1) as Route)}
           aria-disabled={currentPage <= 1}
           tabIndex={currentPage <= 1 ? -1 : undefined}
           className={cn(currentPage <= 1 && "pointer-events-none opacity-50")}
@@ -57,7 +58,9 @@ export function PaginationControls({
         asChild
       >
         <Link
-          href={currentPage <= 1 ? "#" : createPageUrl(currentPage - 1)}
+          href={
+            currentPage <= 1 ? "#" : (createPageUrl(currentPage - 1) as Route)
+          }
           aria-disabled={currentPage <= 1}
           tabIndex={currentPage <= 1 ? -1 : undefined}
           className={cn(currentPage <= 1 && "pointer-events-none opacity-50")}
@@ -77,7 +80,9 @@ export function PaginationControls({
       >
         <Link
           href={
-            currentPage >= totalPages ? "#" : createPageUrl(currentPage + 1)
+            currentPage >= totalPages
+              ? "#"
+              : (createPageUrl(currentPage + 1) as Route)
           }
           aria-disabled={currentPage >= totalPages}
           tabIndex={currentPage >= totalPages ? -1 : undefined}
@@ -96,7 +101,11 @@ export function PaginationControls({
         asChild
       >
         <Link
-          href={currentPage >= totalPages ? "#" : createPageUrl(totalPages)}
+          href={
+            currentPage >= totalPages
+              ? "#"
+              : (createPageUrl(totalPages) as Route)
+          }
           aria-disabled={currentPage >= totalPages}
           tabIndex={currentPage >= totalPages ? -1 : undefined}
           className={cn(

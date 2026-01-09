@@ -1,8 +1,14 @@
 import crypto from "node:crypto";
 import { eq } from "drizzle-orm";
-import { db, schema } from "@/db";
-import { env } from "@/env";
+import { db } from "@/db";
+import {
+  currentPlan as currentPlanSchema,
+  payment as paymentSchema,
+  webhookEvent as webhookEventSchema,
+} from "@/db/schema";
+import { env } from "@/env/server";
 import { paymentClient } from "@/lib/mercadopago";
+import { client } from "@/orpc";
 
 /**
  * Webhook handler Mercado Pago
@@ -34,15 +40,28 @@ export async function POST(request: Request) {
 
     // Intentar crear registro de evento; si existe, devolvemos 200 (ya procesado o en proceso)
     try {
-      await db.insert(schema.webhookEvent).values({
-        requestId: requestId || buildRequestId(body),
-        eventType: body.type || body.type || "unknown",
-        mpId: getMpIdFromBody(body),
-        payload: body,
+      const webhookEvent = await db
+        .insert(webhookEventSchema)
+        .values({
+          requestId: requestId || buildRequestId(body),
+          eventType: body.type || body.type || "unknown",
+          mpId: getMpIdFromBody(body),
+          payload: body,
+        })
+        .returning({
+          id: webhookEventSchema.id,
+        });
+      await client.admin.createLog({
+        action: "webhook",
+        details: JSON.stringify(body),
+        timestamp: new Date(),
+        entityType: "WebhookEvent",
+        entityId: webhookEvent[0].id,
       });
       // biome-ignore lint/suspicious/noExplicitAny: <reason>
     } catch (err: any) {
       // Si la creación falla por unique constraint -> ya procesado
+      console.error("Error creating webhookEvent:", err);
       if (isUniqueConstraintError(err)) {
         return new Response(JSON.stringify({ received: true }), {
           status: 200,
@@ -93,7 +112,7 @@ export async function POST(request: Request) {
 
       if (!paymentIdDB) {
         const paymentByMP = await db.query.payment.findFirst({
-          where: eq(schema.payment.mpPaymentId, mpPaymentId),
+          where: eq(paymentSchema.mpPaymentId, mpPaymentId),
         });
         if (paymentByMP) {
           paymentIdDB = paymentByMP.id;
@@ -118,7 +137,7 @@ export async function POST(request: Request) {
       } else {
         // fetch payment record
         const paymentRecord = await db.query.payment.findFirst({
-          where: eq(schema.payment.id, paymentIdDB),
+          where: eq(paymentSchema.id, paymentIdDB),
         });
         if (!paymentRecord) {
           console.warn("Payment record not found for id:", paymentIdDB);
@@ -129,7 +148,7 @@ export async function POST(request: Request) {
             const expireAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
             await db.transaction(async (tx) => {
               await tx
-                .update(schema.payment)
+                .update(paymentSchema)
                 .set({
                   status: "approved",
                   mpStatus: mpStatus,
@@ -138,10 +157,10 @@ export async function POST(request: Request) {
                   amount: mpPayment?.transaction_amount ?? paymentRecord.amount,
                   currency: mpPayment?.currency_id ?? paymentRecord.currency,
                 })
-                .where(eq(schema.payment.id, paymentIdDB as string));
+                .where(eq(paymentSchema.id, paymentIdDB as string));
 
               await tx
-                .update(schema.currentPlan)
+                .update(currentPlanSchema)
                 .set({
                   planType: paymentRecord.plan,
                   planStatus: "ACTIVE",
@@ -153,49 +172,49 @@ export async function POST(request: Request) {
                   isTrial: false,
                 })
                 .where(
-                  eq(schema.currentPlan.businessId, paymentRecord.businessId),
+                  eq(currentPlanSchema.businessId, paymentRecord.businessId),
                 );
 
               await tx
-                .update(schema.webhookEvent)
+                .update(webhookEventSchema)
                 .set({ processed: true, processedAt: new Date() })
-                .where(eq(schema.webhookEvent.requestId, requestId));
+                .where(eq(webhookEventSchema.requestId, requestId));
             });
           } else if (normalizedStatus === "pending") {
             await db
-              .update(schema.payment)
+              .update(paymentSchema)
               .set({
                 status: "pending",
                 mpStatus: mpStatus,
                 mpPaymentId,
               })
-              .where(eq(schema.payment.id, paymentIdDB));
+              .where(eq(paymentSchema.id, paymentIdDB));
             await db
-              .update(schema.webhookEvent)
+              .update(webhookEventSchema)
               .set({ processed: true, processedAt: new Date() })
-              .where(eq(schema.webhookEvent.requestId, requestId));
+              .where(eq(webhookEventSchema.requestId, requestId));
           } else {
             // rejected/failed/other
             await db
-              .update(schema.payment)
+              .update(paymentSchema)
               .set({
                 status: "rejected",
                 mpStatus: mpStatus,
                 mpPaymentId,
               })
-              .where(eq(schema.payment.id, paymentIdDB));
+              .where(eq(paymentSchema.id, paymentIdDB));
             await db
-              .update(schema.webhookEvent)
+              .update(webhookEventSchema)
               .set({ processed: true, processedAt: new Date() })
-              .where(eq(schema.webhookEvent.requestId, requestId));
+              .where(eq(webhookEventSchema.requestId, requestId));
           }
         }
       }
     } else {
       await db
-        .update(schema.webhookEvent)
+        .update(webhookEventSchema)
         .set({ processed: true, processedAt: new Date() })
-        .where(eq(schema.webhookEvent.requestId, requestId));
+        .where(eq(webhookEventSchema.requestId, requestId));
     }
 
     // Todo bien

@@ -9,9 +9,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { env } from "@/env";
-import { orpc } from "@/lib/orpc";
+import { db } from "@/db";
+import { env } from "@/env/server";
 import { cn } from "@/lib/utils";
+import { client } from "@/orpc";
 import { ProductCard } from "@/shared/components/product-card";
 import { ProductSchema } from "@/shared/components/structured-data";
 import {
@@ -33,7 +34,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { product } = await orpc.products.getProductById({ id });
+  const { product } = await client.products.public.getProductById({ id });
 
   if (!product) {
     notFound();
@@ -61,9 +62,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export async function generateStaticParams() {
+  const products = await db.query.product.findMany();
+  if (!products.length) {
+    return [];
+  }
+  return products.map((product) => ({ id: product.id }));
+}
+
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const { product } = await orpc.products.getProductById({ id });
+  const { product } = await client.products.public.getProductById({ id });
 
   if (!product) {
     notFound();
@@ -71,7 +80,7 @@ export default async function ProductPage({ params }: Props) {
 
   // Fetch Similar Products
   const similarProducts = product.category
-    ? await orpc.products.getSimilarProducts({
+    ? await client.products.public.getSimilarProducts({
         id: product.id,
         categoryId: product.category.id,
       })

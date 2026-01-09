@@ -12,7 +12,6 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
-import { cacheLife, cacheTag } from "next/cache";
 import z from "zod";
 import { db } from "@/db";
 import {
@@ -23,7 +22,6 @@ import {
   product,
 } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
-import { CACHE_TAGS } from "@/shared/constants/cache-tags";
 
 export const ListAllBusinessesInputSchema = z
   .object({
@@ -43,81 +41,82 @@ export const ListAllBusinessesOutputSchema = z.object({
 export async function listAllBusinessesCache(
   input: z.infer<typeof ListAllBusinessesInputSchema>,
 ): Promise<z.infer<typeof ListAllBusinessesOutputSchema>> {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_ALL);
-  cacheLife("minutes");
-  const { search, category, page, limit, sortBy } = input ?? {};
-  // Build where conditions
-  const conditions = [eq(business.isActive, true)];
+  try {
+    const { search, category, page, limit, sortBy } = input ?? {};
+    // Build where conditions
+    const conditions = [eq(business.isActive, true)];
 
-  let orderBy: ReturnType<typeof asc> | ReturnType<typeof desc> | undefined;
+    let orderBy: ReturnType<typeof asc> | ReturnType<typeof desc> | undefined;
 
-  if (search) {
-    conditions.push(
-      or(
-        ilike(business.name, `%${search}%`),
-        ilike(business.description, `%${search}%`),
-      ) as SQL<string>,
-    );
-  }
-
-  if (category) {
-    const categoryId = await db.query.category.findFirst({
-      where: eq(categorySchema.value, category),
-    });
-
-    if (categoryId) {
-      conditions.push(eq(business.categoryId, categoryId.id));
+    if (search) {
+      conditions.push(
+        or(
+          ilike(business.name, `%${search}%`),
+          ilike(business.description, `%${search}%`),
+        ) as SQL<string>,
+      );
     }
-  }
 
-  if (sortBy === "oldest") {
-    orderBy = asc(business.createdAt);
-  } else {
-    orderBy = desc(business.createdAt); // default newest
-  }
+    if (category) {
+      const categoryId = await db.query.category.findFirst({
+        where: eq(categorySchema.value, category),
+      });
 
-  const whereClause = and(...conditions);
+      if (categoryId) {
+        conditions.push(eq(business.categoryId, categoryId.id));
+      }
+    }
 
-  const [businesses, totalResult] = await Promise.all([
-    db.query.business.findMany({
-      where: whereClause,
-      with: {
-        products: {
-          where: eq(product.active, true),
-          with: {
-            images: true,
+    if (sortBy === "oldest") {
+      orderBy = asc(business.createdAt);
+    } else {
+      orderBy = desc(business.createdAt); // default newest
+    }
+
+    const whereClause = and(...conditions);
+
+    const [businesses, totalResult] = await Promise.all([
+      db.query.business.findMany({
+        where: whereClause,
+        with: {
+          products: {
+            where: eq(product.active, true),
+            with: {
+              images: true,
+            },
           },
+          category: true,
+          logo: true,
         },
-        category: true,
-        logo: true,
-      },
-      orderBy,
-      ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
-    }),
-    db.select({ count: count() }).from(business).where(whereClause),
-  ]);
+        orderBy,
+        ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
+      }),
+      db.select({ count: count() }).from(business).where(whereClause),
+    ]);
 
-  const total = totalResult[0]?.count ?? 0;
+    const total = totalResult[0]?.count ?? 0;
 
-  return {
-    businesses: businesses as BusinessWithRelations[],
-    total,
-  };
+    return {
+      businesses: businesses as BusinessWithRelations[],
+      total,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      businesses: [],
+      total: 0,
+    };
+  }
 }
 
 export async function featuredBusinessesCache() {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_FEATURED);
-  cacheLife("hours");
-
   // 1. Obtener IDs ordenados por prioridad del plan y fecha de creación
   const sortedIds = await db
     .select({ id: business.id })
     .from(business)
     .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
     .innerJoin(plan, eq(currentPlan.planType, plan.type))
-    .where(and(eq(business.isActive, true), eq(business.isBanned, false)))
+    .where(and(eq(business.isActive, true)))
     .orderBy(
       sql`CASE
         WHEN ${plan.type} = 'PREMIUM' THEN 3
@@ -152,10 +151,6 @@ export async function featuredBusinessesCache() {
 }
 
 export async function getBusinessByIdCache(id: string) {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_BY_ID(id));
-  cacheLife("hours");
-
   const businessData = await db.query.business.findFirst({
     where: eq(business.id, id),
     with: {
@@ -180,10 +175,6 @@ export async function listAllSimilarBusinessesCache(input: {
   category: string;
   businessId: string;
 }): Promise<{ businesses: BusinessWithRelations[] }> {
-  "use cache";
-  cacheTag(CACHE_TAGS.BUSINESS.GET_ALL);
-  cacheLife("hours");
-
   const categoryId = await db.query.category.findFirst({
     where: eq(categorySchema.value, input.category),
   });

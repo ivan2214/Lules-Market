@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { env } from "@/env";
-import { orpcTanstack } from "@/lib/orpc";
+import { env } from "@/env/server";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 export default async function PlanesPage() {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(orpcTanstack.plan.getAllPlans.queryOptions());
+  await queryClient.prefetchQuery(orpc.plan.getAllPlans.queryOptions());
 
   return (
     <div className="container mx-auto py-16">
@@ -139,7 +139,7 @@ export default async function PlanesPage() {
               plataforma
             </p>
             <Button asChild size="lg" variant="secondary">
-              <Link href="/signup">
+              <Link href="/auth/sign-up">
                 Registrar mi Negocio Gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

@@ -2,13 +2,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { ProductList } from "@/features/(public)/_components/product-list";
-import { orpcTanstack } from "@/lib/orpc";
+import { ProductList } from "@/app/(public)/_components/product-list";
+import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 
 export function RecentProducts() {
   const { data: products } = useSuspenseQuery(
-    orpcTanstack.products.recentProducts.queryOptions(),
+    orpc.products.public.recentProducts.queryOptions(),
   );
 
   return (

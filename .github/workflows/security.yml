@@ -2,7 +2,7 @@ name: Security Audit
 
 on:
   schedule:
-    - cron: "0 0 * * 1" # Run every Monday at midnight
+    - cron: "0 0 * * 1"
   pull_request:
     branches: [main, dev]
   workflow_dispatch:
@@ -13,20 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 10
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "pnpm"
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Audit Dependencies
-        run: pnpm audit --prod
+        run: bun pm audit --production

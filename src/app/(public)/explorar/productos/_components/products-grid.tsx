@@ -2,7 +2,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, ShoppingBag, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
-import { orpcTanstack } from "@/lib/orpc";
+import { orpc } from "@/orpc";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
 import { ProductCard } from "@/shared/components/product-card";
@@ -29,7 +29,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   const {
     data: { products, total },
   } = useSuspenseQuery(
-    orpcTanstack.products.listAllProducts.queryOptions({
+    orpc.products.public.listAllProducts.queryOptions({
       input: {
         businessId,
         category,

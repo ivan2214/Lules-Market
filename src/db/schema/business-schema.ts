@@ -1,26 +1,14 @@
 import { relations } from "drizzle-orm";
-import {
-  boolean,
-  doublePrecision,
-  index,
-  integer,
-  json,
-  pgTable,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { category } from "./category-schema";
-import {
-  businessStatusEnum,
-  listPriorityEnum,
-  planStatusEnum,
-  planTypeEnum,
-} from "./enums";
+import { currentPlan } from "./current-plan-schema";
+import { businessStatusEnum } from "./enums";
 import { image } from "./image-schema";
 import { payment } from "./payment-schema";
 import { product } from "./product-schema";
-import { bannedBusiness } from "./user-schema";
+
+import { trial } from "./trial-schema";
 
 /**
  * ===============================================================
@@ -39,7 +27,6 @@ export const business = pgTable(
     description: text("description"),
     phone: text("phone"),
     whatsapp: text("whatsapp"),
-    email: text("email").notNull().unique(),
     website: text("website"),
     facebook: text("facebook"),
     instagram: text("instagram"),
@@ -49,7 +36,6 @@ export const business = pgTable(
       .default("PENDING_VERIFICATION")
       .notNull(),
     userId: text("user_id").notNull().unique(),
-    isBanned: boolean("is_banned").default(false),
     tags: text("tags").array(),
     categoryId: text("category_id"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -60,73 +46,6 @@ export const business = pgTable(
   },
   (table) => [index("business_categoryId_idx").on(table.categoryId)],
 );
-
-export const currentPlan = pgTable(
-  "current_plan",
-  {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
-    businessId: text("business_id").notNull().unique(),
-    planType: planTypeEnum("plan_type").notNull(),
-    planStatus: planStatusEnum("plan_status").default("INACTIVE").notNull(),
-    isTrial: boolean("is_trial").default(false).notNull(),
-    productsUsed: integer("products_used").default(0).notNull(),
-    imagesUsed: integer("images_used").default(0).notNull(),
-    hasStatistics: boolean("has_statistics").default(false).notNull(),
-
-    expiresAt: timestamp("expires_at").notNull(),
-    activatedAt: timestamp("activated_at").notNull(),
-    isActive: boolean("is_active").default(false).notNull(),
-    listPriority: listPriorityEnum("list_priority")
-      .default("Estandar")
-      .notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-  (table) => [index("current_plan_planType_idx").on(table.planType)],
-);
-
-export const plan = pgTable("plan", {
-  type: planTypeEnum("type").primaryKey().unique(),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  price: doublePrecision("price").notNull(),
-  discount: integer("discount").default(0).notNull(),
-  features: text("features").array().notNull(),
-  maxProducts: integer("max_products").notNull(),
-  maxImagesPerProduct: integer("max_images_per_product").notNull(),
-  hasStatistics: boolean("has_statistics").default(false).notNull(),
-  details: json("details")
-    .$type<{ products: string; images: string; priority: string }>()
-    .notNull(),
-  popular: boolean("popular").default(false).notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  listPriority: listPriorityEnum("list_priority").default("Estandar").notNull(),
-});
-
-export const trial = pgTable("trial", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  businessId: text("business_id").notNull().unique(),
-  plan: planTypeEnum("plan").default("PREMIUM").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  activatedAt: timestamp("activated_at").defaultNow().notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
 
 export const businessView = pgTable(
   "business_view",
@@ -165,37 +84,12 @@ export const businessRelations = relations(business, ({ one, many }) => ({
   }),
   products: many(product),
   payments: many(payment),
-  bannedBusiness: one(bannedBusiness, {
-    fields: [business.id],
-    references: [bannedBusiness.businessId],
-  }),
+
   businessViews: many(businessView),
   trial: one(trial),
   category: one(category, {
     fields: [business.categoryId],
     references: [category.id],
-  }),
-}));
-
-export const currentPlanRelations = relations(currentPlan, ({ one }) => ({
-  business: one(business, {
-    fields: [currentPlan.businessId],
-    references: [business.id],
-  }),
-  plan: one(plan, {
-    fields: [currentPlan.planType],
-    references: [plan.type],
-  }),
-}));
-
-export const planRelations = relations(plan, ({ many }) => ({
-  currentPlans: many(currentPlan),
-}));
-
-export const trialRelations = relations(trial, ({ one }) => ({
-  business: one(business, {
-    fields: [trial.businessId],
-    references: [business.id],
   }),
 }));
 

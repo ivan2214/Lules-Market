@@ -1,11 +1,12 @@
-import "@/lib/orpc.server"; // prerendering for ssr
+import "@/orpc/server"; // prerendering for ssr
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import { Providers } from "@/lib/providers";
+import { getSession } from "@/orpc/actions/user/get-session";
 import { Toaster } from "@/shared/components/ui/sonner";
+import { RootProviders } from "@/shared/providers/root-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,11 +37,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [_, auth] = await getSession();
+
   return (
     <html
       lang="es"
@@ -48,7 +51,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="mx-auto font-sans antialiased">
-        <Providers>{children}</Providers>
+        <RootProviders auth={auth ?? null}>{children}</RootProviders>
         {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
         <Toaster />
         <Analytics />

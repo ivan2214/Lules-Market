@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { env } from "@/env";
+import { env } from "@/env/server";
 
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = env.APP_URL;
@@ -10,11 +10,11 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/admin/",
-        "/signin",
-        "/signup",
-        "/verify",
-        "/forgot-password",
-        "/reset-password",
+        "/auth/signin",
+        "/auth/signup",
+        "/auth/verify",
+        "/auth/forgot-password",
+        "/auth/reset-password",
         "/api/",
         "/dashboard/",
       ],

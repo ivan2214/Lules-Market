@@ -1,11 +1,11 @@
-import { experimental_SmartCoercionPlugin as SmartCoercionPlugin } from "@orpc/json-schema";
+import { SmartCoercionPlugin } from "@orpc/json-schema";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
-import { router } from "@/core/router";
+import { appRouter } from "@/orpc/routers";
 
-const openAPIHandler = new OpenAPIHandler(router, {
+const openAPIHandler = new OpenAPIHandler(appRouter, {
   interceptors: [
     onError((error) => {
       console.error(error);
@@ -53,7 +53,7 @@ async function handleRequest(request: Request) {
   const { response } = await openAPIHandler.handle(request, {
     prefix: "/api",
     context: {
-      request,
+      headers: request.headers,
     },
   });
 

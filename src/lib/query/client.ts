@@ -1,11 +1,19 @@
 import {
   defaultShouldDehydrateQuery,
+  QueryCache,
   QueryClient,
 } from "@tanstack/react-query";
-import { serializer } from "../serializer";
+import { toast } from "sonner";
+
+import { serializer } from "./serializer";
 
 export function createQueryClient() {
   return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        toast.error(`Error: ${error.message}`);
+      },
+    }),
     defaultOptions: {
       queries: {
         queryKeyHashFn(queryKey) {
@@ -24,8 +32,11 @@ export function createQueryClient() {
         },
       },
       hydrate: {
-        deserializeData(data) {
-          return serializer.deserialize(data.json, data.meta);
+        deserializeData(data: { json: unknown; meta: unknown }) {
+          return serializer.deserialize(
+            data.json,
+            data.meta as Parameters<typeof serializer.deserialize>[1],
+          );
         },
       },
     },

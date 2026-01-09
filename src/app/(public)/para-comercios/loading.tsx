@@ -20,7 +20,7 @@ export default function Loading() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link href="/signup">
+                <Link href="/auth/sign-up">
                   Comenzar Gratis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -31,7 +31,7 @@ export default function Loading() {
                 variant="outline"
                 className="w-full sm:w-auto"
               >
-                <Link href="/signin">
+                <Link href="/auth/sign-in">
                   Iniciar sesión
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -126,7 +126,7 @@ export default function Loading() {
                 visibilidad y ventas
               </p>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/signup">
+                <Link href="/auth/sign-up">
                   Registrar mi Negocio
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
