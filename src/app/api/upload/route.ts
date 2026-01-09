@@ -1,27 +1,22 @@
 import { RejectUpload, type Router, route } from "@better-upload/server";
 import { toRouteHandler } from "@better-upload/server/adapters/next";
-import { tigris } from "@better-upload/server/clients";
+import { v4 as uuidv4 } from "uuid";
 import { env } from "@/env/server";
+import { s3 } from "@/lib/s3";
 import { getSession } from "@/orpc/actions/user/get-session";
 
 const router: Router = {
-  client: tigris({
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-    endpoint: env.AWS_ENDPOINT_URL_S3,
-  }), // or cloudflare(), backblaze(), tigris(), ...
+  client: s3, // or cloudflare(), backblaze(), tigris(), ...
   bucketName: env.S3_BUCKET_NAME,
   routes: {
     businessCover: route({
       fileTypes: ["image/*"],
       multipleFiles: false,
-      onBeforeUpload: async ({ req: { body }, file, clientMetadata }) => {
-        console.log({ clientMetadata });
-        console.log({ body });
-
+      onBeforeUpload: async () => {
+        const uniqueKey = uuidv4();
         return {
           objectInfo: {
-            key: `business-cover/${file.name}`,
+            key: `business-cover/${uniqueKey}`,
           },
         };
       },
@@ -29,13 +24,11 @@ const router: Router = {
     businessLogo: route({
       fileTypes: ["image/*"],
       multipleFiles: false,
-      onBeforeUpload: async ({ req: { body }, file, clientMetadata }) => {
-        console.log({ clientMetadata });
-        console.log({ body });
-
+      onBeforeUpload: async () => {
+        const uniqueKey = uuidv4();
         return {
           objectInfo: {
-            key: `business-logo/${file.name}`,
+            key: `business-logo/${uniqueKey}`,
           },
         };
       },
@@ -59,9 +52,11 @@ const router: Router = {
           throw new RejectUpload("Not logged in!");
         }
 
+        const uniqueKey = uuidv4();
+
         return {
-          generateObjectInfo: ({ file }) => ({
-            key: `products/${file.name}`,
+          generateObjectInfo: () => ({
+            key: `products/${uniqueKey} `,
             metadata: {
               author: result.user.id,
             },

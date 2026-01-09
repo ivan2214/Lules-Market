@@ -26,6 +26,7 @@ export const getCurrentBusiness = oa
           },
         },
         products: true,
+        user: true,
       },
     });
 

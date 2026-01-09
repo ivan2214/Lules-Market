@@ -1,6 +1,7 @@
 "use client";
 
 import { Download, ExternalLink, Share2 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
@@ -37,7 +38,7 @@ export function ShareLinkCard({ businessId }: ShareLinkCardProps) {
     }
   }, []);
 
-  const path = `/comercio/${businessId}`;
+  const path = `/comercio/${businessId}` as Route;
   const fullUrl = origin ? `${origin}${path}` : path;
 
   const handleShare = async () => {

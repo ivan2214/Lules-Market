@@ -14,6 +14,7 @@ export const auth = betterAuth({
   ...authConfig,
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true,
     requireEmailVerification: true,
     async sendResetPassword({ url, user }) {
       const { sendEmail } = await import("../email");
@@ -73,7 +74,7 @@ export const auth = betterAuth({
         title: "Verificación de cuenta",
         description: `Gracias por registrarte en LulesMarket. Para completar tu registro, necesitamos que verifiques tu dirección de email haciendo click en el botón de abajo. Si no funciona el boton, podés verificar tu cuenta manualmente ingresando el token de verificación en la pantalla de verificación, ${token}`,
         buttonText: "Verificar Email",
-        buttonUrl: `${env.APP_URL}/verify?token=${token}`,
+        buttonUrl: `${env.APP_URL}/auth/verify?token=${token}`,
         userFirstname: user.name,
       });
     },
@@ -110,7 +111,7 @@ export const auth = betterAuth({
             subject: "OTP",
             description: `Tu OTP es ${otp}`,
             buttonText: "Verificar OTP",
-            buttonUrl: `${env.APP_URL}/verify-otp?otp=${otp}`,
+            buttonUrl: `${env.APP_URL}/auth/verify-otp?otp=${otp}`,
             userFirstname: user.name,
             title: "Verificación de OTP",
           });

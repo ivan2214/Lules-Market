@@ -117,11 +117,10 @@ export function ProductFormDialog({
           category: product.category?.value || "",
           images:
             product?.images?.map((img) => ({
-              url: img.url,
               key: img.key,
-              name: img.name ?? "",
               isMainImage: img.isMainImage,
-              size: img.size ?? 0,
+              file: [],
+              objectKeys: [],
             })) ?? [],
           active: product.active,
         }

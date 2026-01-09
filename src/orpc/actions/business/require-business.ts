@@ -2,6 +2,7 @@
 import { ORPCError } from "@orpc/client";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
 import { db } from "@/db";
 import { admin as adminSchema, business as businessSchema } from "@/db/schema";
 import { actionContext, oa } from "@/orpc/middlewares";
@@ -28,7 +29,7 @@ export const requireBusiness = oa
     }
 
     if (!business) {
-      redirect("/dashboard/setup");
+      redirect(pathsConfig.business.setup);
     }
 
     return {

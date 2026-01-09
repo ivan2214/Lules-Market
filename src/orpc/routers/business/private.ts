@@ -9,200 +9,20 @@ import {
   account,
   business,
   category as categorySchema,
-  currentPlan,
   image,
-  plan,
   product,
   session,
-  trial,
   user as userSchema,
 } from "@/db/schema";
 import type { Business, ProductWithRelations } from "@/db/types";
 
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
-import {
-  BusinessSetupSchema,
-  BusinessUpdateSchema,
-} from "@/shared/validators/business";
+import { BusinessUpdateSchema } from "@/shared/validators/business";
 
 // ==========================================
 // BUSINESS SETUP
 // ==========================================
-
-export const businessSetup = o
-  .use(
-    authMiddleware({
-      role: "business",
-    }),
-  )
-  .route({
-    method: "POST",
-    description: "Setup business",
-    summary: "Setup business",
-    tags: ["Business"],
-  })
-  .input(
-    BusinessSetupSchema.extend({
-      userEmail: z.string(),
-    }),
-  )
-  .output(
-    z.object({
-      success: z.boolean(),
-      business: z.custom<Business>(),
-    }),
-  )
-  .handler(async ({ input }) => {
-    const {
-      name,
-      description,
-      phone,
-      whatsapp,
-      website,
-      facebook,
-      instagram,
-      address,
-      category,
-      tags,
-      logo,
-      coverImage,
-      userEmail,
-    } = input;
-    const user = await db.query.user.findFirst({
-      where: eq(userSchema.email, userEmail),
-    });
-
-    if (!user) {
-      throw new ORPCError("NOT_FOUND", {
-        message: "Usuario no encontrado",
-      });
-    }
-
-    const userId = user.id;
-
-    const freePlan = await db.query.plan.findFirst({
-      where: eq(plan.type, "FREE"),
-    });
-
-    if (!freePlan) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "Error al obtener el plan gratuito",
-      });
-    }
-
-    // Create business
-    const [businessDB] = await db
-      .insert(business)
-      .values({
-        name,
-        description,
-        phone,
-        whatsapp,
-        website,
-        facebook,
-        instagram,
-        address,
-        userId,
-        status: "ACTIVE",
-        tags,
-      })
-      .returning();
-
-    // Create logo if provided
-    if (logo) {
-      await db.insert(image).values({
-        key: input.logo.key,
-        url: input.logo.url,
-        name: input.logo.name,
-        size: input.logo.size,
-        isMainImage: input.logo.isMainImage,
-        logoBusinessId: businessDB.id,
-      });
-    }
-
-    // Create cover image if provided
-    if (coverImage) {
-      await db.insert(image).values({
-        key: coverImage.key,
-        url: coverImage.url,
-        name: coverImage.name,
-        size: coverImage.size,
-        isMainImage: input.coverImage.isMainImage,
-        coverBusinessId: businessDB.id,
-      });
-    }
-
-    // Create trial
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30);
-
-    await db.insert(trial).values({
-      businessId: businessDB.id,
-      plan: freePlan.type,
-      expiresAt: expiresAt,
-      activatedAt: new Date(),
-      isActive: true,
-    });
-
-    // Create current plan
-    await db.insert(currentPlan).values({
-      businessId: businessDB.id,
-      planType: freePlan.type,
-      expiresAt: expiresAt,
-      activatedAt: new Date(),
-      isActive: true,
-      isTrial: true,
-    });
-
-    // Handle category
-    let categoryDB:
-      | {
-          createdAt: Date;
-          updatedAt: Date;
-          id: string;
-          value: string;
-          label: string;
-        }
-      | undefined;
-
-    if (category) {
-      categoryDB = await db.query.category.findFirst({
-        where: eq(categorySchema.value, category?.toLowerCase()),
-      });
-    }
-
-    if (categoryDB) {
-      await db
-        .update(business)
-        .set({ categoryId: categoryDB.id })
-        .where(eq(business.id, businessDB.id));
-    } else if (category) {
-      const [newCategory] = await db
-        .insert(categorySchema)
-        .values({
-          value: category?.toLowerCase(),
-          label: category,
-        })
-        .returning();
-
-      await db
-        .update(business)
-        .set({ categoryId: newCategory.id })
-        .where(eq(business.id, businessDB.id));
-    }
-
-    // Update user role to business
-    await db
-      .update(userSchema)
-      .set({ role: "business" })
-      .where(eq(userSchema.id, userId));
-
-    return {
-      success: true,
-      business: businessDB,
-    };
-  });
 
 // ==========================================
 // UPDATE BUSINESS
@@ -234,7 +54,7 @@ export const updateBusiness = o
       });
     }
 
-    // Delete previous logo if being replaced
+    /* // Delete previous logo if being replaced
     if (input.logo) {
       await db
         .delete(image)
@@ -264,7 +84,7 @@ export const updateBusiness = o
         isMainImage: true,
         coverBusinessId: currentBusiness.id,
       });
-    }
+    } */
 
     // Handle category
     let categoryId = currentBusiness.categoryId;
@@ -477,7 +297,6 @@ export const getMyBusinessProducts = o
   });
 
 export const businessPrivateRouter = {
-  setup: businessSetup,
   update: updateBusiness,
   delete: deleteBusiness,
   myProducts: getMyBusinessProducts,

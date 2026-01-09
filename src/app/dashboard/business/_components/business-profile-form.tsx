@@ -46,38 +46,21 @@ export function BusinessProfileForm({
         phone: business.phone ?? "",
         website: business.website ?? "",
         email: business.user?.email ?? "",
-
         tags: business.tags ?? [],
         whatsapp: business.whatsapp ?? "",
         facebook: business.facebook ?? "",
         instagram: business.instagram ?? "",
-
         category: business.category?.value ?? "",
+        logo: business.logo,
         coverImage: business.coverImage
           ? {
-              ...business.coverImage,
-              name: business.coverImage.name ?? "",
-              size: business.coverImage.size ?? 0,
+              isMainImage: business.coverImage.isMainImage,
+              key: business.coverImage.key,
             }
           : {
-              url: "",
               key: "",
-              name: "",
-              isMainImage: false,
-              size: 0,
-            },
-        logo: business.logo
-          ? {
-              ...business.logo,
-              name: business.logo.name ?? "",
-              size: business.logo.size ?? 0,
-            }
-          : {
-              url: "",
-              key: "",
-              name: "",
-              isMainImage: false,
-              size: 0,
+              file: [],
+              isMainImage: true,
             },
       }
     : {
@@ -87,26 +70,21 @@ export function BusinessProfileForm({
         phone: "",
         email: "",
         website: "",
-
+        logo: {
+          key: "",
+          file: [],
+          isMainImage: true,
+        },
+        coverImage: {
+          key: "",
+          file: [],
+          isMainImage: true,
+        },
         whatsapp: "",
         facebook: "",
         instagram: "",
 
         category: "",
-        coverImage: {
-          url: "",
-          key: "",
-          name: "",
-          isMainImage: false,
-          size: 0,
-        },
-        logo: {
-          url: "",
-          key: "",
-          name: "",
-          isMainImage: false,
-          size: 0,
-        },
       };
 
   const form = useForm<BusinessUpdateInput>({

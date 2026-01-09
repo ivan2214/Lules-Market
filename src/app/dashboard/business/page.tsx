@@ -16,7 +16,7 @@ export default async function BusinessPage() {
   const [error, result] = await getCurrentBusiness();
 
   if (error || !result.currentBusiness) {
-    redirect(pathsConfig.auth.signUp);
+    redirect(pathsConfig.business.setup);
   }
   const { currentBusiness } = result;
   const categories = await client.category.listAllCategories();

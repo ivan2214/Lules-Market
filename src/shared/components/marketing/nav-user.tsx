@@ -46,10 +46,10 @@ export function NavUser({ user }: { user: User }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={pathsConfig.app.account}>
+          <Link href={pathsConfig.dashboard.account.root}>
             <DropdownMenuItem>Account</DropdownMenuItem>
           </Link>
-          <Link href={pathsConfig.app.security}>
+          <Link href={pathsConfig.dashboard.account.security}>
             <DropdownMenuItem>Security</DropdownMenuItem>
           </Link>
           <HasRole role="admin">
@@ -57,7 +57,7 @@ export function NavUser({ user }: { user: User }) {
               <DropdownMenuItem>Admin</DropdownMenuItem>
             </Link>
           </HasRole>
-          <Link href={pathsConfig.app.preferences}>
+          <Link href={pathsConfig.dashboard.account.preferences}>
             <DropdownMenuItem>Preferences</DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>

@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import { z } from "zod";
 
-const PathsSchema = z.object({
+export const PathsSchema = z.object({
   auth: z.object({
     signIn: z.custom<Route>(),
     signUp: z.custom<Route>(),
@@ -10,12 +10,6 @@ const PathsSchema = z.object({
     twoFactor: z.custom<Route>(),
   }),
 
-  app: z.object({
-    home: z.custom<Route>(),
-    account: z.custom<Route>(),
-    security: z.custom<Route>(),
-    preferences: z.custom<Route>(),
-  }),
   admin: z.object({
     root: z.custom<Route>(),
     users: z.custom<Route>(),
@@ -23,12 +17,23 @@ const PathsSchema = z.object({
   dashboard: z.object({
     root: z.custom<Route>(),
     products: z.custom<Route>(),
+    account: z.object({
+      root: z.custom<Route>(),
+      security: z.custom<Route>(),
+      preferences: z.custom<Route>(),
+      settings: z.custom<Route>(),
+    }),
     subscription: z.object({
       root: z.custom<Route>(),
       success: z.custom<Route>(),
     }),
   }),
+  business: z.object({
+    setup: z.custom<Route>(),
+  }),
 });
+
+export type Paths = z.infer<typeof PathsSchema>;
 
 const pathsConfig = PathsSchema.parse({
   auth: {
@@ -39,12 +44,6 @@ const pathsConfig = PathsSchema.parse({
     twoFactor: "/auth/two-factor",
   },
 
-  app: {
-    home: "/home",
-    account: "/home/account",
-    security: "/home/security",
-    preferences: "/home/preferences",
-  },
   admin: {
     root: "/admin",
     users: "/admin/users",
@@ -52,10 +51,19 @@ const pathsConfig = PathsSchema.parse({
   dashboard: {
     root: "/dashboard",
     products: "/dashboard/products",
+    account: {
+      root: "/dashboard/account",
+      security: "/dashboard/account/security",
+      preferences: "/dashboard/account/preferences",
+      settings: "/dashboard/account/settings",
+    },
     subscription: {
       root: "/dashboard/subscription/success",
       success: "/dashboard/subscription/success",
     },
+  },
+  business: {
+    setup: "/business/setup",
   },
 } satisfies z.infer<typeof PathsSchema>);
 

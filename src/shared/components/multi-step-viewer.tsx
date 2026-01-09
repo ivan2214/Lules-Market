@@ -65,7 +65,7 @@ const ResetButton = (
 };
 
 const FormHeader = (props: React.ComponentProps<"div">) => {
-  const { currentStepIndex, steps } = useMultiStepForm();
+  const { currentStepIndex, steps, goToStep } = useMultiStepForm();
   return (
     <div
       className="flex flex-col items-start justify-center gap-1 pb-4"
@@ -81,7 +81,12 @@ const FormHeader = (props: React.ComponentProps<"div">) => {
               step={stepNumber}
               className="not-last:flex-1"
             >
-              <StepperTrigger>
+              <StepperTrigger
+                className="cursor-pointer"
+                onClick={() => {
+                  goToStep(stepNumber);
+                }}
+              >
                 <StepperIndicator />
               </StepperTrigger>
               {!isLast && <StepperSeparator />}

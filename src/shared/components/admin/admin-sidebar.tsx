@@ -36,9 +36,9 @@ export function AdminSidebar({ user }: { user: User }) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <AppLogo path={pathsConfig.app.home} />
+              <AppLogo path={pathsConfig.dashboard.root} />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

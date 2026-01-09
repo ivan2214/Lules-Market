@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Crown, InfinityIcon, Sparkles, Zap } from "lucide-react";
+import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { Plan, PlanStatus, PlanType } from "@/db/types";
 import { cn } from "@/lib/utils";
@@ -36,7 +37,9 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
       router.push(`/dashboard/subscription/checkout?plan=${plan.type}`);
     } else {
       // For free plan, handle directly
-      router.push(`/dashboard/subscription/downgrade?plan=${plan.type}`);
+      router.push(
+        `/dashboard/subscription/downgrade?plan=${plan.type}` as Route,
+      );
     }
   }
 

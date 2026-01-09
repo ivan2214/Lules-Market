@@ -43,16 +43,16 @@ export default async function HomePage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Account</CardTitle>
+            <CardTitle className="font-medium text-sm">Preferences</CardTitle>
             <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <CardDescription className="mb-4">
-              Update your profile and email settings.
+              Update your preferences.
             </CardDescription>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/dashboard/account">
-                Manage Account
+              <Link href="/dashboard/account/preferences">
+                Manage Preferences
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -71,6 +71,23 @@ export default async function HomePage() {
             <Button variant="outline" size="sm" asChild>
               <Link href="/dashboard/account/security">
                 Security Settings
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="font-medium text-sm">Settings</CardTitle>
+            <Settings className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="mb-4">
+              Update your account settings.
+            </CardDescription>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/dashboard/account/settings">
+                Manage Settings
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

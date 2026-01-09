@@ -1,12 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  boolean,
-  doublePrecision,
-  index,
-  pgTable,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { business } from "./business-schema";
 import { product } from "./product-schema";
 import { profile } from "./profile-schema";
@@ -23,8 +16,7 @@ export const image = pgTable(
     key: text("key").primaryKey().unique(),
     url: text("url").notNull(),
     isMainImage: boolean("is_main_image").default(false).notNull(),
-    name: text("name"),
-    size: doublePrecision("size"),
+
     isReported: boolean("is_reported").default(false).notNull(),
     productId: text("product_id"),
     logoBusinessId: text("logo_business_id").unique(),

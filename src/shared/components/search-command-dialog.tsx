@@ -1,9 +1,9 @@
 "use client";
 
+import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import type { Permissions, Role } from "@/lib/auth/roles";
-
 import {
   Command,
   CommandDialog,
@@ -28,7 +28,7 @@ export function SearchCommandDialog({
     string,
     Array<{
       title: string;
-      url: string;
+      url: Route;
       icon: React.ElementType;
       permission?: Permissions;
       role?: Role;

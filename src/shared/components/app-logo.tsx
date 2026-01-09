@@ -1,6 +1,7 @@
+import type { Route } from "next";
 import Link from "next/link";
 
-export function AppLogo({ path }: { path?: string }) {
+export function AppLogo({ path }: { path?: Route }) {
   return (
     <Link
       href={path ?? "/"}

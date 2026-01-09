@@ -33,11 +33,7 @@ const providers = [
   },
 ] as const;
 
-interface OAuthProvidersProps {
-  isBusiness?: boolean;
-}
-
-export function OAuthProviders({ isBusiness }: OAuthProvidersProps) {
+export function OAuthProviders() {
   return (
     <div className="flex flex-col gap-2">
       {providers.map((provider) => (
@@ -49,9 +45,7 @@ export function OAuthProviders({ isBusiness }: OAuthProvidersProps) {
             authClient.signIn.social({
               provider: provider.id,
 
-              callbackURL: isBusiness
-                ? "/auth/business-setup"
-                : pathsConfig.app.home,
+              callbackURL: pathsConfig.dashboard.root,
             });
           }}
         >

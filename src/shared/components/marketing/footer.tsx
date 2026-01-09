@@ -6,11 +6,11 @@ export function Footer() {
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="flex items-center justify-center space-x-4 text-muted-foreground text-sm">
-            <Link href="/terms" className="hover:underline">
+            <Link href="/terminos" className="hover:underline">
               Terms of Service
             </Link>
             <div className="h-4 w-px bg-gray-300" aria-hidden="true" />
-            <Link href="/privacy" className="hover:underline">
+            <Link href="/privacidad" className="hover:underline">
               Privacy Policy
             </Link>
           </div>

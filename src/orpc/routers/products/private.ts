@@ -6,8 +6,8 @@ import z from "zod";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import type { Product, ProductWithRelations } from "@/db/types";
+import { env } from "@/env/server";
 import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
-
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
 import {
@@ -78,30 +78,29 @@ export const createProduct = o
     }
 
     // Buscar imágenes existentes
-    const imageUrls = input.images.map((image) => image.url);
+    const imageKeys = input.images.map((image) => image.key);
+
     let imagesDB = await db.query.image.findMany({
-      where: inArray(schema.image.url, imageUrls),
+      where: inArray(schema.image.key, imageKeys as string[]),
     });
 
     // Crear imágenes que no existan
-    const existingUrls = new Set(imagesDB.map((img) => img.url));
+    const existingKeys = new Set(imagesDB.map((img) => img.key));
     const imagesToCreate = input.images.filter(
-      (image) => !existingUrls.has(image.url),
+      (image) => !existingKeys.has(image.key as string),
     );
 
     if (imagesToCreate.length > 0) {
       await db.insert(schema.image).values(
         imagesToCreate.map((img) => ({
-          key: img.key,
-          url: img.url,
-          name: img.name,
-          size: img.size,
+          key: img.key as string,
+          url: `${env.S3_BUCKET_URL}/${img.key}`,
           isMainImage: img.isMainImage,
         })),
       );
 
       imagesDB = await db.query.image.findMany({
-        where: inArray(schema.image.url, imageUrls),
+        where: inArray(schema.image.key, imageKeys as string[]),
       });
     }
 
@@ -229,10 +228,10 @@ export const updateProduct = o
     const incomingKeys = new Set(data.images.map((img) => img.key));
 
     const imagesToCreate = data.images.filter(
-      (img) => !existingKeys.has(img.key),
+      (img) => !existingKeys.has(img.key as string),
     );
     const imagesToDelete = existingImages.filter(
-      (img) => !incomingKeys.has(img.key),
+      (img) => !incomingKeys.has(img.key as string),
     );
 
     if (imagesToDelete.length) {
@@ -244,10 +243,8 @@ export const updateProduct = o
 
     for (const img of imagesToCreate) {
       await db.insert(schema.image).values({
-        key: img.key,
-        url: img.url,
-        name: img.name,
-        size: img.size,
+        key: img.key as string,
+        url: `${env.S3_BUCKET_URL}/${img.key as string}`,
         isMainImage: img.isMainImage,
         productId,
       });
@@ -255,12 +252,14 @@ export const updateProduct = o
 
     // Update main image flags
     for (const img of data.images) {
-      const existing = existingImages.find((e) => e.key === img.key);
+      const existing = existingImages.find(
+        (e) => e.key === (img.key as string),
+      );
       if (existing && existing.isMainImage !== img.isMainImage) {
         await db
           .update(schema.image)
           .set({ isMainImage: img.isMainImage })
-          .where(eq(schema.image.key, img.key));
+          .where(eq(schema.image.key, img.key as string));
       }
     }
 

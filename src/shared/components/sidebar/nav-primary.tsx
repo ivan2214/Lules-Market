@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Link from "next/link";
 import type { Permissions, Role } from "@/lib/auth/roles";
 import {
@@ -11,7 +12,7 @@ import { useAccessControl } from "@/shared/providers/auth-provider";
 
 export type NavPrimaryItem = {
   title: string;
-  url: string;
+  url: Route;
   icon: React.ElementType;
   permission?: Permissions;
   role?: Role;

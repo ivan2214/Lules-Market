@@ -250,7 +250,7 @@ export default async function HomePage() {
               className="gap-2 shadow-primary/20 shadow-xl transition-all hover:scale-105"
               asChild
             >
-              <Link href="/auth/business-setup">
+              <Link href="/auth/sign-up">
                 Registrar mi Comercio GRATIS
                 <ArrowRight className="h-5 w-5" />
               </Link>

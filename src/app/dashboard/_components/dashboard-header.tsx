@@ -25,6 +25,8 @@ export function DashboardHeader({
     setIsOpen(open);
   };
 
+  console.log(business.logo);
+
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <Sheet open={isOpen} onOpenChange={handleOpenChange}>

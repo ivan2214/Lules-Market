@@ -32,7 +32,7 @@ pnpm install
 
 ### 3. Configuración de Variables de Entorno
 
-El proyecto requiere varias variables de entorno para funcionar correctamente (base de datos, autenticación, servicios AWS, etc.).
+El proyecto requiere varias variables de entorno para funcionar correctamente (base de datos, autenticación, servicios S3, etc.).
 
 1.  Crea un archivo llamado `.env` en la raíz del proyecto.
 2.  Copia y configura las siguientes variables (basado en `env.ts`):
@@ -50,14 +50,14 @@ BETTER_AUTH_URL=http://localhost:3000
 NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=genera_un_string_largo_y_seguro_aqui
 
-# --- AWS S3 (Almacenamiento de Archivos) ---
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=tu_access_key
-AWS_SECRET_ACCESS_KEY=tu_secret_key
+# --- S3 S3 (Almacenamiento de Archivos) ---
+S3_REGION=us-east-1
+S3_ACCESS_KEY_ID=tu_access_key
+S3_SECRET_ACCESS_KEY=tu_secret_key
 S3_BUCKET_NAME=lules-market
-# Si usas AWS real, usa las URLs de AWS. Si usas MinIO local u otro, ajusta aquí.
-AWS_ENDPOINT_URL_S3=https://s3.us-east-1.amazonaws.com 
-AWS_ENDPOINT_URL_IAM=https://iam.amazonaws.com
+# Si usas S3 real, usa las URLs de S3. Si usas MinIO local u otro, ajusta aquí.
+S3_ENDPOINT_URL_S3=https://s3.us-east-1.amazonS3.com 
+S3_ENDPOINT_URL_IAM=https://iam.amazonS3.com
 
 # --- Pagos (Mercado Pago) ---
 MP_WEBHOOK_SECRET=tu_mp_webhook_secret

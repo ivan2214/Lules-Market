@@ -6,12 +6,13 @@ export const env = createEnv({
   server: {
     APP_URL: z.url(),
 
-    AWS_REGION: z.string(),
-    AWS_ACCESS_KEY_ID: z.string(),
-    AWS_SECRET_ACCESS_KEY: z.string(),
+    S3_REGION: z.string(),
+    S3_ACCESS_KEY_ID: z.string(),
+    S3_SECRET_ACCESS_KEY: z.string(),
     S3_BUCKET_NAME: z.string(),
-    AWS_ENDPOINT_URL_S3: z.url(),
-    AWS_ENDPOINT_URL_IAM: z.url(),
+    S3_ENDPOINT_URL_S3: z.url(),
+    S3_ENDPOINT_URL_IAM: z.url(),
+    S3_BUCKET_URL: z.string(),
 
     CRON_SECRET: z.string(),
 

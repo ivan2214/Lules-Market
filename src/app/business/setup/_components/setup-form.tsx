@@ -3,21 +3,29 @@
 import { useUploadFiles } from "@better-upload/client";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  EyeOff,
-  Loader2,
-  X,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import Image from "next/image";
-import { type JSX, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { JSX } from "react";
 import { toast } from "sonner";
 import type z from "zod";
+import pathsConfig from "@/config/paths.config";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
 import { orpc } from "@/orpc";
+import { AuthError } from "@/shared/components/auth/auth-error";
+import { AuthSuccess } from "@/shared/components/auth/auth-success";
+import {
+  FormFooter,
+  FormHeader,
+  MultiStepFormContent,
+  NextButton,
+  PreviousButton,
+  ResetButton,
+  StepFields,
+  SubmitButton,
+} from "@/shared/components/multi-step-viewer";
+import { TagInput } from "@/shared/components/tag-input";
 import { Button } from "@/shared/components/ui/button";
 import {
   Field,
@@ -35,62 +43,45 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { type SignUpSchema, signUpSchema } from "@/shared/validators/auth";
-import type { BusinessSetupSchema } from "@/shared/validators/business";
-import {
-  FormFooter,
-  FormHeader,
-  MultiStepFormContent,
-  NextButton,
-  PreviousButton,
-  ResetButton,
-  StepFields,
-  SubmitButton,
-} from "../multi-step-viewer";
-import { TagInput } from "../tag-input";
-import { UploadDropzone } from "../ui/upload-dropzone";
-import { AuthError } from "./auth-error";
-import { AuthSuccess } from "./auth-success";
+import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
+import { BusinessSetupSchema } from "@/shared/validators/business";
 
-const defaultValues: SignUpSchema = {
-  name: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-
-  businessData: {
-    address: "",
-    category: "",
-    coverImage: {
-      isMainImage: true,
-      file: [],
-      key: "",
-    },
-    description: "",
-    logo: {
-      isMainImage: true,
-      file: [],
-      key: "",
-    },
-    name: "",
-    facebook: "",
-    instagram: "",
-    phone: "",
-    tags: [],
-    website: "",
-    whatsapp: "",
+const defaultValues: z.infer<typeof BusinessSetupSchema> = {
+  address: "",
+  category: "",
+  coverImage: {
+    isMainImage: true,
+    file: [],
+    key: "",
   },
+  description: "",
+  logo: {
+    isMainImage: true,
+    file: [],
+    key: "",
+  },
+  name: "",
+  facebook: "",
+  instagram: "",
+  phone: "",
+  tags: [],
+  website: "",
+  whatsapp: "",
 };
 
-export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
-  /* const [isBusiness, setIsBusiness] = useState(false); */
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+export function SetupForm({
+  categories,
+  userEmail,
+}: {
+  categories: Category[];
+  userEmail: string;
+}) {
+  const router = useRouter();
   const { mutate, isSuccess, error, isError, isPending } = useMutation(
-    orpc.auth.signup.mutationOptions({
+    orpc.business.public.businessSetup.mutationOptions({
       onSuccess() {
         toast.success("Cuenta creada exitosamente");
+        router.push(pathsConfig.dashboard.root);
       },
       onError(error) {
         toast.error(error.message);
@@ -101,10 +92,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const uploaderCover = useUploadFiles({
     route: "businessCover",
     onUploadComplete: ({ files }) => {
-      form.setFieldValue(
-        "businessData.coverImage.key",
-        files[0].objectInfo.key,
-      );
+      form.setFieldValue("coverImage.key", files[0].objectInfo.key);
     },
     onError(error) {
       toast.error(error.message);
@@ -113,7 +101,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const uploaderLogo = useUploadFiles({
     route: "businessLogo",
     onUploadComplete: ({ files }) => {
-      form.setFieldValue("businessData.logo.key", files[0].objectInfo.key);
+      form.setFieldValue("logo.key", files[0].objectInfo.key);
     },
     onError(error) {
       toast.error(error.message, {
@@ -125,12 +113,11 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: signUpSchema,
+      onSubmit: BusinessSetupSchema,
     },
     onSubmit: async (data) => {
       console.log(data);
-      const { email, password, name } = data.value;
-      const { businessData } = data.value;
+
       const {
         address,
         category,
@@ -144,7 +131,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         tags,
         website,
         whatsapp,
-      } = businessData as z.infer<typeof BusinessSetupSchema>;
+      } = data.value;
       const { files: uploadedCoverFiles } = await uploaderCover.upload(
         coverImage.file,
       );
@@ -161,23 +148,19 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
       };
 
       mutate({
-        name: name,
-        email: email,
-        password: password,
-        businessData: {
-          address,
-          category,
-          coverImage: coverImageWithKey,
-          description,
-          logo: logoWithKey,
-          name: businessName,
-          facebook,
-          instagram,
-          phone,
-          tags,
-          website,
-          whatsapp,
-        },
+        userEmail,
+        address,
+        category,
+        coverImage: coverImageWithKey,
+        description,
+        logo: logoWithKey,
+        name: businessName,
+        facebook,
+        instagram,
+        phone,
+        tags,
+        website,
+        whatsapp,
       });
     },
     onSubmitInvalid(props) {
@@ -200,14 +183,10 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const stepsFieldsIsBusiness: { fields: string[]; component: JSX.Element }[] =
     [
       {
-        fields: [
-          "businessData.name",
-          "businessData.description",
-          "businessData.category",
-        ],
+        fields: ["name", "description", "category"],
         component: (
           <FieldGroup className="col-span-6">
-            <form.Field name="businessData.name">
+            <form.Field name="name">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -233,7 +212,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.description">
+            <form.Field name="description">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -257,7 +236,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.category">
+            <form.Field name="category">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -293,14 +272,10 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         ),
       },
       {
-        fields: [
-          "businessData.address",
-          "businessData.phone",
-          "businessData.tags",
-        ],
+        fields: ["address", "phone", "tags"],
         component: (
           <FieldGroup className="col-span-6">
-            <form.Field name="businessData.address">
+            <form.Field name="address">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -324,7 +299,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.phone">
+            <form.Field name="phone">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -349,7 +324,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.tags">
+            <form.Field name="tags">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -389,15 +364,10 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         ),
       },
       {
-        fields: [
-          "businessData.whatsapp",
-          "businessData.facebook",
-          "businessData.instagram",
-          "businessData.website",
-        ],
+        fields: ["whatsapp", "facebook", "instagram", "website"],
         component: (
           <FieldGroup className="col-span-6">
-            <form.Field name="businessData.whatsapp">
+            <form.Field name="whatsapp">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -425,7 +395,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.facebook">
+            <form.Field name="facebook">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -455,7 +425,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.instagram">
+            <form.Field name="instagram">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -485,7 +455,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.website">
+            <form.Field name="website">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -518,10 +488,10 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         ),
       },
       {
-        fields: ["businessData.logo", "businessData.coverImage"],
+        fields: ["logo", "coverImage"],
         component: (
           <FieldGroup className="col-span-6">
-            <form.Field name="businessData.logo">
+            <form.Field name="logo">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -594,7 +564,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               }}
             </form.Field>
 
-            <form.Field name="businessData.coverImage">
+            <form.Field name="coverImage">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -672,134 +642,6 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         ),
       },
     ].filter(Boolean) as { fields: string[]; component: JSX.Element }[];
-
-  const stepsFieldsNoBusiness = [
-    {
-      fields: ["name", "email"],
-      component: (
-        <FieldGroup className="col-span-6 grid gap-2 md:grid-cols-2">
-          <form.Field name="name">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel>Nombre</FieldLabel>
-                  <Input
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="Juan Perez"
-                    type="text"
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-          <form.Field name="email">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel>Email</FieldLabel>
-                  <Input
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="example@gmail.com"
-                    type="email"
-                  />
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-        </FieldGroup>
-      ),
-    },
-    {
-      fields: ["password", "confirmPassword"],
-      component: (
-        <FieldGroup className="col-span-6">
-          <form.Field name="password">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel>Password</FieldLabel>
-                  <div className="relative">
-                    <Input
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      placeholder="********"
-                      type={showPassword ? "text" : "password"}
-                    />
-                    <Button
-                      variant="ghost"
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="-translate-y-1/2 absolute top-1/2 right-3"
-                    >
-                      {showPassword ? <EyeOff /> : <Eye />}
-                    </Button>
-                  </div>
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-          <form.Field name="confirmPassword">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel>Confirmar Contraseña</FieldLabel>
-                  <div className="relative">
-                    <Input
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      placeholder="********"
-                      type={showConfirmPassword ? "text" : "password"}
-                    />
-                    <Button
-                      variant="ghost"
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className="-translate-y-1/2 absolute top-1/2 right-3"
-                    >
-                      {showConfirmPassword ? <EyeOff /> : <Eye />}
-                    </Button>
-                  </div>
-
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
-        </FieldGroup>
-      ),
-    },
-  ];
-
   return (
     <>
       <form
@@ -815,7 +657,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               ? [...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]
               : stepsFieldsNoBusiness
           } */
-          stepsFields={[...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]}
+          stepsFields={stepsFieldsIsBusiness}
         >
           <MultiStepFormContent>
             <FormHeader />

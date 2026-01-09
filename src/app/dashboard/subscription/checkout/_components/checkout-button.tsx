@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { AlertTriangleIcon, Loader2 } from "lucide-react";
+import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { PlanType } from "@/db/types";
@@ -22,7 +23,7 @@ export function CheckoutButton({ plan }: CheckoutButtonProps) {
         const { initPoint } = data;
 
         if (initPoint) {
-          router.push(initPoint);
+          router.push(initPoint as Route);
         }
 
         toast.success("Pago iniciado");

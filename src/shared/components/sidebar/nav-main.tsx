@@ -3,6 +3,7 @@
 import type { LucideIcon } from "lucide-react";
 
 import { ChevronRight } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import type { Permissions, Role } from "@/lib/auth/roles";
 import {
@@ -24,12 +25,12 @@ import { useAccessControl } from "@/shared/providers/auth-provider";
 
 export type NavMainItem = {
   title: string;
-  url: string;
+  url: Route;
   icon?: LucideIcon;
   isActive?: boolean;
   items?: Array<{
     title: string;
-    url: string;
+    url: Route;
     role?: Role;
     permission?: Permissions;
     disabled?: boolean;

@@ -48,7 +48,8 @@ export function UpdateAccountEmailForm({ email }: { email: string }) {
       await authClient.changeEmail(
         {
           newEmail: new_email,
-          callbackURL: env.NEXT_PUBLIC_APP_URL + pathsConfig.app.account,
+          callbackURL:
+            env.NEXT_PUBLIC_APP_URL + pathsConfig.dashboard.account.root,
         },
         {
           onSuccess: () => {

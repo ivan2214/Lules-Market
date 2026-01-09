@@ -88,13 +88,13 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href={pathsConfig.app.account}>
+              <Link href={pathsConfig.dashboard.account.root}>
                 <DropdownMenuItem>
                   <UserCircle />
                   Account
                 </DropdownMenuItem>
               </Link>
-              <Link href={pathsConfig.app.security}>
+              <Link href={pathsConfig.dashboard.account.security}>
                 <DropdownMenuItem>
                   <Shield />
                   Security
@@ -108,7 +108,7 @@ export function NavUser({
                   </DropdownMenuItem>
                 </Link>
               </HasRole>
-              <Link href={pathsConfig.app.preferences}>
+              <Link href={pathsConfig.dashboard.account.preferences}>
                 <DropdownMenuItem>
                   <Palette />
                   Preferences
