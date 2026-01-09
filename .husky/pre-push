@@ -2,10 +2,10 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "Running Type Check..."
-bun run type-check
+bun type-check
 
 echo "Running Biome Check..."
-bun run biome-check
+bun check
 
 echo "Running Security Audit..."
 bun audit --audit-level=high || {
