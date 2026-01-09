@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { db } from "@/db";
 import { env } from "@/env/server";
 import { cn } from "@/lib/utils";
 import { client } from "@/orpc";
@@ -62,7 +63,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const { products } = await client.products.public.listAllProducts();
+  const products = await db.query.product.findMany();
   if (!products.length) {
     return [];
   }
