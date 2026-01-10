@@ -255,3 +255,17 @@ export async function listAllSimilarBusinessesCache(input: {
     CACHE_TTL.BUSINESSES_SIMILAR,
   );
 }
+
+// Para generateStaticParams - Cache larga (1 hora o más)
+export async function getAllBusinessIdsCache(): Promise<{ id: string }[]> {
+  return getCachedOrFetch(
+    "businesses:all-ids", // Key estática simple
+    async () => {
+      return await db.query.business.findMany({
+        where: eq(business.isActive, true),
+        columns: { id: true },
+      });
+    },
+    CACHE_TTL.PLANS, // Usar TTL largo (1 hora)
+  );
+}

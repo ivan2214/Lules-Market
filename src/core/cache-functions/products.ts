@@ -373,3 +373,19 @@ export async function getProductByIdCache(
     CACHE_TTL.PRODUCT_BY_ID,
   );
 }
+
+// Para generateStaticParams - Cache larga (1 hora para planos, puede ser más)
+export async function getAllProductIdsCache(): Promise<{ id: string }[]> {
+  return getCachedOrFetch(
+    "products:all-ids",
+    async () => {
+      // Usar db.query.product.findMany es mejor pero select parcial es más rápido para solo IDs
+      const ids = await db
+        .select({ id: productSchema.id })
+        .from(productSchema)
+        .where(eq(productSchema.active, true));
+      return ids;
+    },
+    CACHE_TTL.PLANS, // Reutilizamos TTL largo
+  );
+}
