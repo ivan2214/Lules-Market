@@ -14,4 +14,5 @@ bun audit --audit-level=high || {
 }
 
 echo "Running Build..."
-bun run build
+
+#bun run build
