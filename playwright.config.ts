@@ -69,10 +69,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: process.env.CI
-      ? "bun run build && bun run start"
-      : "bun run start",
-    url: process.env.CI ? "http://localhost:3000" : env.APP_URL,
+    command: "bun run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     stdout: "pipe",
