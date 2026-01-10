@@ -2,10 +2,8 @@
 
 import { ORPCError } from "@orpc/server";
 import { z } from "zod";
-
+import { env } from "@/env/server";
 import { actionContext, oa } from "@/orpc/middlewares";
-
-const BUCKET_NAME = "account-image";
 
 export const uploadAccountImage = oa
   .input(
@@ -49,7 +47,7 @@ export const uploadAccountImage = oa
         });
       }
  */
-      return getImageUrl(key, BUCKET_NAME);
+      return getImageUrl(key, env.S3_BUCKET_NAME);
     } catch (error) {
       console.error("Error uploading image to S3:", error);
       throw new ORPCError("INTERNAL_SERVER_ERROR", {
@@ -62,5 +60,5 @@ export const uploadAccountImage = oa
   });
 
 function getImageUrl(key: string, bucketName: string): string {
-  return `${process.env.S3_PUBLIC_PATH}/${bucketName}/${key}`;
+  return `${env.S3_BUCKET_URL}/${bucketName}/${key}`;
 }
