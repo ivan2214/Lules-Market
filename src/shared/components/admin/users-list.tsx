@@ -2,17 +2,11 @@
 
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import { CheckCircle2, Text, XCircle } from "lucide-react";
-import Link from "next/link";
 import * as React from "react";
 import type { authClient } from "@/lib/auth/auth-client";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/shared/components/data-table/data-table-column-header";
 import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/shared/components/ui/avatar";
 import { Badge } from "@/shared/components/ui/badge";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { useDataTable } from "@/shared/hooks/use-data-table";
