@@ -21,4 +21,4 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Audit Dependencies
-        run: bun pm audit --production
+        run: bun audit --production
