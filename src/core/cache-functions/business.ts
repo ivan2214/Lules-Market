@@ -22,7 +22,12 @@ import {
   product,
 } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
-import { CACHE_TTL, generateCacheKey, getCachedOrFetch } from "@/lib/cache";
+import {
+  CACHE_KEYS,
+  CACHE_TTL,
+  generateCacheKey,
+  getCachedOrFetch,
+} from "@/lib/cache";
 
 export const ListAllBusinessesInputSchema = z
   .object({
@@ -169,7 +174,7 @@ export async function featuredBusinessesCache(): Promise<
   BusinessWithRelations[]
 > {
   return getCachedOrFetch(
-    "businesses:featured",
+    CACHE_KEYS.BUSINESSES_FEATURED,
     fetchFeaturedBusinesses,
     CACHE_TTL.BUSINESSES_FEATURED,
   );
@@ -202,7 +207,7 @@ export async function getBusinessByIdCache(
   id: string,
 ): Promise<{ business: BusinessWithRelations | undefined }> {
   return getCachedOrFetch(
-    `business:${id}`,
+    CACHE_KEYS.business(id),
     () => fetchBusinessById(id),
     CACHE_TTL.BUSINESS_BY_ID,
   );
@@ -239,7 +244,10 @@ export async function listAllSimilarBusinessesCache(input: {
   category: string;
   businessId: string;
 }): Promise<{ businesses: BusinessWithRelations[] }> {
-  const cacheKey = `businesses:similar:${input.category}:${input.businessId}`;
+  const cacheKey = CACHE_KEYS.businessesSimilar(
+    input.category,
+    input.businessId,
+  );
 
   return getCachedOrFetch(
     cacheKey,

@@ -10,10 +10,18 @@ import {
   product as productSchema,
   productView as productViewSchema,
 } from "@/db/schema";
+import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
 
 export type AnalyticsPeriod = "7d" | "30d" | "90d";
 
-export async function getHomePageStatsCache() {
+type HomePageStats = {
+  activeBusinessesTotal: number;
+  activeBusinessesLastMonth: number;
+  productsTotal: number;
+  productsLastMonth: number;
+};
+
+async function fetchHomePageStats(): Promise<HomePageStats> {
   const now = new Date();
   const startThisMonth = startOfMonth(now);
   const startLastMonth = startOfMonth(subMonths(now, 1));
@@ -36,7 +44,6 @@ export async function getHomePageStatsCache() {
       .where(
         and(
           eq(business.isActive, true),
-
           gte(business.createdAt, startLastMonth),
           lt(business.createdAt, endLastMonth),
         ),
@@ -64,6 +71,14 @@ export async function getHomePageStatsCache() {
     productsTotal: productsTotal[0].count,
     productsLastMonth: productsLastMonth[0].count,
   };
+}
+
+export async function getHomePageStatsCache(): Promise<HomePageStats> {
+  return getCachedOrFetch(
+    CACHE_KEYS.HOMEPAGE_STATS,
+    fetchHomePageStats,
+    CACHE_TTL.HOMEPAGE_STATS,
+  );
 }
 
 export async function getStatsCache(
@@ -178,14 +193,14 @@ export async function getProductStatsCache(
   const productId = input.productId;
 
   // Verify product belongs to business
-  const product = await db.query.product.findFirst({
+  const productData = await db.query.product.findFirst({
     where: and(
       eq(productSchema.id, productId),
       eq(productSchema.businessId, businessId),
     ),
   });
 
-  if (!product) {
+  if (!productData) {
     throw new ORPCError("NOT_FOUND", { message: "Producto no encontrado" });
   }
 
@@ -223,7 +238,7 @@ export async function getProductStatsCache(
     .map(([date, views]) => ({ date, views }));
 
   return {
-    product,
+    product: productData,
     totalViews: views.length,
     dailyViews: sortedDailyViews,
   };

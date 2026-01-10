@@ -21,7 +21,12 @@ import {
   product as productSchema,
 } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
-import { CACHE_TTL, generateCacheKey, getCachedOrFetch } from "@/lib/cache";
+import {
+  CACHE_KEYS,
+  CACHE_TTL,
+  generateCacheKey,
+  getCachedOrFetch,
+} from "@/lib/cache";
 
 export const ListAllProductsInputSchema = z
   .object({
@@ -258,7 +263,7 @@ async function fetchRecentProducts(): Promise<ProductWithRelations[]> {
 
 export async function recentProductsCache(): Promise<ProductWithRelations[]> {
   return getCachedOrFetch(
-    "products:recent",
+    CACHE_KEYS.PRODUCTS_RECENT,
     fetchRecentProducts,
     CACHE_TTL.PRODUCTS_RECENT,
   );
@@ -326,11 +331,45 @@ export async function getSimilarProductsCache(
   categoryId: string,
   currentProductId: string,
 ): Promise<ProductWithRelations[]> {
-  const cacheKey = `products:similar:${categoryId}:${currentProductId}`;
+  const cacheKey = CACHE_KEYS.productsSimilar(categoryId, currentProductId);
 
   return getCachedOrFetch(
     cacheKey,
     () => fetchSimilarProducts(categoryId, currentProductId),
     CACHE_TTL.PRODUCTS_SIMILAR,
+  );
+}
+
+async function fetchProductById(
+  id: string,
+): Promise<{ product: ProductWithRelations | undefined }> {
+  const productFound = await db.query.product.findFirst({
+    where: eq(productSchema.id, id),
+    with: {
+      business: {
+        with: {
+          currentPlan: {
+            with: {
+              plan: true,
+            },
+          },
+          logo: true,
+        },
+      },
+      images: true,
+      category: true,
+    },
+  });
+
+  return { product: productFound as ProductWithRelations | undefined };
+}
+
+export async function getProductByIdCache(
+  id: string,
+): Promise<{ product: ProductWithRelations | undefined }> {
+  return getCachedOrFetch(
+    CACHE_KEYS.product(id),
+    () => fetchProductById(id),
+    CACHE_TTL.PRODUCT_BY_ID,
   );
 }

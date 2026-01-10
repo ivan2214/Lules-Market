@@ -15,7 +15,7 @@ import {
 } from "@/db/schema";
 import type { Business, ProductWithRelations } from "@/db/types";
 import { env } from "@/env/server";
-import { invalidateCache } from "@/lib/cache";
+import { CACHE_KEYS, invalidateCache } from "@/lib/cache";
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
 import { BusinessUpdateSchema } from "@/shared/validators/business";
@@ -134,8 +134,8 @@ export const updateBusiness = o
     revalidatePath(`/comercio/${updated.id}`);
 
     // Invalidar caché de negocios
-    void invalidateCache("businesses:*");
-    void invalidateCache(`business:${updated.id}`);
+    void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
+    void invalidateCache(CACHE_KEYS.business(updated.id));
 
     return {
       success: true,
@@ -235,9 +235,10 @@ export const deleteBusiness = o
         .where(eq(userSchema.id, currentBusiness.userId));
 
       // Invalidar caché de negocios y productos
-      void invalidateCache("businesses:*");
-      void invalidateCache(`business:${currentBusiness.id}`);
-      void invalidateCache("products:*");
+      void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
+      void invalidateCache(CACHE_KEYS.business(currentBusiness.id));
+      void invalidateCache(CACHE_KEYS.PATTERNS.ALL_PRODUCTS);
+      void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
 
       return { success: true };
     } catch (error) {

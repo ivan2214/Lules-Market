@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { plan } from "@/db/schema";
 import type { Plan, PlanType } from "@/db/types";
-import { CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
+import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
 
 async function fetchPlans(): Promise<Plan[]> {
   const plans = await db.query.plan.findMany();
@@ -11,7 +11,7 @@ async function fetchPlans(): Promise<Plan[]> {
 }
 
 export async function getPlansCache(): Promise<Plan[]> {
-  return getCachedOrFetch("plans:all", fetchPlans, CACHE_TTL.PLANS);
+  return getCachedOrFetch(CACHE_KEYS.PLANS_ALL, fetchPlans, CACHE_TTL.PLANS);
 }
 
 async function fetchPlan(planType: PlanType): Promise<Plan | null> {
@@ -28,7 +28,7 @@ async function fetchPlan(planType: PlanType): Promise<Plan | null> {
 
 export async function getPlanCache(planType: PlanType): Promise<Plan | null> {
   return getCachedOrFetch(
-    `plan:${planType}`,
+    CACHE_KEYS.plan(planType),
     () => fetchPlan(planType),
     CACHE_TTL.PLANS,
   );

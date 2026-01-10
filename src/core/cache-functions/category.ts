@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/db";
-import { CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
+import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
 
 async function fetchAllCategories() {
   const categories = await db.query.category.findMany({
@@ -14,7 +14,7 @@ async function fetchAllCategories() {
 
 export async function listAllCategoriesCache() {
   return getCachedOrFetch(
-    "categories:all",
+    CACHE_KEYS.CATEGORIES_ALL,
     fetchAllCategories,
     CACHE_TTL.CATEGORIES,
   );

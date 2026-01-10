@@ -1,16 +1,16 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { z } from "zod";
 import {
+  getProductByIdCache,
   getSimilarProductsCache,
   ListAllProductsInputSchema,
   listAllProductsCache,
   recentProductsCache,
 } from "@/core/cache-functions/products";
 import { db } from "@/db";
-import { product, productView } from "@/db/schema";
+import { productView } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
 import { o } from "@/orpc/context";
 
@@ -58,32 +58,7 @@ export const getProductById = o
   .input(z.object({ id: z.string() }))
   .output(z.object({ product: z.custom<ProductWithRelations>().optional() }))
   .handler(async ({ input }) => {
-    const { id } = input;
-    const productFound = await db.query.product.findFirst({
-      where: eq(product.id, id),
-      with: {
-        business: {
-          with: {
-            currentPlan: {
-              with: {
-                plan: true,
-              },
-            },
-            logo: true,
-          },
-        },
-        images: true,
-        category: true,
-      },
-    });
-    if (!productFound) {
-      return {
-        product: undefined,
-      };
-    }
-    return {
-      product: productFound,
-    };
+    return await getProductByIdCache(input.id);
   });
 
 export const trackProductView = o
