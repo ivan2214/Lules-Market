@@ -28,7 +28,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: env.APP_URL,
+    baseURL: process.env.CI ? "http://localhost:3000" : env.APP_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -69,11 +69,17 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "bun run start",
-    url: env.APP_URL,
+    command: process.env.CI
+      ? "bun run build && bun run start"
+      : "bun run start",
+    url: process.env.CI ? "http://localhost:3000" : env.APP_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     stdout: "pipe",
     stderr: "pipe",
+    env: {
+      PORT: "3000",
+      APP_URL: "http://localhost:3000",
+    },
   },
 });
