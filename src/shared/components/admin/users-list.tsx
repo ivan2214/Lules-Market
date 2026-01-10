@@ -29,7 +29,7 @@ export function UsersList({
   data: Array<User>;
   pageCount: number;
 }) {
-  const columns = React.useMemo<Array<ColumnDef<User>>>(
+  const columns = React.useMemo<ColumnDef<User>[]>(
     () => [
       {
         id: "select",
@@ -57,49 +57,32 @@ export function UsersList({
         enableHiding: false,
       },
       {
+        // Required: Unique identifier for the column
         id: "name",
+        // Required: Key to access the data, `accessorFn` can also be used
         accessorKey: "name",
-        header: ({ column }: { column: Column<User, unknown> }) => (
-          <DataTableColumnHeader column={column} title="Name" />
+        // Optional: Custom header component
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} label="Name" />
         ),
-        cell: ({ row }) => (
-          <Link
-            className="flex items-center gap-3"
-            href={`/admin/users/${row.original.id}`}
-          >
-            <Avatar>
-              <AvatarImage
-                src={row.original.image ?? ""}
-                alt={row.original.name ?? ""}
-              />
-              <AvatarFallback>
-                {row.original.name
-                  ?.split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="font-medium">{row.original.name}</div>
-              <span className="mt-0.5 text-muted-foreground text-xs">
-                {row.original.email.split("@")[0]}
-              </span>
-            </div>
-          </Link>
-        ),
+        // Optional: Custom cell component
+        cell: ({ row }) => <div>{row.getValue("name")}</div>,
+        // Optional: Meta options for filtering, sorting, and view options
         meta: {
           label: "Name",
-          placeholder: "Search name...",
+          placeholder: "Search names...",
           variant: "text",
           icon: Text,
         },
+        // By default, the column will not be filtered. Set to `true` to enable filtering.
         enableColumnFilter: true,
       },
+
       {
         id: "email",
         accessorKey: "email",
         header: ({ column }: { column: Column<User, unknown> }) => (
-          <DataTableColumnHeader column={column} title="Email" />
+          <DataTableColumnHeader column={column} label="Email" />
         ),
         cell: ({ cell }) => {
           const email = cell.getValue<User["email"]>();
@@ -111,7 +94,7 @@ export function UsersList({
         id: "emailVerified",
         accessorKey: "emailVerified",
         header: ({ column }: { column: Column<User, unknown> }) => (
-          <DataTableColumnHeader column={column} title="Email Verified" />
+          <DataTableColumnHeader column={column} label="Email Verified" />
         ),
         cell: ({ cell }) => {
           const emailVerified = cell.getValue<User["emailVerified"]>();
@@ -129,7 +112,7 @@ export function UsersList({
         id: "banned",
         accessorKey: "banned",
         header: ({ column }: { column: Column<User, unknown> }) => (
-          <DataTableColumnHeader column={column} title="Banned" />
+          <DataTableColumnHeader column={column} label="Banned" />
         ),
         cell: ({ cell }) => {
           const banned = cell.getValue<User["banned"]>();
@@ -147,7 +130,7 @@ export function UsersList({
         id: "role",
         accessorKey: "role",
         header: ({ column }: { column: Column<User, unknown> }) => (
-          <DataTableColumnHeader column={column} title="Role" />
+          <DataTableColumnHeader column={column} label="Role" />
         ),
         cell: ({ cell }) => {
           const role = cell.getValue<User["role"]>();
@@ -168,7 +151,7 @@ export function UsersList({
         id: "createdAt",
         accessorKey: "createdAt",
         header: ({ column }: { column: Column<User, unknown> }) => (
-          <DataTableColumnHeader column={column} title="Created At" />
+          <DataTableColumnHeader column={column} label="Created At" />
         ),
         cell: ({ cell }) => {
           const createdAt = cell.getValue<User["createdAt"]>();

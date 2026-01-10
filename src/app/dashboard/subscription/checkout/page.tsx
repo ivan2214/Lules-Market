@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { db } from "@/db";
 import { plan as planSchema } from "@/db/schema";
 import type { PlanType } from "@/db/types";
+import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { formatCurrency } from "@/shared/utils/format";
 import { CheckoutButton } from "./_components/checkout-button";
 
 async function getPlanLimits(planType: PlanType) {

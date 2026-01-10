@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import type React from "react";
 import type { BusinessWithRelations } from "@/db/types";
+import { formatCurrency } from "@/lib/format";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -21,7 +22,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { formatCurrency } from "@/shared/utils/format";
 import { mainImage } from "@/shared/utils/main-image";
 import { SimilarBusinesses } from "./similar-businesses";
 

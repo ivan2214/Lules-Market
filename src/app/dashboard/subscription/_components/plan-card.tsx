@@ -4,6 +4,7 @@ import { Check, Crown, InfinityIcon, Sparkles, Zap } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import type { Plan, PlanStatus, PlanType } from "@/db/types";
+import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -15,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { formatCurrency } from "@/shared/utils/format";
 
 interface PlanCardProps {
   plan: Plan;

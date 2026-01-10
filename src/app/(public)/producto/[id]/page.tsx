@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { db } from "@/db";
 import { env } from "@/env/server";
+import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { client } from "@/orpc";
 import { ProductCard } from "@/shared/components/product-card";
@@ -23,7 +24,6 @@ import {
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Separator } from "@/shared/components/ui/separator";
-import { formatCurrency } from "@/shared/utils/format";
 import { mainImage } from "@/shared/utils/main-image";
 import { ProductImages } from "./_components/product-images";
 import { ProductViewTracker } from "./_components/product-view-tracker";

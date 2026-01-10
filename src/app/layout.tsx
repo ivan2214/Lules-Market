@@ -1,6 +1,7 @@
 import "@/orpc/server"; // prerendering for ssr
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -51,10 +52,12 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="mx-auto font-sans antialiased">
-        <RootProviders auth={auth ?? null}>{children}</RootProviders>
-        {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
-        <Toaster />
-        <Analytics />
+        <NuqsAdapter>
+          <RootProviders auth={auth ?? null}>{children}</RootProviders>
+          {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
+          <Toaster />
+          <Analytics />
+        </NuqsAdapter>
       </body>
     </html>
   );

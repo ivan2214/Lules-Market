@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import type { ProductWithRelations } from "@/db/types";
+import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@/shared/components/ui/badge";
@@ -10,7 +11,6 @@ import {
   CardFooter,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { formatCurrency } from "@/shared/utils/format";
 import { mainImage } from "@/shared/utils/main-image";
 
 interface ProductCardProps {

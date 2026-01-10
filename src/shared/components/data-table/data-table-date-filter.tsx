@@ -4,6 +4,7 @@ import type { Column } from "@tanstack/react-table";
 import { CalendarIcon, XCircle } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
+import { formatDate } from "@/lib/format";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
 import {
@@ -12,7 +13,6 @@ import {
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
 import { Separator } from "@/shared/components/ui/separator";
-import { formatDate } from "@/shared/utils/format";
 
 type DateSelection = Date[] | DateRange;
 
@@ -120,7 +120,7 @@ export function DataTableDateFilter<TData>({
     if (range.from && range.to) {
       return `${formatDate(range.from)} - ${formatDate(range.to)}`;
     }
-    return formatDate(range.from ?? range.to ?? new Date());
+    return formatDate(range.from ?? range.to);
   }, []);
 
   const label = React.useMemo(() => {
@@ -174,7 +174,11 @@ export function DataTableDateFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-dashed font-normal"
+        >
           {hasValue ? (
             <div
               role="button"
@@ -194,7 +198,8 @@ export function DataTableDateFilter<TData>({
       <PopoverContent className="w-auto p-0" align="start">
         {multiple ? (
           <Calendar
-            initialFocus
+            autoFocus
+            captionLayout="dropdown"
             mode="range"
             selected={
               getIsDateRange(selectedDates)
@@ -205,7 +210,7 @@ export function DataTableDateFilter<TData>({
           />
         ) : (
           <Calendar
-            initialFocus
+            captionLayout="dropdown"
             mode="single"
             selected={
               !getIsDateRange(selectedDates) ? selectedDates[0] : undefined

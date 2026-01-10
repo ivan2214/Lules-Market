@@ -2,12 +2,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { orpc } from "@/orpc";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { formatCurrency } from "@/shared/utils/format";
 
 export const PlanPricingPreview = () => {
   const { data: plans } = useSuspenseQuery(

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { formatCurrency } from "@/lib/format";
 import { client } from "@/orpc";
 import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import {
@@ -15,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { formatCurrency } from "@/shared/utils/format";
 import { subscriptionErrors } from "../_constants";
 import type { SubscriptionError } from "../_types";
 import { PlanCard } from "./_components/plan-card";
