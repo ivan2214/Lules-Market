@@ -20,14 +20,14 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
           APP_URL: ${{ secrets.APP_URL }}
-          S3_REGION: ${{ secrets.AWS_REGION }}
-          S3_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          S3_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-          S3_ENDPOINT_URL: ${{ secrets.AWS_ENDPOINT_URL_S3 }}
+          S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL_S3 }}
           S3_BUCKET_URL: ${{ secrets.S3_BUCKET_URL }}
-          S3_ENDPOINT_URL_IAM: ${{ secrets.AWS_ENDPOINT_URL_IAM }}
-          S3_ENDPOINT_URL_S3: ${{ secrets.AWS_ENDPOINT_URL_S3 }}
+          S3_ENDPOINT_URL_IAM: ${{ secrets.S3_ENDPOINT_URL_IAM }}
+          S3_ENDPOINT_URL_S3: ${{ secrets.S3_ENDPOINT_URL_S3 }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           MP_WEBHOOK_SECRET: ${{ secrets.MP_WEBHOOK_SECRET }}
           MP_ACCESS_TOKEN: ${{ secrets.MP_ACCESS_TOKEN }}
