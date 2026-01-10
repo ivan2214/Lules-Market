@@ -22,6 +22,7 @@ import {
   product,
 } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
+import { CACHE_TTL, generateCacheKey, getCachedOrFetch } from "@/lib/cache";
 
 export const ListAllBusinessesInputSchema = z
   .object({
@@ -38,9 +39,11 @@ export const ListAllBusinessesOutputSchema = z.object({
   total: z.number(),
 });
 
-export async function listAllBusinessesCache(
+type ListAllBusinessesResult = z.infer<typeof ListAllBusinessesOutputSchema>;
+
+async function fetchAllBusinesses(
   input: z.infer<typeof ListAllBusinessesInputSchema>,
-): Promise<z.infer<typeof ListAllBusinessesOutputSchema>> {
+): Promise<ListAllBusinessesResult> {
   try {
     const { search, category, page, limit, sortBy } = input ?? {};
     // Build where conditions
@@ -109,7 +112,19 @@ export async function listAllBusinessesCache(
   }
 }
 
-export async function featuredBusinessesCache() {
+export async function listAllBusinessesCache(
+  input: z.infer<typeof ListAllBusinessesInputSchema>,
+): Promise<ListAllBusinessesResult> {
+  const cacheKey = generateCacheKey("businesses:list", input ?? {});
+
+  return getCachedOrFetch(
+    cacheKey,
+    () => fetchAllBusinesses(input),
+    CACHE_TTL.BUSINESSES_LIST,
+  );
+}
+
+async function fetchFeaturedBusinesses(): Promise<BusinessWithRelations[]> {
   // 1. Obtener IDs ordenados por prioridad del plan y fecha de creación
   const sortedIds = await db
     .select({ id: business.id })
@@ -147,10 +162,22 @@ export async function featuredBusinessesCache() {
     return ids.indexOf(a.id) - ids.indexOf(b.id);
   });
 
-  return orderedBusinesses;
+  return orderedBusinesses as BusinessWithRelations[];
 }
 
-export async function getBusinessByIdCache(id: string) {
+export async function featuredBusinessesCache(): Promise<
+  BusinessWithRelations[]
+> {
+  return getCachedOrFetch(
+    "businesses:featured",
+    fetchFeaturedBusinesses,
+    CACHE_TTL.BUSINESSES_FEATURED,
+  );
+}
+
+async function fetchBusinessById(
+  id: string,
+): Promise<{ business: BusinessWithRelations | undefined }> {
   const businessData = await db.query.business.findFirst({
     where: eq(business.id, id),
     with: {
@@ -171,7 +198,17 @@ export async function getBusinessByIdCache(id: string) {
   return { business: businessData as BusinessWithRelations | undefined };
 }
 
-export async function listAllSimilarBusinessesCache(input: {
+export async function getBusinessByIdCache(
+  id: string,
+): Promise<{ business: BusinessWithRelations | undefined }> {
+  return getCachedOrFetch(
+    `business:${id}`,
+    () => fetchBusinessById(id),
+    CACHE_TTL.BUSINESS_BY_ID,
+  );
+}
+
+async function fetchSimilarBusinesses(input: {
   category: string;
   businessId: string;
 }): Promise<{ businesses: BusinessWithRelations[] }> {
@@ -194,5 +231,19 @@ export async function listAllSimilarBusinessesCache(input: {
       logo: true,
     },
   });
+
   return { businesses: businesses as BusinessWithRelations[] };
+}
+
+export async function listAllSimilarBusinessesCache(input: {
+  category: string;
+  businessId: string;
+}): Promise<{ businesses: BusinessWithRelations[] }> {
+  const cacheKey = `businesses:similar:${input.category}:${input.businessId}`;
+
+  return getCachedOrFetch(
+    cacheKey,
+    () => fetchSimilarBusinesses(input),
+    CACHE_TTL.BUSINESSES_SIMILAR,
+  );
 }

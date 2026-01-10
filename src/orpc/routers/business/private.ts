@@ -3,7 +3,6 @@ import { ORPCError } from "@orpc/server";
 import { desc, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
 import { db } from "@/db";
 import {
   account,
@@ -15,7 +14,8 @@ import {
   user as userSchema,
 } from "@/db/schema";
 import type { Business, ProductWithRelations } from "@/db/types";
-
+import { env } from "@/env/server";
+import { invalidateCache } from "@/lib/cache";
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
 import { BusinessUpdateSchema } from "@/shared/validators/business";
@@ -54,8 +54,8 @@ export const updateBusiness = o
       });
     }
 
-    /* // Delete previous logo if being replaced
-    if (input.logo) {
+    // Delete previous logo if being replaced
+    if (input.logo && input.logo.key) {
       await db
         .delete(image)
         .where(eq(image.logoBusinessId, currentBusiness.id));
@@ -63,28 +63,24 @@ export const updateBusiness = o
       // Create new logo
       await db.insert(image).values({
         key: input.logo.key,
-        url: input.logo.url,
-        name: input.logo.name,
-        size: input.logo.size,
+        url: `${env.S3_BUCKET_URL}/${input.logo.key}`,
         isMainImage: true,
         logoBusinessId: currentBusiness.id,
       });
     }
 
-    if (input.coverImage) {
+    if (input.coverImage && input.coverImage.key) {
       await db
         .delete(image)
         .where(eq(image.coverBusinessId, currentBusiness.id));
       // Create new cover image
       await db.insert(image).values({
         key: input.coverImage.key,
-        url: input.coverImage.url,
-        name: input.coverImage.name,
-        size: input.coverImage.size,
+        url: `${env.S3_BUCKET_URL}/${input.coverImage.key}`,
         isMainImage: true,
         coverBusinessId: currentBusiness.id,
       });
-    } */
+    }
 
     // Handle category
     let categoryId = currentBusiness.categoryId;
@@ -136,6 +132,10 @@ export const updateBusiness = o
       .returning();
 
     revalidatePath(`/comercio/${updated.id}`);
+
+    // Invalidar caché de negocios
+    void invalidateCache("businesses:*");
+    void invalidateCache(`business:${updated.id}`);
 
     return {
       success: true,
@@ -233,6 +233,11 @@ export const deleteBusiness = o
       await db
         .delete(userSchema)
         .where(eq(userSchema.id, currentBusiness.userId));
+
+      // Invalidar caché de negocios y productos
+      void invalidateCache("businesses:*");
+      void invalidateCache(`business:${currentBusiness.id}`);
+      void invalidateCache("products:*");
 
       return { success: true };
     } catch (error) {

@@ -21,6 +21,7 @@ import {
   product as productSchema,
 } from "@/db/schema";
 import type { ProductWithRelations } from "@/db/types";
+import { CACHE_TTL, generateCacheKey, getCachedOrFetch } from "@/lib/cache";
 
 export const ListAllProductsInputSchema = z
   .object({
@@ -35,9 +36,16 @@ export const ListAllProductsInputSchema = z
   })
   .optional();
 
-export async function listAllProductsCache(
+type ListAllProductsResult = {
+  products: ProductWithRelations[];
+  total: number;
+  pages?: number;
+  currentPage?: number;
+};
+
+async function fetchAllProducts(
   input: z.infer<typeof ListAllProductsInputSchema>,
-) {
+): Promise<ListAllProductsResult> {
   const {
     search,
     category,
@@ -50,7 +58,6 @@ export async function listAllProductsCache(
   // Build where conditions
   const conditions: SQL<unknown>[] = [
     eq(productSchema.active, true),
-
     eq(businessSchema.isActive, true),
   ];
 
@@ -182,7 +189,19 @@ export async function listAllProductsCache(
   };
 }
 
-export async function recentProductsCache() {
+export async function listAllProductsCache(
+  input: z.infer<typeof ListAllProductsInputSchema>,
+): Promise<ListAllProductsResult> {
+  const cacheKey = generateCacheKey("products:list", input ?? {});
+
+  return getCachedOrFetch(
+    cacheKey,
+    () => fetchAllProducts(input),
+    CACHE_TTL.PRODUCTS_LIST,
+  );
+}
+
+async function fetchRecentProducts(): Promise<ProductWithRelations[]> {
   // 1. Obtener IDs ordenados por prioridad del plan del negocio y fecha de creación del producto
   const sortedIds = await db
     .select({ id: productSchema.id })
@@ -234,13 +253,21 @@ export async function recentProductsCache() {
     return ids.indexOf(a.id) - ids.indexOf(b.id);
   });
 
-  return orderedProducts;
+  return orderedProducts as ProductWithRelations[];
 }
 
-export async function getSimilarProductsCache(
+export async function recentProductsCache(): Promise<ProductWithRelations[]> {
+  return getCachedOrFetch(
+    "products:recent",
+    fetchRecentProducts,
+    CACHE_TTL.PRODUCTS_RECENT,
+  );
+}
+
+async function fetchSimilarProducts(
   categoryId: string,
   currentProductId: string,
-) {
+): Promise<ProductWithRelations[]> {
   const similarIds = await db
     .select({ id: productSchema.id })
     .from(productSchema)
@@ -290,5 +317,20 @@ export async function getSimilarProductsCache(
     },
   });
 
-  return similar.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+  return similar.sort(
+    (a, b) => ids.indexOf(a.id) - ids.indexOf(b.id),
+  ) as ProductWithRelations[];
+}
+
+export async function getSimilarProductsCache(
+  categoryId: string,
+  currentProductId: string,
+): Promise<ProductWithRelations[]> {
+  const cacheKey = `products:similar:${categoryId}:${currentProductId}`;
+
+  return getCachedOrFetch(
+    cacheKey,
+    () => fetchSimilarProducts(categoryId, currentProductId),
+    CACHE_TTL.PRODUCTS_SIMILAR,
+  );
 }

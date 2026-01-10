@@ -7,6 +7,7 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import type { Product, ProductWithRelations } from "@/db/types";
 import { env } from "@/env/server";
+import { invalidateCache } from "@/lib/cache";
 import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import { o } from "@/orpc/context";
 import { authMiddleware } from "@/orpc/middlewares";
@@ -158,6 +159,10 @@ export const createProduct = o
 
     revalidatePath("/dashboard/products");
 
+    // Invalidar caché de productos
+    void invalidateCache("products:*");
+    void invalidateCache(`business:${currentBusiness.id}`);
+
     return { success: true, product };
   });
 
@@ -297,6 +302,10 @@ export const updateProduct = o
 
     revalidatePath("/dashboard/products");
 
+    // Invalidar caché de productos
+    void invalidateCache("products:*");
+    void invalidateCache(`business:${currentBusiness.id}`);
+
     return { success: true, product: updated };
   });
 
@@ -368,6 +377,10 @@ export const deleteProduct = o
     await db.delete(schema.product).where(eq(schema.product.id, productId));
 
     revalidatePath("/dashboard/products");
+
+    // Invalidar caché de productos
+    void invalidateCache("products:*");
+    void invalidateCache(`business:${currentBusiness.id}`);
 
     return { success: true };
   });
