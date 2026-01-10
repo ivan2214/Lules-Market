@@ -11,7 +11,6 @@ import {
   listAllBusinessesCache,
   listAllSimilarBusinessesCache,
 } from "@/core/cache-functions/business";
-
 import { db } from "@/db";
 import {
   business as businessSchema,
@@ -25,6 +24,7 @@ import {
 } from "@/db/schema";
 import type { Business, BusinessWithRelations } from "@/db/types";
 import { env } from "@/env/server";
+import { CACHE_KEYS, invalidateCache } from "@/lib/cache";
 import { o } from "@/orpc/context";
 import { BusinessSetupSchema } from "@/shared/validators/business";
 
@@ -259,6 +259,11 @@ export const businessSetup = o
       .update(userSchema)
       .set({ role: "business" })
       .where(eq(userSchema.id, userId));
+
+    // Invalidar caché de negocios y categorías
+    void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
+    void invalidateCache(CACHE_KEYS.PATTERNS.ALL_CATEGORIES);
+    void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
 
     return {
       success: true,

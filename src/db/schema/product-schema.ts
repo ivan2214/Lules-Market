@@ -45,6 +45,14 @@ export const product = pgTable(
     index("product_businessId_idx").on(table.businessId),
     index("product_active_idx").on(table.active),
     index("product_categoryId_idx").on(table.categoryId),
+    // Índice compuesto para filtros múltiples (listAllProductsCache)
+    index("product_active_businessId_categoryId_idx").on(
+      table.active,
+      table.businessId,
+      table.categoryId,
+    ),
+    // Índice para productos activos ordenados por fecha (recentProductsCache)
+    index("product_active_createdAt_idx").on(table.active, table.createdAt),
   ],
 );
 

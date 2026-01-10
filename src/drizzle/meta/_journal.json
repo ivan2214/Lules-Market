@@ -15,6 +15,13 @@
       "when": 1767921076438,
       "tag": "0001_early_boomer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768081117339,
+      "tag": "0002_careless_shiva",
+      "breakpoints": true
     }
   ]
 }
