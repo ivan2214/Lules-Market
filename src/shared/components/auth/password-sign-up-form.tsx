@@ -14,7 +14,7 @@ import {
 import Image from "next/image";
 import { type JSX, useState } from "react";
 import { toast } from "sonner";
-import type z from "zod";
+
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
 import { api } from "@/lib/eden";
@@ -36,7 +36,7 @@ import {
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { type SignUpSchema, signUpSchema } from "@/shared/validators/auth";
-import type { BusinessSetupSchema } from "@/shared/validators/business";
+import { typeboxValidator } from "@/shared/validators/form";
 import {
   FormFooter,
   FormHeader,
@@ -59,6 +59,7 @@ const defaultValues: SignUpSchema = {
   confirmPassword: "",
 
   businessData: {
+    userEmail: "",
     address: "",
     category: "",
     coverImage: {
@@ -82,14 +83,23 @@ const defaultValues: SignUpSchema = {
   },
 };
 
-export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
+export function PasswordSignUpForm({
+  categories,
+  userEmail,
+}: {
+  categories: Category[];
+  userEmail: string;
+}) {
   /* const [isBusiness, setIsBusiness] = useState(false); */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
     mutationKey: ["auth", "signup"],
-    mutationFn: api.auth.signup.mutation,
+    mutationFn: async (data: SignUpSchema) => {
+      console.log({ data });
+      return await api.auth.actions.signup.post(data);
+    },
     onSuccess() {
       toast.success("Cuenta creada exitosamente");
     },
@@ -125,12 +135,13 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: signUpSchema,
+      onSubmit: typeboxValidator(signUpSchema),
     },
     onSubmit: async (data) => {
       console.log(data);
       const { email, password, name } = data.value;
-      const { businessData } = data.value;
+      const { businessData } = data.value || {};
+
       const {
         address,
         category,
@@ -144,7 +155,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         tags,
         website,
         whatsapp,
-      } = businessData as z.infer<typeof BusinessSetupSchema>;
+      } = businessData || {};
       const { files: uploadedCoverFiles } = await uploaderCover.upload(
         coverImage.file,
       );
@@ -165,6 +176,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         email: email,
         password: password,
         businessData: {
+          userEmail,
           address,
           category,
           coverImage: coverImageWithKey,

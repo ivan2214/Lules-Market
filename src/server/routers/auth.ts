@@ -1,8 +1,9 @@
 import { APIError } from "better-auth";
 import Elysia, { t } from "elysia";
 import { auth } from "@/lib/auth";
-import { api } from "@/lib/eden";
+import { BusinessSetupSchema } from "@/shared/validators/business";
 import { AppError } from "../errors";
+import { setupBusiness } from "../services/business";
 
 const getLocalizedMessage = (
   code?: string,
@@ -76,7 +77,7 @@ export const authRouter = new Elysia({
         });
       }
 
-      const { data } = await api.business.public.setup.post({
+      const data = await setupBusiness({
         coverImage,
         logo,
         name: businessName,
@@ -138,20 +139,7 @@ export const authRouter = new Elysia({
       name: t.String(),
       email: t.String(),
       password: t.String(),
-      businessData: t.Object({
-        name: t.String(),
-        address: t.String(),
-        category: t.String(),
-        coverImage: t.String(),
-        description: t.String(),
-        logo: t.String(),
-        facebook: t.String(),
-        instagram: t.String(),
-        phone: t.String(),
-        tags: t.Array(t.String()),
-        website: t.String(),
-        whatsapp: t.String(),
-      }),
+      businessData: BusinessSetupSchema,
     }),
   },
 );
