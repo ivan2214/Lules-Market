@@ -2,7 +2,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, ShoppingBag, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
 import { ProductCard } from "@/shared/components/product-card";
@@ -27,23 +27,35 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   sort,
 }) => {
   const {
-    data: { products, total },
-  } = useSuspenseQuery(
-    orpc.products.public.listAllProducts.queryOptions({
-      input: {
-        businessId,
-        category,
-        limit: currentLimit,
-        page: currentPage,
-        search,
-        sort,
-      },
-    }),
-  );
+    data: { data },
+  } = useSuspenseQuery({
+    queryFn: async () =>
+      await api.products.public.list.get({
+        query: {
+          businessId,
+          category,
+          limit: currentLimit,
+          page: currentPage,
+          search,
+          sort,
+        },
+      }),
+    queryKey: [
+      "products",
+      businessId,
+      category,
+      currentLimit,
+      currentPage,
+      search,
+      sort,
+    ],
+  });
 
-  const totalPages = Math.ceil(total / currentLimit);
+  const { products, total } = data || {};
 
-  if (!products.length) {
+  const totalPages = Math.ceil(total || 0 / currentLimit);
+
+  if (!products?.length || !total || !data || !products) {
     hasFilters ? (
       <EmptyStateSearch
         title="No se encontraron productos"
@@ -64,7 +76,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
+        {products?.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

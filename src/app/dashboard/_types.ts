@@ -1,12 +1,10 @@
-import type z from "zod";
 import type {
-  ProductCreateSchema,
-  ProductUpdateSchema,
+  ProductCreateInput,
+  ProductUpdateInput,
 } from "@/shared/validators/product";
 import type { subscriptionErrors } from "./_constants";
 
-export type ProductCreateInput = z.infer<typeof ProductCreateSchema>;
-export type ProductUpdateInput = z.infer<typeof ProductUpdateSchema>;
+export type { ProductCreateInput, ProductUpdateInput };
 
 export type SubscriptionErrorType =
   | "subscription_required"

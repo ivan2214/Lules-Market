@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import type z from "zod";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Field,
@@ -87,16 +87,16 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { mutate, isSuccess, error, isError, isPending } = useMutation(
-    orpc.auth.signup.mutationOptions({
-      onSuccess() {
-        toast.success("Cuenta creada exitosamente");
-      },
-      onError(error) {
-        toast.error(error.message);
-      },
-    }),
-  );
+  const { mutate, isSuccess, error, isError, isPending } = useMutation({
+    mutationKey: ["auth", "signup"],
+    mutationFn: api.auth.signup.mutation,
+    onSuccess() {
+      toast.success("Cuenta creada exitosamente");
+    },
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
 
   const uploaderCover = useUploadFiles({
     route: "businessCover",

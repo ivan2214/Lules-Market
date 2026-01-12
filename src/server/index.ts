@@ -3,7 +3,22 @@ import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import { AppError, errorCodes } from "./errors";
 import { OpenAPI } from "./plugins/auth";
-import { productsPrivateRouter } from "./routers/products";
+import { adminRouter } from "./routers/admin";
+import {
+  analyticsPrivateRouter,
+  analyticsPublicRouter,
+} from "./routers/analytics";
+import { authRouter } from "./routers/auth";
+import {
+  businessPrivateRouter,
+  businessPublicRouter,
+} from "./routers/business";
+import { categoryPublicRouter } from "./routers/category";
+import { planPublicRouter } from "./routers/plan";
+import {
+  productsPrivateRouter,
+  productsPublicRouter,
+} from "./routers/products";
 
 export const app = new Elysia({ prefix: "/api" })
   .error({
@@ -36,7 +51,16 @@ export const app = new Elysia({ prefix: "/api" })
       },
     }),
   )
-  .use(productsPrivateRouter);
+  .use(productsPrivateRouter)
+  .use(productsPublicRouter)
+  .use(businessPublicRouter)
+  .use(businessPrivateRouter)
+  .use(analyticsPublicRouter)
+  .use(analyticsPrivateRouter)
+  .use(categoryPublicRouter)
+  .use(adminRouter)
+  .use(planPublicRouter)
+  .use(authRouter);
 
 export type App = typeof app;
 

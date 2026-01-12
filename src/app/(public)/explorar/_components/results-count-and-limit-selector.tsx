@@ -2,7 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LimitSelector } from "@/app/(public)/explorar/_components/limit-selector";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
 type SortByBusiness = "newest" | "oldest";
@@ -27,35 +27,40 @@ export const ResultsCountAndLimitSelector: React.FC<
   ResultsCountAndLimitSelectorProps
 > = ({ typeExplorer, currentLimit, currentPage, params }) => {
   const { category, search, sortBy, businessId } = params;
-  const {
-    data: { businesses, total },
-  } = useSuspenseQuery(
-    orpc.business.public.listAllBusinesses.queryOptions({
-      input: {
-        category,
-        search,
-        sort: sortBy as SortByBusiness,
-        limit: currentLimit,
-        page: currentPage,
-        businessId,
-      },
-    }),
-  );
+  const { data } = useSuspenseQuery({
+    queryKey: ["businesses", params?.category],
+    queryFn: async () => {
+      const { data } = await api.business.public["list-all"].get({
+        query: {
+          category: params?.category,
+        },
+      });
+      return data;
+    },
+  });
 
-  const {
-    data: { products, total: totalProducts },
-  } = useSuspenseQuery(
-    orpc.products.public.listAllProducts.queryOptions({
-      input: {
-        category,
-        search,
-        sort: sortBy as SortByProduct,
-        limit: currentLimit,
-        page: currentPage,
-        businessId,
-      },
-    }),
-  );
+  const businesses = data?.businesses || [];
+  const total = data?.total || 0;
+
+  const { data: dataP } = useSuspenseQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data } = await api.products.public.list.get({
+        query: {
+          category,
+          search,
+          sort: sortBy as SortByProduct,
+          limit: currentLimit,
+          page: currentPage,
+          businessId,
+        },
+      });
+      return data;
+    },
+  });
+
+  const products = dataP?.products || [];
+  const totalProducts = dataP?.total || 0;
 
   if (typeExplorer === "comercios") {
     return (

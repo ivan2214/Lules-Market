@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { requireBusiness } from "@/data/business/require-business";
-import { client } from "@/orpc";
+import { api } from "@/lib/eden";
 import {
   Card,
   CardContent,
@@ -20,7 +20,7 @@ export default async function BusinessPage() {
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const categories = await client.category.listAllCategories();
+  const { data: categories } = await api.category.public["list-all"].get();
 
   return (
     <div className="space-y-6">
@@ -46,7 +46,7 @@ export default async function BusinessPage() {
         <CardContent>
           <BusinessProfileForm
             business={currentBusiness}
-            categories={categories}
+            categories={categories || []}
           />
         </CardContent>
       </Card>

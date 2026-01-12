@@ -12,7 +12,7 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
-import { z } from "zod";
+import type { Static } from "elysia";
 import { db } from "@/db";
 import {
   business as businessSchema,
@@ -27,19 +27,9 @@ import {
   generateCacheKey,
   getCachedOrFetch,
 } from "@/lib/cache";
+import type { listAllProductsInputSchema } from "@/server/routers/products";
 
-export const ListAllProductsInputSchema = z
-  .object({
-    search: z.string().optional(),
-    category: z.string().optional(),
-    businessId: z.string().optional(),
-    page: z.number().default(1),
-    limit: z.number().default(12),
-    sort: z
-      .enum(["price_asc", "price_desc", "name_asc", "name_desc"])
-      .optional(),
-  })
-  .optional();
+export type ListAllProductsInput = Static<typeof listAllProductsInputSchema>;
 
 type ListAllProductsResult = {
   products: ProductWithRelations[];
@@ -49,7 +39,7 @@ type ListAllProductsResult = {
 };
 
 async function fetchAllProducts(
-  input: z.infer<typeof ListAllProductsInputSchema>,
+  query: ListAllProductsInput,
 ): Promise<ListAllProductsResult> {
   const {
     search,
@@ -58,7 +48,7 @@ async function fetchAllProducts(
     page = 1,
     limit = 12,
     sort,
-  } = input ?? {};
+  } = query ?? {};
 
   // Build where conditions
   const conditions: SQL<unknown>[] = [
@@ -195,7 +185,7 @@ async function fetchAllProducts(
 }
 
 export async function listAllProductsCache(
-  input: z.infer<typeof ListAllProductsInputSchema>,
+  input: ListAllProductsInput,
 ): Promise<ListAllProductsResult> {
   const cacheKey = generateCacheKey("products:list", input ?? {});
 

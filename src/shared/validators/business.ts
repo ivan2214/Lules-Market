@@ -1,22 +1,23 @@
-import z from "zod";
+import { t } from "elysia";
 import { ImageInputSchema } from "@/shared/validators/image";
 
-export const BusinessSetupSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  category: z.string().optional(),
-  description: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  website: z.string().optional(),
-  whatsapp: z.string().optional(),
-  facebook: z.string().optional(),
-  instagram: z.string().optional(),
+export const BusinessSetupSchema = t.Object({
+  userEmail: t.String(),
+  name: t.String().min(1, "El nombre es requerido"),
+  category: t.String().optional(),
+  description: t.String().optional(),
+  address: t.String().optional(),
+  phone: t.String().optional(),
+  website: t.String().optional(),
+  whatsapp: t.String().optional(),
+  facebook: t.String().optional(),
+  instagram: t.String().optional(),
   logo: ImageInputSchema,
   coverImage: ImageInputSchema,
-  tags: z.array(z.string()).optional(),
+  tags: t.Array(t.String()).optional(),
 });
 
 export const BusinessUpdateSchema = BusinessSetupSchema.extend({
-  name: z.string().min(1, "El nombre es requerido"),
-  email: z.email("El email es requerido"),
+  name: t.String().min(1, "El nombre es requerido"),
+  email: t.String().email("El email es requerido"),
 });

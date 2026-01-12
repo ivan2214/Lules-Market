@@ -12,7 +12,8 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
-import z from "zod";
+import { type Static, t } from "elysia";
+
 import { db } from "@/db";
 import {
   business,
@@ -29,25 +30,25 @@ import {
   getCachedOrFetch,
 } from "@/lib/cache";
 
-export const ListAllBusinessesInputSchema = z
-  .object({
-    search: z.string().optional(),
-    category: z.string().optional(),
-    page: z.number().optional(),
-    limit: z.number().optional(),
-    sortBy: z.enum(["newest", "oldest"]).optional(),
+export const ListAllBusinessesInputSchema = t
+  .Object({
+    search: t.String().optional(),
+    category: t.String().optional(),
+    page: t.Number().optional(),
+    limit: t.Number().optional(),
+    sortBy: t.Union([t.Literal("newest"), t.Literal("oldest")]).optional(),
   })
   .optional();
 
-export const ListAllBusinessesOutputSchema = z.object({
-  businesses: z.array(z.custom<BusinessWithRelations>()),
-  total: z.number(),
+export const ListAllBusinessesOutputSchema = t.Object({
+  businesses: t.Array(t.Unsafe<BusinessWithRelations>(t.Any())),
+  total: t.Number(),
 });
 
-type ListAllBusinessesResult = z.infer<typeof ListAllBusinessesOutputSchema>;
+type ListAllBusinessesResult = Static<typeof ListAllBusinessesOutputSchema>;
 
 async function fetchAllBusinesses(
-  input: z.infer<typeof ListAllBusinessesInputSchema>,
+  input: Static<typeof ListAllBusinessesInputSchema>,
 ): Promise<ListAllBusinessesResult> {
   try {
     const { search, category, page, limit, sortBy } = input ?? {};
@@ -118,7 +119,7 @@ async function fetchAllBusinesses(
 }
 
 export async function listAllBusinessesCache(
-  input: z.infer<typeof ListAllBusinessesInputSchema>,
+  input: Static<typeof ListAllBusinessesInputSchema>,
 ): Promise<ListAllBusinessesResult> {
   const cacheKey = generateCacheKey("businesses:list", input ?? {});
 

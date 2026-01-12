@@ -12,7 +12,7 @@ import type z from "zod";
 import pathsConfig from "@/config/paths.config";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
-import { orpc } from "@/orpc";
+
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
 import {
@@ -69,25 +69,20 @@ const defaultValues: z.infer<typeof BusinessSetupSchema> = {
   whatsapp: "",
 };
 
-export function SetupForm({
-  categories,
-  userEmail,
-}: {
-  categories: Category[];
-  userEmail: string;
-}) {
+export function SetupForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
-  const { mutate, isSuccess, error, isError, isPending } = useMutation(
-    orpc.business.public.businessSetup.mutationOptions({
-      onSuccess() {
-        toast.success("Cuenta creada exitosamente");
-        router.push(pathsConfig.dashboard.root);
-      },
-      onError(error) {
-        toast.error(error.message);
-      },
-    }),
-  );
+  const { mutate, isSuccess, error, isError, isPending } = useMutation({
+    mutationFn: async (data: z.infer<typeof BusinessSetupSchema>) => {
+      console.log(data);
+    },
+    onSuccess() {
+      toast.success("Cuenta creada exitosamente");
+      router.push(pathsConfig.dashboard.root);
+    },
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
 
   const uploaderCover = useUploadFiles({
     route: "businessCover",
@@ -148,7 +143,6 @@ export function SetupForm({
       };
 
       mutate({
-        userEmail,
         address,
         category,
         coverImage: coverImageWithKey,

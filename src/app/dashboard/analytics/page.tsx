@@ -4,7 +4,7 @@ import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { requireBusiness } from "@/data/business/require-business";
 import type { CurrentPlan } from "@/db/types";
 import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
-import { client } from "@/orpc";
+import { api } from "@/lib/eden";
 import { subscriptionErrors } from "../_constants";
 import { AnalyticsContent } from "./_components/analytics-content";
 import type { AnalyticsData } from "./_types";
@@ -35,8 +35,10 @@ export default async function AnalyticsPage({
     );
   }
 
-  const analytics = await client.analytics.getStats({
-    period,
+  const { data: analytics } = await api.analytics.private.stats.get({
+    query: {
+      period,
+    },
   });
 
   const data: AnalyticsData = {

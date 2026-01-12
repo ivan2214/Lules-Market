@@ -5,8 +5,8 @@ import type { Metadata } from "next";
 
 import Link from "next/link";
 import { env } from "@/env/server";
+import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PlanPricingPreview } from "./_components/plan-pricing.preview";
@@ -52,7 +52,13 @@ export const metadata: Metadata = {
 
 export default async function ForBusinessPage() {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(orpc.plan.getAllPlans.queryOptions());
+  await queryClient.prefetchQuery({
+    queryKey: ["plans"],
+    queryFn: async () => {
+      const response = await api.plan.public["list-all"].get();
+      return response;
+    },
+  });
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">

@@ -8,7 +8,7 @@ import { ProductCardDashboard } from "@/features//dashboard/_components/product-
 import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features//dashboard/_constants";
 import { api } from "@/lib/eden";
-import { client } from "@/orpc";
+
 import {
   Alert,
   AlertDescription,
@@ -32,7 +32,7 @@ export async function ProductsContent() {
 
   const canAdd =
     (currentPlan?.productsUsed || 0) < (currentPlan?.plan?.maxProducts || 0);
-  const categories = await client.category.listAllCategories();
+  const { data: categories } = await api.category.public["list-all"].get();
 
   return (
     <>
@@ -44,7 +44,7 @@ export async function ProductsContent() {
           </p>
         </div>
         <ProductFormDialog
-          categories={categories}
+          categories={categories || []}
           maxImagesPerProduct={currentPlan?.imagesUsed || 0}
         />
       </div>
@@ -76,7 +76,7 @@ export async function ProductsContent() {
             </p>
             <div className="mt-4">
               <ProductFormDialog
-                categories={categories}
+                categories={categories || []}
                 maxImagesPerProduct={currentPlan?.imagesUsed || 0}
               />
             </div>
@@ -88,7 +88,7 @@ export async function ProductsContent() {
             <ProductCardDashboard
               key={product.id}
               product={product}
-              categories={categories}
+              categories={categories || []}
               maxImagesPerProduct={currentPlan?.imagesUsed || 0}
             />
           ))}

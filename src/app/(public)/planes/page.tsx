@@ -2,8 +2,8 @@ import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { env } from "@/env/server";
+import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -40,7 +40,13 @@ export const metadata: Metadata = {
 export default async function PlanesPage() {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(orpc.plan.getAllPlans.queryOptions());
+  await queryClient.prefetchQuery({
+    queryKey: ["plans"],
+    queryFn: async () => {
+      const response = await api.plan.public["list-all"].get();
+      return response;
+    },
+  });
 
   return (
     <div className="container mx-auto py-16">

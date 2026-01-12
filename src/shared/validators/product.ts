@@ -1,19 +1,32 @@
-import z from "zod";
-import { ImageInputSchema } from "@/shared/validators/image";
+import { Value } from "@sinclair/typebox/value";
+import type { Static, TSchema } from "elysia";
+import {
+  ProductCreateBody,
+  ProductUpdateBody,
+} from "@/server/routers/products";
 
-export const ProductCreateSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  description: z.string().min(1, "La descripción es requerida"),
-  price: z.number().min(0, "El precio debe ser mayor o igual a 0"),
-  category: z.string().min(1, "La categoría es requerida"),
-  active: z.boolean().optional(),
-  images: z.array(ImageInputSchema).min(1, "Se requiere al menos una imagen"),
-});
+export type ProductCreateInput = Static<typeof ProductCreateBody>;
+export type ProductUpdateInput = Static<typeof ProductUpdateBody>;
 
-export const ProductUpdateSchema = ProductCreateSchema.extend({
-  productId: z.string().min(1, "El ID del producto es requerido").optional(),
-});
+// Validator adapter for TanStack Form
+export const typeboxValidator = <T extends TSchema>(schema: T) => {
+  return ({ value }: { value: unknown }) => {
+    try {
+      if (Value.Check(schema, value)) return undefined;
+      const errors = [...Value.Errors(schema, value)];
+      if (errors.length === 0) return undefined;
+      // Return the first error message or a joined string
+      return errors.map((e) => e.message).join(", ");
+    } catch (e) {
+      console.error(e);
+      return "Validation error";
+    }
+  };
+};
 
-export const ProductDeleteSchema = z.object({
-  productId: z.string().min(1, "El ID del producto es requerido"),
-});
+export const ProductCreateSchema = typeboxValidator(ProductCreateBody);
+export const ProductUpdateSchema = typeboxValidator(ProductUpdateBody);
+
+// We need to export the schemas themselves too if needed for type inference elsewhere
+export const ProductCreateSchemaObject = ProductCreateBody;
+export const ProductUpdateSchemaObject = ProductUpdateBody;

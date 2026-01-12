@@ -3,7 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Badge, Check, Crown, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -15,12 +15,19 @@ import {
 } from "@/shared/components/ui/card";
 
 export const PlanCards = () => {
-  const { data: plans } = useSuspenseQuery(
-    orpc.plan.getAllPlans.queryOptions(),
-  );
+  const {
+    data: { data: plans },
+  } = useSuspenseQuery({
+    queryKey: ["plans"],
+    queryFn: async () => {
+      const response = await api.plan.public["list-all"].get();
+      return response;
+    },
+  });
+
   return (
     <div className="mx-auto mb-16 grid max-w-6xl gap-8 md:grid-cols-3">
-      {plans.map((plan) => {
+      {plans?.map((plan) => {
         const Icon =
           plan.type === "FREE" ? Sparkles : plan.type === "BASIC" ? Zap : Crown;
         return (
