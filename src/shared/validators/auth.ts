@@ -46,14 +46,11 @@ export const signUpSchema = t.Object({
     maxLength: 100,
     message: "El nombre debe tener al menos 3 caracteres",
   }),
-  email: t
-    .String({
-      minLength: 1,
-      message: "El email es requerido",
-    })
-    .email({
-      message: "Dirección de correo electrónico inválida",
-    }),
+  email: t.String({
+    minLength: 1,
+    format: "email",
+    message: "Dirección de correo electrónico inválida",
+  }),
   password: t.String({
     minLength: 8,
     message: "La contraseña debe tener al menos 8 caracteres",
@@ -64,7 +61,7 @@ export const signUpSchema = t.Object({
       message: "La contraseña debe tener al menos 8 caracteres",
     }),
   ),
-  businessData: BusinessSetupSchema,
+  businessData: t.Omit(BusinessSetupSchema, ["userEmail"]),
 });
 
 export type SignUpSchema = Static<typeof signUpSchema>;

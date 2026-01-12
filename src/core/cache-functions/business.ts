@@ -12,8 +12,8 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
+import { createSelectSchema } from "drizzle-typebox";
 import { type Static, t } from "elysia";
-
 import { db } from "@/db";
 import {
   business,
@@ -41,7 +41,9 @@ export const ListAllBusinessesInputSchema = t
   .optional();
 
 export const ListAllBusinessesOutputSchema = t.Object({
-  businesses: t.Array(t.Unsafe<BusinessWithRelations>(t.Any())),
+  businesses: t.Array(
+    t.Unsafe<BusinessWithRelations>(createSelectSchema(business)),
+  ),
   total: t.Number(),
 });
 
@@ -106,7 +108,7 @@ async function fetchAllBusinesses(
     const total = totalResult[0]?.count ?? 0;
 
     return {
-      businesses: businesses as BusinessWithRelations[],
+      businesses: businesses,
       total,
     };
   } catch (error) {

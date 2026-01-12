@@ -59,7 +59,6 @@ const defaultValues: SignUpSchema = {
   confirmPassword: "",
 
   businessData: {
-    userEmail: "",
     address: "",
     category: "",
     coverImage: {
@@ -83,13 +82,7 @@ const defaultValues: SignUpSchema = {
   },
 };
 
-export function PasswordSignUpForm({
-  categories,
-  userEmail,
-}: {
-  categories: Category[];
-  userEmail: string;
-}) {
+export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   /* const [isBusiness, setIsBusiness] = useState(false); */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -176,7 +169,6 @@ export function PasswordSignUpForm({
         email: email,
         password: password,
         businessData: {
-          userEmail,
           address,
           category,
           coverImage: coverImageWithKey,

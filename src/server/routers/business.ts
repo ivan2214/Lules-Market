@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+import { createSelectSchema } from "drizzle-typebox";
 import Elysia, { t } from "elysia";
 import { headers } from "next/headers";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/core/cache-functions/business";
 import { db } from "@/db";
 import {
+  business,
   businessView as businessViewSchema,
   product as productSchema,
 } from "@/db/schema";
@@ -31,6 +33,13 @@ export const businessPublicRouter = new Elysia({
     },
     {
       body: ListAllBusinessesInputSchema,
+      response: t.Object({
+        businesses: t.Array(
+          t.Unsafe<BusinessWithRelations>(createSelectSchema(business)),
+          { minItems: 1 },
+        ),
+        total: t.Number(),
+      }),
     },
   )
   .get(

@@ -24,8 +24,6 @@ export default async function BusinessSetup() {
     redirect(pathsConfig.auth.signIn);
   }
 
-  const userEmail = session.user.email;
-
   return (
     <main>
       <Navigation />
@@ -44,7 +42,7 @@ export default async function BusinessSetup() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <SetupForm categories={categories || []} userEmail={userEmail} />
+              <SetupForm categories={categories || []} />
               <div className="text-center text-sm">
                 Todavia no tenes una cuenta?{" "}
                 <Link

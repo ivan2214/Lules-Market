@@ -1,47 +1,40 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { type TotpSchema, totpSchema } from "@/shared/validators/auth";
+import { totpSchema } from "@/shared/validators/auth";
+import { typeboxValidator } from "@/shared/validators/form";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 
 export function TwoFactorForm() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [success, setSuccess] = useState(false);
 
-  const form = useForm<TotpSchema>({
+  const form = useForm({
     defaultValues: {
       code: "",
     },
-    resolver: zodResolver(totpSchema),
-  });
+    validators: {
+      onChange: typeboxValidator(totpSchema),
+      onSubmit: typeboxValidator(totpSchema),
+    },
+    onSubmit: async ({ value }) => {
+      startTransition(async () => {
+        const res = await authClient.twoFactor.verifyTotp({
+          code: value.code,
+        });
 
-  const onSubmit = async (data: TotpSchema) => {
-    startTransition(async () => {
-      const res = await authClient.twoFactor.verifyTotp({
-        code: data.code,
+        if (res.data?.token) {
+          setSuccess(true);
+          router.refresh();
+        }
       });
-
-      if (res.data?.token) {
-        setSuccess(true);
-        router.refresh();
-      } else {
-        form.setError("code", { message: "Invalid TOTP code" });
-      }
-    });
-  };
+    },
+  });
 
   if (success) {
     return (
@@ -53,35 +46,49 @@ export function TwoFactorForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>TOTP Code</FormLabel>
-              <FormControl>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="space-y-4"
+    >
+      <FieldGroup>
+        <form.Field name="code">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Código de verificación
+                </FieldLabel>
+
                 <Input
-                  {...field}
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={isInvalid}
                   type="text"
                   inputMode="numeric"
                   pattern="\d{6}"
                   maxLength={6}
                   placeholder="Enter 6-digit code"
+                  disabled={pending}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={pending}>
-          {pending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            "Verify"
-          )}
-        </Button>
-      </form>
-    </Form>
+
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+      </FieldGroup>
+      <Button type="submit" className="w-full" disabled={pending}>
+        {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Verify"}
+      </Button>
+    </form>
   );
 }

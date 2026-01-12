@@ -3,16 +3,15 @@
 import { useUploadFiles } from "@better-upload/client";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
+import { type Static, t } from "elysia";
 import { ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { JSX } from "react";
 import { toast } from "sonner";
-import type z from "zod";
 import pathsConfig from "@/config/paths.config";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
-
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
 import {
@@ -45,8 +44,11 @@ import {
 import { Textarea } from "@/shared/components/ui/textarea";
 import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
 import { BusinessSetupSchema } from "@/shared/validators/business";
+import { typeboxValidator } from "@/shared/validators/form";
 
-const defaultValues: z.infer<typeof BusinessSetupSchema> = {
+const BusinessSetupSchemaForm = t.Omit(BusinessSetupSchema, ["userEmail"]);
+
+const defaultValues: Static<typeof BusinessSetupSchemaForm> = {
   address: "",
   category: "",
   coverImage: {
@@ -72,7 +74,7 @@ const defaultValues: z.infer<typeof BusinessSetupSchema> = {
 export function SetupForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
-    mutationFn: async (data: z.infer<typeof BusinessSetupSchema>) => {
+    mutationFn: async (data: Static<typeof BusinessSetupSchemaForm>) => {
       console.log(data);
     },
     onSuccess() {
@@ -108,11 +110,13 @@ export function SetupForm({ categories }: { categories: Category[] }) {
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: BusinessSetupSchema,
+      onSubmit: typeboxValidator(BusinessSetupSchemaForm),
     },
-    onSubmit: async (data) => {
-      console.log(data);
-
+    onSubmit: async ({
+      value,
+    }: {
+      value: Static<typeof BusinessSetupSchemaForm>;
+    }) => {
       const {
         address,
         category,
@@ -126,7 +130,7 @@ export function SetupForm({ categories }: { categories: Category[] }) {
         tags,
         website,
         whatsapp,
-      } = data.value;
+      } = value || {};
       const { files: uploadedCoverFiles } = await uploaderCover.upload(
         coverImage.file,
       );

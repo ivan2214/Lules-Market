@@ -3,9 +3,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentSession } from "@/data/session/get-current-session";
 import { db } from "@/db";
 import { admin, business, notification, profile } from "@/db/schema";
-import { getSession } from "@/orpc/actions/user/get-session";
 import { SearchForm } from "@/shared/components/search-form";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -34,9 +34,9 @@ export const NavigationWrapper = async () => {
 };
 
 const NavigationWrapperContent = async () => {
-  const [error, session] = await getSession();
+  const { session } = await getCurrentSession();
 
-  if (error) {
+  if (!session) {
     redirect(pathsConfig.auth.signIn);
   }
 

@@ -4,7 +4,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import { getSession } from "@/orpc/actions/user/get-session";
+import { getCurrentSession } from "@/data/session/get-current-session";
 import { Toaster } from "@/shared/components/ui/sonner";
 import { RootProviders } from "@/shared/providers/root-provider";
 
@@ -42,7 +42,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [_, auth] = await getSession();
+  const { session } = await getCurrentSession();
 
   return (
     <html
@@ -52,7 +52,14 @@ export default async function RootLayout({
     >
       <body className="mx-auto font-sans antialiased">
         <NuqsAdapter>
-          <RootProviders auth={auth ?? null}>{children}</RootProviders>
+          <RootProviders
+            auth={{
+              session: session?.session ?? null,
+              user: session?.user ?? null,
+            }}
+          >
+            {children}
+          </RootProviders>
           {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
           <Toaster />
           <Analytics />

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/env/server";
-import { client } from "@/orpc";
+import { api } from "@/lib/eden";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.APP_URL;
@@ -83,22 +83,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Obtener productos dinámicos
-  const { products } = await client.products.public.listAllProducts();
-  const productPages: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${baseUrl}/producto/${product.id}`,
-    lastModified: product.updatedAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const { data: dataProducts } = await api.products.public.list.get();
+  const products = dataProducts?.products;
+
+  const productPages: MetadataRoute.Sitemap =
+    products?.map((product) => ({
+      url: `${baseUrl}/producto/${product.id}`,
+      lastModified: product.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })) || [];
 
   // Obtener comercios dinámicos
-  const { businesses } = await client.business.public.listAllBusinesses();
-  const businessPages: MetadataRoute.Sitemap = businesses.map((business) => ({
-    url: `${baseUrl}/comercio/${business.id}`,
-    lastModified: business.updatedAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
+  const { data: dataBusiness } = await api.business.public["list-all"].get();
+  const { businesses } = dataBusiness || {};
+
+  const businessPages: MetadataRoute.Sitemap =
+    businesses?.map((business) => ({
+      url: `${baseUrl}/comercio/${business.id}`,
+      lastModified: business.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })) || [];
 
   return [...staticPages, ...productPages, ...businessPages];
 }
