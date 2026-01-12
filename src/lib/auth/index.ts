@@ -12,6 +12,7 @@ import { syncUserRole } from "@/orpc/actions/user/sync-user-role";
 
 export const auth = betterAuth({
   ...authConfig,
+  basePath: "/api",
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,

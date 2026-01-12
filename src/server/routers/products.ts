@@ -1,6 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { Elysia, t } from "elysia";
 import { db } from "@/db";
+import { models } from "@/db/model";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
 import { CACHE_KEYS, invalidateCache } from "@/lib/cache";
@@ -16,6 +17,7 @@ const ImageSchema = t.Object({
 });
 
 const ProductCreateBody = t.Object({
+  ...models.insert.product,
   name: t.String({ minLength: 1, error: "Name is required" }),
   description: t.String({ minLength: 1, error: "Description is required" }),
   price: t.Number({ minimum: 0, error: "Price must be positive" }),
@@ -27,18 +29,16 @@ const ProductCreateBody = t.Object({
   }),
 });
 
-const ProductUpdateBody = t.Composite([
-  ProductCreateBody,
-  t.Object({
-    productId: t.String({ minLength: 1, error: "Product ID is required" }),
-  }),
-]);
+const ProductUpdateBody = t.Object({
+  ...t.Partial(ProductCreateBody).properties,
+  productId: t.String({ minLength: 1, error: "Product ID is required" }),
+});
 
 const ProductDeleteQuery = t.Object({
   productId: t.String({ minLength: 1, error: "Product ID is required" }),
 });
 
-export const productsRouter = new Elysia({ prefix: "/products" })
+export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
   .use(authPlugin)
   .post(
     "/",
@@ -160,6 +160,10 @@ export const productsRouter = new Elysia({ prefix: "/products" })
           description: data.description,
           price: data.price,
           active: data.active,
+          brand: data.brand,
+          discount: data.discount,
+          stock: data.stock,
+          tags: data.tags,
         })
         .where(eq(schema.product.id, productId))
         .returning();
