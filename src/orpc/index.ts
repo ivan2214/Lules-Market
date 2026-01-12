@@ -4,7 +4,7 @@ import type { RouterClient } from "@orpc/server";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
+import { env } from "@/env/client";
 import type { appRouter } from "@/orpc/routers";
 
 declare global {
@@ -26,8 +26,14 @@ export const queryClient = new QueryClient({
   }),
 });
 
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") return window.location.origin;
+  if (env.NEXT_PUBLIC_APP_URL) return env.NEXT_PUBLIC_APP_URL;
+  return "http://localhost:3000";
+};
+
 export const link = new RPCLink({
-  url: `${typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"}/rpc`,
+  url: `${getBaseUrl()}/rpc`,
   fetch(url, options) {
     return fetch(url, {
       ...options,
