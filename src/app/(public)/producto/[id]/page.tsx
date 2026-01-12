@@ -9,11 +9,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { db } from "@/db";
+import {
+  getAllProductIdsCache,
+  getProductByIdCache,
+  getSimilarProductsCache,
+} from "@/core/cache-functions/products";
 import { env } from "@/env/server";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { client } from "@/orpc";
 import { ProductCard } from "@/shared/components/product-card";
 import { ProductSchema } from "@/shared/components/structured-data";
 import {
@@ -34,7 +37,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { product } = await client.products.public.getProductById({ id });
+  const { product } = await getProductByIdCache(id);
 
   if (!product) {
     notFound();
@@ -63,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const products = await db.query.product.findMany();
+  const products = await getAllProductIdsCache();
   if (!products.length) {
     return [];
   }
@@ -72,18 +75,15 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const { product } = await client.products.public.getProductById({ id });
+  const { product } = await getProductByIdCache(id);
 
   if (!product) {
     notFound();
   }
 
-  // Fetch Similar Products
+  // Fetch Similar Products - Usar caché también
   const similarProducts = product.category
-    ? await client.products.public.getSimilarProducts({
-        id: product.id,
-        categoryId: product.category.id,
-      })
+    ? await getSimilarProductsCache(product.category.id, product.id)
     : [];
 
   const planType = product.business?.currentPlan?.plan?.type || "FREE";

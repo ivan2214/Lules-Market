@@ -78,6 +78,7 @@
     "@tanstack/react-query": "^5.90.16",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@tanstack/react-table": "^8.21.3",
+    "@upstash/redis": "^1.36.1",
     "@vercel/analytics": "1.6.1",
     "@wandry/inertia-form": "1.11.0",
     "better-auth": "1.4.7",

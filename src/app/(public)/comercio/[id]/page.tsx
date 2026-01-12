@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { db } from "@/db";
-// Importar directamente desde la DB para generateStaticParams
+import {
+  getAllBusinessIdsCache,
+  getBusinessByIdCache,
+} from "@/core/cache-functions/business";
 import { env } from "@/env/server";
 import { client } from "@/orpc";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
@@ -18,7 +20,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { business } = await client.business.public.getBusinessById({ id });
+  // Usar caché interna para evitar latencia de red/cliente
+  const { business } = await getBusinessByIdCache(id);
 
   if (!business) {
     notFound();
@@ -50,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const keywords = [
     business.name,
-    business.category,
+    business.category?.label || "",
     "comercio local",
     "tienda online",
     "Argentina",
@@ -120,7 +123,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const businesses = await db.query.business.findMany();
+  const businesses = await getAllBusinessIdsCache();
   if (!businesses.length) {
     return [];
   }
@@ -129,7 +132,8 @@ export async function generateStaticParams() {
 
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
-  const { business } = await client.business.public.getBusinessById({ id });
+  // Usar caché aquí también
+  const { business } = await getBusinessByIdCache(id);
 
   if (!business) {
     notFound();

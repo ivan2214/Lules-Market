@@ -44,7 +44,19 @@ export const business = pgTable(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [index("business_categoryId_idx").on(table.categoryId)],
+  (table) => [
+    index("business_categoryId_idx").on(table.categoryId),
+    // Índice compuesto para negocios activos por categoría (listAllBusinessesCache)
+    index("business_isActive_categoryId_idx").on(
+      table.isActive,
+      table.categoryId,
+    ),
+    // Índice para negocios activos ordenados por fecha (featuredBusinessesCache)
+    index("business_isActive_createdAt_idx").on(
+      table.isActive,
+      table.createdAt,
+    ),
+  ],
 );
 
 export const businessView = pgTable(
