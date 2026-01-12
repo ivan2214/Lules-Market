@@ -5,7 +5,6 @@ import { models } from "@/db/model";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
 import { CACHE_KEYS, invalidateCache } from "@/lib/cache";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business"; // Reusing this for now
 import { AppError } from "../errors";
 import { authPlugin } from "../plugins/auth";
 
@@ -40,16 +39,26 @@ const ProductDeleteQuery = t.Object({
 
 export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
   .use(authPlugin)
+  .get(
+    "/by-business",
+    async ({ currentBusiness }) => {
+      const products = await db.query.product.findMany({
+        where: eq(schema.product.businessId, currentBusiness.id),
+        with: {
+          images: true,
+          category: true,
+        },
+      });
+      return { success: true, products };
+    },
+    {
+      currentBusiness: true,
+      isBusiness: true,
+    },
+  )
   .post(
     "/",
-    async ({ body }) => {
-      const [err, result] = await getCurrentBusiness();
-
-      if (err || !result.currentBusiness) {
-        throw new AppError("Negocio no encontrado", "NOT_FOUND");
-      }
-      const { currentBusiness } = result;
-
+    async ({ body, currentBusiness }) => {
       const input = body;
       const imageKeys = input.images.map((image) => image.key);
 
@@ -130,18 +139,14 @@ export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
       return { success: true, product };
     },
     {
-      role: "business",
+      isBusiness: true,
+      currentBusiness: true,
       body: ProductCreateBody,
     },
   )
   .put(
     "/",
-    async ({ body }) => {
-      const [err, result] = await getCurrentBusiness();
-      if (err || !result.currentBusiness)
-        throw new AppError("Negocio no encontrado", "NOT_FOUND");
-      const { currentBusiness } = result;
-
+    async ({ body, currentBusiness }) => {
       const { productId, ...data } = body;
 
       const product = await db.query.product.findFirst({
@@ -173,17 +178,14 @@ export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
       return { success: true, product: updated };
     },
     {
-      role: "business",
+      currentBusiness: true,
+      isBusiness: true,
       body: ProductUpdateBody,
     },
   )
   .delete(
     "/",
-    async ({ query }) => {
-      const [err, result] = await getCurrentBusiness();
-      if (err || !result.currentBusiness)
-        throw new AppError("Negocio no encontrado", "NOT_FOUND");
-
+    async ({ query, currentBusiness }) => {
       const { productId } = query;
 
       await db
@@ -191,7 +193,7 @@ export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
         .where(
           and(
             eq(schema.product.id, productId),
-            eq(schema.product.businessId, result.currentBusiness.id),
+            eq(schema.product.businessId, currentBusiness.id),
           ),
         );
 
@@ -200,7 +202,8 @@ export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
       return { success: true };
     },
     {
-      role: "business",
+      currentBusiness: true,
+      isBusiness: true,
       query: ProductDeleteQuery,
     },
   );

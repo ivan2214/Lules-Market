@@ -9,7 +9,6 @@ import { businessPublicRouter } from "./business/public";
 import { categoryRouter } from "./category";
 import { paymentRouter } from "./payment";
 import { planRouter } from "./plan";
-import { productsPrivateRouter } from "./products/private";
 import { productsPublicRouter } from "./products/public";
 import { settingsRouter } from "./settings";
 import { userRouter } from "./user";
@@ -38,7 +37,6 @@ export const appRouter = {
   plan: planRouter,
   products: {
     public: productsPublicRouter,
-    private: productsPrivateRouter,
   },
   settings: settingsRouter,
   user: userRouter,

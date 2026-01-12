@@ -1,5 +1,6 @@
 import "server-only";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
+
+import { getCurrentBusiness } from "@/data/business/get-current-business";
 import type { PolicyUser } from "./_types";
 
 /* 
@@ -27,13 +28,14 @@ export function canDeleteProduct(
   return canEditProduct(user, product);
 }
 
-export async function canAddProduct(): Promise<boolean> {
-  const [error, result] = await getCurrentBusiness();
+export async function canAddProduct(userId: string): Promise<boolean> {
+  const { success, currentBusiness } = await getCurrentBusiness(userId);
 
-  if (error) return false;
+  if (!success || !currentBusiness || !currentBusiness.currentPlan)
+    return false;
 
-  const { productsUsed } = result?.currentBusiness?.currentPlan || {};
-  const { maxProducts } = result?.currentBusiness?.currentPlan?.plan || {};
+  const { productsUsed } = currentBusiness?.currentPlan || {};
+  const { maxProducts } = currentBusiness?.currentPlan?.plan || {};
   if (maxProducts === -1) return true;
   if (!productsUsed) return false;
   if (!maxProducts) return false;

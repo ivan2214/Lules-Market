@@ -3,11 +3,10 @@
  * @see https://elysiajs.com/recipe/drizzle.html#utility
  */
 /** biome-ignore-all lint/suspicious/noExplicitAny: <needs to be any> */
-/** biome-ignore-all lint/suspicious/noImplicitAnyLet: <needs to be any> */
 /** biome-ignore-all lint/complexity/noBannedTypes: <needs to be any> */
 
 import { Kind, type TObject } from "@sinclair/typebox";
-import { isTable, type Table } from "drizzle-orm";
+import type { Table } from "drizzle-orm";
 import {
   type BuildSchema,
   createInsertSchema,
@@ -15,7 +14,7 @@ import {
 } from "drizzle-typebox";
 
 type Spread<
-  T,
+  T extends TObject | Table,
   Mode extends "select" | "insert" | undefined,
 > = T extends TObject<infer Fields>
   ? {
@@ -40,7 +39,7 @@ export const spread = <
   mode?: Mode,
 ): Spread<T, Mode> => {
   const newSchema: Record<string, unknown> = {};
-  let table;
+  let table: TObject | Table;
 
   switch (mode) {
     case "insert":
@@ -62,9 +61,8 @@ export const spread = <
       table = schema;
   }
 
-  Object.keys(table.properties).forEach((key) => {
+  for (const key of Object.keys(table.properties))
     newSchema[key] = table.properties[key];
-  });
 
   return newSchema as any;
 };
@@ -77,7 +75,7 @@ export const spread = <
  * If `mode` is undefined, the schema will be spread as is, models will need to be refined manually
  */
 export const spreads = <
-  T extends Record<string, any>,
+  T extends Record<string, TObject | Table>,
   Mode extends "select" | "insert" | undefined,
 >(
   models: T,
@@ -88,12 +86,7 @@ export const spreads = <
   const newSchema: Record<string, unknown> = {};
   const keys = Object.keys(models);
 
-  keys.forEach((key) => {
-    const model = models[key];
-    if (model && (isTable(model) || Kind in model)) {
-      newSchema[key] = spread(model, mode);
-    }
-  });
+  for (const key of keys) newSchema[key] = spread(models[key], mode);
 
   return newSchema as any;
 };

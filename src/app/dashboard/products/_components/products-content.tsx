@@ -2,11 +2,13 @@ import { MessageCircleWarningIcon, Package } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import { ProductCardDashboard } from "@/features//dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features//dashboard/_constants";
+import { api } from "@/lib/eden";
 import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import {
   Alert,
   AlertDescription,
@@ -15,13 +17,16 @@ import {
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export async function ProductsContent() {
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { success, currentBusiness } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!success || !currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const { currentBusiness } = result;
-  const products = await client.products.private.listProductsByBusinessId();
+
+  const { data } = await api.products.private["by-business"].get();
+
+  const { products } = data || {};
 
   const currentPlan = currentBusiness.currentPlan;
 
@@ -61,7 +66,7 @@ export async function ProductsContent() {
         </Alert>
       )}
 
-      {products.length === 0 ? (
+      {products?.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Package className="h-12 w-12 text-muted-foreground" />
@@ -79,7 +84,7 @@ export async function ProductsContent() {
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
+          {products?.map((product) => (
             <ProductCardDashboard
               key={product.id}
               product={product}

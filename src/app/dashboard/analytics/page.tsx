@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import type { CurrentPlan } from "@/db/types";
 import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
 import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import { subscriptionErrors } from "../_constants";
 import { AnalyticsContent } from "./_components/analytics-content";
 import type { AnalyticsData } from "./_types";
@@ -18,15 +19,15 @@ export default async function AnalyticsPage({
   const params = await searchParams;
   const period = params.period || "30d";
 
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const { currentBusiness } = result;
 
   const currentPlan: CurrentPlan | null | undefined =
-    currentBusiness.currentPlan;
+    currentBusiness?.currentPlan;
 
   if (!currentPlan) {
     redirect(

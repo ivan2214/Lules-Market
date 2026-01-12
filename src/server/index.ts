@@ -1,7 +1,8 @@
 import { cors } from "@elysiajs/cors";
+import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
-import { auth } from "@/lib/auth";
 import { AppError, errorCodes } from "./errors";
+import { OpenAPI } from "./plugins/auth";
 import { productsPrivateRouter } from "./routers/products";
 
 export const app = new Elysia({ prefix: "/api" })
@@ -27,8 +28,14 @@ export const app = new Elysia({ prefix: "/api" })
       allowedHeaders: ["Content-Type", "Authorization"],
     }),
   )
-  .mount("/auth", auth.handler)
-  .get("/health", "OK")
+  .use(
+    openapi({
+      documentation: {
+        components: await OpenAPI.components,
+        paths: await OpenAPI.getPaths(),
+      },
+    }),
+  )
   .use(productsPrivateRouter);
 
 export type App = typeof app;

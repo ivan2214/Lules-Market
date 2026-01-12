@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import { formatCurrency } from "@/lib/format";
 import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import {
   Alert,
   AlertDescription,
@@ -28,12 +29,12 @@ export default async function SubscriptionPage({
   }>;
 }) {
   const { error: errorParams } = await searchParams;
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { success, currentBusiness } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!success || !currentBusiness) {
     redirect(pathsConfig.auth.signIn);
   }
-  const { currentBusiness } = result;
 
   const payments = await client.payment.history();
 

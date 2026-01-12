@@ -2,8 +2,9 @@ import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -14,12 +15,12 @@ import {
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { currentBusiness, success } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!success || !currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const { currentBusiness } = result;
 
   const productsBusiness = await client.business.private.myProducts({
     limit: 5,

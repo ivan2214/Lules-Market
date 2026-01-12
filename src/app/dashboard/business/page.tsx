@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import {
   Card,
   CardContent,
@@ -13,12 +14,12 @@ import { BusinessProfileForm } from "./_components/business-profile-form";
 import { ShareLinkCard } from "./_components/share-link-card";
 
 export default async function BusinessPage() {
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { currentBusiness } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const { currentBusiness } = result;
   const categories = await client.category.listAllCategories();
 
   return (

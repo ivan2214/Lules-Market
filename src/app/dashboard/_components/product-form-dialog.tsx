@@ -13,7 +13,7 @@ import type {
   CurrentPlan,
   ProductWithRelations,
 } from "@/db/types";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -67,45 +67,15 @@ export function ProductFormDialog({
 }: ProductFormDialogProps) {
   const [open, setOpen] = useState(false);
 
-  const queryClient = useQueryClient();
+  const createProductMutation = useMutation({
+    mutationKey: ["create-product"],
+    mutationFn: (data: ProductCreateInput) => api.products.private.post(data),
+  });
 
-  const createProductMutation = useMutation(
-    orpc.products.private.createProduct.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(`Producto "${data.product.name}" creado exitosamente!`);
-
-        // Invalidate channel queries to refetch the list
-        queryClient.invalidateQueries({
-          queryKey: orpc.products.public.listAllProducts.queryKey(),
-        });
-      },
-      onError: () => {
-        // Generic error fallback
-        toast.error("Error al crear el producto. Por favor, intenta de nuevo.");
-      },
-    }),
-  );
-
-  const updateProductMutation = useMutation(
-    orpc.products.private.updateProduct.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(
-          `Producto "${data.product.name}" actualizado exitosamente!`,
-        );
-
-        // Invalidate channel queries to refetch the list
-        queryClient.invalidateQueries({
-          queryKey: orpc.products.public.listAllProducts.queryKey(),
-        });
-      },
-      onError: () => {
-        // Generic error fallback
-        toast.error(
-          "Error al actualizar el producto. Por favor, intenta de nuevo.",
-        );
-      },
-    }),
-  );
+  const updateProductMutation = useMutation({
+    mutationKey: ["update-product"],
+    mutationFn: (data: ProductUpdateInput) => api.products.private.put(data),
+  });
 
   const defaultValues: Partial<ProductCreateInput | ProductUpdateInput> =
     product?.id
