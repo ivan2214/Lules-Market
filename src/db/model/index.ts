@@ -1,6 +1,15 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-typebox";
 import { t } from "elysia";
-import { admin, business, category, image, product, user } from "../schema";
+import {
+  admin,
+  business,
+  category,
+  image,
+  log,
+  plan,
+  product,
+  user,
+} from "../schema";
 import { spreads } from "./utils";
 
 export const models = {
@@ -21,6 +30,8 @@ export const models = {
       business: business,
       user: user,
       admin: admin,
+      plan: plan,
+      log: log,
     },
     "insert",
   ),
@@ -32,6 +43,8 @@ export const models = {
       business: business,
       user: user,
       admin: admin,
+      plan: plan,
+      log: log,
     },
     "select",
   ),

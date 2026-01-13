@@ -18,7 +18,7 @@ import { SetupForm } from "./_components/setup-form";
 
 export default async function BusinessSetup() {
   const { data: categories } = await api.category.public["list-all"].get();
-  const session = await getCurrentSession();
+  const { session } = await getCurrentSession();
 
   if (!session?.user) {
     redirect(pathsConfig.auth.signIn);

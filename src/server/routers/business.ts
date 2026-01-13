@@ -1,7 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { createSelectSchema } from "drizzle-typebox";
 import Elysia, { t } from "elysia";
-import { headers } from "next/headers";
 import {
   featuredBusinessesCache,
   getBusinessByIdCache,
@@ -16,9 +15,16 @@ import {
   product as productSchema,
 } from "@/db/schema";
 import type { Business, BusinessWithRelations } from "@/db/types";
-import { BusinessSetupSchema } from "@/shared/validators/business";
+import {
+  BusinessSetupSchema,
+  BusinessUpdateSchema,
+} from "@/shared/validators/business";
 import { authPlugin } from "../plugins/auth";
-import { setupBusiness } from "../services/business";
+import {
+  deleteBusinessService,
+  setupBusiness,
+  updateBusinessService,
+} from "../services/business";
 
 export const businessPublicRouter = new Elysia({
   prefix: "/business/public",
@@ -72,11 +78,10 @@ export const businessPublicRouter = new Elysia({
   )
   .post(
     "/trackView/:businessId",
-    async ({ params }) => {
+    async ({ params, body }) => {
       try {
         const { businessId } = params;
-        const currentHeaders = await headers();
-        const referrer = currentHeaders.get("referer") || undefined;
+        const { referrer } = body;
         await db.insert(businessViewSchema).values({
           businessId,
           referrer,
@@ -94,6 +99,9 @@ export const businessPublicRouter = new Elysia({
     {
       params: t.Object({
         businessId: t.String(),
+      }),
+      body: t.Object({
+        referrer: t.Optional(t.String()),
       }),
       response: t.Object({
         success: t.Boolean(),
@@ -140,5 +148,25 @@ export const businessPrivateRouter = new Elysia({
         limit: t.Number(),
         offset: t.Number(),
       }),
+    },
+  )
+  .post(
+    "/update",
+    async ({ body, user }) => {
+      return await updateBusinessService(user.id, body);
+    },
+    {
+      body: BusinessUpdateSchema,
+      isBusiness: true,
+    },
+  )
+  .delete(
+    "/delete",
+    async ({ user }) => {
+      return await deleteBusinessService(user.id);
+    },
+    {
+      body: BusinessUpdateSchema,
+      isBusiness: true,
     },
   );

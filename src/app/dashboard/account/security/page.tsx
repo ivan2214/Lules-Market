@@ -1,23 +1,26 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { requireSession } from "@/orpc/actions/user/require-session";
-import { requireSessions } from "@/orpc/actions/user/require-sessions";
+import { auth } from "@/lib/auth";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AccountSessions } from "@/shared/components/user/account-sessions";
 import { TwoFactorContainer } from "@/shared/components/user/two-factor-container";
 import { UpdateAccountPasswordForm } from "@/shared/components/user/update-account-password";
 
 async function AccountPage() {
-  const [sessionsError, sessions] = await requireSessions();
-  const [sessionError, response] = await requireSession();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (sessionsError) {
+  if (!session?.user) {
     redirect(pathsConfig.auth.signIn);
   }
 
-  if (sessionError) {
-    redirect(pathsConfig.auth.signIn);
-  }
+  const sessions = await auth.api.listSessions({
+    headers: await headers(),
+  });
+
+  const response = session;
 
   return (
     <div className="flex w-full flex-col gap-4">

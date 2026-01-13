@@ -15,9 +15,13 @@ export function ProductViewTracker({ productId }: { productId: string }) {
   const { mutate } = useMutation({
     mutationKey: ["product-view", productId],
     mutationFn: async (productId: string) =>
-      api.products.public.trackView({
-        productId,
-      }),
+      api.products.public
+        .trackView({
+          productId,
+        })
+        .post({
+          referrer: document.referrer,
+        }),
   });
 
   const hasExecuted = useRef(false);

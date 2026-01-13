@@ -1,6 +1,5 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { Elysia, t } from "elysia";
-import { headers } from "next/headers";
 import {
   getProductByIdCache,
   getSimilarProductsCache,
@@ -375,11 +374,11 @@ export const productsPublicRouter = new Elysia({
   )
   .post(
     "/trackView/:productId",
-    async ({ params }) => {
+    async ({ params, body }) => {
       try {
         const { productId } = params;
-        const currentHeaders = await headers();
-        const referrer = currentHeaders.get("referer") || undefined;
+        const { referrer } = body;
+
         await db.insert(productViewSchema).values({
           productId,
           referrer,
@@ -397,6 +396,9 @@ export const productsPublicRouter = new Elysia({
     {
       params: t.Object({
         productId: t.String(),
+      }),
+      body: t.Object({
+        referrer: t.Optional(t.String()),
       }),
       response: t.Object({
         success: t.Boolean(),

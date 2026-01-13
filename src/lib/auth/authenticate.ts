@@ -4,7 +4,7 @@ import type { Route } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { getSession } from "@/orpc/actions/user/get-session";
+import { getCurrentSession } from "@/data/session/get-current-session";
 import { auth } from ".";
 import type { Permissions, Role } from "./roles";
 
@@ -13,14 +13,14 @@ export async function authenticate(args?: {
   role?: Role;
   redirect?: Route;
 }) {
-  const [error, data] = await getSession();
+  const { session } = await getCurrentSession();
 
-  if (error) {
-    throw new Error(error.message);
+  if (!session) {
+    throw new Error("No session found");
   }
 
   if (!args?.permissions) {
-    const user = data?.user;
+    const user = session?.user;
     const userRole = user?.role?.split(",");
 
     if (!args?.role || userRole?.includes(args?.role)) {
@@ -41,7 +41,7 @@ export async function authenticate(args?: {
   if (is.success) {
     return {
       success: true,
-      user: data?.user,
+      user: session?.user,
     };
   }
   redirect(args?.redirect || pathsConfig.auth.signIn);

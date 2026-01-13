@@ -50,7 +50,7 @@ export const ListAllBusinessesOutputSchema = t.Object({
 type ListAllBusinessesResult = Static<typeof ListAllBusinessesOutputSchema>;
 
 async function fetchAllBusinesses(
-  input: Static<typeof ListAllBusinessesInputSchema>,
+  input?: Static<typeof ListAllBusinessesInputSchema> | null,
 ): Promise<ListAllBusinessesResult> {
   try {
     const { search, category, page, limit, sortBy } = input ?? {};
@@ -121,7 +121,7 @@ async function fetchAllBusinesses(
 }
 
 export async function listAllBusinessesCache(
-  input: Static<typeof ListAllBusinessesInputSchema>,
+  input?: Static<typeof ListAllBusinessesInputSchema> | null,
 ): Promise<ListAllBusinessesResult> {
   const cacheKey = generateCacheKey("businesses:list", input ?? {});
 

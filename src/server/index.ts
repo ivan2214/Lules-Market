@@ -14,11 +14,14 @@ import {
   businessPublicRouter,
 } from "./routers/business";
 import { categoryPublicRouter } from "./routers/category";
+import { paymentRouter } from "./routers/payment";
 import { planPublicRouter } from "./routers/plan";
 import {
   productsPrivateRouter,
   productsPublicRouter,
 } from "./routers/products";
+import { settingsRouter } from "./routers/settings";
+import { userRouter } from "./routers/user";
 
 export const app = new Elysia({ prefix: "/api" })
   .error({
@@ -60,7 +63,10 @@ export const app = new Elysia({ prefix: "/api" })
   .use(categoryPublicRouter)
   .use(adminRouter)
   .use(planPublicRouter)
-  .use(authRouter);
+  .use(authRouter)
+  .use(paymentRouter)
+  .use(settingsRouter)
+  .use(userRouter);
 
 export type App = typeof app;
 

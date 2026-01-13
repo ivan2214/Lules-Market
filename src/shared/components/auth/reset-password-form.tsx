@@ -1,25 +1,17 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import {
   type ResetPasswordSchema,
   resetPasswordSchema,
 } from "@/shared/validators/auth";
-
+import { typeboxValidator } from "@/shared/validators/form";
+import { Field, FieldError, FieldLabel } from "../ui/field";
 import { AuthError } from "./auth-error";
 import { AuthSuccess } from "./auth-success";
 
@@ -28,12 +20,17 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const [error, setError] = useState<string | undefined>(undefined);
   const [success, setSuccess] = useState<string | undefined>(undefined);
 
-  const form = useForm<ResetPasswordSchema>({
+  const form = useForm({
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
-    resolver: zodResolver(resetPasswordSchema),
+    validators: {
+      onSubmit: typeboxValidator(resetPasswordSchema),
+    },
+    onSubmit: async ({ value }) => {
+      onSubmit(value);
+    },
   });
 
   const onSubmit = async (data: ResetPasswordSchema) => {
@@ -58,41 +55,67 @@ export function ResetPasswordForm({ token }: { token: string }) {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {error && <AuthError error={error} />}
-        {success && <AuthSuccess message={success} />}
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Contraseña</FormLabel>
-              <FormControl>
-                <Input {...field} type="password" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirmar contraseña</FormLabel>
-              <FormControl>
-                <Input {...field} type="password" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={pending}>
-          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {pending ? "Restableciendo contraseña..." : "Restablecer contraseña"}
-        </Button>
-      </form>
-    </Form>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="space-y-4"
+    >
+      {error && <AuthError error={error} />}
+      {success && <AuthSuccess message={success} />}
+      <form.Field name="password">
+        {(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && !field.state.meta.isValid;
+          return (
+            <Field data-invalid={isInvalid}>
+              <FieldLabel htmlFor={field.name}>Contraseña</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                placeholder="**********"
+                autoComplete="off"
+                type="password"
+              />
+
+              {isInvalid && <FieldError errors={field.state.meta.errors} />}
+            </Field>
+          );
+        }}
+      </form.Field>
+      <form.Field name="confirmPassword">
+        {(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && !field.state.meta.isValid;
+          return (
+            <Field data-invalid={isInvalid}>
+              <FieldLabel htmlFor={field.name}>Confirmar contraseña</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                placeholder="**********"
+                autoComplete="off"
+                type="password"
+              />
+
+              {isInvalid && <FieldError errors={field.state.meta.errors} />}
+            </Field>
+          );
+        }}
+      </form.Field>
+      <Button type="submit" className="w-full" disabled={pending}>
+        {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {pending ? "Restableciendo contraseña..." : "Restablecer contraseña"}
+      </Button>
+    </form>
   );
 }

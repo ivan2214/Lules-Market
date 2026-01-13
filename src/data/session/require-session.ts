@@ -7,7 +7,7 @@ export const requireSession = async (): Promise<{
   user: User;
 }> => {
   try {
-    const session = await getCurrentSession();
+    const { session } = await getCurrentSession();
 
     if (!session?.session || !session?.user) {
       throw new Error("UNAUTHORIZED");

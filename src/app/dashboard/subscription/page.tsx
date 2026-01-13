@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getPlansCache } from "@/core/cache-functions/plan";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { requireBusiness } from "@/data/business/require-business";
 import { formatCurrency } from "@/lib/format";
-import { client } from "@/orpc";
+import { historyService } from "@/server/services/payment";
 import {
   Alert,
   AlertDescription,
@@ -36,9 +37,9 @@ export default async function SubscriptionPage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  const payments = await client.payment.history();
+  const payments = await historyService(userId);
 
-  const plans = await client.plan.getAllPlans();
+  const plans = await getPlansCache();
 
   const message = errorParams ? subscriptionErrors[errorParams] : null;
 

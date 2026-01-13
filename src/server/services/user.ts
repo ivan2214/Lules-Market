@@ -1,14 +1,31 @@
-"use server";
+import "server-only";
 import { eq } from "drizzle-orm";
+import {
+  getPublicProfileCached,
+  getUserByEmailCached,
+  getUserByIdCached,
+} from "@/core/cache-functions/user";
 import { db } from "@/db";
 import { admin, user as userDrizzle } from "@/db/schema";
 import type { User } from "@/db/types";
 import { env } from "@/env/server";
 
-export const syncUserRole = async (sessionUser: {
+export async function getPublicProfileService(userId: string) {
+  return await getPublicProfileCached(userId);
+}
+
+export async function getUserByEmailService(email: string) {
+  return await getUserByEmailCached(email);
+}
+
+export async function getUserByIdService(id: string) {
+  return await getUserByIdCached(id);
+}
+
+export async function syncUserRoleService(sessionUser: {
   id: string;
   email: string;
-}): Promise<{ success: boolean }> => {
+}): Promise<{ success: boolean }> {
   const isAdmin = sessionUser.email === env.ADMIN_EMAIL;
   const isSuperAdmin = sessionUser.email === env.SUPER_ADMIN_EMAIL;
 
@@ -56,4 +73,4 @@ export const syncUserRole = async (sessionUser: {
   }
 
   return { success: false };
-};
+}

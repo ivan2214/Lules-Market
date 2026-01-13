@@ -12,7 +12,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
       async resolve({ status, request: { headers } }) {
         const { user, session } = await resolveAuthUser(headers);
 
-        if (!session) return status(401);
+        if (!session || !user) return status(401);
 
         return {
           user,

@@ -15,9 +15,13 @@ export function BusinessViewTracker({ businessId }: { businessId: string }) {
   const { mutate } = useMutation({
     mutationKey: ["business-view", businessId],
     mutationFn: async (businessId: string) =>
-      api.business.public.trackView({
-        businessId,
-      }),
+      api.business.public
+        .trackView({
+          businessId,
+        })
+        .post({
+          referrer: document.referrer,
+        }),
   });
 
   const hasExecuted = useRef(false);
