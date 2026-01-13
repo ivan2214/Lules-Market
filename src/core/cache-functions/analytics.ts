@@ -11,8 +11,7 @@ import {
   productView as productViewSchema,
 } from "@/db/schema";
 import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
-
-export type AnalyticsPeriod = "7d" | "30d" | "90d";
+import type { AnalyticsPeriod } from "@/server/routers/analytics";
 
 type HomePageStats = {
   activeBusinessesTotal: number;
@@ -83,10 +82,8 @@ export async function getHomePageStatsCache(): Promise<HomePageStats> {
 
 export async function getStatsCache(
   businessId: string,
-  input: { period?: AnalyticsPeriod },
+  period?: AnalyticsPeriod,
 ) {
-  const period = input.period ?? "30d";
-
   const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
@@ -185,13 +182,15 @@ export async function getStatsCache(
   };
 }
 
-export async function getProductStatsCache(
-  businessId: string,
-  input: { period?: AnalyticsPeriod; productId: string },
-) {
-  const period = input.period ?? "30d";
-  const productId = input.productId;
-
+export async function getProductStatsCache({
+  businessId,
+  period,
+  productId,
+}: {
+  businessId: string;
+  period?: AnalyticsPeriod;
+  productId: string;
+}) {
   // Verify product belongs to business
   const productData = await db.query.product.findFirst({
     where: and(

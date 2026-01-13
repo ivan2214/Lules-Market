@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Activity, startTransition, useEffect, useRef, useState } from "react";
 import type { ProductWithRelations } from "@/db/types";
+import { api } from "@/lib/eden";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { client } from "@/orpc";
 import { mainImage } from "@/shared/utils/main-image";
 import { ImageWithSkeleton } from "./image-with-skeleton";
 import { Badge } from "./ui/badge";
@@ -45,11 +45,12 @@ export const SearchForm = () => {
     }
     debounceRef.current = window.setTimeout(() => {
       startTransition(async () => {
-        const { products, total } =
-          await client.products.public.listAllProducts({
+        const { data } = await api.products.public.list.get({
+          query: {
             search: value,
-          });
-        setResults({ products, total });
+          },
+        });
+        setResults({ products: data?.products || [], total: data?.total || 0 });
       });
     }, 300);
   };

@@ -8,10 +8,11 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
 import { ac, allRoles } from "@/lib/auth/roles";
-import { syncUserRole } from "@/orpc/actions/user/sync-user-role";
+import { syncUserRoleService } from "@/server/services/user";
 
 export const auth = betterAuth({
   ...authConfig,
+  basePath: "/api",
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -128,7 +129,7 @@ export const auth = betterAuth({
         async after(user) {
           const { id, email } = user;
 
-          await syncUserRole({
+          await syncUserRoleService({
             email,
             id,
           });
@@ -139,3 +140,4 @@ export const auth = betterAuth({
 });
 
 export type Session = typeof auth.$Infer.Session;
+export type User = typeof auth.$Infer.Session.user;

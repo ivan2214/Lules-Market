@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 
 const STORAGE_KEY = "visited_businesses";
 const EXPIRY_DAYS = 30; // 1 mes = 30 días
@@ -12,9 +12,17 @@ type VisitRecord = {
 };
 
 export function BusinessViewTracker({ businessId }: { businessId: string }) {
-  const { mutate } = useMutation(
-    orpc.business.public.trackBusinessView.mutationOptions(),
-  );
+  const { mutate } = useMutation({
+    mutationKey: ["business-view", businessId],
+    mutationFn: async (businessId: string) =>
+      api.business.public
+        .trackView({
+          businessId,
+        })
+        .post({
+          referrer: document.referrer,
+        }),
+  });
 
   const hasExecuted = useRef(false);
 
@@ -31,15 +39,12 @@ export function BusinessViewTracker({ businessId }: { businessId: string }) {
 
     if (!hasVisited) {
       // Registrar la visita en el backend
-      mutate(
-        { businessId },
-        {
-          onSuccess: () => {
-            // Solo marcar como visitado si el registro fue exitoso
-            markAsVisited(businessId);
-          },
+      mutate(businessId, {
+        onSuccess: () => {
+          // Solo marcar como visitado si el registro fue exitoso
+          markAsVisited(businessId);
         },
-      );
+      });
     }
   }, [businessId, mutate]);
 

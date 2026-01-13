@@ -2,7 +2,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, ShoppingBag, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
 import { ProductCard } from "@/shared/components/product-card";
@@ -26,11 +26,24 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   businessId,
   sort,
 }) => {
-  const {
-    data: { products, total },
-  } = useSuspenseQuery(
-    orpc.products.public.listAllProducts.queryOptions({
-      input: {
+  const { data } = useSuspenseQuery({
+    queryFn: async () => {
+      const { data, error } = await api.products.public.list.get({
+        query: {
+          businessId,
+          category,
+          limit: currentLimit,
+          page: currentPage,
+          search,
+          sort,
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    queryKey: [
+      "products",
+      {
         businessId,
         category,
         limit: currentLimit,
@@ -38,12 +51,14 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
         search,
         sort,
       },
-    }),
-  );
+    ],
+  });
+
+  const { products, total } = data || {};
 
   const totalPages = Math.ceil(total / currentLimit);
 
-  if (!products.length) {
+  if (!products?.length || !total || !data || !products) {
     hasFilters ? (
       <EmptyStateSearch
         title="No se encontraron productos"
@@ -64,7 +79,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
+        {products?.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

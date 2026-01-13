@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { currentPlan } from "@/db/schema";
 import { env } from "@/env/server";
-import { client } from "@/orpc";
+import { api } from "@/lib/eden";
 
 /**
  * Cron job para verificar y desactivar planes expirados
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
       }
 
       // Registrar log de la desactivación
-      await client.admin.createLog({
+      await api.admin.createLog.post({
         adminId: "SYSTEM",
         action: "PLAN_EXPIRED",
         entityType: "PlanActive",
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
     console.error("❌ Error en cron check-plan-expired:", err);
 
     // Registrar error en logs
-    await client.admin.createLog({
+    await api.admin.createLog.post({
       adminId: "SYSTEM",
       action: "PLAN_EXPIRATION_CHECK_FAILED",
       details: { error: err.message },

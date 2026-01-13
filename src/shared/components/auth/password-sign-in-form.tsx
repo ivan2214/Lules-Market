@@ -1,25 +1,18 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
 import pathsConfig from "@/config/paths.config";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { type SignInSchema, signInSchema } from "@/shared/validators/auth";
+import { signInSchema } from "@/shared/validators/auth";
+import { typeboxValidator } from "@/shared/validators/form";
+import { Field, FieldError, FieldLabel } from "../ui/field";
 import { AuthError } from "./auth-error";
 
 export function PasswordSignInForm() {
@@ -27,61 +20,79 @@ export function PasswordSignInForm() {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const form = useForm<SignInSchema>({
+  const form = useForm({
     defaultValues: {
       email: "",
       password: "",
       rememberMe: true,
     },
-    resolver: zodResolver(signInSchema),
+    validators: {
+      onSubmit: typeboxValidator(signInSchema),
+      onChange: typeboxValidator(signInSchema),
+    },
+    onSubmit: ({ value }) => {
+      startTransition(() => {
+        authClient.signIn.email(
+          {
+            email: value.email,
+            password: value.password,
+            rememberMe: value.rememberMe,
+            callbackURL: pathsConfig.dashboard.root,
+          },
+          {
+            onSuccess: (context) => {
+              setError(undefined);
+              if (context.data.twoFactorRedirect) {
+                router.push(pathsConfig.auth.twoFactor);
+              }
+            },
+            onError: ({ error }) => {
+              setError(error.message);
+            },
+          },
+        );
+      });
+    },
   });
 
-  const onSubmit = async (data: SignInSchema) => {
-    startTransition(async () => {
-      await authClient.signIn.email(
-        {
-          email: data.email,
-          password: data.password,
-          rememberMe: data.rememberMe,
-          callbackURL: pathsConfig.dashboard.root,
-        },
-        {
-          onSuccess: (context) => {
-            setError(undefined);
-            if (context.data.twoFactorRedirect) {
-              router.push(pathsConfig.auth.twoFactor);
-            }
-          },
-          onError: ({ error }) => {
-            setError(error.message);
-          },
-        },
-      );
-    });
-  };
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {error && <AuthError error={error} />}
-        <FormField
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="john.doe@example.com" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="password"
-          render={({ field }) => (
-            <FormItem>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="space-y-4"
+    >
+      {error && <AuthError error={error} />}
+      <form.Field name="email">
+        {(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && !field.state.meta.isValid;
+          return (
+            <Field data-invalid={isInvalid}>
+              <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                placeholder="john.doe@example.com"
+              />
+              {isInvalid && <FieldError errors={field.state.meta.errors} />}
+            </Field>
+          );
+        }}
+      </form.Field>
+      <form.Field name="password">
+        {(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && !field.state.meta.isValid;
+          return (
+            <Field data-invalid={isInvalid}>
               <div className="flex items-center">
-                <FormLabel htmlFor="password">Password</FormLabel>
+                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                 <Link
                   href="/auth/forgot-password"
                   className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -89,32 +100,46 @@ export function PasswordSignInForm() {
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
-              <FormControl>
-                <Input {...field} type="password" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="rememberMe"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <div className="flex items-center gap-2">
-                  <Checkbox {...field} defaultChecked={field.value} />
-                  <FormLabel>Recordarme</FormLabel>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={pending}>
-          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {pending ? "Iniciando sesión..." : "Iniciar sesión"}
-        </Button>
-      </form>
-    </Form>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                placeholder="********"
+                type="password"
+              />
+              {isInvalid && <FieldError errors={field.state.meta.errors} />}
+            </Field>
+          );
+        }}
+      </form.Field>
+      <form.Field name="rememberMe">
+        {(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && !field.state.meta.isValid;
+          return (
+            <Field data-invalid={isInvalid}>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={field.name}
+                  checked={field.state.value}
+                  onCheckedChange={(checked) =>
+                    field.handleChange(checked === true)
+                  }
+                  defaultChecked={field.state.value}
+                />
+                <FieldLabel>Recordarme</FieldLabel>
+              </div>
+            </Field>
+          );
+        }}
+      </form.Field>
+      <Button type="submit" className="w-full" disabled={pending}>
+        {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {pending ? "Iniciando sesión..." : "Iniciar sesión"}
+      </Button>
+    </form>
   );
 }

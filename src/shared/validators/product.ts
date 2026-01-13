@@ -1,19 +1,13 @@
-import z from "zod";
-import { ImageInputSchema } from "@/shared/validators/image";
+import type { Static } from "elysia";
+import { ProductCreateBody, ProductUpdateBody } from "@/shared/schemas/product";
+import { typeboxValidator } from "@/shared/validators/form";
 
-export const ProductCreateSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  description: z.string().min(1, "La descripción es requerida"),
-  price: z.number().min(0, "El precio debe ser mayor o igual a 0"),
-  category: z.string().min(1, "La categoría es requerida"),
-  active: z.boolean().optional(),
-  images: z.array(ImageInputSchema).min(1, "Se requiere al menos una imagen"),
-});
+export type ProductCreateInput = Static<typeof ProductCreateBody>;
+export type ProductUpdateInput = Static<typeof ProductUpdateBody>;
 
-export const ProductUpdateSchema = ProductCreateSchema.extend({
-  productId: z.string().min(1, "El ID del producto es requerido").optional(),
-});
+export const ProductCreateSchema = typeboxValidator(ProductCreateBody);
+export const ProductUpdateSchema = typeboxValidator(ProductUpdateBody);
 
-export const ProductDeleteSchema = z.object({
-  productId: z.string().min(1, "El ID del producto es requerido"),
-});
+// We need to export the schemas themselves too if needed for type inference elsewhere
+export const ProductCreateSchemaObject = ProductCreateBody;
+export const ProductUpdateSchemaObject = ProductUpdateBody;

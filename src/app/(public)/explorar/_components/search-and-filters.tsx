@@ -6,7 +6,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -50,13 +50,31 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   params,
   typeExplorer,
 }) => {
-  const {
-    data: { businesses },
-  } = useSuspenseQuery(orpc.business.public.listAllBusinesses.queryOptions());
+  const { data } = useSuspenseQuery({
+    queryKey: ["businesses", params?.category],
+    queryFn: async () => {
+      const { data } = await api.business.public["list-all"].get({
+        query: {
+          category: params?.category,
+        },
+      });
+      return data;
+    },
+  });
 
-  const { data: categories } = useSuspenseQuery(
-    orpc.category.listAllCategories.queryOptions(),
-  );
+  const businesses = data?.businesses || [];
+
+  const { data: categories } = useSuspenseQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await api.category.public["list-all"].get({
+        query: {
+          category: params?.category,
+        },
+      });
+      return data;
+    },
+  });
 
   const { search, sortBy, businessId, category } = params || {};
   const [searchValue, setSearchValue] = useState(search || "");
@@ -129,15 +147,16 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
           </SheetHeader>
 
           {/* Category Pills */}
-          <section className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Categorías</h2>
-            <CategoryPills
-              typeExplorer={typeExplorer}
-              categories={categories}
-              category={category || ""}
-            />
-          </section>
-
+          {categories && (
+            <section className="flex flex-col gap-4">
+              <h2 className="font-bold text-2xl">Categorías</h2>
+              <CategoryPills
+                typeExplorer={typeExplorer}
+                categories={categories}
+                category={category || ""}
+              />
+            </section>
+          )}
           {/* Business Pills */}
           <section className="flex flex-col gap-4">
             <h2 className="font-bold text-2xl">Comercios</h2>

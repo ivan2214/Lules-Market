@@ -2,7 +2,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Building, Package, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { BusinessCard } from "@/shared/components/business-card";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
@@ -22,22 +22,41 @@ export const BusinessGrid = ({
   category?: string;
   sortBy?: "newest" | "oldest";
 }) => {
-  const {
-    data: { businesses, total },
-  } = useSuspenseQuery(
-    orpc.business.public.listAllBusinesses.queryOptions({
-      input: {
-        category,
-        limit: currentLimit,
-        page: currentPage,
-        search,
-        sortBy,
-      },
-    }),
-  );
+  const { data } = useSuspenseQuery({
+    queryFn: async () => {
+      const { data, error } = await api.business.public["list-all"].get({
+        query: {
+          category,
+          limit: currentLimit,
+          page: currentPage,
+          search,
+          sortBy,
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    queryKey: [
+      "businesses",
+      category,
+      currentLimit,
+      currentPage,
+      search,
+      sortBy,
+    ],
+  });
+
+  const { businesses, total } = data || {};
   const totalPages = Math.ceil(total / currentLimit);
 
-  if (!businesses.length) {
+  console.log({
+    totalPages,
+    total,
+    currentLimit,
+    businesses: businesses?.length,
+  });
+
+  if (!businesses?.length || !total || !businesses) {
     hasFilters ? (
       <EmptyStateSearch
         title="No se encontraron comercios"
@@ -58,7 +77,7 @@ export const BusinessGrid = ({
   return (
     <>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
-        {businesses.map((business) => (
+        {businesses?.map((business) => (
           <BusinessCard key={business.id} business={business} />
         ))}
       </div>

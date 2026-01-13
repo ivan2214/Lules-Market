@@ -1,8 +1,8 @@
 import { ActiveFilters } from "@/app/(public)/explorar/_components/active-filters";
 import { ResultsCountAndLimitSelector } from "@/app/(public)/explorar/_components/results-count-and-limit-selector";
 import { SearchAndFilters } from "@/app/(public)/explorar/_components/search-and-filters";
+import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { orpc } from "@/orpc";
 import { BusinessGrid } from "./_components/business-grid";
 
 type SearchParams = {
@@ -25,21 +25,31 @@ export default async function ComerciosPage({
 
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(
-    orpc.business.public.listAllBusinesses.queryOptions({
-      input: {
-        category,
-        limit: currentLimit,
-        page: currentPage,
-        search,
-        sortBy,
-      },
-    }),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: ["businesses", category, limit, page, search, sortBy],
+    queryFn: async () => {
+      const { data, error } = await api.business.public["list-all"].get({
+        query: {
+          category,
+          limit: currentLimit,
+          page: currentPage,
+          search,
+          sortBy,
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  await queryClient.prefetchQuery(
-    orpc.category.listAllCategories.queryOptions(),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await api.category.public["list-all"].get();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 

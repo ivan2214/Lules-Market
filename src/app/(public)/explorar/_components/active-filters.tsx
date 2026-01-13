@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
@@ -32,9 +32,19 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
 
   typeExplorer,
 }) => {
-  const {
-    data: { businesses },
-  } = useSuspenseQuery(orpc.business.public.listAllBusinesses.queryOptions());
+  const { data } = useSuspenseQuery({
+    queryKey: ["businesses", params?.category],
+    queryFn: async () => {
+      const { data } = await api.business.public["list-all"].get({
+        query: {
+          category: params?.category,
+        },
+      });
+      return data;
+    },
+  });
+
+  const businesses = data?.businesses || [];
   const router = useRouter();
   const { createUrl } = useSearchUrl({ currentParams: params, typeExplorer });
 

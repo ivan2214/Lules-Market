@@ -2,8 +2,9 @@ import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -14,21 +15,25 @@ import {
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { currentBusiness, success } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!success || !currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const { currentBusiness } = result;
 
-  const productsBusiness = await client.business.private.myProducts({
-    limit: 5,
-    offset: 0,
+  const { data: productsBusiness } = await api.business.private[
+    "my-products"
+  ].get({
+    query: {
+      limit: 5,
+      offset: 0,
+    },
   });
 
   const productCount = currentBusiness.products?.length || 0;
   const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
-  const categories = await client.category.listAllCategories();
+  const { data: categories } = await api.category.public["list-all"].get();
 
   return (
     <>
@@ -103,7 +108,7 @@ async function DashboardContent() {
             <ProductFormDialog
               maxImagesPerProduct={currentBusiness.currentPlan?.imagesUsed || 0}
               className="w-full"
-              categories={categories}
+              categories={categories || []}
             />
 
             <Button asChild variant="outline" className="w-full bg-transparent">
@@ -146,14 +151,14 @@ async function DashboardContent() {
         </Card>
       </div>
 
-      {productsBusiness.length > 0 && (
+      {productsBusiness && productsBusiness?.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Productos Recientes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {productsBusiness.slice(0, 5).map((product) => (
+              {productsBusiness?.slice(0, 5).map((product) => (
                 <div
                   key={product.id}
                   className="flex items-center justify-between"
@@ -178,7 +183,7 @@ async function DashboardContent() {
                       </Button>
                     }
                     isViewMode={true}
-                    categories={categories}
+                    categories={categories || []}
                   />
                 </div>
               ))}

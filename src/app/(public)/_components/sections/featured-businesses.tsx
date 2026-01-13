@@ -3,14 +3,21 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { BusinessList } from "@/app/(public)/_components/business-list";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 
 export function FeaturedBusinesses() {
-  const { data: featuredBusinesses } = useSuspenseQuery(
-    orpc.business.public.featuredBusinesses.queryOptions(),
-  );
+  const { data } = useSuspenseQuery({
+    queryKey: ["featured-businesses"],
+    queryFn: async () => {
+      const { data, error } = await api.business.public.featured.get();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const featuredBusinesses = data || [];
 
   return (
     <section className="mb-12">

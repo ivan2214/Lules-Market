@@ -1,60 +1,90 @@
-import { z } from "zod";
+import { type Static, t } from "elysia";
 import { BusinessSetupSchema } from "./business";
 
-export const forgotPasswordSchema = z.object({
-  email: z.email(),
+export const forgotPasswordSchema = t.Object({
+  email: t.String({
+    format: "email",
+    error: "Dirección de correo electrónico inválida",
+  }),
 });
 
-export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type ForgotPasswordSchema = Static<typeof forgotPasswordSchema>;
 
-export const otpSchema = z.object({
-  code: z
-    .string()
-    .length(6, "OTP code must be 6 digits")
-    .regex(/^\d+$/, "OTP code must contain only digits"),
+export const otpSchema = t.Object({
+  code: t.String({
+    minLength: 6,
+    maxLength: 6,
+    error: "El código debe tener 6 caracteres",
+    pattern: "^\\d+$",
+  }),
 });
 
-export type OtpSchema = z.infer<typeof otpSchema>;
+export type OtpSchema = Static<typeof otpSchema>;
 
-export const resetPasswordSchema = z
-  .object({
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
-
-export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
-
-export const signInSchema = z.object({
-  email: z.email().min(1, "El email es requerido"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  rememberMe: z.boolean().optional(),
+const baseResetPasswordSchema = t.Object({
+  password: t.String({
+    minLength: 8,
+    error: "La contraseña debe tener al menos 8 caracteres",
+  }),
+  confirmPassword: t.String({
+    minLength: 8,
+    error: "La contraseña debe tener al menos 8 caracteres",
+  }),
 });
 
-export type SignInSchema = z.infer<typeof signInSchema>;
+// La validación de igualdad de contraseñas debe realizarse en el controlador o handler
+export const resetPasswordSchema = baseResetPasswordSchema;
 
-export const signUpSchema = z.object({
-  name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
-  email: z
-    .email("Dirección de correo electrónico inválida")
-    .min(1, "El email es requerido"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  confirmPassword: z
-    .string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres"),
-  businessData: BusinessSetupSchema,
+export type ResetPasswordSchema = Static<typeof resetPasswordSchema>;
+
+export const signInSchema = t.Object({
+  email: t.String({
+    format: "email",
+    error: "Dirección de correo electrónico inválida",
+    minLength: 1,
+  }),
+  password: t.String({
+    minLength: 8,
+    error: "La contraseña debe tener al menos 8 caracteres",
+  }),
+  rememberMe: t.Optional(t.Boolean()),
 });
 
-export type SignUpSchema = z.infer<typeof signUpSchema>;
+export type SignInSchema = Static<typeof signInSchema>;
 
-export const totpSchema = z.object({
-  code: z
-    .string()
-    .length(6, "TOTP code must be 6 digits")
-    .regex(/^\d+$/, "TOTP code must contain only digits"),
+export const signUpSchema = t.Object({
+  name: t.String({
+    minLength: 3,
+    maxLength: 100,
+    error: "El nombre debe tener al menos 3 caracteres",
+  }),
+  email: t.String({
+    minLength: 1,
+    format: "email",
+    error: "Dirección de correo electrónico inválida",
+  }),
+  password: t.String({
+    minLength: 8,
+    error: "La contraseña debe tener al menos 8 caracteres",
+  }),
+  confirmPassword: t.Optional(
+    t.String({
+      minLength: 8,
+      error: "La contraseña debe tener al menos 8 caracteres",
+    }),
+  ),
+  businessData: t.Omit(BusinessSetupSchema, ["userEmail"]),
 });
 
-export type TotpSchema = z.infer<typeof totpSchema>;
+export type SignUpSchema = Static<typeof signUpSchema>;
+
+export const totpSchema = t.Object({
+  code: t.String({
+    minLength: 6,
+    maxLength: 6,
+    error: "El código debe tener 6 dígitos y contener solo números",
+    pattern: "^\\d+$",
+  }),
+});
+
+export type TotpSchema = Static<typeof totpSchema>;

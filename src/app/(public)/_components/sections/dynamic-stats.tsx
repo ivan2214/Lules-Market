@@ -1,8 +1,8 @@
 ﻿"use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, Store } from "lucide-react";
+import { api } from "@/lib/eden";
 import { cn } from "@/lib/utils";
-import { orpc } from "@/orpc";
 import {
   Card,
   CardContent,
@@ -12,23 +12,34 @@ import {
 import { calcTrend } from "@/shared/utils/calc-trend";
 
 export function DynamicStats() {
-  const {
-    data: {
-      activeBusinessesTotal,
-      activeBusinessesLastMonth,
-      productsTotal,
-      productsLastMonth,
+  const { data } = useSuspenseQuery({
+    queryKey: ["home-page-stats"],
+    queryFn: async () => {
+      const { data, error } =
+        await api.analytics.public["home-page-stats"].get();
+      if (error) throw error;
+      return data;
     },
-  } = useSuspenseQuery(orpc.analytics.getHomePageStats.queryOptions());
+  });
+
+  const {
+    activeBusinessesTotal,
+    activeBusinessesLastMonth,
+    productsTotal,
+    productsLastMonth,
+  } = data?.stats || {};
 
   const stats = {
     businesses: {
-      value: activeBusinessesTotal,
-      trend: calcTrend(activeBusinessesTotal, activeBusinessesLastMonth),
+      value: activeBusinessesTotal || 0,
+      trend: calcTrend(
+        activeBusinessesTotal || 0,
+        activeBusinessesLastMonth || 0,
+      ),
     },
     products: {
-      value: productsTotal,
-      trend: calcTrend(productsTotal, productsLastMonth),
+      value: productsTotal || 0,
+      trend: calcTrend(productsTotal || 0, productsLastMonth || 0),
     },
   };
 

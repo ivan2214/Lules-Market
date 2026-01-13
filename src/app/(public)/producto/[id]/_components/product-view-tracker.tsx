@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 
 const STORAGE_KEY = "visited_products";
 const EXPIRY_DAYS = 30; // 1 mes
@@ -12,9 +12,17 @@ type VisitRecord = {
 };
 
 export function ProductViewTracker({ productId }: { productId: string }) {
-  const { mutate } = useMutation(
-    orpc.products.public.trackProductView.mutationOptions(),
-  );
+  const { mutate } = useMutation({
+    mutationKey: ["product-view", productId],
+    mutationFn: async (productId: string) =>
+      api.products.public
+        .trackView({
+          productId,
+        })
+        .post({
+          referrer: document.referrer,
+        }),
+  });
 
   const hasExecuted = useRef(false);
 
@@ -31,15 +39,12 @@ export function ProductViewTracker({ productId }: { productId: string }) {
 
     if (!hasVisited) {
       // Registrar la visita en el backend
-      mutate(
-        { productId },
-        {
-          onSuccess: () => {
-            // Solo marcar como visitado si el registro fue exitoso
-            markAsVisited(productId);
-          },
+      mutate(productId, {
+        onSuccess: () => {
+          // Solo marcar como visitado si el registro fue exitoso
+          markAsVisited(productId);
         },
-      );
+      });
     }
   }, [productId, mutate]);
 

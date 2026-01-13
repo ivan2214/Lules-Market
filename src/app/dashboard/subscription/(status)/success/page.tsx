@@ -1,7 +1,10 @@
 import { CheckCircle2 } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { client } from "@/orpc";
+import pathsConfig from "@/config/paths.config";
+import { auth } from "@/lib/auth";
+import { getPaymentService, successService } from "@/server/services/payment";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -29,9 +32,17 @@ export default async function PaymentSuccessPage({
     redirect("/dashboard/subscription");
   }
 
-  await client.payment.success({ paymentIdMP, paymentIdDB });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  const { payment } = await client.payment.getPayment({ paymentIdDB });
+  if (!session?.user) {
+    redirect(pathsConfig.auth.signIn);
+  }
+
+  await successService(paymentIdMP, paymentIdDB);
+
+  const { payment } = await getPaymentService(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");
