@@ -14,6 +14,9 @@ import {
 } from "@/shared/components/ui/card";
 import type { MercadoPagoCallbackParams } from "@/shared/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function PaymentPendingPage({
   searchParams,
 }: {

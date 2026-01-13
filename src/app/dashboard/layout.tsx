@@ -1,20 +1,14 @@
-import { redirect } from "next/navigation";
 import type React from "react";
 import pathsConfig from "@/config/paths.config";
-import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { requireBusiness } from "@/data/business/require-business";
 import { DashboardHeaderWrapper } from "@/features/dashboard/_components/dashboard-header-wrapper";
 import { DashboardSidebar } from "@/features/dashboard/_components/dashboard-sidebar";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 
+export const dynamic = "force-dynamic";
+/* revalidar cada 30 minutos */
+export const revalidate = 60 * 30;
+
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = await requireBusiness();
-  const { currentBusiness, success } = await getCurrentBusiness(userId);
-
-  if (!success || !currentBusiness) {
-    redirect(pathsConfig.business.setup);
-  }
-
   return (
     <div className="flex h-screen">
       <div className="hidden lg:flex">

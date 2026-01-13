@@ -20,6 +20,10 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 
+export const dynamic = "force-dynamic";
+/* revalidar cada 30 minutos */
+export const revalidate = 60 * 30;
+
 export default async function AdminPage() {
   const data = await auth.api.listUsers({
     query: {

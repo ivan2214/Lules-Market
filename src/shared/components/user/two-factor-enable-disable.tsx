@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
-import type { session as sessionSchema, user as userSchema } from "@/db/schema";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -18,15 +17,13 @@ import {
 } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
+import { useAuth } from "@/shared/providers/auth-provider";
 
-export function TwoFactorEnableDisable({
-  session,
-}: {
-  session: {
-    user: typeof userSchema.$inferInsert;
-    session: typeof sessionSchema.$inferInsert;
-  };
-}) {
+export function TwoFactorEnableDisable() {
+  const { user } = useAuth();
+  if (!user) {
+    throw new Error("User not found");
+  }
   const router = useRouter();
   const [twoFactorDialog, setTwoFactorDialog] = useState(false);
   const [twoFactorVerifyURI, setTwoFactorVerifyURI] = useState("");
@@ -37,26 +34,26 @@ export function TwoFactorEnableDisable({
     <Dialog open={twoFactorDialog} onOpenChange={setTwoFactorDialog}>
       <DialogTrigger asChild>
         <Button
-          variant={session?.user.twoFactorEnabled ? "destructive" : "outline"}
+          variant={user.twoFactorEnabled ? "destructive" : "outline"}
           className="gap-2"
         >
-          {session?.user.twoFactorEnabled ? (
+          {user.twoFactorEnabled ? (
             <ShieldOff size={16} />
           ) : (
             <ShieldCheck size={16} />
           )}
           <span className="text-xs md:text-sm">
-            {session?.user.twoFactorEnabled ? "Disable 2FA" : "Enable 2FA"}
+            {user.twoFactorEnabled ? "Disable 2FA" : "Enable 2FA"}
           </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-11/12 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {session?.user.twoFactorEnabled ? "Disable 2FA" : "Enable 2FA"}
+            {user.twoFactorEnabled ? "Disable 2FA" : "Enable 2FA"}
           </DialogTitle>
           <DialogDescription>
-            {session?.user.twoFactorEnabled
+            {user.twoFactorEnabled
               ? "Disable the second factor authentication from your account"
               : "Enable 2FA to secure your account"}
           </DialogDescription>
@@ -97,7 +94,7 @@ export function TwoFactorEnableDisable({
                 return;
               }
               setIsPendingTwoFa(true);
-              if (session?.user.twoFactorEnabled) {
+              if (user.twoFactorEnabled) {
                 await authClient.twoFactor.disable({
                   password: twoFaPassword,
                   fetchOptions: {
@@ -153,7 +150,7 @@ export function TwoFactorEnableDisable({
           >
             {isPendingTwoFa ? (
               <Loader2 size={15} className="animate-spin" />
-            ) : session?.user.twoFactorEnabled ? (
+            ) : user.twoFactorEnabled ? (
               "Disable 2FA"
             ) : (
               "Enable 2FA"

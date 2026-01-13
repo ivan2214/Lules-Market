@@ -18,6 +18,6 @@ export const authClient = createAuthClient({
       roles: allRoles,
     }),
     twoFactorClient(),
-    customSessionClient<typeof auth>(),
+    customSessionClient<typeof auth>(), // Este plugin infiere los tipos del servidor
   ],
 });

@@ -2,6 +2,10 @@ import { cookies, headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { UserSessions } from "@/shared/components/admin/user-sessions";
 
+export const dynamic = "force-dynamic";
+/* revalidar cada 30 minutos */
+export const revalidate = 60 * 30;
+
 export default async function UserPage({
   params,
 }: {

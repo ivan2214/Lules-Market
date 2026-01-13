@@ -3,18 +3,15 @@
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import { CheckCircle2, Text, XCircle } from "lucide-react";
 import * as React from "react";
-import type { authClient } from "@/lib/auth/auth-client";
+import type { User } from "@/db/types";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/shared/components/data-table/data-table-column-header";
 import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
 import { Badge } from "@/shared/components/ui/badge";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { useDataTable } from "@/shared/hooks/use-data-table";
-
 import { UserCreateDialog } from "./user-create";
 import { UserListActions } from "./users-list-actions";
-
-type User = (typeof authClient.$Infer.Session)["user"];
 
 export function UsersList({
   data,
@@ -152,7 +149,7 @@ export function UsersList({
 
           return (
             <div>
-              {createdAt?.toLocaleDateString("en-US", {
+              {new Date(createdAt || "").toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

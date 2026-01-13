@@ -76,7 +76,9 @@ export const adminRouter = new Elysia({
     },
     {
       body: AdminModel.checkPermissionBody,
-      response: t.Boolean(),
+      response: t.Boolean({
+        default: false,
+      }),
     },
   )
   .delete(

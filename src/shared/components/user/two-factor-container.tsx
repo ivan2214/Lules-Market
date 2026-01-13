@@ -1,6 +1,7 @@
 "use client";
 
 import type { session as sessionSchema, user as userSchema } from "@/db/schema";
+import type { Session } from "@/lib/auth";
 import { If } from "@/shared/components/if";
 import {
   Card,
@@ -9,18 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-
 import { TwoFactorEnableDisable } from "./two-factor-enable-disable";
 import { TwoFactorScanQrCode } from "./two-factor-scan-qr-code";
 
-export function TwoFactorContainer({
-  session,
-}: {
-  session: {
-    user: typeof userSchema.$inferInsert;
-    session: typeof sessionSchema.$inferInsert;
-  };
-}) {
+export function TwoFactorContainer() {
   return (
     <Card>
       <CardHeader>
@@ -31,10 +24,10 @@ export function TwoFactorContainer({
         </CardDescription>
       </CardHeader>
       <CardContent className="flex gap-2">
-        <If condition={!!session.user.twoFactorEnabled}>
+        <If condition={!!session.user?.twoFactorEnabled}>
           <TwoFactorScanQrCode />
         </If>
-        <TwoFactorEnableDisable session={session} />
+        <TwoFactorEnableDisable />
       </CardContent>
     </Card>
   );

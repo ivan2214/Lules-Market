@@ -4,6 +4,10 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { UsersList } from "@/shared/components/admin/users-list";
 
+export const dynamic = "force-dynamic";
+/* revalidar cada 30 minutos */
+export const revalidate = 60 * 30;
+
 type User = (typeof auth.$Infer.Session)["user"];
 
 const searchSchema = z.object({

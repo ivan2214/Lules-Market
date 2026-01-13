@@ -18,9 +18,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl, useAuth } from "@/shared/providers/auth-provider";
 
-export function AccountRoles({ roles }: { roles: string[] | undefined }) {
+export function AccountRoles() {
+  const { user } = useAuth();
+  const roles = user?.role?.split(",") ?? [];
   const { getRolePermissions } = useAccessControl();
   const [expandedRoles, setExpandedRoles] = useState<Record<string, boolean>>(
     {},

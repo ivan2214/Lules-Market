@@ -29,6 +29,7 @@ import { ProductViewTracker } from "./_components/product-view-tracker";
 
 // Configuración de revalidación para ISR (Incremental Static Regeneration)
 // Se regenera cada hora
+export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
 interface ProductPageProps {

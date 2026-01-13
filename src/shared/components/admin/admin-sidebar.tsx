@@ -1,8 +1,9 @@
 "use client";
 
-import type { User } from "better-auth";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { authClient } from "@/lib/auth/auth-client";
 import { AppLogo } from "@/shared/components/app-logo";
 import { SearchCommandDialog } from "@/shared/components/search-command-dialog";
 import { NavDocuments } from "@/shared/components/sidebar/nav-documents";
@@ -19,7 +20,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-
 import {
   navDocumentsData,
   navPrimaryData,
@@ -28,7 +28,15 @@ import {
   searchCommandData,
 } from "./admin-sidebar-data";
 
-export function AdminSidebar({ user }: { user: User }) {
+export function AdminSidebar() {
+  const { data } = authClient.useSession();
+  const admin = data?.admin;
+  const router = useRouter();
+
+  if (!admin) {
+    router.replace(pathsConfig.auth.signIn);
+    return null;
+  }
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
@@ -70,9 +78,9 @@ export function AdminSidebar({ user }: { user: User }) {
       <SidebarFooter>
         <NavUser
           user={{
-            name: user.name,
-            email: user.email,
-            avatar: user.image ?? undefined,
+            name: admin.user.name,
+            email: admin.user.email,
+            avatar: admin.user.image ?? undefined,
           }}
         />
       </SidebarFooter>

@@ -48,6 +48,19 @@ type Session = {
   userAgent?: string | null | undefined;
 };
 
+const getDeviceIcon = (type: string) => {
+  switch (type) {
+    case "laptop":
+      return <Laptop className="h-4 w-4" />;
+    case "mobile":
+      return <Smartphone className="h-4 w-4" />;
+    case "tablet":
+      return <Tablet className="h-4 w-4" />;
+    default:
+      return <Laptop className="h-4 w-4" />;
+  }
+};
+
 export function AccountSessions({
   sessions,
   sessionId,
@@ -57,19 +70,6 @@ export function AccountSessions({
 }) {
   const router = useRouter();
   const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null);
-
-  const getDeviceIcon = (type: string) => {
-    switch (type) {
-      case "laptop":
-        return <Laptop className="h-4 w-4" />;
-      case "mobile":
-        return <Smartphone className="h-4 w-4" />;
-      case "tablet":
-        return <Tablet className="h-4 w-4" />;
-      default:
-        return <Laptop className="h-4 w-4" />;
-    }
-  };
 
   return (
     <Card>

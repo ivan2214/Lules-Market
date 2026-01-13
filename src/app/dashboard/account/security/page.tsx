@@ -26,7 +26,7 @@ async function AccountPage() {
     <div className="flex w-full flex-col gap-4">
       <UpdateAccountPasswordForm />
       <AccountSessions sessionId={response.session.id} sessions={sessions} />
-      <TwoFactorContainer session={response} />
+      <TwoFactorContainer />
     </div>
   );
 }

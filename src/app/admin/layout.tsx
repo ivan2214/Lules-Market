@@ -1,7 +1,4 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { auth } from "@/lib/auth";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AdminSidebar } from "@/shared/components/admin/admin-sidebar";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
@@ -13,17 +10,9 @@ import {
 } from "@/shared/components/ui/sidebar";
 
 async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const user = session?.user;
-  if (!user) {
-    return redirect(pathsConfig.auth.signIn);
-  }
-
   return (
     <SidebarProvider>
-      <AdminSidebar user={user} />
+      <AdminSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">

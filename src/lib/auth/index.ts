@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, openAPI, twoFactor } from "better-auth/plugins";
+import { admin, customSession, openAPI, twoFactor } from "better-auth/plugins";
 
 import authConfig from "@/config/auth.config";
 import { db } from "@/db";
@@ -12,7 +12,6 @@ import { UserService } from "@/server/modules/user/service";
 
 export const auth = betterAuth({
   ...authConfig,
-  basePath: "/api",
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -119,8 +118,41 @@ export const auth = betterAuth({
         },
       },
     }),
-    openAPI({}),
+    openAPI(),
     nextCookies(),
+    customSession(async ({ user, session }) => {
+      // Buscar el business del usuario
+      const business = await db.query.business.findFirst({
+        where: (business, { eq }) => eq(business.userId, user.id),
+        with: {
+          user: true,
+          logo: true,
+          coverImage: true,
+        },
+      });
+
+      // Buscar el admin del usuario
+      const admin = await db.query.admin.findFirst({
+        where: (admin, { eq }) => eq(admin.userId, user.id),
+        with: {
+          user: true,
+        },
+      });
+
+      const userDB = await db.query.user.findFirst({
+        where: (user, { eq }) => eq(user.id, user.id),
+        with: {
+          notifications: true,
+        },
+      });
+
+      return {
+        user: userDB,
+        session,
+        business: business || null,
+        admin: admin || null,
+      };
+    }),
   ],
   databaseHooks: {
     user: {

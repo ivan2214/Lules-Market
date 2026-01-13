@@ -39,11 +39,12 @@ const router: Router = {
       maxFileSize: 1024 * 1024 * 4, // 4MB
       onBeforeUpload: async () => {
         const { session } = await getCurrentSession();
-        if (!session?.user) {
+
+        if (!session || !session?.user || !session.user.id) {
           throw new RejectUpload("Not logged in!");
         }
 
-        const result = session;
+        const userId = session.user.id;
 
         const uniqueKey = uuidv4();
 
@@ -51,7 +52,7 @@ const router: Router = {
           generateObjectInfo: () => ({
             key: `products/${uniqueKey} `,
             metadata: {
-              author: result.user.id,
+              author: userId,
             },
           }),
         };

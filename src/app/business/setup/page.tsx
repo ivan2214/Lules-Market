@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { getCurrentSession } from "@/data/session/get-current-session";
 import { api } from "@/lib/eden";
+import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AppLogo } from "@/shared/components/app-logo";
 import { Footer } from "@/shared/components/marketing/footer";
 import { Navigation } from "@/shared/components/navigation";
@@ -16,13 +15,8 @@ import {
 } from "@/shared/components/ui/card";
 import { SetupForm } from "./_components/setup-form";
 
-export default async function BusinessSetup() {
+async function BusinessSetup() {
   const { data: categories } = await api.category.public["list-all"].get();
-  const { session } = await getCurrentSession();
-
-  if (!session?.user) {
-    redirect(pathsConfig.auth.signIn);
-  }
 
   return (
     <main>
@@ -67,3 +61,8 @@ export default async function BusinessSetup() {
     </main>
   );
 }
+
+export default withAuthenticate(BusinessSetup, {
+  role: "user",
+  redirect: pathsConfig.business.setup,
+});

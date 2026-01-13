@@ -26,17 +26,19 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
+import { useAuth } from "@/shared/providers/auth-provider";
 
 const updateEmailFormSchema = z.object({
   email: z.string().email().readonly(),
   new_email: z.string().email("Please enter a valid email address"),
 });
 
-export function UpdateAccountEmailForm({ email }: { email: string }) {
+export function UpdateAccountEmailForm() {
+  const { user } = useAuth();
   const [pending, startTransition] = useTransition();
   const form = useForm({
     defaultValues: {
-      email: email,
+      email: user?.email || "",
       new_email: "",
     },
     resolver: zodResolver(updateEmailFormSchema),

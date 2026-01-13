@@ -2,6 +2,7 @@ import type { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import type { User } from "@/db/types";
 import { authClient } from "@/lib/auth/auth-client";
 import { rolesData } from "@/lib/auth/roles";
 import { Button } from "@/shared/components/ui/button";
@@ -17,8 +18,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-
-type User = (typeof authClient.$Infer.Session)["user"];
 
 export function UserListActions({ row }: { row: Row<User> }) {
   const router = useRouter();

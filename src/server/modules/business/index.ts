@@ -8,7 +8,7 @@ export const businessController = new Elysia({
   prefix: "/business",
 });
 
-const publicRoutes = new Elysia({ prefix: "/public" })
+const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
   .get("/featured", async () => {
     return await BusinessService.getFeatured();
   })
