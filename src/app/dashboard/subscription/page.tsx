@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getPlansCache } from "@/core/cache-functions/plan";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import { formatCurrency } from "@/lib/format";
-import { client } from "@/orpc";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
+import { historyService } from "@/server/services/payment";
 import {
   Alert,
   AlertDescription,
@@ -28,16 +30,16 @@ export default async function SubscriptionPage({
   }>;
 }) {
   const { error: errorParams } = await searchParams;
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { success, currentBusiness } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!success || !currentBusiness) {
     redirect(pathsConfig.auth.signIn);
   }
-  const { currentBusiness } = result;
 
-  const payments = await client.payment.history();
+  const payments = await historyService(userId);
 
-  const plans = await client.plan.getAllPlans();
+  const plans = await getPlansCache();
 
   const message = errorParams ? subscriptionErrors[errorParams] : null;
 
@@ -103,7 +105,7 @@ export default async function SubscriptionPage({
       <div>
         <h2 className="mb-6 font-bold text-2xl">Planes Disponibles</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          {plans.map((plan) => (
+          {plans?.map((plan) => (
             <PlanCard
               key={plan.name}
               plan={plan}

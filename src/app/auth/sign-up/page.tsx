@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { client } from "@/orpc";
+import { api } from "@/lib/eden";
 import { PasswordSignUpForm } from "@/shared/components/auth/password-sign-up-form";
 import {
   Card,
@@ -11,7 +11,7 @@ import {
 } from "@/shared/components/ui/card";
 
 export default async function SignUpPage() {
-  const categories = await client.category.listAllCategories();
+  const { data: categories } = await api.category.public["list-all"].get();
   return (
     <Card className="w-full max-w-xl">
       <CardHeader className="text-center">
@@ -19,7 +19,7 @@ export default async function SignUpPage() {
         <CardDescription>Registrate para comenzar</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <PasswordSignUpForm categories={categories} />
+        <PasswordSignUpForm categories={categories || []} />
         <div className="text-center text-sm">
           Ya tienes una cuenta?{" "}
           <Link href="/auth/sign-in" className="underline underline-offset-4">

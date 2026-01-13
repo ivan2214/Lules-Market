@@ -2,20 +2,26 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { api } from "@/lib/eden";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { orpc } from "@/orpc";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export const PlanPricingPreview = () => {
-  const { data: plans } = useSuspenseQuery(
-    orpc.plan.getAllPlans.queryOptions(),
-  );
+  const { data: plans } = useSuspenseQuery({
+    queryKey: ["plans"],
+    queryFn: async () => {
+      const { data, error } = await api.plan.public["list-all"].get();
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
-      {plans.map((plan) => (
+      {plans?.map((plan) => (
         <Card
           key={plan.type}
           className={cn(

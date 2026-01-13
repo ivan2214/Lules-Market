@@ -1,7 +1,9 @@
 import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { client } from "@/orpc";
+import pathsConfig from "@/config/paths.config";
+import { getCurrentSession } from "@/data/session/get-current-session";
+import { failureService, getPaymentService } from "@/server/services/payment";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -23,9 +25,15 @@ export default async function PaymentFailurePage({
     redirect("/dashboard/subscription");
   }
 
-  await client.payment.failure({ paymentIdDB });
+  const { session } = await getCurrentSession();
 
-  const { payment } = await client.payment.getPayment({ paymentIdDB });
+  if (!session?.user) {
+    redirect(pathsConfig.auth.signIn);
+  }
+
+  await failureService(paymentIdDB);
+
+  const { payment } = await getPaymentService(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");

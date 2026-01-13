@@ -7,8 +7,8 @@ import {
   webhookEvent as webhookEventSchema,
 } from "@/db/schema";
 import { env } from "@/env/server";
+import { api } from "@/lib/eden";
 import { paymentClient } from "@/lib/mercadopago";
-import { client } from "@/orpc";
 
 /**
  * Webhook handler Mercado Pago
@@ -51,7 +51,8 @@ export async function POST(request: Request) {
         .returning({
           id: webhookEventSchema.id,
         });
-      await client.admin.createLog({
+      await api.admin.createLog.post({
+        adminId: "SYSTEM",
         action: "webhook",
         details: JSON.stringify(body),
         timestamp: new Date(),

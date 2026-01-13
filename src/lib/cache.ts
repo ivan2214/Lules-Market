@@ -1,4 +1,5 @@
 import "server-only";
+import type { PlanType } from "@/db/types";
 import { isRedisConfigured, redis } from "./redis";
 
 const DEFAULT_TTL = 300; // 5 minutos
@@ -179,7 +180,7 @@ export const CACHE_KEYS = {
 
   // Generadores de keys dinámicas
   product: (id: string) => `product:${id}`,
-  plan: (type: string) => `plan:${type}`,
+  plan: (type: PlanType) => `plan:${type}`,
   business: (id: string) => `business:${id}`,
   businessesSimilar: (category: string, businessId: string) =>
     `businesses:similar:${category}:${businessId}`,

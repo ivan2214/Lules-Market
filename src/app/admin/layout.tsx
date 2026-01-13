@@ -1,6 +1,7 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { getSession } from "@/orpc/actions/user/get-session";
+import { auth } from "@/lib/auth";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AdminSidebar } from "@/shared/components/admin/admin-sidebar";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
@@ -12,9 +13,11 @@ import {
 } from "@/shared/components/ui/sidebar";
 
 async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [err, res] = await getSession();
-  const user = res?.user;
-  if (err || !user) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const user = session?.user;
+  if (!user) {
     return redirect(pathsConfig.auth.signIn);
   }
 

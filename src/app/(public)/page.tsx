@@ -14,9 +14,8 @@ import { env } from "@/env/server";
 import { DynamicStats } from "@/features/(public)/_components/sections/dynamic-stats";
 import { FeaturedBusinesses } from "@/features/(public)/_components/sections/featured-businesses";
 import { RecentProducts } from "@/features/(public)/_components/sections/recent-products";
-
+import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { orpc } from "@/orpc";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -68,17 +67,33 @@ export default async function HomePage() {
   await connection();
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(
-    orpc.analytics.getHomePageStats.queryOptions(),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: ["home-page-stats"],
+    queryFn: async () => {
+      const { data, error } =
+        await api.analytics.public["home-page-stats"].get();
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  await queryClient.prefetchQuery(
-    orpc.business.public.featuredBusinesses.queryOptions(),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: ["featured-businesses"],
+    queryFn: async () => {
+      const { data, error } = await api.business.public.featured.get();
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  await queryClient.prefetchQuery(
-    orpc.products.public.recentProducts.queryOptions(),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: ["recent-products"],
+    queryFn: async () => {
+      const { data, error } = await api.products.public.recent.get();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   return (
     <main className="container mx-auto px-4 py-8 lg:p-0">

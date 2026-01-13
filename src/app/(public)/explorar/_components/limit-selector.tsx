@@ -47,7 +47,7 @@ export function LimitSelector({ currentLimit, total }: LimitSelectorProps) {
     <div className="flex items-center space-x-2">
       <p className="font-medium text-sm">Mostrar</p>
       <Select value={currentLimit.toString()} onValueChange={handleLimitChange}>
-        <SelectTrigger className="h-8 w-[70px]">
+        <SelectTrigger className="h-8 w-[100px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent side="top">

@@ -3,13 +3,18 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { ProductList } from "@/app/(public)/_components/product-list";
-import { orpc } from "@/orpc";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 
 export function RecentProducts() {
-  const { data: products } = useSuspenseQuery(
-    orpc.products.public.recentProducts.queryOptions(),
-  );
+  const { data } = useSuspenseQuery({
+    queryKey: ["recent-products"],
+    queryFn: async () => {
+      const { data, error } = await api.products.public.recent.get();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   return (
     <section className="mb-24 rounded-3xl bg-muted/30 px-6 py-16 md:px-12">
@@ -34,7 +39,7 @@ export function RecentProducts() {
         </Button>
       </div>
 
-      <ProductList products={products} />
+      <ProductList products={data?.products || []} />
     </section>
   );
 }

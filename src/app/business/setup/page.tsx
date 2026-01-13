@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { client } from "@/orpc";
-import { getSession } from "@/orpc/actions/user/get-session";
+import { getCurrentSession } from "@/data/session/get-current-session";
+import { api } from "@/lib/eden";
 import { AppLogo } from "@/shared/components/app-logo";
 import { Footer } from "@/shared/components/marketing/footer";
 import { Navigation } from "@/shared/components/navigation";
@@ -17,14 +17,12 @@ import {
 import { SetupForm } from "./_components/setup-form";
 
 export default async function BusinessSetup() {
-  const categories = await client.category.listAllCategories();
-  const [err, res] = await getSession();
+  const { data: categories } = await api.category.public["list-all"].get();
+  const { session } = await getCurrentSession();
 
-  if (!res?.user || err) {
+  if (!session?.user) {
     redirect(pathsConfig.auth.signIn);
   }
-
-  const userEmail = res.user.email;
 
   return (
     <main>
@@ -44,7 +42,7 @@ export default async function BusinessSetup() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <SetupForm categories={categories} userEmail={userEmail} />
+              <SetupForm categories={categories || []} />
               <div className="text-center text-sm">
                 Todavia no tenes una cuenta?{" "}
                 <Link

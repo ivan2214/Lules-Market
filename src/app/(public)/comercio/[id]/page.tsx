@@ -12,7 +12,7 @@ import {
   getBusinessByIdCache,
 } from "@/core/cache-functions/business";
 import { env } from "@/env/server";
-import { client } from "@/orpc";
+import { api } from "@/lib/eden";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
 import { BusinessInfo } from "./_components/business-info";
@@ -143,11 +143,14 @@ export default async function BusinessPage({ params }: Props) {
     notFound();
   }
 
-  const { businesses: similarBusinesses } =
-    await client.business.public.listAllSimilarBusinesses({
-      category: business.category?.value,
+  const { data } = await api.business.public["list-similar"].get({
+    query: {
+      category: business.category?.value || "",
       businessId: id,
-    });
+    },
+  });
+
+  const similarBusinesses = data?.businesses || [];
 
   return (
     <div className="container mx-auto space-y-8 py-8">

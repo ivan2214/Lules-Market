@@ -1,11 +1,10 @@
 ﻿import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import pathsConfig from "@/config/paths.config";
+import { getCurrentSession } from "@/data/session/get-current-session";
 import { db } from "@/db";
 import { admin, business, notification, profile } from "@/db/schema";
-import { getSession } from "@/orpc/actions/user/get-session";
+import type { Notification } from "@/db/types";
 import { SearchForm } from "@/shared/components/search-form";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -34,11 +33,7 @@ export const NavigationWrapper = async () => {
 };
 
 const NavigationWrapperContent = async () => {
-  const [error, session] = await getSession();
-
-  if (error) {
-    redirect(pathsConfig.auth.signIn);
-  }
+  const { session } = await getCurrentSession();
 
   const { user } = session || {};
 
@@ -89,7 +84,9 @@ const NavigationWrapperContent = async () => {
 
   return (
     <div className="flex items-center gap-2">
-      {email && name && <Notifications notifications={notificationsForUser} />}
+      {email && name && (
+        <Notifications notifications={notificationsForUser as Notification[]} />
+      )}
       {email && name && (
         <UserMenu
           avatar={avatar}

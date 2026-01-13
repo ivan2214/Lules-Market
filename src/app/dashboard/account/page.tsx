@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { requireSession } from "@/orpc/actions/user/require-session";
+import { getCurrentSession } from "@/data/session/get-current-session";
 import { HasRole } from "@/shared/components/acccess/has-role";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -21,9 +21,9 @@ import {
 } from "@/shared/components/ui/card";
 
 export default async function HomePage() {
-  const [error, session] = await requireSession();
+  const { session } = await getCurrentSession();
 
-  if (error) {
+  if (!session?.user) {
     redirect(pathsConfig.auth.signIn);
   }
 

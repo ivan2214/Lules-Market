@@ -5,12 +5,12 @@ import { plan } from "@/db/schema";
 import type { Plan, PlanType } from "@/db/types";
 import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
 
-async function fetchPlans(): Promise<Plan[]> {
+async function fetchPlans(): Promise<Plan[] | null> {
   const plans = await db.query.plan.findMany();
   return plans;
 }
 
-export async function getPlansCache(): Promise<Plan[]> {
+export async function getPlansCache(): Promise<Plan[] | null> {
   return getCachedOrFetch(CACHE_KEYS.PLANS_ALL, fetchPlans, CACHE_TTL.PLANS);
 }
 

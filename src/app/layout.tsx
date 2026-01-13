@@ -1,13 +1,14 @@
-import "@/orpc/server"; // prerendering for ssr
+import { Analytics } from "@vercel/analytics/next";
+import { getCurrentSession } from "@/data/session/get-current-session";
+import { Toaster } from "@/shared/components/ui/sonner";
+import { RootProviders } from "@/shared/providers/root-provider";
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
-import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
-import { getSession } from "@/orpc/actions/user/get-session";
-import { Toaster } from "@/shared/components/ui/sonner";
-import { RootProviders } from "@/shared/providers/root-provider";
+
+export const dynamic = "force-dynamic";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +44,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [_, auth] = await getSession();
+  const { session } = await getCurrentSession();
 
   return (
     <html
@@ -53,7 +54,7 @@ export default async function RootLayout({
     >
       <body className="mx-auto font-sans antialiased">
         <NuqsAdapter>
-          <RootProviders auth={auth ?? null}>{children}</RootProviders>
+          <RootProviders auth={session}>{children}</RootProviders>
           {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
           <Toaster />
           <Analytics />

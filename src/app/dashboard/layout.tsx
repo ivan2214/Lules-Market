@@ -1,15 +1,17 @@
 import { redirect } from "next/navigation";
 import type React from "react";
 import pathsConfig from "@/config/paths.config";
+import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { requireBusiness } from "@/data/business/require-business";
 import { DashboardHeaderWrapper } from "@/features/dashboard/_components/dashboard-header-wrapper";
 import { DashboardSidebar } from "@/features/dashboard/_components/dashboard-sidebar";
-import { getCurrentBusiness } from "@/orpc/actions/business/get-current-business";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [error, result] = await getCurrentBusiness();
+  const { userId } = await requireBusiness();
+  const { currentBusiness, success } = await getCurrentBusiness(userId);
 
-  if (error || !result.currentBusiness) {
+  if (!success || !currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 

@@ -1,8 +1,8 @@
 import { ActiveFilters } from "@/app/(public)/explorar/_components/active-filters";
 import { ResultsCountAndLimitSelector } from "@/app/(public)/explorar/_components/results-count-and-limit-selector";
 import { SearchAndFilters } from "@/app/(public)/explorar/_components/search-and-filters";
+import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { orpc } from "@/orpc";
 import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {
@@ -26,22 +26,35 @@ export default async function ProductosPage({
   const currentLimit = limit ? parseInt(limit, 10) : 12;
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(
-    orpc.products.public.listAllProducts.queryOptions({
-      input: {
-        businessId,
-        category,
-        limit: currentLimit,
-        page: currentPage,
-        search,
-        sort: sortBy,
-      },
-    }),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: [
+      "products",
+      { businessId, category, limit, page, search, sortBy },
+    ],
+    queryFn: async () => {
+      const { data, error } = await api.products.public.list.get({
+        query: {
+          businessId,
+          category,
+          limit: currentLimit,
+          page: currentPage,
+          search,
+          sort: sortBy,
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  await queryClient.prefetchQuery(
-    orpc.business.public.listAllBusinesses.queryOptions(),
-  );
+  await queryClient.prefetchQuery({
+    queryKey: ["businesses"],
+    queryFn: async () => {
+      const { data, error } = await api.business.public["list-all"].get();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 

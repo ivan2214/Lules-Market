@@ -1,13 +1,19 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { api } from "@/lib/eden";
 import { cn } from "@/lib/utils";
-import { orpc } from "@/orpc";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export const ComparisonTable = () => {
-  const { data: plans } = useSuspenseQuery(
-    orpc.plan.getAllPlans.queryOptions(),
-  );
+  const { data: plans } = useSuspenseQuery({
+    queryKey: ["plans"],
+    queryFn: async () => {
+      const { data, error } = await api.plan.public["list-all"].get();
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <div className="mx-auto max-w-5xl">
       <h2 className="mb-8 text-center font-bold text-3xl">
@@ -23,7 +29,7 @@ export const ComparisonTable = () => {
                     Característica
                   </th>
 
-                  {plans.map((plan) => (
+                  {plans?.map((plan) => (
                     <th
                       key={plan.type}
                       className={cn(
@@ -39,7 +45,7 @@ export const ComparisonTable = () => {
               <tbody>
                 <tr className="border-b">
                   <td className="p-4">Cantidad de Productos</td>
-                  {plans.map((plan) => (
+                  {plans?.map((plan) => (
                     <td
                       key={plan.type}
                       className={cn(
@@ -55,7 +61,7 @@ export const ComparisonTable = () => {
                 </tr>
                 <tr className="border-b">
                   <td className="p-4">Imágenes por producto</td>
-                  {plans.map((plan) => (
+                  {plans?.map((plan) => (
                     <td
                       key={plan.type}
                       className={cn(
@@ -69,7 +75,7 @@ export const ComparisonTable = () => {
                 </tr>
                 <tr className="border-b">
                   <td className="p-4">Prioridad en listados</td>
-                  {plans.map((plan) => (
+                  {plans?.map((plan) => (
                     <td
                       key={plan.type}
                       className={cn(
@@ -83,7 +89,7 @@ export const ComparisonTable = () => {
                 </tr>
                 <tr className="border-b">
                   <td className="p-4">Estadísticas de visitas</td>
-                  {plans.map((plan) => (
+                  {plans?.map((plan) => (
                     <td
                       key={plan.type}
                       className={cn(
@@ -97,7 +103,7 @@ export const ComparisonTable = () => {
                 </tr>
                 <tr>
                   <td className="p-4">Soporte técnico</td>
-                  {plans.map((plan) => (
+                  {plans?.map((plan) => (
                     <td
                       key={plan.type}
                       className={cn(

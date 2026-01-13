@@ -37,7 +37,7 @@ export const Notifications: React.FC<NotificationsProps> = ({
               <div className="flex flex-col gap-1">
                 <p className="font-medium text-sm">{notification.message}</p>
                 <p className="text-muted-foreground text-xs">
-                  {notification.createdAt.toLocaleString()}
+                  {notification.createdAt?.toLocaleString()}
                 </p>
               </div>
             </DropdownMenuItem>
