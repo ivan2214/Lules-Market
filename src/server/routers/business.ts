@@ -39,7 +39,7 @@ export const businessPublicRouter = new Elysia({
       body: ListAllBusinessesInputSchema,
       response: t.Object({
         /* t.Array(t.Object(models.select.plan)) */
-        businesses: t.Array(t.Object(models.select.business)),
+        businesses: t.Array(models.relations.businessWithRelations),
         total: t.Number(),
       }),
     },
@@ -68,7 +68,7 @@ export const businessPublicRouter = new Elysia({
         businessId: t.String(),
       }),
       response: t.Object({
-        businesses: t.Array(t.Object(models.select.business)),
+        businesses: t.Array(models.relations.businessWithRelations),
       }),
     },
   )
@@ -113,7 +113,7 @@ export const businessPublicRouter = new Elysia({
       body: BusinessSetupSchema,
       response: t.Object({
         success: t.Boolean(),
-        business: t.Object(models.select.business),
+        business: models.relations.businessWithRelations,
       }),
     },
   );

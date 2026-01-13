@@ -13,6 +13,8 @@
  */
 
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import type { Static } from "elysia";
+import type { models } from "../model";
 import type {
   account,
   admin,
@@ -234,37 +236,23 @@ export interface UserWithRelations extends User {
 /**
  * Negocio con todas sus relaciones
  */
-export interface BusinessWithRelations extends Business {
-  user?: User | null;
-  currentPlan?: CurrentPlanWithRelations | null;
-  logo?: Image | null;
-  coverImage?: Image | null;
-  products?: ProductWithRelations[];
-  payments?: Payment[];
-
-  businessViews?: BusinessView[];
-  trial?: Trial | null;
-  category?: Category | null;
-}
+export type BusinessWithRelations = Static<
+  typeof models.relations.businessWithRelations
+>;
 
 /**
  * Plan actual con relaciones
  */
-export interface CurrentPlanWithRelations extends CurrentPlan {
-  business?: Business | null;
-  plan?: Plan | null;
-}
+export type CurrentPlanWithRelations = Static<
+  typeof models.relations.currentPlanWithRelations
+>;
 
 /**
  * Producto con todas sus relaciones
  */
-export interface ProductWithRelations extends Product {
-  business?: BusinessWithRelations | null;
-
-  images?: Image[];
-  productViews?: ProductView[];
-  category?: Category | null;
-}
+export type ProductWithRelations = Static<
+  typeof models.relations.productWithRelations
+>;
 
 /**
  * Categoría con relaciones

@@ -41,7 +41,7 @@ export const ListAllBusinessesInputSchema = t.Optional(
 );
 
 export const ListAllBusinessesOutputSchema = t.Object({
-  businesses: t.Array(t.Object(models.select.business)),
+  businesses: t.Array(models.relations.businessWithRelations),
   total: t.Number(),
 });
 
@@ -96,6 +96,7 @@ async function fetchAllBusinesses(
           },
           category: true,
           logo: true,
+          coverImage: true,
         },
         orderBy,
         ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),

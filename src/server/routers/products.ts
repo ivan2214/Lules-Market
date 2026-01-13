@@ -226,7 +226,7 @@ export const productsPublicRouter = new Elysia({
       try {
         const { products, total, currentPage, pages } =
           await listAllProductsCache(query);
-        return { success: true, products, total, currentPage, pages };
+        return { products, total, currentPage, pages };
       } catch (error) {
         console.error("Error al obtener productos recientes:", error);
         throw new AppError(
@@ -238,7 +238,7 @@ export const productsPublicRouter = new Elysia({
     {
       query: listAllProductsInputSchema,
       response: t.Object({
-        products: t.Array(t.Object(models.select.product)),
+        products: t.Array(models.relations.productWithRelations),
         total: t.Number(),
         pages: t.Optional(t.Number()),
         currentPage: t.Optional(t.Number()),
@@ -250,7 +250,7 @@ export const productsPublicRouter = new Elysia({
     async ({ params }) => {
       try {
         const { product } = await getProductByIdCache(params.id);
-        return { success: true, product };
+        return { product };
       } catch (error) {
         console.error("Error al obtener producto:", error);
         throw new AppError(
@@ -264,8 +264,7 @@ export const productsPublicRouter = new Elysia({
         id: t.String(),
       }),
       response: t.Object({
-        success: t.Boolean(),
-        product: t.Optional(t.Object(models.select.product)),
+        product: t.Optional(models.relations.productWithRelations),
       }),
     },
   )
@@ -277,7 +276,7 @@ export const productsPublicRouter = new Elysia({
           params.categoryId,
           params.id,
         );
-        return { success: true, products };
+        return { products };
       } catch (error) {
         console.error("Error al obtener productos similares:", error);
         throw new AppError(
@@ -292,8 +291,7 @@ export const productsPublicRouter = new Elysia({
         categoryId: t.String(),
       }),
       response: t.Object({
-        success: t.Boolean(),
-        products: t.Array(t.Object(models.select.product)),
+        products: t.Array(models.relations.productWithRelations),
       }),
     },
   )

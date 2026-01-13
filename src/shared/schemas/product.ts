@@ -69,11 +69,7 @@ export const listAllProductsInputSchema = t.Optional(
         default: 1,
       }),
     ),
-    limit: t.Optional(
-      t.Number({
-        default: 12,
-      }),
-    ),
+    limit: t.Optional(t.Number()),
     sort: t.Optional(
       t.Union([
         t.Literal("price_asc"),
