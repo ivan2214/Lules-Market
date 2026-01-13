@@ -27,8 +27,8 @@ export default async function ComerciosPage({
 
   await queryClient.prefetchQuery({
     queryKey: ["businesses", category, limit, page, search, sortBy],
-    queryFn: async () =>
-      await api.business.public["list-all"].get({
+    queryFn: async () => {
+      const { data, error } = await api.business.public["list-all"].get({
         query: {
           category,
           limit: currentLimit,
@@ -36,12 +36,19 @@ export default async function ComerciosPage({
           search,
           sortBy,
         },
-      }),
+      });
+      if (error) throw error;
+      return data;
+    },
   });
 
   await queryClient.prefetchQuery({
     queryKey: ["categories"],
-    queryFn: async () => await api.category.public["list-all"].get(),
+    queryFn: async () => {
+      const { data, error } = await api.category.public["list-all"].get();
+      if (error) throw error;
+      return data;
+    },
   });
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;

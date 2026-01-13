@@ -26,11 +26,9 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   businessId,
   sort,
 }) => {
-  const {
-    data: { data },
-  } = useSuspenseQuery({
-    queryFn: async () =>
-      await api.products.public.list.get({
+  const { data } = useSuspenseQuery({
+    queryFn: async () => {
+      const { data, error } = await api.products.public.list.get({
         query: {
           businessId,
           category,
@@ -39,7 +37,10 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
           search,
           sort,
         },
-      }),
+      });
+      if (error) throw error;
+      return data;
+    },
     queryKey: [
       "products",
       businessId,

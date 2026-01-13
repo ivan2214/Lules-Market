@@ -10,10 +10,14 @@ import { Button } from "@/shared/components/ui/button";
 export function FeaturedBusinesses() {
   const { data } = useSuspenseQuery({
     queryKey: ["featured-businesses"],
-    queryFn: async () => await api.business.public.featured.get(),
+    queryFn: async () => {
+      const { data, error } = await api.business.public.featured.get();
+      if (error) throw error;
+      return data;
+    },
   });
 
-  const featuredBusinesses = data.data || [];
+  const featuredBusinesses = data || [];
 
   return (
     <section className="mb-12">

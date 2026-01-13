@@ -32,7 +32,7 @@ export default async function ProductosPage({
       { businessId, category, limit, page, search, sortBy },
     ],
     queryFn: async () => {
-      const response = await api.products.public.list.get({
+      const { data, error } = await api.products.public.list.get({
         query: {
           businessId,
           category,
@@ -42,15 +42,17 @@ export default async function ProductosPage({
           sort: sortBy,
         },
       });
-      return response;
+      if (error) throw error;
+      return data;
     },
   });
 
   await queryClient.prefetchQuery({
     queryKey: ["businesses"],
     queryFn: async () => {
-      const response = await api.business.public["list-all"].get();
-      return response;
+      const { data, error } = await api.business.public["list-all"].get();
+      if (error) throw error;
+      return data;
     },
   });
 

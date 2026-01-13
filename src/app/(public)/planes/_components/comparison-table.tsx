@@ -5,13 +5,12 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export const ComparisonTable = () => {
-  const {
-    data: { data: plans },
-  } = useSuspenseQuery({
+  const { data: plans } = useSuspenseQuery({
     queryKey: ["plans"],
     queryFn: async () => {
-      const response = await api.plan.public["list-all"].get();
-      return response;
+      const { data, error } = await api.plan.public["list-all"].get();
+      if (error) throw error;
+      return data;
     },
   });
 

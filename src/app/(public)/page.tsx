@@ -69,17 +69,30 @@ export default async function HomePage() {
 
   await queryClient.prefetchQuery({
     queryKey: ["home-page-stats"],
-    queryFn: async () => await api.analytics.public["home-page-stats"].get(),
+    queryFn: async () => {
+      const { data, error } =
+        await api.analytics.public["home-page-stats"].get();
+      if (error) throw error;
+      return data;
+    },
   });
 
   await queryClient.prefetchQuery({
     queryKey: ["featured-businesses"],
-    queryFn: async () => await api.business.public.featured.get(),
+    queryFn: async () => {
+      const { data, error } = await api.business.public.featured.get();
+      if (error) throw error;
+      return data;
+    },
   });
 
   await queryClient.prefetchQuery({
     queryKey: ["recent-products"],
-    queryFn: async () => await api.products.public.recent.get(),
+    queryFn: async () => {
+      const { data, error } = await api.products.public.recent.get();
+      if (error) throw error;
+      return data;
+    },
   });
 
   return (

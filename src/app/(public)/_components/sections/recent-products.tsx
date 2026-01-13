@@ -9,7 +9,11 @@ import { Button } from "@/shared/components/ui/button";
 export function RecentProducts() {
   const { data } = useSuspenseQuery({
     queryKey: ["recent-products"],
-    queryFn: async () => await api.products.public.recent.get(),
+    queryFn: async () => {
+      const { data, error } = await api.products.public.recent.get();
+      if (error) throw error;
+      return data;
+    },
   });
 
   return (
@@ -35,7 +39,7 @@ export function RecentProducts() {
         </Button>
       </div>
 
-      <ProductList products={data.data?.products || []} />
+      <ProductList products={data?.products || []} />
     </section>
   );
 }

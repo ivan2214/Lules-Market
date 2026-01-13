@@ -12,11 +12,14 @@ import {
 import { calcTrend } from "@/shared/utils/calc-trend";
 
 export function DynamicStats() {
-  const {
-    data: { data },
-  } = useSuspenseQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["home-page-stats"],
-    queryFn: async () => await api.analytics.public["home-page-stats"].get(),
+    queryFn: async () => {
+      const { data, error } =
+        await api.analytics.public["home-page-stats"].get();
+      if (error) throw error;
+      return data;
+    },
   });
 
   const {
