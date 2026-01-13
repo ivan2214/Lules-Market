@@ -131,7 +131,6 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
       onSubmit: typeboxValidator(signUpSchema),
     },
     onSubmit: async (data) => {
-      console.log(data);
       const { email, password, name } = data.value;
       const { businessData } = data.value || {};
 

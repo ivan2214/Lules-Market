@@ -60,19 +60,21 @@ const categorySchema = t.Object({
 const currentPlanWithRelationsSchema = t.Object({
   ...currentPlanBase.properties,
   plan: t.Optional(
-    t.Object({
-      ...planBase.properties,
-    }),
+    t.Nullable(
+      t.Object({
+        ...planBase.properties,
+      }),
+    ),
   ),
 });
 
 // Business con relaciones
 const businessWithRelationsSchema = t.Object({
   ...businessBase.properties,
-  currentPlan: t.Optional(currentPlanWithRelationsSchema),
-  logo: t.Optional(logoSchema),
-  coverImage: t.Optional(coverImageSchema),
-  category: t.Optional(categorySchema),
+  currentPlan: t.Optional(t.Nullable(currentPlanWithRelationsSchema)),
+  logo: t.Optional(t.Nullable(logoSchema)),
+  coverImage: t.Optional(t.Nullable(coverImageSchema)),
+  category: t.Optional(t.Nullable(categorySchema)),
   products: t.Optional(
     t.Array(
       t.Object({
@@ -80,6 +82,7 @@ const businessWithRelationsSchema = t.Object({
       }),
     ),
   ),
+  user: t.Optional(t.Nullable(userBase)),
 });
 
 // Product con todas sus relaciones
@@ -92,12 +95,8 @@ const productWithRelationsSchema = t.Object({
       }),
     ),
   ),
-  category: t.Optional(
-    t.Object({
-      ...categoryBase.properties,
-    }),
-  ),
-  business: t.Optional(businessWithRelationsSchema),
+  category: t.Optional(t.Nullable(categorySchema)),
+  business: t.Optional(t.Nullable(businessWithRelationsSchema)),
 });
 
 // ============================================

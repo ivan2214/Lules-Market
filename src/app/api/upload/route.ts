@@ -37,17 +37,7 @@ const router: Router = {
       fileTypes: ["image/*"],
       multipleFiles: true,
       maxFileSize: 1024 * 1024 * 4, // 4MB
-      onBeforeUpload: async ({
-        req: { body, bodyUsed, headers },
-        files,
-        clientMetadata,
-      }) => {
-        console.log({ clientMetadata });
-        console.log({ files });
-        console.log({ body });
-        console.log({ bodyUsed });
-        console.log({ headers });
-        console.log({ headers });
+      onBeforeUpload: async () => {
         const { session } = await getCurrentSession();
         if (!session?.user) {
           throw new RejectUpload("Not logged in!");

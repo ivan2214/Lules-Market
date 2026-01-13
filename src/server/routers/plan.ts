@@ -8,19 +8,10 @@ export const planPublicRouter = new Elysia({
   "/list-all",
   async () => {
     try {
-      console.log("getPlansCache");
-
       const plans = await getPlansCache();
-      console.log({
-        plans,
-      });
 
       return plans ?? [];
-    } catch (error) {
-      console.error(error);
-      console.log("error");
-      console.dir(error, { depth: null });
-
+    } catch {
       return [];
     }
   },

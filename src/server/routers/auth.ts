@@ -61,8 +61,6 @@ export const authRouter = new Elysia({
         whatsapp,
       } = businessData;
 
-      console.log("businessData", businessData);
-
       const { user } = await auth.api.signUpEmail({
         body: {
           name,
