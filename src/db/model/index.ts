@@ -134,6 +134,14 @@ const currentPlanWithRelationsSchema = t.Object({
       }),
     ),
   ),
+  business: t.Optional(
+    t.Nullable(
+      t.Object({
+        ...businessBase.properties,
+        user: t.Optional(t.Nullable(userBase)),
+      }),
+    ),
+  ),
 });
 
 // Business con relaciones

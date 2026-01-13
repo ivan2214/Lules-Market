@@ -78,7 +78,10 @@ export const adminRouter = new Elysia({
       body: AdminModel.checkPermissionBody,
       response: t.Boolean({
         default: false,
-      }),
+      }), // Changed to explicit t.Boolean() although it was already there. checking if 'default' or something is breaking it.
+      // Wait, is 'response: t.Boolean(...)' causing 'true is not an Object' if something else returns just true?
+      // "true" is valid response if it's Just the boolean value, but TypeBox schema is an object.
+      // t.Boolean() returns a TBoolean schema object.
     },
   )
   .delete(

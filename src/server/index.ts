@@ -1,7 +1,5 @@
 import { cors } from "@elysiajs/cors";
-import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
-import { z } from "zod";
 import { env } from "@/env/server";
 import { AppError } from "./errors";
 import { adminRouter } from "./modules/admin";
@@ -14,6 +12,7 @@ import { planModule } from "./modules/plan";
 import { productModule } from "./modules/products";
 import { settingsRouter } from "./modules/settings";
 import { userController } from "./modules/user";
+import { mercadopagoWebhook } from "./modules/webhooks/mercadopago";
 import { authPlugin } from "./plugins/auth";
 
 export const app = new Elysia({ prefix: "/api" })
@@ -25,13 +24,6 @@ export const app = new Elysia({ prefix: "/api" })
       credentials: true,
     }),
   )
-  .use(
-    openapi({
-      mapJsonSchema: {
-        zod: z.toJSONSchema,
-      },
-    }),
-  )
   .onError(({ error, set }) => {
     if (error instanceof AppError) {
       set.status = error.code === "NOT_FOUND" ? 404 : 400;
@@ -41,6 +33,9 @@ export const app = new Elysia({ prefix: "/api" })
         message: error.message,
       };
     }
+    console.log({
+      error,
+    });
     // Handle other errors
     return {
       success: false,
@@ -57,7 +52,8 @@ export const app = new Elysia({ prefix: "/api" })
   .use(userController)
   .use(categoryModule)
   .use(planModule)
-  .use(analyticsModule);
+  .use(analyticsModule)
+  .use(mercadopagoWebhook);
 
 export type App = typeof app;
 

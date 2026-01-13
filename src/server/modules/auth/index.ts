@@ -12,6 +12,7 @@ const getLocalizedMessage = (
 
   switch (code) {
     case "USER_ALREADY_EXISTS":
+    case "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL":
       return "Ya existe una cuenta con este email";
     case "INVALID_EMAIL_OR_PASSWORD":
       return "Email o contraseña incorrectos";
@@ -39,12 +40,21 @@ const getLocalizedMessage = (
 };
 
 export const authController = new Elysia({
-  prefix: "/auth/actions",
+  prefix: "/actions",
 }).post(
   "/signup",
   async ({ body }) => {
+    console.log({
+      body,
+    });
+
     try {
-      return await AuthService.signUp(body);
+      const response = await AuthService.signUp(body);
+      console.log({
+        response,
+      });
+
+      return response;
     } catch (error) {
       if (error instanceof APIError) {
         const { body, status } = error;
@@ -60,26 +70,21 @@ export const authController = new Elysia({
           fullBody: body,
         });
 
-        throw new AppError(
-          "Error al crear la cuenta",
-          "INTERNAL_SERVER_ERROR",
-          {
-            success: false,
-            error: getLocalizedMessage(errorCode, errorMessage),
-            code: errorCode,
-            status,
-            details: body?.details,
-          },
-        );
+        const localizedMessage = getLocalizedMessage(errorCode, errorMessage);
+
+        throw new AppError(localizedMessage, "BAD_REQUEST", {
+          success: false,
+          error: localizedMessage,
+          code: errorCode,
+          status,
+          details: body?.details,
+        });
       }
 
       console.error("Error no APIError:", error);
       if (error instanceof AppError) throw error;
 
-      return {
-        success: false,
-        error: "Error interno del servidor",
-      };
+      throw new AppError("Error interno del servidor", "INTERNAL_SERVER_ERROR");
     }
   },
   {
