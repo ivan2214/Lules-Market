@@ -1,4 +1,5 @@
 import { cors } from "@elysiajs/cors";
+import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import { env } from "@/env/server";
 import { AppError } from "./errors";
@@ -13,9 +14,14 @@ import { productModule } from "./modules/products";
 import { settingsRouter } from "./modules/settings";
 import { userController } from "./modules/user";
 import { mercadopagoWebhook } from "./modules/webhooks/mercadopago";
-import { authPlugin } from "./plugins/auth";
+import { authPlugin, OpenAPI } from "./plugins/auth";
 
-export const app = new Elysia({ prefix: "/api" })
+export const app = new Elysia({
+  prefix: "/api",
+  detail: { description: "API" },
+  name: "Lules Market API",
+  tags: ["Lules Market API"],
+})
   .use(
     cors({
       origin: [env.APP_URL],
@@ -53,7 +59,16 @@ export const app = new Elysia({ prefix: "/api" })
   .use(categoryModule)
   .use(planModule)
   .use(analyticsModule)
-  .use(mercadopagoWebhook);
+  .use(mercadopagoWebhook)
+  .use(
+    openapi({
+      documentation: {
+        openapi: "3.1.0",
+        components: await OpenAPI.components,
+        paths: await OpenAPI.getPaths(),
+      },
+    }),
+  );
 
 export type App = typeof app;
 
