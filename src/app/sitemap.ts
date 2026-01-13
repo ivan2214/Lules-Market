@@ -89,7 +89,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productPages: MetadataRoute.Sitemap =
     products?.map((product) => ({
       url: `${baseUrl}/producto/${product.id}`,
-      lastModified: product.updatedAt,
+      lastModified: product.updatedAt ?? undefined,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })) || [];
@@ -101,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const businessPages: MetadataRoute.Sitemap =
     businesses?.map((business) => ({
       url: `${baseUrl}/comercio/${business.id}`,
-      lastModified: business.updatedAt,
+      lastModified: business.updatedAt ?? undefined,
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })) || [];

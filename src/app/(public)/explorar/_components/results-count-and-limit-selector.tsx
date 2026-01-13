@@ -36,7 +36,7 @@ export const ResultsCountAndLimitSelector: React.FC<
           limit: currentLimit,
           page: currentPage,
           search,
-          sortBy,
+          sortBy: sortBy as SortByBusiness,
         },
       });
       return data;
