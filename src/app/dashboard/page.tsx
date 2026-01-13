@@ -27,7 +27,6 @@ async function DashboardContent() {
   ].get({
     query: {
       limit: 5,
-      offset: 0,
     },
   });
 

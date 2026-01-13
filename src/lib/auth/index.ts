@@ -8,7 +8,7 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
 import { ac, allRoles } from "@/lib/auth/roles";
-import { syncUserRoleService } from "@/server/services/user";
+import { UserService } from "@/server/modules/user/service";
 
 export const auth = betterAuth({
   ...authConfig,
@@ -129,7 +129,7 @@ export const auth = betterAuth({
         async after(user) {
           const { id, email } = user;
 
-          await syncUserRoleService({
+          await UserService.syncRole({
             email,
             id,
           });

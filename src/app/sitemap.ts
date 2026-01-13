@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/env/server";
 import { api } from "@/lib/eden";
-
+import { BusinessService } from "@/server/modules/business/service";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.APP_URL;
 
@@ -95,8 +95,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })) || [];
 
   // Obtener comercios dinámicos
-  const { data: dataBusiness } = await api.business.public["list-all"].get();
-  const { businesses } = dataBusiness || {};
+  // Obtener comercios dinámicos
+  const { businesses } = await BusinessService.listAll();
 
   const businessPages: MetadataRoute.Sitemap =
     businesses?.map((business) => ({

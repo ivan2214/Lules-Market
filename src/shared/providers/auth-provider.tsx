@@ -1,36 +1,14 @@
-import { createContext, useCallback, useContext, useMemo } from "react";
-
-import type { authClient } from "@/lib/auth/auth-client";
+import { useCallback, useMemo } from "react";
+import { authClient } from "@/lib/auth/auth-client";
 import { allRoles } from "@/lib/auth/roles";
 
-type AuthSession = typeof authClient.$Infer.Session;
-
-const AuthContext = createContext<{
-  auth: AuthSession | null;
-}>({
-  auth: null,
-});
-
-export function AuthProvider(
-  props: React.PropsWithChildren<{
-    auth: AuthSession | null;
-  }>,
-) {
-  return (
-    <AuthContext.Provider value={{ auth: props.auth }}>
-      {props.children}
-    </AuthContext.Provider>
-  );
-}
-
 export function useAuth() {
-  const context = useContext(AuthContext);
-
-  if (!context) {
+  const { data: auth, error } = authClient.useSession();
+  if (!auth || error) {
     throw new Error("useAuth must be used within a AuthProvider");
   }
 
-  return context.auth;
+  return auth;
 }
 
 type AuthorizeFunction = (typeof allRoles)[keyof typeof allRoles]["authorize"];

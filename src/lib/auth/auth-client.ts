@@ -1,5 +1,6 @@
 import {
   adminClient,
+  customSessionClient,
   inferAdditionalFields,
   twoFactorClient,
 } from "better-auth/client/plugins";
@@ -17,5 +18,6 @@ export const authClient = createAuthClient({
       roles: allRoles,
     }),
     twoFactorClient(),
+    customSessionClient<typeof auth>(),
   ],
 });

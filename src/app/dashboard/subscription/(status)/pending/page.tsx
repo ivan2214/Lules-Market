@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
-import { getPaymentService } from "@/server/services/payment";
+import { PaymentService } from "@/server/modules/payment/service";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -31,7 +31,7 @@ export default async function PaymentPendingPage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  const { payment } = await getPaymentService(paymentIdDB);
+  const { payment } = await PaymentService.getPayment(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");

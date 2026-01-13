@@ -1,5 +1,4 @@
 import { Analytics } from "@vercel/analytics/next";
-import { getCurrentSession } from "@/data/session/get-current-session";
 import { Toaster } from "@/shared/components/ui/sonner";
 import { RootProviders } from "@/shared/providers/root-provider";
 import "./globals.css";
@@ -7,8 +6,6 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
-
-export const dynamic = "force-dynamic";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,8 +41,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { session } = await getCurrentSession();
-
   return (
     <html
       lang="es"
@@ -54,7 +49,7 @@ export default async function RootLayout({
     >
       <body className="mx-auto font-sans antialiased">
         <NuqsAdapter>
-          <RootProviders auth={session}>{children}</RootProviders>
+          <RootProviders>{children}</RootProviders>
           {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
           <Toaster />
           <Analytics />

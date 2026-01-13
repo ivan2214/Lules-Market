@@ -4,7 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { auth } from "@/lib/auth";
-import { getPaymentService, successService } from "@/server/services/payment";
+import { PaymentService } from "@/server/modules/payment/service";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -40,9 +40,9 @@ export default async function PaymentSuccessPage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  await successService(paymentIdMP, paymentIdDB);
+  await PaymentService.success(paymentIdMP, paymentIdDB);
 
-  const { payment } = await getPaymentService(paymentIdDB);
+  const { payment } = await PaymentService.getPayment(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");
