@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
-import { PaymentService } from "@/server/modules/payment/service";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -31,9 +31,12 @@ export default async function PaymentFailurePage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  await PaymentService.failure(paymentIdDB);
+  await api.payment.failure.post({ paymentIdDB });
 
-  const { payment } = await PaymentService.getPayment(paymentIdDB);
+  const { data: paymentData } = await api.payment.getPayment.get({
+    query: { paymentIdDB },
+  });
+  const payment = paymentData?.payment;
 
   if (!payment) {
     redirect("/dashboard/subscription");

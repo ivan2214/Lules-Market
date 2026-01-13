@@ -8,15 +8,11 @@ import {
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 300;
-
+import { Suspense, use } from "react";
 import { env } from "@/env/server";
+import { api } from "@/lib/eden";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { ProductService } from "@/server/modules/products/service";
 import { ProductCard } from "@/shared/components/product-card";
 import { ProductSchema } from "@/shared/components/structured-data";
 import {
@@ -31,60 +27,111 @@ import { mainImage } from "@/shared/utils/main-image";
 import { ProductImages } from "./_components/product-images";
 import { ProductViewTracker } from "./_components/product-view-tracker";
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+// Configuración de revalidación para ISR (Incremental Static Regeneration)
+// Se regenera cada hora
+export const revalidate = 3600;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const { product } = await ProductService.getById(id);
+interface ProductPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const productId = resolvedParams.id;
+
+  const { data: dataProduct } = await api.products
+    .public({
+      id: productId,
+    })
+    .get();
+
+  const { product } = dataProduct || {};
 
   if (!product) {
-    notFound();
+    return {
+      title: "Producto no encontrado | Lules Market",
+      description: "El producto que buscas no existe o ha sido eliminado.",
+    };
   }
 
-  const ogImages = product.images?.map((image) => ({
-    url: image.url,
-    width: 1200,
-    height: 630,
-    alt: product.name,
-  }));
-
-  const description = product.description
-    ? `${product.description.substring(0, 155)}${product.description.length > 155 ? "..." : ""}`
-    : `Compra ${product.name} en Lules Market.`;
+  const businessName = product.business?.name || "Lules Market";
+  const title = `${product.name} en ${businessName} | Lules Market`;
+  const description =
+    product.description ||
+    `Encontrá ${product.name} y más productos en ${businessName}.`;
+  const imageUrl = product.images?.[0]?.url || "/images/placeholder.svg";
 
   return {
-    title: `${product.name} | ${product.business?.name}`,
+    title,
     description,
     openGraph: {
-      title: product.name,
+      title,
       description,
-      images: ogImages?.length ? ogImages : [],
+      images: [
+        {
+          url: imageUrl,
+          width: 800,
+          height: 600,
+          alt: product.name,
+        },
+      ],
+      type: "website",
+      siteName: "Lules Market",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
     },
   };
 }
 
-export async function generateStaticParams() {
-  const products = await ProductService.getAllIds();
-  if (!products.length) {
-    return [];
-  }
-  return products.map((product) => ({ id: product.id }));
+export default function ProductLayout({ params }: ProductPageProps) {
+  // Desempaquetar params usando React.use()
+  const resolvedParams = use(params);
+
+  return (
+    <div className="container mx-auto max-w-7xl animate-fade-in px-4 py-8">
+      <Suspense fallback={<ProductSkeleton />}>
+        <ProductContent productId={resolvedParams.id} />
+      </Suspense>
+    </div>
+  );
 }
 
-export default async function ProductPage({ params }: Props) {
-  const { id } = await params;
-  const { product } = await ProductService.getById(id);
+// Componente principal que carga los datos
+async function ProductContent({ productId }: { productId: string }) {
+  const { data: dataProduct } = await api.products
+    .public({
+      id: productId,
+    })
+    .get();
 
-  if (!product) {
+  const { product } = dataProduct || {};
+
+  if (!product || !product.business) {
     notFound();
   }
 
-  // Fetch Similar Products - Usar caché también
-  const products = product.category
-    ? await ProductService.getSimilar(product.category.id, product.id)
-    : [];
+  // Cargar productos similares
+  const { data: similarProductsData } = await api.products
+    .public({
+      id: productId,
+    })
+    .similar.get({
+      query: {
+        productId: product.id,
+        businessId: product.businessId,
+        limit: 4,
+      },
+    });
+
+  const { products: similarProducts } = similarProductsData || {};
 
   const planType = product.business?.currentPlan?.plan?.type || "FREE";
   const isPremium = planType === "PREMIUM";
@@ -278,18 +325,38 @@ export default async function ProductPage({ params }: Props) {
 
         <Separator className="my-12" />
 
-        {products.length > 0 && (
+        {similarProducts && similarProducts.length > 0 && (
           <div className="flex flex-col gap-4 px-8 lg:px-0">
             <h2 className="flex flex-col gap-2 font-bold text-2xl tracking-tight">
               Productos similares
             </h2>
             <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] place-items-center gap-4">
-              {products.map((p) => (
+              {similarProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Skeleton loading state
+function ProductSkeleton() {
+  return (
+    <div className="animate-pulse space-y-8">
+      <div className="h-6 w-32 rounded bg-gray-200" />
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+        <div className="aspect-square rounded-2xl bg-gray-200" />
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="h-10 w-3/4 rounded bg-gray-200" />
+            <div className="h-12 w-1/3 rounded bg-gray-200" />
+          </div>
+          <div className="h-32 rounded-xl bg-gray-200" />
+          <div className="h-48 rounded-xl bg-gray-200" />
+        </div>
       </div>
     </div>
   );

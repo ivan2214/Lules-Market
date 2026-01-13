@@ -2,9 +2,8 @@ import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { requireBusiness } from "@/data/business/require-business";
+import { api } from "@/lib/eden";
 import { formatCurrency } from "@/lib/format";
-import { PaymentService } from "@/server/modules/payment/service";
-import { PlanService } from "@/server/modules/plan/service";
 import {
   Alert,
   AlertDescription,
@@ -31,15 +30,16 @@ export default async function SubscriptionPage({
 }) {
   const { error: errorParams } = await searchParams;
   const { userId } = await requireBusiness();
-  const { success, currentBusiness } = await getCurrentBusiness(userId);
+  const { success: businessSuccess, currentBusiness } =
+    await getCurrentBusiness(userId);
 
-  if (!success || !currentBusiness) {
+  if (!businessSuccess || !currentBusiness) {
     redirect(pathsConfig.auth.signIn);
   }
 
-  const payments = await PaymentService.history(userId);
+  const { data: payments } = await api.payment.history.get();
 
-  const plans = await PlanService.listAll();
+  const { data: plans } = await api.plan.public["list-all"].get();
 
   const message = errorParams ? subscriptionErrors[errorParams] : null;
 
@@ -116,7 +116,7 @@ export default async function SubscriptionPage({
         </div>
       </div>
 
-      {payments.length > 0 && (
+      {payments && payments.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Historial de Pagos</CardTitle>

@@ -96,8 +96,10 @@ export function ProductSchema({
   return (
     <script
       type="application/ld+json"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <JSON-LD>
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
+      }}
     />
   );
 }
