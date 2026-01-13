@@ -34,7 +34,7 @@ async function getPlanLimits(planType: PlanType) {
 async function CheckoutContent({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string }>;
+  searchParams: Promise<{ plan?: PlanType }>;
 }) {
   const { plan: planType } = await searchParams;
 
@@ -42,7 +42,7 @@ async function CheckoutContent({
     redirect("/dashboard/subscription");
   }
 
-  const plan = await getPlanLimits(planType as PlanType);
+  const plan = await getPlanLimits(planType);
 
   if (!plan) {
     redirect("/dashboard/subscription");
@@ -173,7 +173,7 @@ function CheckoutSkeleton() {
 export default function CheckoutPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string }>;
+  searchParams: Promise<{ plan?: PlanType }>;
 }) {
   return (
     <div className="mx-auto max-w-2xl space-y-6">

@@ -5,7 +5,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
-import type { CategoryWithRelations, ProductWithRelations } from "@/db/types";
+import type { Category, ProductWithRelations } from "@/db/types";
 import { api } from "@/lib/eden";
 
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
@@ -29,7 +29,7 @@ import { ProductFormDialog } from "./product-form-dialog";
 interface ProductCardProps {
   product: ProductWithRelations;
 
-  categories: CategoryWithRelations[];
+  categories: Category[];
   maxImagesPerProduct: number;
 }
 

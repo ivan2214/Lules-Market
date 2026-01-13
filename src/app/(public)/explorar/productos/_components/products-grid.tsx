@@ -43,18 +43,20 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     },
     queryKey: [
       "products",
-      businessId,
-      category,
-      currentLimit,
-      currentPage,
-      search,
-      sort,
+      {
+        businessId,
+        category,
+        limit: currentLimit,
+        page: currentPage,
+        search,
+        sort,
+      },
     ],
   });
 
   const { products, total } = data || {};
 
-  const totalPages = Math.ceil(total || 0 / currentLimit);
+  const totalPages = Math.ceil(total / currentLimit);
 
   if (!products?.length || !total || !data || !products) {
     hasFilters ? (

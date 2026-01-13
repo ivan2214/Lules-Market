@@ -16,7 +16,6 @@ import type {
   Plan,
   PlanInsert,
   ProductInsert,
-  WebhookEventInsert,
 } from "@/db/types";
 import { auth } from "@/lib/auth";
 import { PaymentStatusMP } from "@/shared/types";
@@ -693,7 +692,7 @@ async function seedPaymentsAndWebhooks(
     };
 
   const paymentsData: PaymentInsert[] = [];
-  const webhooksData: WebhookEventInsert[] = [];
+  const webhooksData: (typeof schema.webhookEvent.$inferInsert)[] = [];
   const paymentsCreated: CreatedPayment[] = [];
   const plans = await db.select().from(schema.plan);
 

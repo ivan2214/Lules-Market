@@ -12,10 +12,11 @@ import {
   createInsertSchema,
   createSelectSchema,
 } from "drizzle-typebox";
+import { t } from "elysia";
 
 type Spread<
   T extends TObject | Table,
-  Mode extends "select" | "insert" | undefined,
+  Mode extends "select" | "insert" | "update" | undefined,
 > = T extends TObject<infer Fields>
   ? {
       [K in keyof Fields]: Fields[K];
@@ -25,7 +26,11 @@ type Spread<
       ? BuildSchema<"select", T["_"]["columns"], undefined>["properties"]
       : Mode extends "insert"
         ? BuildSchema<"insert", T["_"]["columns"], undefined>["properties"]
-        : {}
+        : Mode extends "update"
+          ? Partial<
+              BuildSchema<"insert", T["_"]["columns"], undefined>["properties"]
+            >
+          : {}
     : {};
 
 /**
@@ -33,7 +38,7 @@ type Spread<
  */
 export const spread = <
   T extends TObject | Table,
-  Mode extends "select" | "insert" | undefined,
+  Mode extends "select" | "insert" | "update" | undefined,
 >(
   schema: T,
   mode?: Mode,
@@ -44,13 +49,14 @@ export const spread = <
   switch (mode) {
     case "insert":
     case "select":
+    case "update":
       if (Kind in schema) {
         table = schema;
         break;
       }
 
       table =
-        mode === "insert"
+        mode === "insert" || mode === "update"
           ? createInsertSchema(schema)
           : createSelectSchema(schema);
 
@@ -61,8 +67,25 @@ export const spread = <
       table = schema;
   }
 
-  for (const key of Object.keys(table.properties))
-    newSchema[key] = table.properties[key];
+  for (const key of Object.keys(table.properties)) {
+    if (mode === "update") {
+      if (
+        [
+          "id",
+          "created_at",
+          "updated_at",
+          "createdAt",
+          "updatedAt",
+          "userId",
+        ].includes(key)
+      )
+        continue;
+
+      newSchema[key] = t.Optional(table.properties[key]);
+    } else {
+      newSchema[key] = table.properties[key];
+    }
+  }
 
   return newSchema as any;
 };
@@ -72,11 +95,12 @@ export const spread = <
  *
  * If `mode` is 'insert', the schema will be refined for insert
  * If `mode` is 'select', the schema will be refined for select
+ * If `mode` is 'update', the schema will be refined for update (partial, no system fields)
  * If `mode` is undefined, the schema will be spread as is, models will need to be refined manually
  */
 export const spreads = <
   T extends Record<string, TObject | Table>,
-  Mode extends "select" | "insert" | undefined,
+  Mode extends "select" | "insert" | "update" | undefined,
 >(
   models: T,
   mode?: Mode,

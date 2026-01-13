@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getPlanCache } from "@/core/cache-functions/plan";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
+import type { PlanType } from "@/db/types";
 import { env } from "@/env/server";
 import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import { AppError } from "../errors";
@@ -20,13 +21,13 @@ async function getBusinessForUser(userId: string) {
   return currentBusiness;
 }
 
-export async function getPlanService(planType: "FREE" | "BASIC" | "PREMIUM") {
+export async function getPlanService(planType: PlanType) {
   return await getPlanCache(planType);
 }
 
 export async function createPreferenceService(
   userId: string,
-  planType: "FREE" | "BASIC" | "PREMIUM",
+  planType: PlanType,
 ) {
   const currentBusiness = await getBusinessForUser(userId);
 

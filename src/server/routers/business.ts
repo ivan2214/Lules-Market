@@ -32,11 +32,11 @@ export const businessPublicRouter = new Elysia({
   })
   .get(
     "/list-all",
-    async ({ body }) => {
-      return await listAllBusinessesCache(body);
+    async ({ query }) => {
+      return await listAllBusinessesCache(query);
     },
     {
-      body: ListAllBusinessesInputSchema,
+      query: ListAllBusinessesInputSchema,
       response: t.Object({
         /* t.Array(t.Object(models.select.plan)) */
         businesses: t.Array(models.relations.businessWithRelations),

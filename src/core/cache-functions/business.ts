@@ -18,7 +18,7 @@ import { models } from "@/db/model";
 import {
   business,
   category as categorySchema,
-  currentPlan,
+  currentPlan as currentPlanSchema,
   plan,
   product,
 } from "@/db/schema";
@@ -50,73 +50,116 @@ type ListAllBusinessesResult = Static<typeof ListAllBusinessesOutputSchema>;
 async function fetchAllBusinesses(
   input?: Static<typeof ListAllBusinessesInputSchema> | null,
 ): Promise<ListAllBusinessesResult> {
-  try {
-    const { search, category, page, limit, sortBy } = input ?? {};
-    // Build where conditions
-    const conditions = [eq(business.isActive, true)];
+  const { search, category, page = 1, limit = 12, sortBy } = input ?? {};
 
-    let orderBy: ReturnType<typeof asc> | ReturnType<typeof desc> | undefined;
+  // Build where conditions
+  const conditions: SQL<unknown>[] = [eq(business.isActive, true)];
 
-    if (search) {
-      conditions.push(
-        or(
-          ilike(business.name, `%${search}%`),
-          ilike(business.description, `%${search}%`),
-        ) as SQL<string>,
-      );
-    }
+  if (search) {
+    conditions.push(
+      or(
+        ilike(business.name, `%${search}%`),
+        ilike(business.description, `%${search}%`),
+      ) as SQL<string>,
+    );
+  }
 
-    if (category) {
-      const categoryId = await db.query.category.findFirst({
-        where: eq(categorySchema.value, category),
-      });
+  if (category) {
+    const categoryDB = await db.query.category.findFirst({
+      where: eq(categorySchema.value, category),
+    });
 
-      if (categoryId) {
-        conditions.push(eq(business.categoryId, categoryId.id));
-      }
-    }
+    categoryDB && conditions.push(eq(business.categoryId, categoryDB.id));
+  }
 
-    if (sortBy === "oldest") {
-      orderBy = asc(business.createdAt);
-    } else {
-      orderBy = desc(business.createdAt); // default newest
-    }
+  const whereClause = and(...conditions);
 
-    const whereClause = and(...conditions);
+  // Build order by
+  const orderBy = [];
 
-    const [businesses, totalResult] = await Promise.all([
-      db.query.business.findMany({
-        where: whereClause,
-        with: {
-          products: {
-            where: eq(product.active, true),
-            with: {
-              images: true,
-            },
-          },
-          category: true,
-          logo: true,
-          coverImage: true,
-        },
-        orderBy,
-        ...(page && limit ? { offset: (page - 1) * limit, limit: limit } : {}),
-      }),
-      db.select({ count: count() }).from(business).where(whereClause),
-    ]);
+  const prioritySort = sql`CASE
+    WHEN ${currentPlanSchema.listPriority} = 'Alta' THEN 3
+    WHEN ${currentPlanSchema.listPriority} = 'Media' THEN 2
+    WHEN ${currentPlanSchema.listPriority} = 'Estandar' THEN 1
+    ELSE 0
+  END DESC`;
 
-    const total = totalResult[0]?.count ?? 0;
+  if (sortBy === "oldest") {
+    orderBy.push(asc(business.createdAt));
+  } else if (sortBy === "newest") {
+    orderBy.push(desc(business.createdAt));
+  } else {
+    // Default sort: Priority
+    orderBy.push(prioritySort);
+  }
 
-    return {
-      businesses: businesses,
-      total,
-    };
-  } catch (error) {
-    console.error(error);
+  orderBy.push(desc(business.createdAt), desc(business.id));
+
+  const [idsResult, totalResult] = await Promise.all([
+    db
+      .select({ id: business.id })
+      .from(business)
+      .innerJoin(
+        currentPlanSchema,
+        eq(business.id, currentPlanSchema.businessId),
+      )
+      .where(whereClause)
+      .orderBy(...orderBy)
+      .offset((page - 1) * limit)
+      .limit(limit),
+    db
+      .select({ count: count() })
+      .from(business)
+      .innerJoin(
+        currentPlanSchema,
+        eq(business.id, currentPlanSchema.businessId),
+      )
+      .where(whereClause),
+  ]);
+
+  const total = totalResult[0]?.count ?? 0;
+
+  if (idsResult.length === 0) {
     return {
       businesses: [],
-      total: 0,
+      total,
+      ...(limit ? { pages: Math.ceil(total / limit) } : {}),
+      ...(page ? { currentPage: page } : {}),
     };
   }
+
+  const ids = idsResult.map((row) => row.id);
+
+  const businesses = await db.query.business.findMany({
+    where: inArray(business.id, ids),
+    with: {
+      products: {
+        where: eq(product.active, true),
+        with: {
+          images: true,
+        },
+      },
+      currentPlan: {
+        with: {
+          plan: true,
+        },
+      },
+      category: true,
+      logo: true,
+      coverImage: true,
+    },
+  });
+
+  const orderedBusinesses = businesses.sort((a, b) => {
+    return ids.indexOf(a.id) - ids.indexOf(b.id);
+  });
+
+  return {
+    businesses: orderedBusinesses,
+    total,
+    ...(limit ? { pages: Math.ceil(total / limit) } : {}),
+    ...(page ? { currentPage: page } : {}),
+  };
 }
 
 export async function listAllBusinessesCache(
@@ -136,8 +179,8 @@ async function fetchFeaturedBusinesses(): Promise<BusinessWithRelations[]> {
   const sortedIds = await db
     .select({ id: business.id })
     .from(business)
-    .innerJoin(currentPlan, eq(business.id, currentPlan.businessId))
-    .innerJoin(plan, eq(currentPlan.planType, plan.type))
+    .innerJoin(currentPlanSchema, eq(business.id, currentPlanSchema.businessId))
+    .innerJoin(plan, eq(currentPlanSchema.planType, plan.type))
     .where(and(eq(business.isActive, true)))
     .orderBy(
       sql`CASE

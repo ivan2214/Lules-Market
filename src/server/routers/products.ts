@@ -226,6 +226,7 @@ export const productsPublicRouter = new Elysia({
       try {
         const { products, total, currentPage, pages } =
           await listAllProductsCache(query);
+
         return { products, total, currentPage, pages };
       } catch (error) {
         console.error("Error al obtener productos recientes:", error);

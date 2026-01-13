@@ -1,398 +1,161 @@
-/**
- * ===============================================================
- * DRIZZLE ORM TYPE DEFINITIONS
- * ===============================================================
- *
- * Este archivo contiene todas las definiciones de tipos inferidos
- * de Drizzle ORM para operaciones CRUD y consultas con relaciones.
- *
- * Clean Architecture:
- * - Types: Tipos inferidos automáticamente de los schemas
- * - DTOs: Tipos con relaciones para transferencia de datos
- * - Input Types: Tipos para mutaciones (create, update, delete)
- */
-
-import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import type { Static } from "elysia";
+import type { Static, TObject } from "@sinclair/typebox";
 import type { models } from "../model";
-import type {
-  account,
-  admin,
-  analytics,
-  business,
-  businessView,
-  category,
-  currentPlan,
-  image,
-  log,
-  notification,
-  payment,
-  plan,
-  product,
-  productView,
-  profile,
-  session,
-  trial,
-  // Schemas
-  user,
-  verification,
-  webhookEvent,
-} from "../schema";
 
-// ===============================================================
-// BASE SELECT TYPES (Tipos inferidos para SELECT)
-// ===============================================================
+// ============================================
+// SELECT TYPES (DTOs)
+// ============================================
 
-/** Usuario base sin relaciones */
-export type User = InferSelectModel<typeof user>;
+export type Product = Static<TObject<typeof models.select.product>>;
+export type Category = Static<TObject<typeof models.select.category>>;
+export type Image = Static<TObject<typeof models.select.image>>;
+export type Business = Static<TObject<typeof models.select.business>>;
+export type User = Static<TObject<typeof models.select.user>>;
+export type Admin = Static<TObject<typeof models.select.admin>>;
+export type Plan = Static<TObject<typeof models.select.plan>>;
+export type CurrentPlan = Static<TObject<typeof models.select.currentPlan>>;
+export type Log = Static<TObject<typeof models.select.log>>;
+export type Analytics = Static<TObject<typeof models.select.analytics>>;
+export type Notification = Static<TObject<typeof models.select.notification>>;
+export type Payment = Static<TObject<typeof models.select.payment>>;
+export type Profile = Static<TObject<typeof models.select.profile>>;
+export type Trial = Static<TObject<typeof models.select.trial>>;
+export type WebhookEvent = Static<TObject<typeof models.select.webhookEvent>>;
+export type Session = Static<TObject<typeof models.select.session>>;
+export type Account = Static<TObject<typeof models.select.account>>;
+export type Verification = Static<TObject<typeof models.select.verification>>;
+export type TwoFactor = Static<TObject<typeof models.select.twoFactor>>;
+export type BusinessView = Static<TObject<typeof models.select.businessView>>;
 
-/** Sesión base */
-export type Session = InferSelectModel<typeof session>;
+// ============================================
+// INSERT TYPES (DTOs)
+// ============================================
 
-/** Cuenta OAuth */
-export type Account = InferSelectModel<typeof account>;
-
-/** Token de verificación */
-export type Verification = InferSelectModel<typeof verification>;
-
-/** Negocio base */
-export type Business = InferSelectModel<typeof business>;
-
-/** Plan actual del negocio */
-export type CurrentPlan = InferSelectModel<typeof currentPlan>;
-
-/** Plan disponible */
-export type Plan = InferSelectModel<typeof plan>;
-
-/** Trial de negocio */
-export type Trial = InferSelectModel<typeof trial>;
-
-/** Vista de negocio (analytics) */
-export type BusinessView = InferSelectModel<typeof businessView>;
-
-/** Producto base */
-export type Product = InferSelectModel<typeof product>;
-
-/** Vista de producto (analytics) */
-export type ProductView = InferSelectModel<typeof productView>;
-
-/** Categoría */
-export type Category = InferSelectModel<typeof category>;
-
-/** Imagen */
-export type Image = InferSelectModel<typeof image>;
-
-/** Notificación */
-export type Notification = InferSelectModel<typeof notification>;
-
-/** Pago */
-export type Payment = InferSelectModel<typeof payment>;
-
-/** Analytics */
-export type Analytics = InferSelectModel<typeof analytics>;
-
-/** Evento de webhook */
-export type WebhookEvent = InferSelectModel<typeof webhookEvent>;
-
-/** Log de sistema */
-export type Log = InferSelectModel<typeof log>;
-
-/** Perfil de usuario */
-export type Profile = InferSelectModel<typeof profile>;
-
-/** Admin */
-export type Admin = InferSelectModel<typeof admin>;
-
-// ===============================================================
-// INSERT TYPES (Tipos para CREATE)
-// ===============================================================
-
-/** Datos para crear usuario */
-export type UserInsert = InferInsertModel<typeof user>;
-
-/** Datos para crear sesión */
-export type SessionInsert = InferInsertModel<typeof session>;
-
-/** Datos para crear cuenta OAuth */
-export type AccountInsert = InferInsertModel<typeof account>;
-
-/** Datos para crear verificación */
-export type VerificationInsert = InferInsertModel<typeof verification>;
-
-/** Datos para crear negocio */
-export type BusinessInsert = InferInsertModel<typeof business>;
-
-/** Datos para crear plan actual */
-export type CurrentPlanInsert = InferInsertModel<typeof currentPlan>;
-
-/** Datos para crear plan */
-export type PlanInsert = InferInsertModel<typeof plan>;
-
-/** Datos para crear trial */
-export type TrialInsert = InferInsertModel<typeof trial>;
-
-/** Datos para crear vista de negocio */
-export type BusinessViewInsert = InferInsertModel<typeof businessView>;
-
-/** Datos para crear producto */
-export type ProductInsert = InferInsertModel<typeof product>;
-
-/** Datos para crear vista de producto */
-export type ProductViewInsert = InferInsertModel<typeof productView>;
-
-/** Datos para crear categoría */
-export type CategoryInsert = InferInsertModel<typeof category>;
-
-/** Datos para crear imagen */
-export type ImageInsert = InferInsertModel<typeof image>;
-
-/** Datos para crear notificación */
-export type NotificationInsert = InferInsertModel<typeof notification>;
-
-/** Datos para crear pago */
-export type PaymentInsert = InferInsertModel<typeof payment>;
-
-/** Datos para crear analytics */
-export type AnalyticsInsert = InferInsertModel<typeof analytics>;
-
-/** Datos para crear webhook event */
-export type WebhookEventInsert = InferInsertModel<typeof webhookEvent>;
-
-/** Datos para crear log */
-export type LogInsert = InferInsertModel<typeof log>;
-
-/** Datos para crear perfil */
-export type ProfileInsert = InferInsertModel<typeof profile>;
-
-/** Datos para crear admin */
-export type AdminInsert = InferInsertModel<typeof admin>;
-
-// ===============================================================
-// UPDATE TYPES (Tipos para UPDATE - todos los campos opcionales)
-// ===============================================================
-
-/** Datos para actualizar usuario */
-export type UserUpdate = Partial<Omit<UserInsert, "id">>;
-
-/** Datos para actualizar sesión */
-export type SessionUpdate = Partial<Omit<SessionInsert, "id">>;
-
-/** Datos para actualizar cuenta OAuth */
-export type AccountUpdate = Partial<Omit<AccountInsert, "id">>;
-
-/** Datos para actualizar verificación */
-export type VerificationUpdate = Partial<Omit<VerificationInsert, "id">>;
-
-/** Datos para actualizar negocio */
-export type BusinessUpdate = Partial<Omit<BusinessInsert, "id">>;
-
-/** Datos para actualizar plan actual */
-export type CurrentPlanUpdate = Partial<Omit<CurrentPlanInsert, "id">>;
-
-/** Datos para actualizar plan */
-export type PlanUpdate = Partial<Omit<PlanInsert, "type">>;
-
-/** Datos para actualizar trial */
-export type TrialUpdate = Partial<Omit<TrialInsert, "id">>;
-
-/** Datos para actualizar producto */
-export type ProductUpdate = Partial<Omit<ProductInsert, "id">>;
-
-/** Datos para actualizar categoría */
-export type CategoryUpdate = Partial<Omit<CategoryInsert, "id">>;
-
-/** Datos para actualizar imagen */
-export type ImageUpdate = Partial<Omit<ImageInsert, "key">>;
-
-/** Datos para actualizar notificación */
-export type NotificationUpdate = Partial<Omit<NotificationInsert, "id">>;
-
-/** Datos para actualizar pago */
-export type PaymentUpdate = Partial<Omit<PaymentInsert, "id">>;
-
-/** Datos para actualizar perfil */
-export type ProfileUpdate = Partial<Omit<ProfileInsert, "userId">>;
-
-/** Datos para actualizar admin */
-export type AdminUpdate = Partial<Omit<AdminInsert, "userId">>;
-
-// ===============================================================
-// TIPOS CON RELACIONES (DTOs)
-// ===============================================================
-
-/**
- * Usuario con todas sus relaciones
- */
-export interface UserWithRelations extends User {
-  sessions?: Session[];
-  accounts?: Account[];
-  business?: BusinessWithRelations | null;
-  admin?: AdminWithRelations | null;
-  profile?: ProfileWithRelations | null;
-
-  notifications?: Notification[];
-}
-
-/**
- * Negocio con todas sus relaciones
- */
-export type BusinessWithRelations = Static<
-  typeof models.relations.businessWithRelations
+export type ProductInsert = Static<TObject<typeof models.insert.product>>;
+export type CategoryInsert = Static<TObject<typeof models.insert.category>>;
+export type ImageInsert = Static<TObject<typeof models.insert.image>>;
+export type BusinessInsert = Static<TObject<typeof models.insert.business>>;
+export type UserInsert = Static<TObject<typeof models.insert.user>>;
+export type AdminInsert = Static<TObject<typeof models.insert.admin>>;
+export type PlanInsert = Static<TObject<typeof models.insert.plan>>;
+export type CurrentPlanInsert = Static<
+  TObject<typeof models.insert.currentPlan>
+>;
+export type LogInsert = Static<TObject<typeof models.insert.log>>;
+export type AnalyticsInsert = Static<TObject<typeof models.insert.analytics>>;
+export type NotificationInsert = Static<
+  TObject<typeof models.insert.notification>
+>;
+export type PaymentInsert = Static<TObject<typeof models.insert.payment>>;
+export type ProfileInsert = Static<TObject<typeof models.insert.profile>>;
+export type TrialInsert = Static<TObject<typeof models.insert.trial>>;
+export type WebhookEventInsert = Static<
+  TObject<typeof models.insert.webhookEvent>
+>;
+export type SessionInsert = Static<TObject<typeof models.insert.session>>;
+export type AccountInsert = Static<TObject<typeof models.insert.account>>;
+export type VerificationInsert = Static<
+  TObject<typeof models.insert.verification>
+>;
+export type TwoFactorInsert = Static<TObject<typeof models.insert.twoFactor>>;
+export type BusinessViewInsert = Static<
+  TObject<typeof models.insert.businessView>
 >;
 
-/**
- * Plan actual con relaciones
- */
-export type CurrentPlanWithRelations = Static<
-  typeof models.relations.currentPlanWithRelations
+// ============================================
+// DTO INSERT TYPES (API Input with Relations)
+// ============================================
+
+export type ProductInsertDto = Static<typeof models.dto.insert.product>;
+export type BusinessInsertDto = Static<typeof models.dto.insert.business>;
+
+// ============================================
+// UPDATE TYPES (DTOs)
+// ============================================
+
+export type ProductUpdate = Static<TObject<typeof models.update.product>>;
+export type CategoryUpdate = Static<TObject<typeof models.update.category>>;
+export type ImageUpdate = Static<TObject<typeof models.update.image>>;
+export type BusinessUpdate = Static<TObject<typeof models.update.business>>;
+export type UserUpdate = Static<TObject<typeof models.update.user>>;
+export type AdminUpdate = Static<TObject<typeof models.update.admin>>;
+export type PlanUpdate = Static<TObject<typeof models.update.plan>>;
+export type CurrentPlanUpdate = Static<
+  TObject<typeof models.update.currentPlan>
+>;
+export type LogUpdate = Static<TObject<typeof models.update.log>>;
+export type AnalyticsUpdate = Static<TObject<typeof models.update.analytics>>;
+export type NotificationUpdate = Static<
+  TObject<typeof models.update.notification>
+>;
+export type PaymentUpdate = Static<TObject<typeof models.update.payment>>;
+export type ProfileUpdate = Static<TObject<typeof models.update.profile>>;
+export type TrialUpdate = Static<TObject<typeof models.update.trial>>;
+export type WebhookEventUpdate = Static<
+  TObject<typeof models.update.webhookEvent>
+>;
+export type SessionUpdate = Static<TObject<typeof models.update.session>>;
+export type AccountUpdate = Static<TObject<typeof models.update.account>>;
+export type VerificationUpdate = Static<
+  TObject<typeof models.update.verification>
+>;
+export type TwoFactorUpdate = Static<TObject<typeof models.update.twoFactor>>;
+export type BusinessViewUpdate = Static<
+  TObject<typeof models.update.businessView>
 >;
 
-/**
- * Producto con todas sus relaciones
- */
+// ============================================
+// DTO UPDATE TYPES (API Input with Relations)
+// ============================================
+
+export type ProductUpdateDto = Static<typeof models.dto.update.product>;
+
+// ============================================
+// RELATIONS TYPES
+// ============================================
+
 export type ProductWithRelations = Static<
   typeof models.relations.productWithRelations
 >;
+export type BusinessWithRelations = Static<
+  typeof models.relations.businessWithRelations
+>;
+export type CurrentPlanWithRelations = Static<
+  typeof models.relations.currentPlanWithRelations
+>;
+export type ProfileWithRelations = Static<
+  typeof models.relations.profileWithRelations
+>;
+export type NotificationWithRelations = Static<
+  typeof models.relations.notificationWithRelations
+>;
+export type PaymentWithRelations = Static<
+  typeof models.relations.paymentWithRelations
+>;
+export type TrialWithRelations = Static<
+  typeof models.relations.trialWithRelations
+>;
+export type UserWithRelations = Static<
+  typeof models.relations.userWithRelations
+>;
+export type SessionWithRelations = Static<
+  typeof models.relations.sessionWithRelations
+>;
+export type AccountWithRelations = Static<
+  typeof models.relations.accountWithRelations
+>;
+export type BusinessViewWithRelations = Static<
+  typeof models.relations.businessViewWithRelations
+>;
 
-/**
- * Categoría con relaciones
- */
-export interface CategoryWithRelations extends Category {
-  products?: Product[];
-  businesses?: Business[];
-}
+/* ENUMS */
 
-/**
- * Imagen con relaciones
- */
-export interface ImageWithRelations extends Image {
-  product?: Product | null;
-  logoBusiness?: Business | null;
-  coverBusiness?: Business | null;
-  avatar?: Profile | null;
-}
-
-/**
- * Perfil con relaciones
- */
-export interface ProfileWithRelations extends Profile {
-  user?: User | null;
-  avatar?: Image | null;
-}
-
-/**
- * Admin con relaciones
- */
-export interface AdminWithRelations extends Admin {
-  user?: User | null;
-}
-
-/**
- * Trial con relaciones
- */
-export interface TrialWithRelations extends Trial {
-  business?: Business | null;
-}
-
-/**
- * Pago con relaciones
- */
-export interface PaymentWithRelations extends Payment {
-  business?: BusinessWithRelations | null;
-}
-
-/**
- * Notificación con relaciones
- */
-export interface NotificationWithRelations extends Notification {
-  user?: User | null;
-}
-
-// ===============================================================
-// ENUMS (Re-exportar para conveniencia)
-// ===============================================================
-
-export type PlanType = "FREE" | "BASIC" | "PREMIUM";
-export type PlanStatus = "ACTIVE" | "INACTIVE" | "CANCELLED" | "EXPIRED";
-export type PlanPriority = "Estandar" | "Media" | "Alta";
-export type UserRole = "ADMIN" | "USER" | "BUSINESS" | "SUPER_ADMIN";
-export type Permission =
-  | "ALL"
-  | "BAN_USERS"
-  | "MANAGE_PLANS"
-  | "MANAGE_PAYMENTS"
-  | "MODERATE_CONTENT"
-  | "VIEW_ANALYTICS";
 export type BusinessStatus =
-  | "PENDING_VERIFICATION"
-  | "ACTIVE"
-  | "SUSPENDED"
-  | "INACTIVE";
+  (typeof models.enums.businessStatus.enumValues)[number];
+export type ListPriority =
+  (typeof models.enums.listPriority.enumValues)[number];
 export type NotificationType =
-  | "PRODUCT_AVAILABLE"
-  | "PLAN_EXPIRING"
-  | "PLAN_EXPIRED"
-  | "PAYMENT_RECEIVED"
-  | "ACCOUNT_VERIFIED"
-  | "REPORT_RESOLVED";
-
-// ===============================================================
-// UTILITY TYPES
-// ===============================================================
-
-/**
- * Resultado de una operación de mutación
- */
-export interface MutationResult<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
-/**
- * Resultado paginado
- */
-export interface PaginatedResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
-
-/**
- * Opciones de paginación
- */
-export interface PaginationOptions {
-  page?: number;
-  limit?: number;
-}
-
-/**
- * Opciones de ordenamiento
- */
-export interface SortOptions<T = string> {
-  field: T;
-  direction: "asc" | "desc";
-}
-
-/**
- * Opciones de filtrado
- */
-export interface FilterOptions<T = Record<string, unknown>> {
-  where?: Partial<T>;
-  search?: string;
-  searchFields?: string[];
-}
-
-/**
- * Opciones de query combinadas
- */
-export interface QueryOptions<T = Record<string, unknown>>
-  extends PaginationOptions,
-    FilterOptions<T> {
-  sort?: SortOptions;
-  includeRelations?: boolean;
-}
+  (typeof models.enums.notificationType.enumValues)[number];
+export type Permission = (typeof models.enums.permission.enumValues)[number];
+export type PlanStatus = (typeof models.enums.planStatus.enumValues)[number];
+export type PlanType = (typeof models.enums.planType.enumValues)[number];
+export type UserRole = (typeof models.enums.userRole.enumValues)[number];

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { getCurrentSession } from "@/data/session/get-current-session";
 import { db } from "@/db";
 import { admin, business, notification, profile } from "@/db/schema";
+import type { Notification } from "@/db/types";
 import { SearchForm } from "@/shared/components/search-form";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -83,7 +84,9 @@ const NavigationWrapperContent = async () => {
 
   return (
     <div className="flex items-center gap-2">
-      {email && name && <Notifications notifications={notificationsForUser} />}
+      {email && name && (
+        <Notifications notifications={notificationsForUser as Notification[]} />
+      )}
       {email && name && (
         <UserMenu
           avatar={avatar}

@@ -23,16 +23,8 @@ export const BusinessGrid = ({
   sortBy?: "newest" | "oldest";
 }) => {
   const { data } = useSuspenseQuery({
-    queryKey: [
-      "businesses",
-      category,
-      currentLimit,
-      currentPage,
-      search,
-      sortBy,
-    ],
     queryFn: async () => {
-      const { data } = await api.business.public["list-all"].get({
+      const { data, error } = await api.business.public["list-all"].get({
         query: {
           category,
           limit: currentLimit,
@@ -41,12 +33,28 @@ export const BusinessGrid = ({
           sortBy,
         },
       });
+      if (error) throw error;
       return data;
     },
+    queryKey: [
+      "businesses",
+      category,
+      currentLimit,
+      currentPage,
+      search,
+      sortBy,
+    ],
   });
 
   const { businesses, total } = data || {};
-  const totalPages = Math.ceil(total || 0 / currentLimit);
+  const totalPages = Math.ceil(total / currentLimit);
+
+  console.log({
+    totalPages,
+    total,
+    currentLimit,
+    businesses: businesses?.length,
+  });
 
   if (!businesses?.length || !total || !businesses) {
     hasFilters ? (

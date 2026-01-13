@@ -26,13 +26,17 @@ interface ResultsCountAndLimitSelectorProps {
 export const ResultsCountAndLimitSelector: React.FC<
   ResultsCountAndLimitSelectorProps
 > = ({ typeExplorer, currentLimit, currentPage, params }) => {
-  const { category, search, sortBy, businessId } = params;
+  const { category, search, sortBy, businessId, limit, page } = params;
   const { data } = useSuspenseQuery({
-    queryKey: ["businesses", params?.category],
+    queryKey: ["businesses", category, limit, page, search, sortBy],
     queryFn: async () => {
       const { data } = await api.business.public["list-all"].get({
         query: {
           category: params?.category,
+          limit: currentLimit,
+          page: currentPage,
+          search,
+          sortBy,
         },
       });
       return data;
@@ -43,7 +47,10 @@ export const ResultsCountAndLimitSelector: React.FC<
   const total = data?.total || 0;
 
   const { data: dataP } = useSuspenseQuery({
-    queryKey: ["products"],
+    queryKey: [
+      "products",
+      { businessId, category, limit, page, search, sortBy },
+    ],
     queryFn: async () => {
       const { data } = await api.products.public.list.get({
         query: {
@@ -76,7 +83,7 @@ export const ResultsCountAndLimitSelector: React.FC<
   return (
     <div className="mb-4 flex items-center justify-between">
       <p className="text-muted-foreground text-sm">
-        Mostrando {products.length} de {total} productos
+        Mostrando {products.length} de {totalProducts} productos
       </p>
       <LimitSelector currentLimit={currentLimit} total={totalProducts} />
     </div>
