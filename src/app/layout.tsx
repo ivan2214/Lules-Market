@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import type React from "react";
-import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { getCurrentSession } from "@/data/session/get-current-session";
 import { Toaster } from "@/shared/components/ui/sonner";
 import { RootProviders } from "@/shared/providers/root-provider";
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter, Poppins } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import type React from "react";
+
+export const dynamic = "force-dynamic";
 
 const inter = Inter({
   subsets: ["latin"],
