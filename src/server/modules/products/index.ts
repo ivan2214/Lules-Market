@@ -1,5 +1,4 @@
 import { Elysia } from "elysia";
-import { AppError } from "@/server/errors";
 import { authPlugin } from "@/server/plugins/auth";
 import { ProductModel } from "./model";
 import { ProductService } from "./service";

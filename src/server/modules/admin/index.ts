@@ -4,8 +4,6 @@ import { authPlugin } from "@/server/plugins/auth";
 import { AdminModel } from "./model";
 import { AdminService } from "./service";
 
-const adminService = new AdminService();
-
 export const adminRouter = new Elysia({
   prefix: "/admin",
 })
@@ -13,7 +11,7 @@ export const adminRouter = new Elysia({
   .post(
     "/createLog",
     async ({ body }) => {
-      const log = await adminService.createLog(body);
+      const log = await AdminService.createLog(body);
       return { success: true, log };
     },
     {
@@ -24,7 +22,7 @@ export const adminRouter = new Elysia({
   .post(
     "/plans/createPlan",
     async ({ body }) => {
-      return await adminService.createPlan(body);
+      return await AdminService.createPlan(body);
     },
     {
       isAdmin: true,
@@ -34,7 +32,7 @@ export const adminRouter = new Elysia({
   .post(
     "/deleteAllLogs",
     async () => {
-      return await adminService.deleteAllLogs();
+      return await AdminService.deleteAllLogs();
     },
     {
       isAdmin: true,
@@ -43,7 +41,7 @@ export const adminRouter = new Elysia({
   .get(
     "/dashboard/stats",
     async () => {
-      const { stats } = await adminService.getDashboardStats();
+      const { stats } = await AdminService.getDashboardStats();
       return { stats };
     },
     {
@@ -54,7 +52,7 @@ export const adminRouter = new Elysia({
   .get(
     "/dashboard/analytics",
     async () => {
-      return await adminService.getAnalyticsData();
+      return await AdminService.getAnalyticsData();
     },
     {
       isAdmin: true,
@@ -64,7 +62,7 @@ export const adminRouter = new Elysia({
   .get(
     "/plans",
     async () => {
-      return await adminService.getPlans();
+      return await AdminService.getPlans();
     },
     {
       isAdmin: true,
@@ -74,7 +72,7 @@ export const adminRouter = new Elysia({
   .get(
     "/check-permission",
     async ({ body }) => {
-      return await adminService.checkPermission(body.adminId, body.permission);
+      return await AdminService.checkPermission(body.adminId, body.permission);
     },
     {
       body: AdminModel.checkPermissionBody,
@@ -84,7 +82,7 @@ export const adminRouter = new Elysia({
   .delete(
     "/business",
     async ({ body }) => {
-      return await adminService.deleteBusinessByIds(body.ids);
+      return await AdminService.deleteBusinessByIds(body.ids);
     },
     {
       isAdmin: true,
@@ -94,7 +92,7 @@ export const adminRouter = new Elysia({
   .get(
     "/trials/get-trials-and-active-count",
     async () => {
-      return await adminService.getTrialsAndActiveCount();
+      return await AdminService.getTrialsAndActiveCount();
     },
     {
       isAdmin: true,
@@ -103,7 +101,7 @@ export const adminRouter = new Elysia({
   .post(
     "/trials/create-trial",
     async ({ body, user }) => {
-      return await adminService.createTrial({ ...body, adminId: user.id });
+      return await AdminService.createTrial({ ...body, adminId: user.id });
     },
     {
       isAdmin: true,
@@ -114,7 +112,7 @@ export const adminRouter = new Elysia({
     "/me",
     async ({ user }) => {
       if (!user) throw new AppError("No autenticado", "UNAUTHORIZED");
-      const admin = await adminService.getCurrentAdmin(user.id);
+      const admin = await AdminService.getCurrentAdmin(user.id);
       if (!admin) throw new AppError("No es admin", "FORBIDDEN");
       return admin;
     },

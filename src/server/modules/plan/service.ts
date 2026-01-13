@@ -5,21 +5,18 @@ import { plan } from "@/db/schema";
 import type { Plan, PlanType } from "@/db/types";
 import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
 
-export abstract class PlanService {
-  private static async fetchPlans(): Promise<Plan[] | null> {
-    const plans = await db.query.plan.findMany();
-    return plans;
-  }
+// Local helper function to match private logic
+async function fetchPlans(): Promise<Plan[] | null> {
+  const plans = await db.query.plan.findMany();
+  return plans;
+}
 
-  static async listAll(): Promise<Plan[] | null> {
-    return getCachedOrFetch(
-      CACHE_KEYS.PLANS_ALL,
-      PlanService.fetchPlans,
-      CACHE_TTL.PLANS,
-    );
-  }
+export const PlanService = {
+  async listAll(): Promise<Plan[] | null> {
+    return getCachedOrFetch(CACHE_KEYS.PLANS_ALL, fetchPlans, CACHE_TTL.PLANS);
+  },
 
-  static async getByType(planType: PlanType): Promise<Plan | null> {
+  async getByType(planType: PlanType): Promise<Plan | null> {
     return getCachedOrFetch(
       CACHE_KEYS.plan(planType),
       async () => {
@@ -35,5 +32,5 @@ export abstract class PlanService {
       },
       CACHE_TTL.PLANS,
     );
-  }
-}
+  },
+};

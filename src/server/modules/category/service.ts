@@ -2,8 +2,8 @@ import "server-only";
 import { db } from "@/db";
 import { CACHE_KEYS, CACHE_TTL, getCachedOrFetch } from "@/lib/cache";
 
-export abstract class CategoryService {
-  static async listAll() {
+export const CategoryService = {
+  async listAll() {
     return getCachedOrFetch(
       CACHE_KEYS.CATEGORIES_ALL,
       async () => {
@@ -16,5 +16,5 @@ export abstract class CategoryService {
       },
       CACHE_TTL.CATEGORIES,
     );
-  }
-}
+  },
+};

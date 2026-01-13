@@ -4,8 +4,8 @@ import { AppError } from "@/server/errors";
 import { BusinessService } from "../business/service";
 import type { AuthModel } from "./model";
 
-export abstract class AuthService {
-  static async signUp(input: AuthModel.signUp) {
+export const AuthService = {
+  async signUp(input: AuthModel.signUp) {
     const { name, email, password, businessData } = input;
     const {
       address,
@@ -55,5 +55,5 @@ export abstract class AuthService {
     return {
       success: !!data?.success,
     };
-  }
-}
+  },
+};

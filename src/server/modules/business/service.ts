@@ -39,10 +39,10 @@ import {
 import { AppError } from "@/server/errors";
 import type { BusinessModel } from "./model";
 
-export abstract class BusinessService {
+export const BusinessService = {
   // --- MUTATIONS ---
 
-  static async setup(input: BusinessModel.setup) {
+  async setup(input: BusinessModel.setup) {
     const { category } = input;
 
     const existingBusiness = await db.query.business.findFirst({
@@ -128,9 +128,9 @@ export abstract class BusinessService {
     void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
 
     return { success: true, business: newBusiness };
-  }
+  },
 
-  static async update(userId: string, input: BusinessModel.update) {
+  async update(userId: string, input: BusinessModel.update) {
     const { category } = input;
 
     const currentBusiness = await db.query.business.findFirst({
@@ -221,9 +221,9 @@ export abstract class BusinessService {
       success: true,
       business: updated,
     };
-  }
+  },
 
-  static async delete(userId: string) {
+  async delete(userId: string) {
     const currentBusiness = await db.query.business.findFirst({
       where: eq(business.userId, userId),
       with: {
@@ -305,9 +305,9 @@ export abstract class BusinessService {
       if (error instanceof AppError) throw error;
       throw new AppError("Error deleting business", "INTERNAL_SERVER_ERROR");
     }
-  }
+  },
 
-  static async trackView(
+  async trackView(
     businessId: string,
     referrer?: string,
   ): Promise<{ success: boolean }> {
@@ -321,11 +321,11 @@ export abstract class BusinessService {
       console.error("Error tracking business view:", error);
       return { success: false };
     }
-  }
+  },
 
   // --- QUERIES (CACHED) ---
 
-  static async getFeatured(): Promise<BusinessWithRelations[]> {
+  async getFeatured(): Promise<BusinessWithRelations[]> {
     return getCachedOrFetch(
       CACHE_KEYS.BUSINESSES_FEATURED,
       async () => {
@@ -372,9 +372,9 @@ export abstract class BusinessService {
       },
       CACHE_TTL.BUSINESSES_FEATURED,
     );
-  }
+  },
 
-  static async listAll(
+  async listAll(
     input?: BusinessModel.listAllInput,
   ): Promise<BusinessModel.listAllOutput> {
     const cacheKey = generateCacheKey("businesses:list", input ?? {});
@@ -495,9 +495,9 @@ export abstract class BusinessService {
       },
       CACHE_TTL.BUSINESSES_LIST,
     );
-  }
+  },
 
-  static async getById(
+  async getById(
     id: string,
   ): Promise<{ business: BusinessWithRelations | undefined }> {
     return getCachedOrFetch(
@@ -523,9 +523,9 @@ export abstract class BusinessService {
       },
       CACHE_TTL.BUSINESS_BY_ID,
     );
-  }
+  },
 
-  static async listSimilar(
+  async listSimilar(
     input: BusinessModel.listSimilarInput,
   ): Promise<BusinessModel.listSimilarOutput> {
     const cacheKey = CACHE_KEYS.businessesSimilar(
@@ -559,13 +559,9 @@ export abstract class BusinessService {
       },
       CACHE_TTL.BUSINESSES_SIMILAR,
     );
-  }
+  },
 
-  static async getMyProducts(
-    businessId: string,
-    limit: number,
-    offset: number,
-  ) {
+  async getMyProducts(businessId: string, limit: number, offset: number) {
     const products = await db.query.product.findMany({
       where: eq(productSchema.businessId, businessId),
       limit: limit,
@@ -577,11 +573,11 @@ export abstract class BusinessService {
     });
 
     return products;
-  }
-  // Para generateStaticParams - Cache larga (1 hora o más)
-  static async getAllIds(): Promise<{ id: string }[]> {
+  },
+  // Para generateParams - Cache larga (1 hora o más)
+  async getAllIds(): Promise<{ id: string }[]> {
     return getCachedOrFetch(
-      "businesses:static-ids", // Key estática simple
+      "businesses:-ids", // Key estática simple
       async () => {
         return await db.query.business.findMany({
           where: eq(business.isActive, true),
@@ -592,5 +588,5 @@ export abstract class BusinessService {
       },
       CACHE_TTL.PLANS, // Usar TTL largo (1 hora)
     );
-  }
-}
+  },
+};

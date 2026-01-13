@@ -9,24 +9,25 @@ import { paymentClient, preferenceClient } from "@/lib/mercadopago";
 import { AppError } from "@/server/errors";
 import { PlanService } from "../plan/service";
 
-export abstract class PaymentService {
-  private static async getBusinessForUser(userId: string) {
-    const currentBusiness = await db.query.business.findFirst({
-      where: eq(schema.business.userId, userId),
-    });
+// Local helper
+async function getBusinessForUser(userId: string) {
+  const currentBusiness = await db.query.business.findFirst({
+    where: eq(schema.business.userId, userId),
+  });
 
-    if (!currentBusiness) {
-      throw new AppError("No tienes un comercio activo", "BAD_REQUEST");
-    }
-    return currentBusiness;
+  if (!currentBusiness) {
+    throw new AppError("No tienes un comercio activo", "BAD_REQUEST");
   }
+  return currentBusiness;
+}
 
-  static async getPlan(planType: PlanType) {
+export const PaymentService = {
+  async getPlan(planType: PlanType) {
     return await PlanService.getByType(planType);
-  }
+  },
 
-  static async createPreference(userId: string, planType: PlanType) {
-    const currentBusiness = await PaymentService.getBusinessForUser(userId);
+  async createPreference(userId: string, planType: PlanType) {
+    const currentBusiness = await getBusinessForUser(userId);
 
     if (planType === "FREE") {
       return {
@@ -95,10 +96,10 @@ export abstract class PaymentService {
       initPoint: preference.init_point,
       sandboxInitPoint: preference.sandbox_init_point,
     };
-  }
+  },
 
-  static async upgrade(userId: string, planType: "FREE" | "BASIC" | "PREMIUM") {
-    const currentBusiness = await PaymentService.getBusinessForUser(userId);
+  async upgrade(userId: string, planType: "FREE" | "BASIC" | "PREMIUM") {
+    const currentBusiness = await getBusinessForUser(userId);
 
     const [updated] = await db
       .update(schema.currentPlan)
@@ -113,10 +114,10 @@ export abstract class PaymentService {
     revalidatePath(`/comercio/${currentBusiness.id}`);
 
     return { updated };
-  }
+  },
 
-  static async cancel(userId: string) {
-    const currentBusiness = await PaymentService.getBusinessForUser(userId);
+  async cancel(userId: string) {
+    const currentBusiness = await getBusinessForUser(userId);
 
     const [updated] = await db
       .update(schema.currentPlan)
@@ -130,10 +131,10 @@ export abstract class PaymentService {
     revalidatePath(`/comercio/${currentBusiness.id}`);
 
     return updated;
-  }
+  },
 
-  static async history(userId: string) {
-    const currentBusiness = await PaymentService.getBusinessForUser(userId);
+  async history(userId: string) {
+    const currentBusiness = await getBusinessForUser(userId);
 
     const payments = await db.query.payment.findMany({
       where: eq(schema.payment.businessId, currentBusiness.id),
@@ -141,13 +142,13 @@ export abstract class PaymentService {
     });
 
     return payments;
-  }
+  },
 
-  static async startTrial(
+  async startTrial(
     userId: string,
     planType: "FREE" | "BASIC" | "PREMIUM" = "PREMIUM",
   ) {
-    const currentBusiness = await PaymentService.getBusinessForUser(userId);
+    const currentBusiness = await getBusinessForUser(userId);
 
     const existingTrial = await db.query.trial.findFirst({
       where: eq(schema.trial.businessId, currentBusiness.id),
@@ -200,9 +201,9 @@ export abstract class PaymentService {
     revalidatePath(`/comercio/${currentBusiness.id}`);
 
     return { message: "Trial iniciado con éxito", expiresAt };
-  }
+  },
 
-  static async failure(paymentIdDB: string) {
+  async failure(paymentIdDB: string) {
     const payment = await db.query.payment.findFirst({
       where: eq(schema.payment.id, paymentIdDB),
     });
@@ -220,18 +221,18 @@ export abstract class PaymentService {
       .where(eq(schema.payment.id, paymentIdDB));
 
     return { success: true };
-  }
+  },
 
-  static async getPayment(paymentIdDB: string) {
+  async getPayment(paymentIdDB: string) {
     const payment = await db.query.payment.findFirst({
       where: eq(schema.payment.id, paymentIdDB),
       with: { business: true },
     });
 
     return { payment: payment ? payment : undefined };
-  }
+  },
 
-  static async success(paymentIdMP: string, paymentIdDB: string) {
+  async success(paymentIdMP: string, paymentIdDB: string) {
     try {
       const mpPayment = await paymentClient.get({
         id: paymentIdMP,
@@ -315,5 +316,5 @@ export abstract class PaymentService {
       if (error instanceof AppError) throw error;
       throw new AppError("Error processing payment", "INTERNAL_SERVER_ERROR");
     }
-  }
-}
+  },
+};

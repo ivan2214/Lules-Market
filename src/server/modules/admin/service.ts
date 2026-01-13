@@ -38,7 +38,17 @@ const buildTrend = (current: number, prev: number): Trend => ({
   isPositive: current >= prev,
 });
 
-export class AdminService {
+async function createLog(input: LogInsert) {
+  try {
+    const [newLog] = await db.insert(schemaLog).values(input).returning();
+    return newLog;
+  } catch (error) {
+    console.error("Error creating log:", error);
+    throw new AppError("Failed to create log", "INTERNAL_SERVER_ERROR");
+  }
+}
+
+export const AdminService = {
   // --- CACHED/READ HELPERS (originally in cache-functions) ---
 
   async getDashboardStats() {
@@ -188,7 +198,7 @@ export class AdminService {
     };
 
     return { stats };
-  }
+  },
 
   async getAnalyticsData() {
     // Count businesses by plan type
@@ -306,12 +316,12 @@ export class AdminService {
       monthlyData,
       businessGrowthData,
     };
-  }
+  },
 
   async getPlans() {
     const plans = await db.query.plan.findMany();
     return plans;
-  }
+  },
 
   async getTrialsAndActiveCount(): Promise<{
     trials: TrialWithRelations[];
@@ -343,19 +353,13 @@ export class AdminService {
         daysRemaining: calculateDaysRemaining(t.expiresAt),
       })),
     };
-  }
+  },
 
   // --- MUTATIONS ---
 
   async createLog(input: LogInsert) {
-    try {
-      const [newLog] = await db.insert(schemaLog).values(input).returning();
-      return newLog;
-    } catch (error) {
-      console.error("Error creating log:", error);
-      throw new AppError("Failed to create log", "INTERNAL_SERVER_ERROR");
-    }
-  }
+    return createLog(input);
+  },
 
   async createPlan(input: PlanInsert) {
     try {
@@ -365,7 +369,7 @@ export class AdminService {
       console.error("Error creating plan:", error);
       throw new AppError("Failed to create plan", "INTERNAL_SERVER_ERROR");
     }
-  }
+  },
 
   async deleteAllLogs() {
     try {
@@ -375,7 +379,7 @@ export class AdminService {
       console.error("Error deleting logs:", error);
       throw new AppError("Error al eliminar los logs", "INTERNAL_SERVER_ERROR");
     }
-  }
+  },
 
   async checkPermission(adminId: string, permission: Permission) {
     try {
@@ -393,7 +397,7 @@ export class AdminService {
       console.error("Error al verificar permisos del admin:", error);
       return false;
     }
-  }
+  },
 
   async deleteBusinessByIds(ids: string[]) {
     try {
@@ -410,7 +414,7 @@ export class AdminService {
       if (error instanceof AppError) throw error;
       throw new AppError("Error deleting business", "INTERNAL_SERVER_ERROR");
     }
-  }
+  },
 
   async createTrial(input: {
     businessId: string;
@@ -453,7 +457,7 @@ export class AdminService {
         .returning();
 
       // creamos log logic directly here
-      await this.createLog({
+      await createLog({
         businessId,
         entityType: "TRIAL",
         action: "CREATE",
@@ -472,7 +476,7 @@ export class AdminService {
       if (error instanceof AppError) throw error;
       throw new AppError("Error creating trial", "INTERNAL_SERVER_ERROR");
     }
-  }
+  },
 
   async getCurrentAdmin(userId: string) {
     try {
@@ -490,5 +494,5 @@ export class AdminService {
         "INTERNAL_SERVER_ERROR",
       );
     }
-  }
-}
+  },
+};

@@ -5,14 +5,11 @@ import { db } from "@/db";
 import { admin, user, user as userDrizzle } from "@/db/schema";
 import type { ProfileWithRelations, User } from "@/db/types";
 import { env } from "@/env/server";
-import { UserModel } from "./model";
 
-export abstract class UserService {
+export const UserService = {
   // --- QUERIES ---
 
-  static async getPublicProfile(
-    userId: string,
-  ): Promise<ProfileWithRelations | null> {
+  async getPublicProfile(userId: string): Promise<ProfileWithRelations | null> {
     const userRow = await db.query.user.findFirst({
       where: eq(user.id, userId),
       with: {
@@ -29,9 +26,9 @@ export abstract class UserService {
     }
 
     return userRow.profile;
-  }
+  },
 
-  static async getByEmail(email: string): Promise<User | null> {
+  async getByEmail(email: string): Promise<User | null> {
     try {
       const userRow = await db.query.user.findFirst({
         where: eq(user.email, email),
@@ -41,9 +38,9 @@ export abstract class UserService {
     } catch {
       return null;
     }
-  }
+  },
 
-  static async getById(id: string | undefined): Promise<User | null> {
+  async getById(id: string | undefined): Promise<User | null> {
     try {
       if (!id) return null;
       const userRow = await db.query.user.findFirst({
@@ -54,11 +51,11 @@ export abstract class UserService {
     } catch {
       return null;
     }
-  }
+  },
 
   // --- MUTATIONS ---
 
-  static async syncRole(sessionUser: {
+  async syncRole(sessionUser: {
     id: string;
     email: string;
   }): Promise<{ success: boolean }> {
@@ -109,5 +106,5 @@ export abstract class UserService {
     }
 
     return { success: false };
-  }
-}
+  },
+};

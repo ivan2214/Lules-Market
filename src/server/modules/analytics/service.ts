@@ -20,67 +20,65 @@ type HomePageStats = {
   productsLastMonth: number;
 };
 
-export abstract class AnalyticsService {
-  private static async fetchHomePageStats(): Promise<HomePageStats> {
-    const now = new Date();
-    const startThisMonth = startOfMonth(now);
-    const startLastMonth = startOfMonth(subMonths(now, 1));
-    const endLastMonth = startThisMonth;
-    const [
-      activeBusinessesTotal,
-      activeBusinessesLastMonth,
-      productsTotal,
-      productsLastMonth,
-    ] = await Promise.all([
-      db
-        .select({ count: count() })
-        .from(business)
-        .where(and(eq(business.isActive, true))),
-      db
-        .select({ count: count() })
-        .from(business)
-        .where(
-          and(
-            eq(business.isActive, true),
-            gte(business.createdAt, startLastMonth),
-            lt(business.createdAt, endLastMonth),
-          ),
+// Local helper
+async function fetchHomePageStats(): Promise<HomePageStats> {
+  const now = new Date();
+  const startThisMonth = startOfMonth(now);
+  const startLastMonth = startOfMonth(subMonths(now, 1));
+  const endLastMonth = startThisMonth;
+  const [
+    activeBusinessesTotal,
+    activeBusinessesLastMonth,
+    productsTotal,
+    productsLastMonth,
+  ] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(and(eq(business.isActive, true))),
+    db
+      .select({ count: count() })
+      .from(business)
+      .where(
+        and(
+          eq(business.isActive, true),
+          gte(business.createdAt, startLastMonth),
+          lt(business.createdAt, endLastMonth),
         ),
-      db
-        .select({ count: count() })
-        .from(product)
-        .where(and(eq(product.active, true))),
-      db
-        .select({ count: count() })
-        .from(product)
-        .where(
-          and(
-            eq(product.active, true),
-            gte(product.createdAt, startLastMonth),
-            lt(product.createdAt, endLastMonth),
-          ),
+      ),
+    db
+      .select({ count: count() })
+      .from(product)
+      .where(and(eq(product.active, true))),
+    db
+      .select({ count: count() })
+      .from(product)
+      .where(
+        and(
+          eq(product.active, true),
+          gte(product.createdAt, startLastMonth),
+          lt(product.createdAt, endLastMonth),
         ),
-    ]);
-    return {
-      activeBusinessesTotal: activeBusinessesTotal[0].count,
-      activeBusinessesLastMonth: activeBusinessesLastMonth[0].count,
-      productsTotal: productsTotal[0].count,
-      productsLastMonth: productsLastMonth[0].count,
-    };
-  }
+      ),
+  ]);
+  return {
+    activeBusinessesTotal: activeBusinessesTotal[0].count,
+    activeBusinessesLastMonth: activeBusinessesLastMonth[0].count,
+    productsTotal: productsTotal[0].count,
+    productsLastMonth: productsLastMonth[0].count,
+  };
+}
 
-  static async getHomePageStats(): Promise<HomePageStats> {
+export const AnalyticsService = {
+  async getHomePageStats(): Promise<HomePageStats> {
     return getCachedOrFetch(
       CACHE_KEYS.HOMEPAGE_STATS,
-      AnalyticsService.fetchHomePageStats,
+      fetchHomePageStats,
       CACHE_TTL.HOMEPAGE_STATS,
     );
-  }
+  },
 
-  static async getStats(
-    businessId: string,
-    period?: AnalyticsModel.AnalyticsPeriod,
-  ) {
+  async getStats(businessId: string, period?: AnalyticsModel.AnalyticsPeriod) {
     const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
@@ -170,9 +168,9 @@ export abstract class AnalyticsService {
       topProducts,
       topReferrers,
     };
-  }
+  },
 
-  static async getProductStats({
+  async getProductStats({
     businessId,
     period,
     productId,
@@ -228,5 +226,5 @@ export abstract class AnalyticsService {
       totalViews: views.length,
       dailyViews: sortedDailyViews,
     };
-  }
-}
+  },
+};

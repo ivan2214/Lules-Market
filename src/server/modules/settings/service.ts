@@ -4,8 +4,8 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { AppError } from "@/server/errors";
 
-export abstract class SettingsService {
-  static async updateAccount(userId: string, input: { name: string }) {
+export const SettingsService = {
+  async updateAccount(userId: string, input: { name: string }) {
     const [updated] = await db
       .update(schema.user)
       .set({ name: input.name })
@@ -13,9 +13,9 @@ export abstract class SettingsService {
       .returning();
 
     return updated;
-  }
+  },
 
-  static async deleteAccount(userId: string) {
+  async deleteAccount(userId: string) {
     try {
       const userFound = await db
         .select()
@@ -38,5 +38,5 @@ export abstract class SettingsService {
         "INTERNAL_SERVER_ERROR",
       );
     }
-  }
-}
+  },
+};

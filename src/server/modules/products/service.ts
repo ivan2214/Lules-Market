@@ -19,7 +19,6 @@ import {
   category as categoryDrizzle,
   category as categoryShema,
   currentPlan as currentPlanSchema,
-  image as imageDrizzle,
   image as imageSchema,
   product as productSchema,
   productView as productViewSchema,
@@ -41,10 +40,10 @@ import type { ProductModel } from "./model";
 type ProductCreateInput = typeof ProductModel.createBody.static;
 type ProductUpdateInput = typeof ProductModel.updateBody.static;
 
-export abstract class ProductService {
+export const ProductService = {
   // --- QUERIES ---
 
-  static async listAll(input: typeof ProductModel.listAllInput.static) {
+  async listAll(input: typeof ProductModel.listAllInput.static) {
     const cacheKey = generateCacheKey("products:list", input ?? {});
 
     return getCachedOrFetch(
@@ -185,9 +184,9 @@ export abstract class ProductService {
       },
       CACHE_TTL.PRODUCTS_LIST,
     );
-  }
+  },
 
-  static async getById(id: string) {
+  async getById(id: string) {
     return getCachedOrFetch(
       CACHE_KEYS.product(id),
       async () => {
@@ -208,9 +207,9 @@ export abstract class ProductService {
       },
       CACHE_TTL.PRODUCT_BY_ID,
     );
-  }
+  },
 
-  static async getRecent() {
+  async getRecent() {
     return getCachedOrFetch(
       CACHE_KEYS.PRODUCTS_RECENT,
       async () => {
@@ -264,9 +263,9 @@ export abstract class ProductService {
       },
       CACHE_TTL.PRODUCTS_RECENT,
     );
-  }
+  },
 
-  static async getSimilar(categoryId: string, currentProductId: string) {
+  async getSimilar(categoryId: string, currentProductId: string) {
     const cacheKey = CACHE_KEYS.productsSimilar(categoryId, currentProductId);
     return getCachedOrFetch(
       cacheKey,
@@ -322,9 +321,9 @@ export abstract class ProductService {
       },
       CACHE_TTL.PRODUCTS_SIMILAR,
     );
-  }
+  },
 
-  static async getAllIds() {
+  async getAllIds() {
     return getCachedOrFetch(
       "products:static-ids",
       async () => {
@@ -337,9 +336,9 @@ export abstract class ProductService {
       },
       CACHE_TTL.PLANS,
     );
-  }
+  },
 
-  static async getByBusiness(businessId: string) {
+  async getByBusiness(businessId: string) {
     return await db.query.product.findMany({
       where: eq(productSchema.businessId, businessId),
       with: {
@@ -347,11 +346,11 @@ export abstract class ProductService {
         category: true,
       },
     });
-  }
+  },
 
   // --- MUTATIONS ---
 
-  static async create(input: ProductCreateInput, businessId: string) {
+  async create(input: ProductCreateInput, businessId: string) {
     const imageKeys = input.images.map((image) => image.key);
 
     let imagesDB = await db.query.image.findMany({
@@ -429,9 +428,9 @@ export abstract class ProductService {
     void invalidateCache(CACHE_KEYS.business(businessId));
 
     return { success: true, product };
-  }
+  },
 
-  static async update(input: ProductUpdateInput, businessId: string) {
+  async update(input: ProductUpdateInput, businessId: string) {
     const { productId, ...data } = input;
 
     const product = await db.query.product.findFirst({
@@ -461,9 +460,9 @@ export abstract class ProductService {
     void invalidateCache(CACHE_KEYS.product(productId));
 
     return { success: true, product: updated };
-  }
+  },
 
-  static async delete(productId: string, businessId: string) {
+  async delete(productId: string, businessId: string) {
     await db
       .delete(productSchema)
       .where(
@@ -475,9 +474,9 @@ export abstract class ProductService {
 
     void invalidateCache(CACHE_KEYS.product(productId));
     return { success: true };
-  }
+  },
 
-  static async trackView(productId: string, referrer?: string) {
+  async trackView(productId: string, referrer?: string) {
     try {
       await db.insert(productViewSchema).values({
         productId,
@@ -487,5 +486,5 @@ export abstract class ProductService {
     } catch {
       return { success: false };
     }
-  }
-}
+  },
+};
