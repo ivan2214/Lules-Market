@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { AppError } from "../errors";
 
 export const authPlugin = new Elysia({ name: "better-auth" })
-  .mount("/auth", auth.handler)
+  .mount(auth.handler)
   .macro({
     auth: {
       async resolve({ status, request: { headers } }) {
