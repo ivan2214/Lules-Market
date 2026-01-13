@@ -12,9 +12,9 @@ import {
   type SQL,
   sql,
 } from "drizzle-orm";
-import { createSelectSchema } from "drizzle-typebox";
 import { type Static, t } from "elysia";
 import { db } from "@/db";
+import { models } from "@/db/model";
 import {
   business,
   category as categorySchema,
@@ -41,9 +41,7 @@ export const ListAllBusinessesInputSchema = t.Optional(
 );
 
 export const ListAllBusinessesOutputSchema = t.Object({
-  businesses: t.Array(
-    t.Unsafe<BusinessWithRelations>(createSelectSchema(business)),
-  ),
+  businesses: t.Array(t.Object(models.select.business)),
   total: t.Number(),
 });
 

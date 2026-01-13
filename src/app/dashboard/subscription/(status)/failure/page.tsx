@@ -31,9 +31,9 @@ export default async function PaymentFailurePage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  await failureService(session.user.id, paymentIdDB);
+  await failureService(paymentIdDB);
 
-  const { payment } = await getPaymentService(session.user.id, paymentIdDB);
+  const { payment } = await getPaymentService(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");

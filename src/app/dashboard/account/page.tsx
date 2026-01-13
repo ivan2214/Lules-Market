@@ -6,12 +6,10 @@ import {
   Shield,
   Users,
 } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
-import { auth } from "@/lib/auth";
 import { HasRole } from "@/shared/components/acccess/has-role";
 import { Button } from "@/shared/components/ui/button";
 import {

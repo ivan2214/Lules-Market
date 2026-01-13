@@ -1,5 +1,4 @@
 import Elysia, { t } from "elysia";
-import { AccountUpdateSchema } from "@/shared/validators/account";
 import { authPlugin } from "../plugins/auth";
 import {
   deleteAccountService,

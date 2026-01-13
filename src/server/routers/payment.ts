@@ -39,7 +39,7 @@ export const paymentRouter = new Elysia({
   .post(
     "/createPreference",
     async ({ body, user }) => {
-      return await createPreferenceService(user!.id, body.planType as any);
+      return await createPreferenceService(user.id, body.planType);
     },
     {
       isBusiness: true,
@@ -51,7 +51,7 @@ export const paymentRouter = new Elysia({
   .post(
     "/upgrade",
     async ({ body, user }) => {
-      return await upgradeService(user!.id, body.plan as any);
+      return await upgradeService(user.id, body.plan);
     },
     {
       isBusiness: true,
@@ -63,7 +63,7 @@ export const paymentRouter = new Elysia({
   .post(
     "/cancel",
     async ({ user }) => {
-      return await cancelService(user!.id);
+      return await cancelService(user.id);
     },
     {
       isBusiness: true,
@@ -72,7 +72,7 @@ export const paymentRouter = new Elysia({
   .get(
     "/history",
     async ({ user }) => {
-      return await historyService(user!.id);
+      return await historyService(user.id);
     },
     {
       isBusiness: true,
@@ -81,7 +81,7 @@ export const paymentRouter = new Elysia({
   .post(
     "/startTrial",
     async ({ body, user }) => {
-      return await startTrialService(user!.id, body.plan as any);
+      return await startTrialService(user.id, body.plan);
     },
     {
       isBusiness: true,
@@ -92,8 +92,8 @@ export const paymentRouter = new Elysia({
   )
   .post(
     "/failure",
-    async ({ body, user }) => {
-      return await failureService(user!.id, body.paymentIdDB);
+    async ({ body }) => {
+      return await failureService(body.paymentIdDB);
     },
     {
       isBusiness: true,
@@ -104,8 +104,8 @@ export const paymentRouter = new Elysia({
   )
   .get(
     "/getPayment",
-    async ({ query, user }) => {
-      return await getPaymentService(user!.id, query.paymentIdDB);
+    async ({ query }) => {
+      return await getPaymentService(query.paymentIdDB);
     },
     {
       isBusiness: true,
@@ -116,8 +116,8 @@ export const paymentRouter = new Elysia({
   )
   .post(
     "/success",
-    async ({ body, user }) => {
-      return await successService(user!.id, body.paymentIdMP, body.paymentIdDB);
+    async ({ body }) => {
+      return await successService(body.paymentIdMP, body.paymentIdDB);
     },
     {
       isBusiness: true,

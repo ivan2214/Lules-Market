@@ -151,5 +151,6 @@ export const OpenAPI = {
       return reference;
       // biome-ignore lint/suspicious/noExplicitAny: <necessary>
     }) as Promise<any>,
+  // biome-ignore lint/suspicious/noExplicitAny: <necessary>
   components: getSchema().then(({ components }) => components) as Promise<any>,
 } as const;

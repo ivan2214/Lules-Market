@@ -1,8 +1,5 @@
 import type { Static } from "elysia";
-import {
-  ProductCreateBody,
-  ProductUpdateBody,
-} from "@/server/routers/products";
+import { ProductCreateBody, ProductUpdateBody } from "@/shared/schemas/product";
 import { typeboxValidator } from "@/shared/validators/form";
 
 export type ProductCreateInput = Static<typeof ProductCreateBody>;

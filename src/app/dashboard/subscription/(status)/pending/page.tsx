@@ -1,10 +1,8 @@
 import { Clock } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
-import { auth } from "@/lib/auth";
 import { getPaymentService } from "@/server/services/payment";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -33,7 +31,7 @@ export default async function PaymentPendingPage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  const { payment } = await getPaymentService(session.user.id, paymentIdDB);
+  const { payment } = await getPaymentService(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");

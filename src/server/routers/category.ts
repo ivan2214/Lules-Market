@@ -1,6 +1,6 @@
 import Elysia, { t } from "elysia";
 import { listAllCategoriesCache } from "@/core/cache-functions/category";
-import type { Category } from "@/db/types";
+import { models } from "@/db/model";
 
 export const categoryPublicRouter = new Elysia({
   prefix: "/category/public",
@@ -12,6 +12,6 @@ export const categoryPublicRouter = new Elysia({
     return categories;
   },
   {
-    response: t.Array(t.Unsafe<Category>()),
+    response: t.Array(t.Object(models.select.category)),
   },
 );

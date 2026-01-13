@@ -1,5 +1,4 @@
 import { desc, eq } from "drizzle-orm";
-import { createSelectSchema } from "drizzle-typebox";
 import Elysia, { t } from "elysia";
 import {
   featuredBusinessesCache,
@@ -9,12 +8,11 @@ import {
   listAllSimilarBusinessesCache,
 } from "@/core/cache-functions/business";
 import { db } from "@/db";
+import { models } from "@/db/model";
 import {
-  business,
   businessView as businessViewSchema,
   product as productSchema,
 } from "@/db/schema";
-import type { Business, BusinessWithRelations } from "@/db/types";
 import {
   BusinessSetupSchema,
   BusinessUpdateSchema,
@@ -40,10 +38,8 @@ export const businessPublicRouter = new Elysia({
     {
       body: ListAllBusinessesInputSchema,
       response: t.Object({
-        businesses: t.Array(
-          t.Unsafe<BusinessWithRelations>(createSelectSchema(business)),
-          { minItems: 1 },
-        ),
+        /* t.Array(t.Object(models.select.plan)) */
+        businesses: t.Array(t.Object(models.select.business)),
         total: t.Number(),
       }),
     },
@@ -72,7 +68,7 @@ export const businessPublicRouter = new Elysia({
         businessId: t.String(),
       }),
       response: t.Object({
-        businesses: t.Array(t.Unsafe<BusinessWithRelations>(t.Any())),
+        businesses: t.Array(t.Object(models.select.business)),
       }),
     },
   )
@@ -117,7 +113,7 @@ export const businessPublicRouter = new Elysia({
       body: BusinessSetupSchema,
       response: t.Object({
         success: t.Boolean(),
-        business: t.Unsafe<Business>(),
+        business: t.Object(models.select.business),
       }),
     },
   );

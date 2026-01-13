@@ -27,7 +27,7 @@ import {
   generateCacheKey,
   getCachedOrFetch,
 } from "@/lib/cache";
-import type { listAllProductsInputSchema } from "@/server/routers/products";
+import type { listAllProductsInputSchema } from "@/shared/schemas/product";
 
 export type ListAllProductsInput = Static<typeof listAllProductsInputSchema>;
 

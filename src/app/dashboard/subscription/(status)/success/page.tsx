@@ -40,9 +40,9 @@ export default async function PaymentSuccessPage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  await successService(session.user.id, paymentIdMP, paymentIdDB);
+  await successService(paymentIdMP, paymentIdDB);
 
-  const { payment } = await getPaymentService(session.user.id, paymentIdDB);
+  const { payment } = await getPaymentService(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");

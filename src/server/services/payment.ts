@@ -214,9 +214,7 @@ export async function startTrialService(
   return { message: "Trial iniciado con éxito", expiresAt };
 }
 
-export async function failureService(userId: string, paymentIdDB: string) {
-  const currentBusiness = await getBusinessForUser(userId);
-
+export async function failureService(paymentIdDB: string) {
   const payment = await db.query.payment.findFirst({
     where: eq(schema.payment.id, paymentIdDB),
   });
@@ -236,9 +234,7 @@ export async function failureService(userId: string, paymentIdDB: string) {
   return { success: true };
 }
 
-export async function getPaymentService(userId: string, paymentIdDB: string) {
-  const currentBusiness = await getBusinessForUser(userId);
-
+export async function getPaymentService(paymentIdDB: string) {
   const payment = await db.query.payment.findFirst({
     where: eq(schema.payment.id, paymentIdDB),
     with: { business: true },
@@ -247,13 +243,7 @@ export async function getPaymentService(userId: string, paymentIdDB: string) {
   return { payment: payment ? payment : undefined };
 }
 
-export async function successService(
-  userId: string,
-  paymentIdMP: string,
-  paymentIdDB: string,
-) {
-  const currentBusiness = await getBusinessForUser(userId);
-
+export async function successService(paymentIdMP: string, paymentIdDB: string) {
   try {
     const mpPayment = await paymentClient.get({
       id: paymentIdMP,

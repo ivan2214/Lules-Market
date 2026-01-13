@@ -4,7 +4,7 @@ import {
   getProductStatsCache,
   getStatsCache,
 } from "@/core/cache-functions/analytics";
-import type { Product } from "@/db/types";
+import { models } from "@/db/model";
 import { AppError } from "../errors";
 import { authPlugin } from "../plugins/auth";
 
@@ -108,7 +108,8 @@ export const analyticsPrivateRouter = new Elysia({
       isBusiness: true,
       currentBusiness: true,
       response: t.Object({
-        product: t.Unsafe<Product>(t.Any()),
+        /* t.Array(t.Object(models.select.plan)) */
+        product: t.Object(models.select.product),
         totalViews: t.Number(),
         dailyViews: t.Array(t.Object({ date: t.String(), views: t.Number() })),
       }),

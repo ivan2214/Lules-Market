@@ -105,7 +105,7 @@ export default async function SubscriptionPage({
       <div>
         <h2 className="mb-6 font-bold text-2xl">Planes Disponibles</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          {plans.map((plan) => (
+          {plans?.map((plan) => (
             <PlanCard
               key={plan.name}
               plan={plan}
