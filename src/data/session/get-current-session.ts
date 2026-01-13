@@ -1,18 +1,12 @@
 "use server";
 
-import type { Session, User } from "better-auth";
 import { headers } from "next/headers";
 import { cache } from "react";
-import { auth } from "@/lib/auth";
-
-type CurrentSession = {
-  session: Session;
-  user: User;
-};
+import { auth, type Session } from "@/lib/auth";
 
 export const getCurrentSession = cache(
   async (): Promise<{
-    session: CurrentSession | null;
+    session: Session | null;
   }> => {
     try {
       const session = await auth.api.getSession({

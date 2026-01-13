@@ -1,8 +1,6 @@
 ﻿import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
 import { db } from "@/db";
 import { admin, business, notification, profile } from "@/db/schema";
@@ -35,10 +33,6 @@ export const NavigationWrapper = async () => {
 
 const NavigationWrapperContent = async () => {
   const { session } = await getCurrentSession();
-
-  if (!session) {
-    redirect(pathsConfig.auth.signIn);
-  }
 
   const { user } = session || {};
 

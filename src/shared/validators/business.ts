@@ -17,7 +17,10 @@ export const BusinessSetupSchema = t.Object({
   tags: t.Optional(t.Array(t.String())),
 });
 
-export const BusinessUpdateSchema = BusinessSetupSchema.extend({
-  name: t.String({ minLength: 1, error: "El nombre es requerido" }),
-  email: t.String({ format: "email", error: "El email es requerido" }),
-});
+export const BusinessUpdateSchema = t.Composite([
+  BusinessSetupSchema,
+  t.Object({
+    name: t.String({ minLength: 1, error: "El nombre es requerido" }),
+    email: t.String({ format: "email", error: "El email es requerido" }),
+  }),
+]);

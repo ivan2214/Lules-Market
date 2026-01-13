@@ -9,7 +9,6 @@ import pathsConfig from "@/config/paths.config";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
-import { FormControl } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { signInSchema } from "@/shared/validators/auth";
 import { typeboxValidator } from "@/shared/validators/form";
@@ -101,18 +100,16 @@ export function PasswordSignInForm() {
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
-              <FormControl>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="********"
-                  type="password"
-                />
-              </FormControl>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                placeholder="********"
+                type="password"
+              />
               {isInvalid && <FieldError errors={field.state.meta.errors} />}
             </Field>
           );

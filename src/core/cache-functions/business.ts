@@ -30,15 +30,15 @@ import {
   getCachedOrFetch,
 } from "@/lib/cache";
 
-export const ListAllBusinessesInputSchema = t
-  .Object({
-    search: t.String().optional(),
-    category: t.String().optional(),
-    page: t.Number().optional(),
-    limit: t.Number().optional(),
-    sortBy: t.Union([t.Literal("newest"), t.Literal("oldest")]).optional(),
-  })
-  .optional();
+export const ListAllBusinessesInputSchema = t.Optional(
+  t.Object({
+    search: t.Optional(t.String()),
+    category: t.Optional(t.String()),
+    page: t.Optional(t.Number()),
+    limit: t.Optional(t.Number()),
+    sortBy: t.Optional(t.Union([t.Literal("newest"), t.Literal("oldest")])),
+  }),
+);
 
 export const ListAllBusinessesOutputSchema = t.Object({
   businesses: t.Array(

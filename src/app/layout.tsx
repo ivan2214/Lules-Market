@@ -52,14 +52,7 @@ export default async function RootLayout({
     >
       <body className="mx-auto font-sans antialiased">
         <NuqsAdapter>
-          <RootProviders
-            auth={{
-              session: session?.session ?? null,
-              user: session?.user ?? null,
-            }}
-          >
-            {children}
-          </RootProviders>
+          <RootProviders auth={session}>{children}</RootProviders>
           {/* {process.env.NODE_ENV === "development" && <DevTools />} */}
           <Toaster />
           <Analytics />

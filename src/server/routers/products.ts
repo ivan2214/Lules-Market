@@ -248,14 +248,27 @@ export const productsPrivateRouter = new Elysia({ prefix: "/products/private" })
 
 export const listAllProductsInputSchema = t.Optional(
   t.Object({
-    search: t.String().optional(),
-    category: t.String().optional(),
-    businessId: t.String().optional(),
-    page: t.Number().default(1),
-    limit: t.Number().default(12),
-    sort: t
-      .UnionEnum(["price_asc", "price_desc", "name_asc", "name_desc"])
-      .optional(),
+    search: t.Optional(t.String()),
+    category: t.Optional(t.String()),
+    businessId: t.Optional(t.String()),
+    page: t.Optional(
+      t.Number({
+        default: 1,
+      }),
+    ),
+    limit: t.Optional(
+      t.Number({
+        default: 12,
+      }),
+    ),
+    sort: t.Optional(
+      t.Union([
+        t.Literal("price_asc"),
+        t.Literal("price_desc"),
+        t.Literal("name_asc"),
+        t.Literal("name_desc"),
+      ]),
+    ),
   }),
 );
 
@@ -303,8 +316,8 @@ export const productsPublicRouter = new Elysia({
       response: t.Object({
         products: t.Array(t.Unsafe<ProductWithRelations>(t.Any())),
         total: t.Number(),
-        pages: t.Number().optional(),
-        currentPage: t.Number().optional(),
+        pages: t.Optional(t.Number()),
+        currentPage: t.Optional(t.Number()),
       }),
     },
   )

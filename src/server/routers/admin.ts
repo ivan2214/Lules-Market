@@ -20,13 +20,13 @@ export const adminRouter = new Elysia({
 
     body: t.Object({
       action: t.String(),
-      id: t.String().optional(),
-      timestamp: t.Date().optional(),
-      businessId: t.String().optional(),
-      entityType: t.String().optional(),
-      entityId: t.String().optional(),
-      details: t.Object(t.Any()),
-      adminId: t.String().optional(),
+      id: t.Optional(t.String()),
+      timestamp: t.Optional(t.Date()),
+      businessId: t.Optional(t.String()),
+      entityType: t.Optional(t.String()),
+      entityId: t.Optional(t.String()),
+      details: t.Object({}),
+      adminId: t.Optional(t.String()),
     }),
   },
 );
