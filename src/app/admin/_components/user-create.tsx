@@ -49,7 +49,7 @@ export function UserCreateDialog() {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof userCreateFormSchema>) {
+  async function _onSubmit(_data: z.infer<typeof userCreateFormSchema>) {
     /*    const { error } = await authClient.admin.createUser({
       email: data.email,
       password: data.password,

@@ -96,7 +96,7 @@ export default async function HomePage() {
   });
 
   return (
-    <main className="container mx-auto px-4 py-8 lg:p-0">
+    <main className="container mx-auto space-y-20 px-4 py-8 lg:p-0">
       {/* Hero Section */}
       <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
         {/* Side glows */}
@@ -134,14 +134,8 @@ export default async function HomePage() {
 
       {/* Stats - Dynamic */}
       <HydrateClient client={queryClient}>
-        <div className="mb-20">
-          <DynamicStats />
-        </div>
-
-        {/* Featured Businesses */}
-        <div className="mb-24">
-          <FeaturedBusinesses />
-        </div>
+        <DynamicStats />
+        <FeaturedBusinesses />
       </HydrateClient>
 
       {/* For Customers Section */}

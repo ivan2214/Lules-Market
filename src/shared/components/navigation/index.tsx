@@ -10,7 +10,7 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-border border-b bg-background/95">
       <div className="flex h-16 items-center justify-between px-4">
-        <div className="flex items-center justify-between">
+        <div className="flex gap-2">
           {/* Logo */}
           <Link href="/" className="w-24 lg:w-32">
             <Image

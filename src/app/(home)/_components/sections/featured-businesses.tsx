@@ -20,7 +20,7 @@ export function FeaturedBusinesses() {
   const featuredBusinesses = data || [];
 
   return (
-    <section className="mb-12">
+    <section>
       <div className="mb-6 flex items-center justify-between">
         <div>
           <Badge

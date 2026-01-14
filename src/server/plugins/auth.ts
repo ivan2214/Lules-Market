@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <necesary> */
 import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
 import { db } from "@/db";

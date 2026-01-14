@@ -10,7 +10,7 @@ export default function MarketingLayout({
   return (
     <section className="mx-auto flex min-h-screen flex-col">
       <Navigation />
-      <main className="container mx-auto lg:p-16">{children}</main>
+      <main className="container mx-auto p-8 lg:p-16">{children}</main>
       <Footer />
     </section>
   );

@@ -17,7 +17,7 @@ export function RecentProducts() {
   });
 
   return (
-    <section className="mb-24 rounded-3xl bg-muted/30 px-6 py-16 md:px-12">
+    <section className="rounded-3xl bg-muted/30">
       <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
         <div>
           <h2 className="mb-2 font-bold text-3xl tracking-tight md:text-4xl">
