@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import pathsConfig from "@/config/paths.config";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
+import { api } from "@/lib/eden";
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
 import {
@@ -71,11 +72,38 @@ const defaultValues: Static<typeof BusinessSetupSchemaForm> = {
   whatsapp: "",
 };
 
-export function SetupForm({ categories }: { categories: Category[] }) {
+export function SetupForm({
+  categories,
+  userEmail,
+}: {
+  categories: Category[];
+  userEmail: string;
+}) {
   const router = useRouter();
+
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
-    mutationFn: async (data: Static<typeof BusinessSetupSchemaForm>) => {
-      console.log(data);
+    mutationKey: ["business", "setup"],
+    mutationFn: async (values: Static<typeof BusinessSetupSchemaForm>) => {
+      const { coverImage, logo, ...restData } = values;
+
+      const { data, error } = await api.business.public.setup.post({
+        userEmail,
+        coverImage: {
+          file: coverImage.file,
+          key: coverImage.key,
+          isMainImage: coverImage.isMainImage,
+        },
+        logo: {
+          file: logo.file,
+          key: logo.key,
+          isMainImage: logo.isMainImage,
+        },
+        ...restData,
+      });
+      if (error) {
+        throw error;
+      }
+      return data;
     },
     onSuccess() {
       toast.success("Cuenta creada exitosamente");
@@ -94,6 +122,7 @@ export function SetupForm({ categories }: { categories: Category[] }) {
     onError(error) {
       toast.error(error.message);
     },
+    api: "/api/upload",
   });
   const uploaderLogo = useUploadFiles({
     route: "businessLogo",
@@ -105,6 +134,7 @@ export function SetupForm({ categories }: { categories: Category[] }) {
         description: JSON.stringify(error),
       });
     },
+    api: "/api/upload",
   });
 
   const form = useForm({

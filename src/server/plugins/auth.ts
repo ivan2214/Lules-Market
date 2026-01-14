@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { AppError } from "../errors";
 
 export const authPlugin = new Elysia({ name: "better-auth" })
-  .mount("/auth", auth.handler)
+  .mount(auth.handler)
   .macro({
     auth: {
       async resolve({ status, request: { headers } }) {
@@ -27,7 +27,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
 
         if (!session) return status(401);
 
-        const isBusiness = user?.role === "business";
+        const isBusiness = user?.role === "BUSINESS";
         if (!isBusiness) throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
@@ -43,7 +43,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
 
         if (!session) return status(401);
 
-        const isAdmin = user?.role === "admin";
+        const isAdmin = user?.role === "ADMIN";
         if (!isAdmin) throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
@@ -59,7 +59,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
 
         if (!session) return status(401);
 
-        const isUser = user?.role === "user";
+        const isUser = user?.role === "USER";
         if (!isUser) throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
@@ -125,14 +125,12 @@ async function resolveAuthUser(headers: Headers) {
 
 let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>;
 const getSchema = async () => {
-  if (!_schema) {
-    _schema = auth.api.generateOpenAPISchema();
-  }
+  _schema ??= auth.api.generateOpenAPISchema();
   return _schema;
 };
 
 export const OpenAPI = {
-  getPaths: (prefix = "/api") =>
+  getPaths: (prefix = "/auth/api") =>
     getSchema().then(({ paths }) => {
       const reference: typeof paths = Object.create(null);
 
@@ -141,7 +139,6 @@ export const OpenAPI = {
         reference[key] = paths[path];
 
         for (const method of Object.keys(paths[path])) {
-          // biome-ignore lint/suspicious/noExplicitAny: <necessary>
           const operation = (reference[key] as any)[method];
 
           operation.tags = ["Better Auth"];
@@ -149,8 +146,6 @@ export const OpenAPI = {
       }
 
       return reference;
-      // biome-ignore lint/suspicious/noExplicitAny: <necessary>
     }) as Promise<any>,
-  // biome-ignore lint/suspicious/noExplicitAny: <necessary>
   components: getSchema().then(({ components }) => components) as Promise<any>,
 } as const;

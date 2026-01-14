@@ -1,9 +1,6 @@
 import type { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { authClient } from "@/lib/auth/auth-client";
-import { rolesData } from "@/lib/auth/roles";
+import type { User } from "@/db/types";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
@@ -17,12 +14,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-
-type User = (typeof authClient.$Infer.Session)["user"];
+import { rolesData } from "@/shared/constants/roles";
 
 export function UserListActions({ row }: { row: Row<User> }) {
-  const router = useRouter();
-  const isBanned = row.original.banned;
+  /* const isBanned = row.original.banned; */
 
   return (
     <DropdownMenu>
@@ -35,7 +30,7 @@ export function UserListActions({ row }: { row: Row<User> }) {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={async () => {
-            const { error } = await authClient.admin.impersonateUser({
+            /*  const { error } = await authClient.admin.impersonateUser({
               userId: row.original.id,
             });
 
@@ -44,14 +39,14 @@ export function UserListActions({ row }: { row: Row<User> }) {
             } else {
               router.refresh();
               toast.success("Impersonated successfully");
-            }
+            } */
           }}
         >
           Impersonate
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={async () => {
-            if (isBanned) {
+            /*   if (isBanned) {
               const { error } = await authClient.admin.unbanUser({
                 userId: row.original.id,
               });
@@ -73,10 +68,10 @@ export function UserListActions({ row }: { row: Row<User> }) {
                 toast.success("User banned successfully");
                 router.refresh();
               }
-            }
+            } */
           }}
         >
-          {isBanned ? "Unban" : "Ban"}
+          Ban
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
@@ -93,7 +88,7 @@ export function UserListActions({ row }: { row: Row<User> }) {
                   value={label}
                   className="capitalize"
                   onClick={async () => {
-                    const { error } = await authClient.admin.setRole({
+                    /*  const { error } = await authClient.admin.setRole({
                       userId: row.original.id,
                       // biome-ignore lint/suspicious/noExplicitAny: <necessary>
                       role: label as any,
@@ -104,7 +99,7 @@ export function UserListActions({ row }: { row: Row<User> }) {
                     } else {
                       toast.success("User role updated successfully");
                       router.refresh();
-                    }
+                    } */
                   }}
                 >
                   {label}
@@ -117,7 +112,7 @@ export function UserListActions({ row }: { row: Row<User> }) {
         <DropdownMenuItem
           variant="destructive"
           onClick={async () => {
-            const { error } = await authClient.admin.removeUser({
+            /*   const { error } = await authClient.admin.removeUser({
               userId: row.original.id,
             });
 
@@ -126,7 +121,7 @@ export function UserListActions({ row }: { row: Row<User> }) {
             } else {
               router.refresh();
               toast.success("User removed successfully");
-            }
+            } */
           }}
         >
           Delete

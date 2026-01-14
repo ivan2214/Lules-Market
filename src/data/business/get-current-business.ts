@@ -1,45 +1,19 @@
 "use server";
 
-import { eq } from "drizzle-orm";
 import { cache } from "react";
-import { db } from "@/db";
-import { business as businessSchema } from "@/db/schema";
 import type { BusinessWithRelations } from "@/db/types";
+import { getCurrentSession } from "../session/get-current-session";
+import { requireSession } from "../session/require-session";
 
 export const getCurrentBusiness = cache(
-  async (
-    userId: string,
-  ): Promise<{
-    currentBusiness?: BusinessWithRelations;
-    success: boolean;
-    error?: string;
+  async (): Promise<{
+    currentBusiness?: BusinessWithRelations | null;
   }> => {
-    const currentBusiness = await db.query.business.findFirst({
-      where: eq(businessSchema.userId, userId),
-      with: {
-        logo: true,
-        coverImage: true,
-        category: true,
-        currentPlan: {
-          with: {
-            plan: true,
-          },
-        },
-        products: true,
-        user: true,
-      },
-    });
-
-    if (!currentBusiness) {
-      return {
-        error: "Business not found",
-        success: false,
-      };
-    }
+    await requireSession();
+    const { business } = await getCurrentSession();
 
     return {
-      currentBusiness,
-      success: true,
+      currentBusiness: business,
     };
   },
 );

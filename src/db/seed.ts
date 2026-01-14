@@ -319,7 +319,7 @@ async function seedNormalUsers(count: number = 10): Promise<void> {
     await db
       .update(schema.user)
       .set({
-        role: "user",
+        role: "USER",
         emailVerified: faker.datatype.boolean(),
       })
       .where(eq(schema.user.id, user.id));
@@ -346,7 +346,7 @@ async function seedAdmins(count: number = 3): Promise<void> {
       await db
         .update(schema.user)
         .set({
-          role: "admin",
+          role: "ADMIN",
           emailVerified: true,
         })
         .where(eq(schema.user.id, user.id));
@@ -468,7 +468,7 @@ async function seedBusinesses(
         .update(schema.user)
         .set({
           emailVerified: faker.datatype.boolean(),
-          role: "business",
+          role: "BUSINESS",
         })
         .where(eq(schema.user.id, owner.id));
 

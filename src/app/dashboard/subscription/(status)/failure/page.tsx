@@ -2,8 +2,7 @@ import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { getCurrentSession } from "@/data/session/get-current-session";
-import { failureService, getPaymentService } from "@/server/services/payment";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -14,6 +13,9 @@ import {
 } from "@/shared/components/ui/card";
 import type { MercadoPagoCallbackParams } from "@/shared/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function PaymentFailurePage({
   searchParams,
 }: {
@@ -22,21 +24,18 @@ export default async function PaymentFailurePage({
   const paymentIdDB = (await searchParams).external_reference;
 
   if (!paymentIdDB) {
-    redirect("/dashboard/subscription");
+    redirect(pathsConfig.dashboard.subscription.root);
   }
 
-  const { session } = await getCurrentSession();
+  await api.payment.failure.post({ paymentIdDB });
 
-  if (!session?.user) {
-    redirect(pathsConfig.auth.signIn);
-  }
-
-  await failureService(paymentIdDB);
-
-  const { payment } = await getPaymentService(paymentIdDB);
+  const { data: paymentData } = await api.payment.getPayment.get({
+    query: { paymentIdDB },
+  });
+  const payment = paymentData?.payment;
 
   if (!payment) {
-    redirect("/dashboard/subscription");
+    redirect(pathsConfig.dashboard.subscription.root);
   }
   return (
     <div className="mx-auto max-w-2xl">

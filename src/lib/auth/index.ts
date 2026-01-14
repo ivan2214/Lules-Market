@@ -1,18 +1,16 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, openAPI, twoFactor } from "better-auth/plugins";
-
+import { customSession, openAPI, twoFactor } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 import authConfig from "@/config/auth.config";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
-import { ac, allRoles } from "@/lib/auth/roles";
-import { syncUserRoleService } from "@/server/services/user";
+import { UserService } from "@/server/modules/user/service";
 
 export const auth = betterAuth({
   ...authConfig,
-  basePath: "/api",
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -98,11 +96,6 @@ export const auth = betterAuth({
     schema,
   }),
   plugins: [
-    admin({
-      ac,
-      roles: allRoles,
-      defaultRole: "user", // Por defecto todos son usuarios normales
-    }),
     twoFactor({
       otpOptions: {
         sendOTP: async ({ user, otp }) => {
@@ -119,8 +112,41 @@ export const auth = betterAuth({
         },
       },
     }),
-    openAPI({}),
+    openAPI(),
     nextCookies(),
+    customSession(async ({ user, session }) => {
+      // Buscar el business del usuario
+      const business = await db.query.business.findFirst({
+        where: eq(schema.business.userId, user.id),
+        with: {
+          user: true,
+          logo: true,
+          coverImage: true,
+        },
+      });
+
+      // Buscar el admin del usuario
+      const admin = await db.query.admin.findFirst({
+        where: eq(schema.admin.userId, user.id),
+        with: {
+          user: true,
+        },
+      });
+
+      const userDB = await db.query.user.findFirst({
+        where: eq(schema.user.id, user.id),
+        with: {
+          notifications: true,
+        },
+      });
+
+      return {
+        user: userDB,
+        session,
+        business: business || null,
+        admin: admin || null,
+      };
+    }),
   ],
   databaseHooks: {
     user: {
@@ -129,7 +155,7 @@ export const auth = betterAuth({
         async after(user) {
           const { id, email } = user;
 
-          await syncUserRoleService({
+          await UserService.syncRole({
             email,
             id,
           });

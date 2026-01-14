@@ -1,21 +1,16 @@
 "use server";
 
-import type { User } from "better-auth";
+import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "./get-current-session";
 
-export const requireSession = async (): Promise<{
-  user: User;
-}> => {
+export const requireSession = async () => {
   try {
-    const { session } = await getCurrentSession();
+    const { user } = await getCurrentSession();
 
-    if (!session?.session || !session?.user) {
-      throw new Error("UNAUTHORIZED");
+    if (!user) {
+      redirect(pathsConfig.auth.signIn);
     }
-
-    return {
-      user: session.user,
-    };
   } catch (error) {
     console.log(error);
     throw new Error("UNAUTHORIZED");

@@ -1,16 +1,18 @@
-import { headers } from "next/headers";
-
+import { and, desc, eq, ilike, type SQL } from "drizzle-orm";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
+import { db } from "@/db";
+import { user as userSchema } from "@/db/schema";
 import { UsersList } from "@/shared/components/admin/users-list";
 
-type User = (typeof auth.$Infer.Session)["user"];
+export const dynamic = "force-dynamic";
+/* revalidar cada 30 minutos */
+export const revalidate = 1800;
 
 const searchSchema = z.object({
   page: z.coerce.number().min(1).default(1),
   perPage: z.coerce.number().min(1).default(10),
   name: z.string().optional(),
-  role: z.string().optional(),
+  role: z.enum(["ADMIN", "USER", "SUPER_ADMIN", "BUSINESS"]).optional(),
   sort: z
     .string()
     .transform((val) => {
@@ -36,30 +38,28 @@ export default async function UsersPage({
   }>;
 }) {
   const search = await searchParams;
-  const { page, perPage, name, role, sort } = searchSchema.parse(search);
+  const { page, perPage, name, role, sort: _sort } = searchSchema.parse(search);
 
-  const data = await auth.api.listUsers({
-    query: {
-      limit: perPage,
-      offset: (page - 1) * perPage,
-      sortBy: sort[0]?.id,
-      sortDirection: sort[0]?.desc ? "desc" : "asc",
-      searchField: "name",
-      searchOperator: "contains",
-      searchValue: name,
-      filterField: "role",
-      filterOperator: "eq",
-      filterValue: role,
-    },
-    headers: await headers(),
+  const where: SQL[] = [];
+
+  if (name) {
+    where.push(ilike(userSchema.name, `%${name}%`));
+  }
+
+  if (role) {
+    where.push(eq(userSchema.role, role));
+  }
+
+  const data = await db.query.user.findMany({
+    limit: perPage,
+    offset: (page - 1) * perPage,
+    orderBy: desc(userSchema.createdAt),
+    where: and(...where),
   });
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-6 md:p-6">
-      <UsersList
-        data={data.users as Array<User>}
-        pageCount={Math.ceil(data.total / perPage)}
-      />
+      <UsersList data={data} pageCount={Math.ceil(data.length / perPage)} />
     </div>
   );
 }

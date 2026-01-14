@@ -22,6 +22,34 @@
       "when": 1768081117339,
       "tag": "0002_careless_shiva",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1768343806021,
+      "tag": "0003_slimy_black_crow",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1768343851349,
+      "tag": "0004_magenta_stingray",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1768344424273,
+      "tag": "0005_careless_scream",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1768344499337,
+      "tag": "0006_exotic_lilith",
+      "breakpoints": true
     }
   ]
 }

@@ -7,12 +7,8 @@ import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
-import {
-  getAllBusinessIdsCache,
-  getBusinessByIdCache,
-} from "@/core/cache-functions/business";
 import { env } from "@/env/server";
-import { api } from "@/lib/eden";
+import { BusinessService } from "@/server/modules/business/service";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
 import { BusinessInfo } from "./_components/business-info";
@@ -25,7 +21,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   // Usar caché interna para evitar latencia de red/cliente
-  const { business } = await getBusinessByIdCache(id);
+  const { business } = await BusinessService.getById(id);
 
   if (!business) {
     notFound();
@@ -127,7 +123,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const businesses = await getAllBusinessIdsCache();
+  const businesses = await BusinessService.getAllIds();
   if (!businesses.length) {
     return [];
   }
@@ -137,20 +133,18 @@ export async function generateStaticParams() {
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
   // Usar caché aquí también
-  const { business } = await getBusinessByIdCache(id);
+  const { business } = await BusinessService.getById(id);
 
   if (!business) {
     notFound();
   }
 
-  const { data } = await api.business.public["list-similar"].get({
-    query: {
-      category: business.category?.value || "",
-      businessId: id,
-    },
-  });
-
-  const similarBusinesses = data?.businesses || [];
+  const similarBusinesses = await BusinessService.listSimilar({
+    category: business.category?.value || "",
+    businessId: id,
+  })
+    .then((res) => res.businesses)
+    .catch(() => []);
 
   return (
     <div className="container mx-auto space-y-8 py-8">

@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { PublicFooter as Footer } from "@/features/(public)/_components/footer";
 import { auth } from "@/lib/auth";
 import { AppLogo } from "@/shared/components/app-logo";
-import { Footer } from "@/shared/components/marketing/footer";
 import { Navigation } from "@/shared/components/navigation";
 
 async function AuthLayout({ children }: React.PropsWithChildren) {

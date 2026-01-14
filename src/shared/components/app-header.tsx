@@ -1,10 +1,10 @@
-import { LayoutDashboard, Settings } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import pathsConfig from "@/config/paths.config";
 import { auth } from "@/lib/auth";
-import { NavUser } from "@/shared/components/marketing/nav-user";
 import { Button } from "@/shared/components/ui/button";
+import { NavUser } from "./sidebar/nav-user";
 
 export async function AppHeader() {
   const data = await auth.api.getSession({
@@ -32,12 +32,12 @@ export async function AppHeader() {
               Dashboard
             </Button>
           </Link>
-          <Link href={pathsConfig.dashboard.account.root}>
+          {/* <Link href={pathsConfig.dashboard.account.root}>
             <Button variant="ghost" size="sm" className="text-muted-foreground">
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </Button>
-          </Link>
+          </Link> */}
         </nav>
       </div>
       <div className="flex items-center gap-2">

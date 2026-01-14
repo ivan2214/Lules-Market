@@ -3,7 +3,7 @@
 import { Ellipsis, FolderOpen, Share, Trash } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import type { Permissions, Role } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,29 +20,31 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/shared/components/ui/sidebar";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export type NavDocumentItem = {
   name: string;
   url: Route;
   icon: React.ElementType;
-  permission?: Permissions;
-  role?: Role;
+  role?: UserRole;
   disabled?: boolean;
 };
 
-export function NavDocuments({ items }: { items: Array<NavDocumentItem> }) {
+export function NavDocuments({
+  items,
+  userRole,
+}: {
+  items: Array<NavDocumentItem>;
+  userRole: UserRole;
+}) {
   const { isMobile } = useSidebar();
-  const { hasPermission, hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(userRole);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Documents</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          if (item.permission && !hasPermission(item.permission, "OR")) {
-            return null;
-          }
           if (item.role && !hasRole(item.role)) {
             return null;
           }

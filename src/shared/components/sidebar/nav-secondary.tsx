@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type * as React from "react";
-import type { Permissions, Role } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,14 +11,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export type NavSecondaryItem = {
   title: string;
   url: Route;
   icon: React.ElementType;
-  permission?: Permissions;
-  role?: Role;
+  role?: UserRole;
   disabled?: boolean;
   target?: "_blank";
 };
@@ -26,20 +25,19 @@ export type NavSecondaryItem = {
 export function NavSecondary({
   items,
   children,
+  userRole,
   ...props
 }: React.PropsWithChildren<{
   items: Array<NavSecondaryItem>;
+  userRole: UserRole;
 }> &
   React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const { hasPermission, hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(userRole);
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            if (item.permission && !hasPermission(item.permission, "OR")) {
-              return null;
-            }
             if (item.role && !hasRole(item.role)) {
               return null;
             }

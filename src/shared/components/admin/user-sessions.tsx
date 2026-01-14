@@ -9,11 +9,8 @@ import {
   Tablet,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { UAParser } from "ua-parser-js";
-import { authClient } from "@/lib/auth/auth-client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,7 +54,8 @@ export function UserSessions({
   sessionId: string;
   userId: string;
 }) {
-  const router = useRouter();
+  console.log(userId);
+
   const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null);
 
   const getDeviceIcon = (type: string) => {
@@ -156,7 +154,7 @@ export function UserSessions({
                         <AlertDialogAction
                           className="bg-destructive text-background hover:bg-destructive/90"
                           onClick={async () => {
-                            if (sessionId === session.token) {
+                            /*   if (sessionId === session.token) {
                               await authClient.signOut();
                               router.refresh();
                               return;
@@ -171,7 +169,7 @@ export function UserSessions({
                             } else {
                               toast.success("Session revoked successfully");
                               router.refresh();
-                            }
+                            } */
                           }}
                         >
                           Revoke
@@ -213,7 +211,7 @@ export function UserSessions({
               <AlertDialogAction
                 className="bg-destructive text-background hover:bg-destructive/90"
                 onClick={async () => {
-                  const { error } = await authClient.admin.revokeUserSessions({
+                  /*   const { error } = await authClient.admin.revokeUserSessions({
                     userId,
                   });
                   await authClient.signOut();
@@ -223,7 +221,7 @@ export function UserSessions({
                   } else {
                     toast.success("All sessions revoked successfully");
                     router.refresh();
-                  }
+                  } */
                 }}
               >
                 Revoke All

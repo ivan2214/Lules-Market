@@ -53,7 +53,6 @@ const imageBase = createSelectSchema(image, timestampSchema);
 const businessBase = createSelectSchema(business, timestampSchema);
 const userBase = createSelectSchema(user, {
   ...timestampSchema,
-  banExpires: dateSchema,
 });
 const adminBase = createSelectSchema(admin, timestampSchema);
 const planBase = createSelectSchema(plan, timestampSchema);
@@ -134,6 +133,14 @@ const currentPlanWithRelationsSchema = t.Object({
       }),
     ),
   ),
+  business: t.Optional(
+    t.Nullable(
+      t.Object({
+        ...businessBase.properties,
+        user: t.Optional(t.Nullable(userBase)),
+      }),
+    ),
+  ),
 });
 
 // Business con relaciones
@@ -211,6 +218,11 @@ const userWithRelationsSchema = t.Object({
   sessions: t.Optional(t.Nullable(t.Array(sessionBase))),
   accounts: t.Optional(t.Nullable(t.Array(accountBase))),
   notifications: t.Optional(t.Nullable(t.Array(notificationBase))),
+});
+
+const adminWithRelationsSchema = t.Object({
+  ...adminBase.properties,
+  user: t.Optional(t.Nullable(userBase)),
 });
 
 // ============================================
@@ -394,6 +406,7 @@ export const models = {
   ),
   // Schemas con relaciones (no usan spreads)
   relations: {
+    adminWithRelations: adminWithRelationsSchema,
     productWithRelations: productWithRelationsSchema,
     businessWithRelations: businessWithRelationsSchema,
     currentPlanWithRelations: currentPlanWithRelationsSchema,
