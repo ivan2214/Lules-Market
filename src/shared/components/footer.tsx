@@ -2,30 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { footerNavigation } from "@/shared/constants/footer-navigation";
 import { getCurrentYear } from "@/shared/utils/date";
+import { Separator } from "./ui/separator";
 
 export async function Footer() {
   const year = await getCurrentYear();
 
   return (
-    <footer className="container mx-auto mt-auto border-t p-5 lg:p-10">
+    <footer className="container mx-auto mt-auto flex flex-col gap-8 border-t lg:p-10">
+      <div className="flex flex-col items-start gap-2">
+        <Link href="/">
+          <div className="w-32">
+            <Image
+              src="/logo-tp.png"
+              width={128}
+              height={128}
+              className="h-full w-full object-cover"
+              alt="Logo Lules Market"
+            />
+          </div>
+        </Link>
+        <p className="text-muted-foreground text-sm">
+          Tu vitrina digital para conectar con clientes locales
+        </p>
+      </div>
+      <Separator />
       <div className="grid gap-8 md:grid-cols-4">
-        <div className="flex flex-col items-start gap-2">
-          <Link href="/">
-            <div className="w-32">
-              <Image
-                src="/logo-tp.png"
-                width={48}
-                height={48}
-                className="h-full w-full object-cover"
-                alt="Logo Lules Market"
-              />
-            </div>
-          </Link>
-          <p className="text-muted-foreground text-sm">
-            Tu vitrina digital para conectar con clientes locales
-          </p>
-        </div>
-
         {Object.entries(footerNavigation).map(([key, value]) => (
           <div key={key}>
             <h3 className="mb-4 font-semibold">

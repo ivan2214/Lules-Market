@@ -6,5 +6,5 @@ export const navigation: navigationItem[] = [
   { name: "Productos", href: "/explorar/productos", icon: ShoppingBag },
   { name: "Comercios", href: "/explorar/comercios", icon: Store },
   { name: "Planes", href: "/planes", icon: CreditCard },
-  { name: "Preguntas Frecuentes", href: "/faq", icon: Info },
+  { name: "Que es Lules Market", href: "/que-es", icon: Info },
 ];
