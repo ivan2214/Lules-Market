@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
+import type { UserRole } from "@/db/types";
 import { authClient } from "@/lib/auth/auth-client";
-import { allRoles } from "@/lib/auth/roles";
 
 export function useAuth() {
   const { data: auth, error } = authClient.useSession();
@@ -11,43 +11,24 @@ export function useAuth() {
   return auth;
 }
 
-type AuthorizeFunction = (typeof allRoles)[keyof typeof allRoles]["authorize"];
-
 export function useAccessControl() {
+  const roles: UserRole[] = ["ADMIN", "USER", "BUSINESS", "SUPER_ADMIN"];
   const auth = useAuth();
 
-  const roles = useMemo(() => {
-    return auth?.user?.role?.split(",") as Array<keyof typeof allRoles>;
+  const role = useMemo(() => {
+    return auth?.user?.role;
   }, [auth?.user?.role]);
 
-  const hasPermission = useCallback(
-    (...args: Parameters<AuthorizeFunction>) => {
-      let check = false;
-      roles.forEach((role) => {
-        if (allRoles[role].authorize(...args).success) {
-          check = true;
-        }
-      });
-      return check;
-    },
-    [roles],
-  );
-
   const hasRole = useCallback(
-    (role: keyof typeof allRoles) => {
+    (role: UserRole) => {
       return roles.includes(role);
     },
     [roles],
   );
 
-  const getRolePermissions = useCallback((role: keyof typeof allRoles) => {
-    return allRoles[role].statements;
-  }, []);
-
   return {
     roles,
-    hasPermission,
     hasRole,
-    getRolePermissions,
+    role,
   };
 }

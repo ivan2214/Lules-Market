@@ -1,7 +1,12 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/env/server";
 import { api } from "@/lib/eden";
+
 import { BusinessService } from "@/server/modules/business/service";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 3600; // opcional: revalidar cada hora
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.APP_URL;
 

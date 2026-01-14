@@ -1,5 +1,3 @@
-import "server-only";
-
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { admin, user, user as userDrizzle } from "@/db/schema";
@@ -74,10 +72,11 @@ export const UserService = {
           id: sessionUser.id,
           name,
           email: sessionUser.email,
-          role: isAdmin ? "ADMIN" : "SUPER_ADMIN",
+          role: isAdmin || isSuperAdmin ? "ADMIN" : "USER",
           emailVerified: true,
         })
         .returning();
+
       userRow = newUser;
     }
 
@@ -86,7 +85,7 @@ export const UserService = {
       await db
         .update(userDrizzle)
         .set({
-          role: isAdmin ? "ADMIN" : "SUPER_ADMIN",
+          role: isAdmin ? "ADMIN" : "USER",
           emailVerified: true,
         })
         .where(eq(userDrizzle.id, userRow.id));

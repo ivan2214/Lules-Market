@@ -137,7 +137,7 @@ export const navSecondaryData: Array<NavSecondaryItem> = [
     title: "Users",
     url: "/admin/users",
     icon: Users,
-    permission: { user: ["list"] },
+    role: "ADMIN",
   },
   {
     title: "Get Help",

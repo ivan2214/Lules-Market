@@ -1,15 +1,9 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
-import { authClient } from "@/lib/auth/auth-client";
-import type { Role } from "@/lib/auth/roles";
-import { rolesData } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -34,16 +28,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
+import { rolesData } from "@/shared/constants/roles";
 
 const userCreateFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  role: z.enum(rolesData as [string, ...Array<string>]),
+  role: z.enum(rolesData as [UserRole, ...Array<UserRole>]),
 });
 
 export function UserCreateDialog() {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const form = useForm({
@@ -51,13 +45,12 @@ export function UserCreateDialog() {
       email: "",
       password: "",
       name: "",
-      role: "user",
+      role: "USER",
     },
-    resolver: zodResolver(userCreateFormSchema),
   });
 
   async function onSubmit(data: z.infer<typeof userCreateFormSchema>) {
-    const { error } = await authClient.admin.createUser({
+    /*    const { error } = await authClient.admin.createUser({
       email: data.email,
       password: data.password,
       name: data.name,
@@ -70,7 +63,7 @@ export function UserCreateDialog() {
     } else {
       toast.success("User created successfully");
       router.refresh();
-    }
+    } */
 
     setOpen(false);
   }
@@ -85,7 +78,7 @@ export function UserCreateDialog() {
           <DialogTitle>Create New User</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
+          <form className="grid gap-6">
             <div className="grid gap-3">
               <FormField
                 name="name"
@@ -149,7 +142,9 @@ export function UserCreateDialog() {
                     <FormLabel>Role</FormLabel>
                     <FormControl>
                       <Select
-                        onValueChange={(value: Role) => field.onChange(value)}
+                        onValueChange={(value: UserRole) =>
+                          field.onChange(value)
+                        }
                         value={field.value}
                       >
                         <SelectTrigger className="w-full">

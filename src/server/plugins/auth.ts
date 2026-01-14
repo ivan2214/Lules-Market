@@ -27,7 +27,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
 
         if (!session) return status(401);
 
-        const isBusiness = user?.role === "business";
+        const isBusiness = user?.role === "BUSINESS";
         if (!isBusiness) throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
@@ -43,7 +43,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
 
         if (!session) return status(401);
 
-        const isAdmin = user?.role === "admin";
+        const isAdmin = user?.role === "ADMIN";
         if (!isAdmin) throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
@@ -59,7 +59,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
 
         if (!session) return status(401);
 
-        const isUser = user?.role === "user";
+        const isUser = user?.role === "USER";
         if (!isUser) throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {

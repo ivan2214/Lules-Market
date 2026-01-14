@@ -6,7 +6,7 @@ import { withAuthenticate } from "@/shared/components/acccess/with-authenticate"
 
 export const dynamic = "force-dynamic";
 /* revalidar cada 30 minutos */
-export const revalidate = 60 * 30;
+export const revalidate = 1800;
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,6 +23,6 @@ async function DashboardLayout({ children }: { children: React.ReactNode }) {
 }
 
 export default withAuthenticate(DashboardLayout, {
-  role: "business",
+  role: "BUSINESS",
   redirect: pathsConfig.business.setup,
 });

@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  LogOut,
-  Palette,
-  Shield,
-  ShieldUser,
-  UserCircle,
-} from "lucide-react";
-import Link from "next/link";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import pathsConfig from "@/config/paths.config";
 import { authClient } from "@/lib/auth/auth-client";
-import { HasRole } from "@/shared/components/acccess/has-role";
 import {
   Avatar,
   AvatarFallback,
@@ -21,7 +11,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -87,7 +76,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/*      <DropdownMenuGroup>
               <Link href={pathsConfig.dashboard.account.root}>
                 <DropdownMenuItem>
                   <UserCircle />
@@ -100,7 +89,7 @@ export function NavUser({
                   Security
                 </DropdownMenuItem>
               </Link>
-              <HasRole role="admin">
+              <HasRole role="ADMIN">
                 <Link href={pathsConfig.admin.root}>
                   <DropdownMenuItem>
                     <ShieldUser />
@@ -114,7 +103,7 @@ export function NavUser({
                   Preferences
                 </DropdownMenuItem>
               </Link>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {

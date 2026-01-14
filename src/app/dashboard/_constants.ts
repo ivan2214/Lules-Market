@@ -3,7 +3,6 @@ import {
   CreditCard,
   LayoutDashboard,
   Package,
-  Settings,
   Store,
 } from "lucide-react";
 import type { navigationItem } from "@/shared/types";
@@ -36,5 +35,4 @@ export const navigation: navigationItem[] = [
   { name: "Mi Negocio", href: "/dashboard/business", icon: Store },
   { name: "Estadísticas", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Suscripción", href: "/dashboard/subscription", icon: CreditCard },
-  { name: "Configuración", href: "/dashboard/account", icon: Settings },
 ];

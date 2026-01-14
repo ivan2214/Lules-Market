@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import type { Permissions, Role } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import {
   Command,
   CommandDialog,
@@ -30,13 +30,12 @@ export function SearchCommandDialog({
       title: string;
       url: Route;
       icon: React.ElementType;
-      permission?: Permissions;
-      role?: Role;
+      role?: UserRole;
       disabled?: boolean;
     }>
   >;
 }) {
-  const { hasPermission, hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
 
@@ -54,9 +53,6 @@ export function SearchCommandDialog({
 
   const filteredData = Object.entries(commandsData).filter(([, value]) => {
     return value.every((item) => {
-      if (item.permission && !hasPermission(item.permission)) {
-        return false;
-      }
       if (item.role && !hasRole(item.role)) {
         return false;
       }
@@ -80,9 +76,6 @@ export function SearchCommandDialog({
                 {index !== 0 && <CommandSeparator />}
                 <CommandGroup heading={key}>
                   {value.map((item) => {
-                    if (item.permission && !hasPermission(item.permission)) {
-                      return null;
-                    }
                     if (item.role && !hasRole(item.role)) {
                       return null;
                     }

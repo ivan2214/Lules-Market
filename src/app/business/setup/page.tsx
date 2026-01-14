@@ -1,9 +1,9 @@
 import Link from "next/link";
 import pathsConfig from "@/config/paths.config";
+import { PublicFooter as Footer } from "@/features/(public)/_components/footer";
 import { api } from "@/lib/eden";
 import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 import { AppLogo } from "@/shared/components/app-logo";
-import { Footer } from "@/shared/components/marketing/footer";
 import { Navigation } from "@/shared/components/navigation";
 import {
   Card,
@@ -14,6 +14,9 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { SetupForm } from "./_components/setup-form";
+
+export const dynamic = "force-dynamic"; // Añade esta línea
+export const revalidate = 60;
 
 async function BusinessSetup() {
   const { data: categories } = await api.category.public["list-all"].get();
@@ -63,6 +66,6 @@ async function BusinessSetup() {
 }
 
 export default withAuthenticate(BusinessSetup, {
-  role: "user",
+  role: "USER",
   redirect: pathsConfig.business.setup,
 });

@@ -1,13 +1,12 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, customSession, openAPI, twoFactor } from "better-auth/plugins";
-
+import { customSession, openAPI, twoFactor } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 import authConfig from "@/config/auth.config";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { env } from "@/env/server";
-import { ac, allRoles } from "@/lib/auth/roles";
 import { UserService } from "@/server/modules/user/service";
 
 export const auth = betterAuth({
@@ -97,11 +96,6 @@ export const auth = betterAuth({
     schema,
   }),
   plugins: [
-    admin({
-      ac,
-      roles: allRoles,
-      defaultRole: "user", // Por defecto todos son usuarios normales
-    }),
     twoFactor({
       otpOptions: {
         sendOTP: async ({ user, otp }) => {
@@ -123,7 +117,7 @@ export const auth = betterAuth({
     customSession(async ({ user, session }) => {
       // Buscar el business del usuario
       const business = await db.query.business.findFirst({
-        where: (business, { eq }) => eq(business.userId, user.id),
+        where: eq(schema.business.userId, user.id),
         with: {
           user: true,
           logo: true,
@@ -133,14 +127,14 @@ export const auth = betterAuth({
 
       // Buscar el admin del usuario
       const admin = await db.query.admin.findFirst({
-        where: (admin, { eq }) => eq(admin.userId, user.id),
+        where: eq(schema.admin.userId, user.id),
         with: {
           user: true,
         },
       });
 
       const userDB = await db.query.user.findFirst({
-        where: (user, { eq }) => eq(user.id, user.id),
+        where: eq(schema.user.id, user.id),
         with: {
           notifications: true,
         },

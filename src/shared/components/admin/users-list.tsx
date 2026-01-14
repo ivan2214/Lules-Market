@@ -99,7 +99,7 @@ export function UsersList({
           );
         },
       },
-      {
+      /*     {
         id: "banned",
         accessorKey: "banned",
         header: ({ column }: { column: Column<User, unknown> }) => (
@@ -116,7 +116,7 @@ export function UsersList({
             </Badge>
           );
         },
-      },
+      }, */
       {
         id: "role",
         accessorKey: "role",

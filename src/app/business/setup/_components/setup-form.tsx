@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import pathsConfig from "@/config/paths.config";
 import type { Category } from "@/db/types";
 import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
+import { api } from "@/lib/eden";
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
 import {
@@ -43,6 +44,7 @@ import {
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
+import { useAuth } from "@/shared/providers/auth-provider";
 import { BusinessSetupSchema } from "@/shared/validators/business";
 import { typeboxValidator } from "@/shared/validators/form";
 
@@ -72,10 +74,31 @@ const defaultValues: Static<typeof BusinessSetupSchemaForm> = {
 };
 
 export function SetupForm({ categories }: { categories: Category[] }) {
+  const { user } = useAuth();
   const router = useRouter();
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
-    mutationFn: async (data: Static<typeof BusinessSetupSchemaForm>) => {
-      console.log(data);
+    mutationKey: ["business", "setup"],
+    mutationFn: async (values: Static<typeof BusinessSetupSchemaForm>) => {
+      const { coverImage, logo, ...restData } = values;
+
+      const { data, error } = await api.business.public.setup.post({
+        userEmail: user?.email,
+        coverImage: {
+          file: coverImage.file,
+          key: coverImage.key,
+          isMainImage: coverImage.isMainImage,
+        },
+        logo: {
+          file: logo.file,
+          key: logo.key,
+          isMainImage: logo.isMainImage,
+        },
+        ...restData,
+      });
+      if (error) {
+        throw error;
+      }
+      return data;
     },
     onSuccess() {
       toast.success("Cuenta creada exitosamente");
@@ -94,6 +117,7 @@ export function SetupForm({ categories }: { categories: Category[] }) {
     onError(error) {
       toast.error(error.message);
     },
+    api: "/api/upload",
   });
   const uploaderLogo = useUploadFiles({
     route: "businessLogo",
@@ -105,6 +129,7 @@ export function SetupForm({ categories }: { categories: Category[] }) {
         description: JSON.stringify(error),
       });
     },
+    api: "/api/upload",
   });
 
   const form = useForm({

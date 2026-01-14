@@ -1,16 +1,13 @@
 "use server";
 
 import type { Route } from "next";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
-import { auth } from ".";
-import type { Permissions, Role } from "./roles";
+import type { UserRole } from "@/db/types";
 
 export async function authenticate(args?: {
-  permissions?: Permissions;
-  role?: Role;
+  role?: UserRole;
   redirect?: Route;
 }) {
   const { session } = await getCurrentSession();
@@ -19,30 +16,14 @@ export async function authenticate(args?: {
     throw new Error("No session found");
   }
 
-  if (!args?.permissions) {
-    const user = session?.user;
-    const userRole = user?.role?.split(",");
+  const is = (await session.user?.role) === args?.role;
 
-    if (!args?.role || userRole?.includes(args?.role)) {
-      return {
-        success: true,
-        user,
-      };
-    }
-    redirect(args?.redirect || pathsConfig.auth.signIn);
-  }
-
-  const is = await auth.api.userHasPermission({
-    body: {
-      permissions: args?.permissions,
-    },
-    headers: await headers(),
-  });
-  if (is.success) {
+  if (is) {
     return {
       success: true,
       user: session?.user,
     };
   }
+
   redirect(args?.redirect || pathsConfig.auth.signIn);
 }

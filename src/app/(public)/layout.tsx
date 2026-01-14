@@ -3,8 +3,8 @@ import { PublicFooter } from "@/app/(public)/_components/footer";
 import { Navigation } from "@/shared/components/navigation";
 
 export const dynamic = "force-dynamic";
-/* revalidar cada 30 minutos */
-export const revalidate = 60 * 30;
+/* revalidar cada 30 minutos en segundos*/
+export const revalidate = 1800;
 
 export default function PublicLayout({
   children,

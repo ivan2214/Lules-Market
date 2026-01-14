@@ -5,7 +5,7 @@ import type { LucideIcon } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import type { Permissions, Role } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,26 +31,21 @@ export type NavMainItem = {
   items?: Array<{
     title: string;
     url: Route;
-    role?: Role;
-    permission?: Permissions;
+    role?: UserRole;
     disabled?: boolean;
   }>;
-  permission?: Permissions;
-  role?: Role;
+  role?: UserRole;
   disabled?: boolean;
 };
 
 export function NavMain({ items }: { items: Array<NavMainItem> }) {
-  const { hasPermission, hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl();
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          if (item.permission && !hasPermission(item.permission, "OR")) {
-            return null;
-          }
           if (item.role && !hasRole(item.role)) {
             return null;
           }
@@ -77,12 +72,6 @@ export function NavMain({ items }: { items: Array<NavMainItem> }) {
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => {
-                      if (
-                        subItem.permission &&
-                        !hasPermission(subItem.permission, "OR")
-                      ) {
-                        return null;
-                      }
                       if (subItem.role && !hasRole(subItem.role)) {
                         return null;
                       }

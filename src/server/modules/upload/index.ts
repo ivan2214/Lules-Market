@@ -7,6 +7,7 @@ import { UploadService } from "./service";
 const router: Router = {
   client: s3,
   bucketName: env.S3_BUCKET_NAME,
+
   routes: {
     businessCover: route({
       fileTypes: ["image/*"],
@@ -33,9 +34,10 @@ const router: Router = {
   },
 };
 
-export const uploadRoute = new Elysia({ prefix: "/api" }).post(
-  "/upload",
-  ({ request }) => {
+export const uploadRoute = new Elysia()
+  .get("/upload", () => {
+    return "hola mundo";
+  })
+  .post("/upload", ({ request }) => {
     return handleRequest(request, router);
-  },
-);
+  });

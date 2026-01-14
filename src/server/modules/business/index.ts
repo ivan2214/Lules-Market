@@ -58,7 +58,7 @@ const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
     },
     {
       body: BusinessModel.setup,
-      // Leaving response validation open for now or strictly defined if needed
+      response: BusinessModel.setupOutput,
     },
   );
 

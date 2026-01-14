@@ -9,6 +9,11 @@ export namespace BusinessModel {
   export const setup = BusinessSetupSchema;
   export type setup = typeof setup.static;
 
+  export const setupOutput = t.Object({
+    success: t.Boolean(),
+  });
+  export type setupOutput = typeof setupOutput.static;
+
   export const update = BusinessUpdateSchema;
   export type update = typeof update.static;
 

@@ -43,91 +43,99 @@ export const BusinessService = {
   // --- MUTATIONS ---
 
   async setup(input: BusinessModel.setup) {
-    const { category } = input;
+    try {
+      const { category } = input;
 
-    const existingBusiness = await db.query.business.findFirst({
-      where: eq(business.name, input.name),
-    });
+      const existingBusiness = await db.query.business.findFirst({
+        where: eq(business.name, input.name),
+      });
 
-    if (existingBusiness) {
-      throw new AppError("Ya existe un comercio con ese nombre", "BAD_REQUEST");
-    }
+      if (existingBusiness) {
+        throw new AppError(
+          "Ya existe un comercio con ese nombre",
+          "BAD_REQUEST",
+        );
+      }
 
-    const user = await db.query.user.findFirst({
-      where: eq(userSchema.email, input.userEmail),
-    });
+      const user = await db.query.user.findFirst({
+        where: eq(userSchema.email, input.userEmail),
+      });
 
-    if (!user) {
-      throw new AppError("Usuario no encontrado", "NOT_FOUND");
-    }
+      if (!user) {
+        throw new AppError("Usuario no encontrado", "NOT_FOUND");
+      }
 
-    // Handle category
-    let categoryId: string | null = null;
-    const categoryDB = await db.query.category.findFirst({
-      where: eq(categorySchema.value, category?.toLowerCase() || ""),
-    });
+      // Handle category
+      let categoryId: string | null = null;
+      const categoryDB = await db.query.category.findFirst({
+        where: eq(categorySchema.value, category?.toLowerCase() || ""),
+      });
 
-    if (categoryDB) {
-      categoryId = categoryDB.id;
-    } else if (category) {
-      const [newCategory] = await db
-        .insert(categorySchema)
+      if (categoryDB) {
+        categoryId = categoryDB.id;
+      } else if (category) {
+        const [newCategory] = await db
+          .insert(categorySchema)
+          .values({
+            value: category?.toLowerCase(),
+            label: category,
+          })
+          .returning();
+        categoryId = newCategory.id;
+      }
+
+      const [newBusiness] = await db
+        .insert(business)
         .values({
-          value: category?.toLowerCase(),
-          label: category,
+          name: input.name,
+          description: input.description,
+          phone: input.phone,
+          whatsapp: input.whatsapp,
+          website: input.website,
+          facebook: input.facebook,
+          instagram: input.instagram,
+          address: input.address,
+          categoryId,
+          userId: user.id,
+          tags: input.tags,
         })
         .returning();
-      categoryId = newCategory.id;
+
+      // Create logo if exists
+      if (input.logo?.key) {
+        await db.insert(image).values({
+          key: input.logo.key,
+          url: `${env.S3_BUCKET_URL}/${input.logo.key}`,
+          isMainImage: true,
+          logoBusinessId: newBusiness.id,
+        });
+      }
+
+      // Create cover image if exists
+      if (input.coverImage?.key) {
+        await db.insert(image).values({
+          key: input.coverImage.key,
+          url: `${env.S3_BUCKET_URL}/${input.coverImage.key}`,
+          isMainImage: true,
+          coverBusinessId: newBusiness.id,
+        });
+      }
+
+      // Update user role to BUSINESS
+      await db
+        .update(userSchema)
+        .set({ role: "BUSINESS" })
+        .where(eq(userSchema.id, user.id));
+
+      // Invalidar caché
+      void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
+      void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
+
+      return { success: true };
+    } catch (error) {
+      console.log(error);
+      throw new AppError("Error al crear el comercio", "INTERNAL_SERVER_ERROR");
     }
-
-    const [newBusiness] = await db
-      .insert(business)
-      .values({
-        name: input.name,
-        description: input.description,
-        phone: input.phone,
-        whatsapp: input.whatsapp,
-        website: input.website,
-        facebook: input.facebook,
-        instagram: input.instagram,
-        address: input.address,
-        categoryId,
-        userId: user.id,
-        tags: input.tags,
-      })
-      .returning();
-
-    // Create logo if exists
-    if (input.logo?.key) {
-      await db.insert(image).values({
-        key: input.logo.key,
-        url: `${env.S3_BUCKET_URL}/${input.logo.key}`,
-        isMainImage: true,
-        logoBusinessId: newBusiness.id,
-      });
-    }
-
-    // Create cover image if exists
-    if (input.coverImage?.key) {
-      await db.insert(image).values({
-        key: input.coverImage.key,
-        url: `${env.S3_BUCKET_URL}/${input.coverImage.key}`,
-        isMainImage: true,
-        coverBusinessId: newBusiness.id,
-      });
-    }
-
-    // Update user role to BUSINESS
-    await db
-      .update(userSchema)
-      .set({ role: "BUSINESS" })
-      .where(eq(userSchema.id, user.id));
-
-    // Invalidar caché
-    void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
-    void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
-
-    return { success: true, business: newBusiness };
   },
 
   async update(userId: string, input: BusinessModel.update) {

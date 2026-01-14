@@ -53,7 +53,6 @@ const imageBase = createSelectSchema(image, timestampSchema);
 const businessBase = createSelectSchema(business, timestampSchema);
 const userBase = createSelectSchema(user, {
   ...timestampSchema,
-  banExpires: dateSchema,
 });
 const adminBase = createSelectSchema(admin, timestampSchema);
 const planBase = createSelectSchema(plan, timestampSchema);

@@ -17,12 +17,12 @@ export const PathsSchema = z.object({
   dashboard: z.object({
     root: z.custom<Route>(),
     products: z.custom<Route>(),
-    account: z.object({
+    /*   account: z.object({
       root: z.custom<Route>(),
       security: z.custom<Route>(),
       preferences: z.custom<Route>(),
       settings: z.custom<Route>(),
-    }),
+    }), */
     subscription: z.object({
       root: z.custom<Route>(),
       success: z.custom<Route>(),
@@ -51,12 +51,12 @@ const pathsConfig = PathsSchema.parse({
   dashboard: {
     root: "/dashboard",
     products: "/dashboard/products",
-    account: {
+    /*  account: {
       root: "/dashboard/account",
       security: "/dashboard/account/security",
       preferences: "/dashboard/account/preferences",
       settings: "/dashboard/account/settings",
-    },
+    }, */
     subscription: {
       root: "/dashboard/subscription/success",
       success: "/dashboard/subscription/success",

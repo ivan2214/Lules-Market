@@ -2,7 +2,7 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import type { Permissions, Role } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,8 +16,7 @@ export type NavResourceItem = {
   title: string;
   url: Route;
   icon: React.ElementType;
-  permission?: Permissions;
-  role?: Role;
+  role?: UserRole;
   disabled?: boolean;
 };
 
@@ -28,15 +27,12 @@ export function NavResources({
   resource: string;
   items: Array<NavResourceItem>;
 }) {
-  const { hasPermission, hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl();
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{resource}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          if (item.permission && !hasPermission(item.permission, "OR")) {
-            return null;
-          }
           if (item.role && !hasRole(item.role)) {
             return null;
           }

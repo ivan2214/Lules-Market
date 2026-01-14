@@ -31,6 +31,6 @@ async function AdminLayout({ children }: { children: React.ReactNode }) {
 }
 
 export default withAuthenticate(AdminLayout, {
-  role: "admin",
+  role: "ADMIN",
   redirect: pathsConfig.auth.signIn,
 });

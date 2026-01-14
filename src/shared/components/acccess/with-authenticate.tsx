@@ -1,14 +1,13 @@
 import type { Route } from "next";
+import type { UserRole } from "@/db/types";
 import { authenticate } from "@/lib/auth/authenticate";
-import type { Permissions, Role } from "@/lib/auth/roles";
 
 type LayoutOrPageComponent<Params> = React.ComponentType<Params>;
 
 export function withAuthenticate<Params extends object>(
   Component: LayoutOrPageComponent<Params>,
   args?: {
-    permissions?: Permissions;
-    role?: Role;
+    role?: UserRole;
     redirect?: Route;
   },
 ) {

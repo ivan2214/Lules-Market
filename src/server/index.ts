@@ -1,7 +1,6 @@
-import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
-import { Elysia } from "elysia";
-import { env } from "@/env/server";
+import { type Context, Elysia } from "elysia";
+import { auth } from "@/lib/auth";
 import { AppError } from "./errors";
 import { adminRouter } from "./modules/admin";
 import { analyticsModule } from "./modules/analytics";
@@ -12,9 +11,24 @@ import { paymentRouter } from "./modules/payment";
 import { planModule } from "./modules/plan";
 import { productModule } from "./modules/products";
 import { settingsRouter } from "./modules/settings";
+import { uploadRoute } from "./modules/upload";
 import { userController } from "./modules/user";
 import { mercadopagoWebhook } from "./modules/webhooks/mercadopago";
 import { authPlugin, OpenAPI } from "./plugins/auth";
+
+const betterAuthView = (context: Context) => {
+  const BETTER_AUTH_ACCEPT_METHODS = ["POST", "GET"];
+  // validate request method
+  if (BETTER_AUTH_ACCEPT_METHODS.includes(context.request.method)) {
+    return auth.handler(context.request);
+  } else {
+    context.set.status = 405;
+    return {
+      success: false,
+      message: "Method Not Allowed",
+    };
+  }
+};
 
 export const app = new Elysia({
   prefix: "/api",
@@ -22,14 +36,6 @@ export const app = new Elysia({
   name: "Lules Market API",
   tags: ["Lules Market API"],
 })
-  .use(
-    cors({
-      origin: [env.APP_URL],
-      allowedHeaders: ["Content-Type", "Authorization"],
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      credentials: true,
-    }),
-  )
   .onError(({ error, set }) => {
     if (error instanceof AppError) {
       set.status = error.code === "NOT_FOUND" ? 404 : 400;
@@ -48,6 +54,7 @@ export const app = new Elysia({
       message: "Internal Server Error",
     };
   })
+  .all("/api/auth/*", betterAuthView)
   .use(authPlugin)
   .use(businessModule)
   .use(productModule)
@@ -60,6 +67,7 @@ export const app = new Elysia({
   .use(planModule)
   .use(analyticsModule)
   .use(mercadopagoWebhook)
+  .use(uploadRoute)
   .use(
     openapi({
       documentation: {
