@@ -94,7 +94,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   };
 
   return (
-    <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
+    <div className="flex flex-col gap-4 md:flex-row md:items-center">
       <form onSubmit={handleSubmit} className="relative flex-1">
         <Link
           href={createUrl({ search: searchValue }) as Route}

@@ -7,10 +7,10 @@ export default function ExplorarLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="mx-auto flex min-h-screen flex-col">
+    <section className="mx-auto flex min-h-screen flex-col">
       <Navigation />
-      <section className="lg:p-10">{children}</section>
+      <main className="container mx-auto py-16">{children}</main>
       <Footer />
-    </main>
+    </section>
   );
 }

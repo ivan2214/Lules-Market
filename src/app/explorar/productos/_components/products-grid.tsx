@@ -77,15 +77,15 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
   }
 
   return (
-    <>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <section className="mx-auto flex flex-col gap-8">
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products?.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
-      <div className="mt-8 flex justify-center">
+      </section>
+      <section className="flex justify-center">
         <PaginationControls totalPages={totalPages} currentPage={currentPage} />
-      </div>
-    </>
+      </section>
+    </section>
   );
 };

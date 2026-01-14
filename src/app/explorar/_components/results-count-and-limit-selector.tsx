@@ -71,7 +71,7 @@ export const ResultsCountAndLimitSelector: React.FC<
 
   if (typeExplorer === "comercios") {
     return (
-      <div className="mb-4 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-sm">
           Mostrando {businesses.length} de {total} comercios
         </p>
@@ -81,7 +81,7 @@ export const ResultsCountAndLimitSelector: React.FC<
   }
 
   return (
-    <div className="mb-4 flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <p className="text-muted-foreground text-sm">
         Mostrando {products.length} de {totalProducts} productos
       </p>

@@ -75,15 +75,15 @@ export const BusinessGrid = ({
   }
 
   return (
-    <>
+    <section className="mx-auto flex flex-col gap-8">
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6">
         {businesses?.map((business) => (
           <BusinessCard key={business.id} business={business} />
         ))}
       </div>
-      <div className="mt-8 flex justify-center">
+      <div className="flex justify-center">
         <PaginationControls totalPages={totalPages} currentPage={currentPage} />
       </div>
-    </>
+    </section>
   );
 };

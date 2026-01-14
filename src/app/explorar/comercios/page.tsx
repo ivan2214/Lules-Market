@@ -54,10 +54,10 @@ export default async function ComerciosPage({
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 
   return (
-    <>
+    <section className="mx-auto flex min-h-screen flex-col gap-3">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="mb-2 font-bold text-4xl">Explorar Comercios</h1>
+      <div className="flex flex-col gap-2">
+        <h1 className="font-bold text-4xl">Explorar Comercios</h1>
         <p className="text-lg text-muted-foreground">
           Descubre negocios locales y apoya a tu comunidad
         </p>
@@ -104,6 +104,6 @@ export default async function ComerciosPage({
           sortBy={sortBy}
         />
       </HydrateClient>
-    </>
+    </section>
   );
 }

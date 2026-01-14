@@ -79,7 +79,7 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   if (!activeParams.length) return null;
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <span className="text-muted-foreground text-sm">Filtros activos:</span>
 
       {activeParams.map(([key, value]) => (
