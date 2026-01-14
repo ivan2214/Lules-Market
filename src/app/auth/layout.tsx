@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { auth } from "@/lib/auth";
 import { AppLogo } from "@/shared/components/app-logo";
-import { PublicFooter as Footer } from "@/shared/components/footer";
+import { Footer } from "@/shared/components/footer";
 import { Navigation } from "@/shared/components/navigation";
 
 async function AuthLayout({ children }: React.PropsWithChildren) {

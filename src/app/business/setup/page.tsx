@@ -5,7 +5,7 @@ import { getCurrentSession } from "@/data/session/get-current-session";
 import { requireSession } from "@/data/session/require-session";
 import { api } from "@/lib/eden";
 import { AppLogo } from "@/shared/components/app-logo";
-import { PublicFooter as Footer } from "@/shared/components/footer";
+import { Footer } from "@/shared/components/footer";
 import { Navigation } from "@/shared/components/navigation";
 import {
   Card,
