@@ -15,12 +15,14 @@ import {
 } from "@/shared/components/ui/sidebar";
 import {
   navDocumentsData,
+  navMainData,
   navPrimaryData,
   navResourceShopData,
   navSecondaryData,
   searchCommandData,
 } from "./admin-sidebar-data";
 import { NavDocuments } from "./sidebar/nav-documents";
+import { NavMain } from "./sidebar/nav-main";
 import { NavPrimary } from "./sidebar/nav-primary";
 import { NavResources } from "./sidebar/nav-resources";
 import { NavSecondary } from "./sidebar/nav-secondary";
@@ -42,14 +44,20 @@ export function AdminSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <AppLogo path={pathsConfig.dashboard.root} />
+              <AppLogo
+                path={
+                  userRole === "ADMIN"
+                    ? pathsConfig.admin.root
+                    : pathsConfig.dashboard.root
+                }
+              />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavPrimary items={navPrimaryData} userRole={userRole} />
-        {/* <NavMain items={navMainData} /> */}
+        <NavMain items={navMainData} userRole={userRole} />
         <NavResources
           resource="Shop"
           items={navResourceShopData}

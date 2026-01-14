@@ -1,16 +1,21 @@
 import {
+  BookOpen,
+  Bot,
   Clipboard,
   Database,
   File,
   HelpCircle,
   LayoutDashboard,
   Package,
+  Settings2,
+  SquareTerminal,
   Table,
   Users,
   Users2,
 } from "lucide-react";
 import pathsConfig from "@/config/paths.config";
 import type { NavDocumentItem } from "./sidebar/nav-documents";
+import type { NavMainItem } from "./sidebar/nav-main";
 import type { NavPrimaryItem } from "./sidebar/nav-primary";
 import type { NavResourceItem } from "./sidebar/nav-resources";
 import type { NavSecondaryItem } from "./sidebar/nav-secondary";
@@ -23,93 +28,93 @@ export const navPrimaryData: Array<NavPrimaryItem> = [
   },
 ];
 
-// export const navMainData: Array<NavMainItem> = [
-//   {
-//     title: 'Playground',
-//     url: '#',
-//     icon: SquareTerminal,
-//     isActive: false,
-//     items: [
-//       {
-//         title: 'History',
-//         url: '#',
-//       },
-//       {
-//         title: 'Starred',
-//         url: '#',
-//       },
-//       {
-//         title: 'Settings',
-//         url: '#',
-//       },
-//     ],
-//   },
-//   {
-//     title: 'Models',
-//     url: '#',
-//     icon: Bot,
-//     items: [
-//       {
-//         title: 'Genesis',
-//         url: '#',
-//       },
-//       {
-//         title: 'Explorer',
-//         url: '#',
-//       },
-//       {
-//         title: 'Quantum',
-//         url: '#',
-//       },
-//     ],
-//   },
-//   {
-//     title: 'Documentation',
-//     url: '#',
-//     icon: BookOpen,
-//     items: [
-//       {
-//         title: 'Introduction',
-//         url: '#',
-//       },
-//       {
-//         title: 'Get Started',
-//         url: '#',
-//       },
-//       {
-//         title: 'Tutorials',
-//         url: '#',
-//       },
-//       {
-//         title: 'Changelog',
-//         url: '#',
-//       },
-//     ],
-//   },
-//   {
-//     title: 'Settings',
-//     url: '#',
-//     icon: Settings2,
-//     items: [
-//       {
-//         title: 'General',
-//         url: '#',
-//       },
-//       {
-//         title: 'Team',
-//         url: '#',
-//       },
-//       {
-//         title: 'Billing',
-//         url: '#',
-//       },
-//       {
-//         title: 'Limits',
-//         url: '#',
-//       },
-//     ],
-//   },
-// ]
+export const navMainData: Array<NavMainItem> = [
+  {
+    title: "Playground",
+    url: "#",
+    icon: SquareTerminal,
+    isActive: false,
+    items: [
+      {
+        title: "History",
+        url: "#",
+      },
+      {
+        title: "Starred",
+        url: "#",
+      },
+      {
+        title: "Settings",
+        url: "#",
+      },
+    ],
+  },
+  {
+    title: "Models",
+    url: "#",
+    icon: Bot,
+    items: [
+      {
+        title: "Genesis",
+        url: "#",
+      },
+      {
+        title: "Explorer",
+        url: "#",
+      },
+      {
+        title: "Quantum",
+        url: "#",
+      },
+    ],
+  },
+  {
+    title: "Documentation",
+    url: "#",
+    icon: BookOpen,
+    items: [
+      {
+        title: "Introduction",
+        url: "#",
+      },
+      {
+        title: "Get Started",
+        url: "#",
+      },
+      {
+        title: "Tutorials",
+        url: "#",
+      },
+      {
+        title: "Changelog",
+        url: "#",
+      },
+    ],
+  },
+  {
+    title: "Settings",
+    url: "#",
+    icon: Settings2,
+    items: [
+      {
+        title: "General",
+        url: "#",
+      },
+      {
+        title: "Team",
+        url: "#",
+      },
+      {
+        title: "Billing",
+        url: "#",
+      },
+      {
+        title: "Limits",
+        url: "#",
+      },
+    ],
+  },
+];
 
 export const navResourceShopData: Array<NavResourceItem> = [
   {
