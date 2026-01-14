@@ -29,11 +29,6 @@ const nextConfig = {
     turbopackFileSystemCacheForDev: true,
   },
   allowedDevOrigins: [],
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
-  },
 };
 
 export default nextConfig;
