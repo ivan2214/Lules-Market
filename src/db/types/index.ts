@@ -113,6 +113,10 @@ export type ProductUpdateDto = Static<typeof models.dto.update.product>;
 // RELATIONS TYPES
 // ============================================
 
+export type AdminWithRelations = Static<
+  typeof models.relations.adminWithRelations
+>;
+
 export type ProductWithRelations = Static<
   typeof models.relations.productWithRelations
 >;

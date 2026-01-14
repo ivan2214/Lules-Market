@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import type { Permissions, Role } from "@/lib/auth/roles";
+import type { UserRole } from "@/db/types";
 import {
   Command,
   CommandDialog,
@@ -14,11 +14,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/shared/components/ui/command";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export function SearchCommandDialog({
   children,
   commandsData,
+  userRole,
 }: {
   children: (props: {
     open: boolean;
@@ -30,13 +31,13 @@ export function SearchCommandDialog({
       title: string;
       url: Route;
       icon: React.ElementType;
-      permission?: Permissions;
-      role?: Role;
+      role?: UserRole;
       disabled?: boolean;
     }>
   >;
+  userRole: UserRole;
 }) {
-  const { hasPermission, hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(userRole);
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
 
@@ -54,9 +55,6 @@ export function SearchCommandDialog({
 
   const filteredData = Object.entries(commandsData).filter(([, value]) => {
     return value.every((item) => {
-      if (item.permission && !hasPermission(item.permission)) {
-        return false;
-      }
       if (item.role && !hasRole(item.role)) {
         return false;
       }
@@ -80,9 +78,6 @@ export function SearchCommandDialog({
                 {index !== 0 && <CommandSeparator />}
                 <CommandGroup heading={key}>
                   {value.map((item) => {
-                    if (item.permission && !hasPermission(item.permission)) {
-                      return null;
-                    }
                     if (item.role && !hasRole(item.role)) {
                       return null;
                     }

@@ -1,8 +1,6 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import pathsConfig from "@/config/paths.config";
-import { auth } from "@/lib/auth";
-import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
+import { getCurrentAdmin } from "@/data/admin/get-current-admin";
+import { requireAdmin } from "@/data/admin/require-admin";
+import type { AdminWithRelations, UserRole } from "@/db/types";
 import { AdminSidebar } from "@/shared/components/admin/admin-sidebar";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
 import { Separator } from "@/shared/components/ui/separator";
@@ -12,18 +10,18 @@ import {
   SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
 
-async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const user = session?.user;
-  if (!user) {
-    return redirect(pathsConfig.auth.signIn);
-  }
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  await requireAdmin();
+  const { admin } = await getCurrentAdmin();
+  const userRole = admin?.user?.role as UserRole;
 
   return (
     <SidebarProvider>
-      <AdminSidebar user={user} />
+      <AdminSidebar admin={admin as AdminWithRelations} userRole={userRole} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
@@ -40,8 +38,3 @@ async function AdminLayout({ children }: { children: React.ReactNode }) {
     </SidebarProvider>
   );
 }
-
-export default withAuthenticate(AdminLayout, {
-  role: "admin",
-  redirect: pathsConfig.auth.signIn,
-});

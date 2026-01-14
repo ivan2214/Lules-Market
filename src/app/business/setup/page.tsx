@@ -2,9 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
+import { requireSession } from "@/data/session/require-session";
+import { PublicFooter as Footer } from "@/features/(public)/_components/footer";
 import { api } from "@/lib/eden";
 import { AppLogo } from "@/shared/components/app-logo";
-import { Footer } from "@/shared/components/marketing/footer";
 import { Navigation } from "@/shared/components/navigation";
 import {
   Card,
@@ -16,12 +17,23 @@ import {
 } from "@/shared/components/ui/card";
 import { SetupForm } from "./_components/setup-form";
 
+export const dynamic = "force-dynamic"; // Añade esta línea
+export const revalidate = 60;
+
 export default async function BusinessSetup() {
   const { data: categories } = await api.category.public["list-all"].get();
-  const { session } = await getCurrentSession();
+  await requireSession();
+  const { user } = await getCurrentSession();
+  if (!user) {
+    return redirect(pathsConfig.auth.signIn);
+  }
 
-  if (!session?.user) {
-    redirect(pathsConfig.auth.signIn);
+  if (user.role === "ADMIN") {
+    return redirect(pathsConfig.admin.root);
+  }
+
+  if (user.role === "BUSINESS") {
+    return redirect(pathsConfig.dashboard.root);
   }
 
   return (
@@ -42,7 +54,10 @@ export default async function BusinessSetup() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <SetupForm categories={categories || []} />
+              <SetupForm
+                categories={categories || []}
+                userEmail={user?.email as string}
+              />
               <div className="text-center text-sm">
                 Todavia no tenes una cuenta?{" "}
                 <Link

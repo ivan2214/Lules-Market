@@ -33,9 +33,7 @@ export const NavigationWrapper = async () => {
 };
 
 const NavigationWrapperContent = async () => {
-  const { session } = await getCurrentSession();
-
-  const { user } = session || {};
+  const { user } = await getCurrentSession();
 
   if (!user)
     return (
@@ -98,7 +96,7 @@ const NavigationWrapperContent = async () => {
         />
       )}
       {/* Mobile Menu */}
-      <MobileMenu isLoggedIn={!!session} />
+      <MobileMenu isLoggedIn={!!user} />
     </div>
   );
 };

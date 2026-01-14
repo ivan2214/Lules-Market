@@ -18,7 +18,7 @@ import type { NavSecondaryItem } from "@/shared/components/sidebar/nav-secondary
 export const navPrimaryData: Array<NavPrimaryItem> = [
   {
     title: "Dashboard",
-    url: pathsConfig.dashboard.root,
+    url: pathsConfig.admin.root,
     icon: LayoutDashboard,
   },
 ];
@@ -137,7 +137,7 @@ export const navSecondaryData: Array<NavSecondaryItem> = [
     title: "Users",
     url: "/admin/users",
     icon: Users,
-    permission: { user: ["list"] },
+    role: "ADMIN",
   },
   {
     title: "Get Help",

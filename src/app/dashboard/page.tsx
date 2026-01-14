@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { requireBusiness } from "@/data/business/require-business";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -15,10 +14,9 @@ import {
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
-  const { userId } = await requireBusiness();
-  const { currentBusiness, success } = await getCurrentBusiness(userId);
+  const { currentBusiness } = await getCurrentBusiness();
 
-  if (!success || !currentBusiness) {
+  if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 
@@ -27,7 +25,6 @@ async function DashboardContent() {
   ].get({
     query: {
       limit: 5,
-      offset: 0,
     },
   });
 

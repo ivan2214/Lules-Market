@@ -2,8 +2,7 @@ import { Clock } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { getCurrentSession } from "@/data/session/get-current-session";
-import { getPaymentService } from "@/server/services/payment";
+import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -14,6 +13,9 @@ import {
 } from "@/shared/components/ui/card";
 import type { MercadoPagoCallbackParams } from "@/shared/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function PaymentPendingPage({
   searchParams,
 }: {
@@ -22,19 +24,16 @@ export default async function PaymentPendingPage({
   const paymentIdDB = (await searchParams).external_reference;
 
   if (!paymentIdDB) {
-    redirect("/dashboard/subscription");
+    redirect(pathsConfig.dashboard.subscription.root);
   }
 
-  const { session } = await getCurrentSession();
-
-  if (!session?.user) {
-    redirect(pathsConfig.auth.signIn);
-  }
-
-  const { payment } = await getPaymentService(paymentIdDB);
+  const { data: paymentData } = await api.payment.getPayment.get({
+    query: { paymentIdDB },
+  });
+  const payment = paymentData?.payment;
 
   if (!payment) {
-    redirect("/dashboard/subscription");
+    redirect(pathsConfig.dashboard.subscription.root);
   }
 
   return (

@@ -88,15 +88,27 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
-    mutationKey: ["auth", "signup"],
+    mutationKey: ["authentications", "signup"],
     mutationFn: async (data: SignUpSchema) => {
-      console.log({ data });
-      return await api.auth.actions.signup.post(data);
+      const { data: response, error } = await api.actions.signup.post(data);
+      console.log({
+        response,
+        error,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return response;
     },
     onSuccess() {
       toast.success("Cuenta creada exitosamente");
     },
     onError(error) {
+      console.log({
+        error: JSON.stringify(error, null, 2),
+      });
       toast.error(error.message);
     },
   });

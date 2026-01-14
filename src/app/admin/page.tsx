@@ -1,3 +1,4 @@
+import { desc } from "drizzle-orm";
 import {
   ArrowRight,
   Ban,
@@ -8,9 +9,9 @@ import {
   Users,
   UserX,
 } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { db } from "@/db";
+import { user as userSchema } from "@/db/schema";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -20,20 +21,31 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 
+export const dynamic = "force-dynamic";
+/* revalidar cada 30 minutos */
+export const revalidate = 1800;
+
 export default async function AdminPage() {
-  const data = await auth.api.listUsers({
-    query: {
-      limit: 5,
-      sortBy: "createdAt",
-      sortDirection: "desc",
+  const data = await db.query.user.findMany({
+    limit: 5,
+    offset: 0,
+    orderBy: desc(userSchema.createdAt),
+    with: {
+      sessions: true,
+      accounts: true,
     },
-    headers: await headers(),
   });
 
-  const totalUsers = data.total;
-  const recentUsers = data.users;
-
-  const bannedUsers = recentUsers.filter((user) => user.banned).length;
+  const totalUsers = data.length;
+  const recentUsers = await db.query.user.findMany({
+    limit: 5,
+    offset: 0,
+    orderBy: desc(userSchema.createdAt),
+    with: {
+      sessions: true,
+      accounts: true,
+    },
+  });
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
@@ -56,7 +68,7 @@ export default async function AdminPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/*   <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="font-medium text-sm">Banned Users</CardTitle>
             <Ban className="h-4 w-4 text-muted-foreground" />
@@ -67,7 +79,7 @@ export default async function AdminPage() {
               Currently restricted
             </p>
           </CardContent>
-        </Card>
+        </Card> */}
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -206,11 +218,11 @@ export default async function AdminPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {user.banned && (
+                  {/*   {user.banned && (
                     <span className="rounded-full bg-red-100 px-2 py-1 text-red-700 text-xs dark:bg-red-900 dark:text-red-300">
                       Banned
                     </span>
-                  )}
+                  )} */}
                   {user.emailVerified && (
                     <span className="rounded-full bg-green-100 px-2 py-1 text-green-700 text-xs dark:bg-green-900 dark:text-green-300">
                       Verified

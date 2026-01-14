@@ -44,7 +44,6 @@ export function OAuthProviders() {
           onClick={() => {
             authClient.signIn.social({
               provider: provider.id,
-
               callbackURL: pathsConfig.dashboard.root,
             });
           }}
