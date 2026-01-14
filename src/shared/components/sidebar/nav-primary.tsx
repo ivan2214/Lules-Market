@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export type NavPrimaryItem = {
   title: string;
@@ -18,8 +18,14 @@ export type NavPrimaryItem = {
   disabled?: boolean;
 };
 
-export function NavPrimary({ items }: { items: Array<NavPrimaryItem> }) {
-  const { hasRole } = useAccessControl();
+export function NavPrimary({
+  items,
+  userRole,
+}: {
+  items: Array<NavPrimaryItem>;
+  userRole: UserRole;
+}) {
+  const { hasRole } = useAccessControl(userRole);
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">

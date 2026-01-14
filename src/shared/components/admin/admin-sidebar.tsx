@@ -1,9 +1,7 @@
 "use client";
-
 import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { authClient } from "@/lib/auth/auth-client";
+import type { AdminWithRelations, UserRole } from "@/db/types";
 import { AppLogo } from "@/shared/components/app-logo";
 import { SearchCommandDialog } from "@/shared/components/search-command-dialog";
 import { NavDocuments } from "@/shared/components/sidebar/nav-documents";
@@ -28,15 +26,13 @@ import {
   searchCommandData,
 } from "./admin-sidebar-data";
 
-export function AdminSidebar() {
-  const { data } = authClient.useSession();
-  const admin = data?.admin;
-  const router = useRouter();
-
-  if (!admin) {
-    router.replace(pathsConfig.auth.signIn);
-    return null;
-  }
+export function AdminSidebar({
+  admin,
+  userRole,
+}: {
+  admin: AdminWithRelations;
+  userRole: UserRole;
+}) {
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
@@ -52,12 +48,23 @@ export function AdminSidebar() {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavPrimary items={navPrimaryData} />
+        <NavPrimary items={navPrimaryData} userRole={userRole} />
         {/* <NavMain items={navMainData} /> */}
-        <NavResources resource="Shop" items={navResourceShopData} />
-        <NavDocuments items={navDocumentsData} />
-        <NavSecondary items={navSecondaryData} className="mt-auto">
-          <SearchCommandDialog commandsData={searchCommandData}>
+        <NavResources
+          resource="Shop"
+          items={navResourceShopData}
+          userRole={userRole}
+        />
+        <NavDocuments items={navDocumentsData} userRole={userRole} />
+        <NavSecondary
+          items={navSecondaryData}
+          className="mt-auto"
+          userRole={userRole}
+        >
+          <SearchCommandDialog
+            commandsData={searchCommandData}
+            userRole={userRole}
+          >
             {({ open, setOpen }) => (
               <SidebarMenuItem
                 className="bg-sidebar"
@@ -78,9 +85,9 @@ export function AdminSidebar() {
       <SidebarFooter>
         <NavUser
           user={{
-            name: admin.user.name,
-            email: admin.user.email,
-            avatar: admin.user.image ?? undefined,
+            name: admin.user?.name ?? "",
+            email: admin.user?.email ?? "",
+            avatar: admin.user?.image ?? undefined,
           }}
         />
       </SidebarFooter>

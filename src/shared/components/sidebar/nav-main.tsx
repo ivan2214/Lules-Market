@@ -21,7 +21,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/shared/components/ui/sidebar";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export type NavMainItem = {
   title: string;
@@ -38,8 +38,14 @@ export type NavMainItem = {
   disabled?: boolean;
 };
 
-export function NavMain({ items }: { items: Array<NavMainItem> }) {
-  const { hasRole } = useAccessControl();
+export function NavMain({
+  items,
+  userRole,
+}: {
+  items: Array<NavMainItem>;
+  userRole: UserRole;
+}) {
+  const { hasRole } = useAccessControl(userRole);
 
   return (
     <SidebarGroup>

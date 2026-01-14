@@ -3,30 +3,22 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { requireSession } from "@/data/session/require-session";
 import { db } from "@/db";
-import { admin as adminSchema, business as businessSchema } from "@/db/schema";
+import { admin as adminSchema } from "@/db/schema";
+import { getCurrentBusiness } from "./get-current-business";
 
 export const requireBusiness = async () => {
-  const { user } = await requireSession();
+  const { currentBusiness } = await getCurrentBusiness();
 
-  const business = await db.query.business.findFirst({
-    where: eq(businessSchema.userId, user.id),
-  });
+  if (!currentBusiness) {
+    redirect(pathsConfig.business.setup);
+  }
 
   const isAdmin = await db.query.admin.findFirst({
-    where: eq(adminSchema.userId, user.id),
+    where: eq(adminSchema.userId, currentBusiness?.userId),
   });
 
   if (isAdmin) {
     redirect("/admin");
   }
-
-  if (!business) {
-    redirect(pathsConfig.business.setup);
-  }
-
-  return {
-    userId: user.id,
-  };
 };

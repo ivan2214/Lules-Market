@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { requireBusiness } from "@/data/business/require-business";
 import { ProductCardDashboard } from "@/features//dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features//dashboard/_constants";
@@ -17,10 +16,9 @@ import {
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export async function ProductsContent() {
-  const { userId } = await requireBusiness();
-  const { success, currentBusiness } = await getCurrentBusiness(userId);
+  const { currentBusiness } = await getCurrentBusiness();
 
-  if (!success || !currentBusiness) {
+  if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 

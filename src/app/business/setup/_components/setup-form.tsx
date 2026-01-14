@@ -44,7 +44,6 @@ import {
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
-import { useAuth } from "@/shared/providers/auth-provider";
 import { BusinessSetupSchema } from "@/shared/validators/business";
 import { typeboxValidator } from "@/shared/validators/form";
 
@@ -73,16 +72,22 @@ const defaultValues: Static<typeof BusinessSetupSchemaForm> = {
   whatsapp: "",
 };
 
-export function SetupForm({ categories }: { categories: Category[] }) {
-  const { user } = useAuth();
+export function SetupForm({
+  categories,
+  userEmail,
+}: {
+  categories: Category[];
+  userEmail: string;
+}) {
   const router = useRouter();
+
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
     mutationKey: ["business", "setup"],
     mutationFn: async (values: Static<typeof BusinessSetupSchemaForm>) => {
       const { coverImage, logo, ...restData } = values;
 
       const { data, error } = await api.business.public.setup.post({
-        userEmail: user?.email,
+        userEmail,
         coverImage: {
           file: coverImage.file,
           key: coverImage.key,

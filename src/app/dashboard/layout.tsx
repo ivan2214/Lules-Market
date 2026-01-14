@@ -1,14 +1,19 @@
 import type React from "react";
-import pathsConfig from "@/config/paths.config";
+import { requireBusiness } from "@/data/business/require-business";
 import { DashboardHeaderWrapper } from "@/features/dashboard/_components/dashboard-header-wrapper";
 import { DashboardSidebar } from "@/features/dashboard/_components/dashboard-sidebar";
-import { withAuthenticate } from "@/shared/components/acccess/with-authenticate";
 
 export const dynamic = "force-dynamic";
 /* revalidar cada 30 minutos */
 export const revalidate = 1800;
 
-async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  await requireBusiness();
+
   return (
     <div className="flex h-screen">
       <div className="hidden lg:flex">
@@ -21,8 +26,3 @@ async function DashboardLayout({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-export default withAuthenticate(DashboardLayout, {
-  role: "BUSINESS",
-  redirect: pathsConfig.business.setup,
-});

@@ -22,13 +22,13 @@ export const UploadService = {
   },
 
   async handleProductsImagesUpload() {
-    const { session } = await getCurrentSession();
+    const { user } = await getCurrentSession();
 
-    if (!session || !session?.user || !session.user.id) {
+    if (!user || !user.id) {
       throw new RejectUpload("Not logged in!");
     }
 
-    const userId = session.user.id;
+    const userId = user.id;
     const uniqueKey = uuidv4();
 
     return {

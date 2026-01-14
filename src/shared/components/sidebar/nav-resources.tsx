@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export type NavResourceItem = {
   title: string;
@@ -23,11 +23,13 @@ export type NavResourceItem = {
 export function NavResources({
   resource,
   items,
+  userRole,
 }: {
   resource: string;
   items: Array<NavResourceItem>;
+  userRole: UserRole;
 }) {
-  const { hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(userRole);
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{resource}</SidebarGroupLabel>

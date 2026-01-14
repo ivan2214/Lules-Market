@@ -220,6 +220,11 @@ const userWithRelationsSchema = t.Object({
   notifications: t.Optional(t.Nullable(t.Array(notificationBase))),
 });
 
+const adminWithRelationsSchema = t.Object({
+  ...adminBase.properties,
+  user: t.Optional(t.Nullable(userBase)),
+});
+
 // ============================================
 // BASE INSERT SCHEMAS (Pure Table)
 // ============================================
@@ -401,6 +406,7 @@ export const models = {
   ),
   // Schemas con relaciones (no usan spreads)
   relations: {
+    adminWithRelations: adminWithRelationsSchema,
     productWithRelations: productWithRelationsSchema,
     businessWithRelations: businessWithRelationsSchema,
     currentPlanWithRelations: currentPlanWithRelationsSchema,

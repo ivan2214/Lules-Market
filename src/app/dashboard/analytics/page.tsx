@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { requireBusiness } from "@/data/business/require-business";
 import type { CurrentPlan } from "@/db/types";
 import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
 import { api } from "@/lib/eden";
@@ -18,9 +17,7 @@ export default async function AnalyticsPage({
 }) {
   const params = await searchParams;
   const period = params.period || "30d";
-
-  const { userId } = await requireBusiness();
-  const { currentBusiness } = await getCurrentBusiness(userId);
+  const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);

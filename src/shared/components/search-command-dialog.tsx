@@ -14,11 +14,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/shared/components/ui/command";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export function SearchCommandDialog({
   children,
   commandsData,
+  userRole,
 }: {
   children: (props: {
     open: boolean;
@@ -34,8 +35,9 @@ export function SearchCommandDialog({
       disabled?: boolean;
     }>
   >;
+  userRole: UserRole;
 }) {
-  const { hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(userRole);
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
 

@@ -2,7 +2,6 @@ import { Clock } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { getCurrentSession } from "@/data/session/get-current-session";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -25,13 +24,7 @@ export default async function PaymentPendingPage({
   const paymentIdDB = (await searchParams).external_reference;
 
   if (!paymentIdDB) {
-    redirect("/dashboard/subscription");
-  }
-
-  const { session } = await getCurrentSession();
-
-  if (!session?.user) {
-    redirect(pathsConfig.auth.signIn);
+    redirect(pathsConfig.dashboard.subscription.root);
   }
 
   const { data: paymentData } = await api.payment.getPayment.get({
@@ -40,7 +33,7 @@ export default async function PaymentPendingPage({
   const payment = paymentData?.payment;
 
   if (!payment) {
-    redirect("/dashboard/subscription");
+    redirect(pathsConfig.dashboard.subscription.root);
   }
 
   return (

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { requireBusiness } from "@/data/business/require-business";
 import { api } from "@/lib/eden";
 import { formatCurrency } from "@/lib/format";
 import {
@@ -29,11 +28,9 @@ export default async function SubscriptionPage({
   }>;
 }) {
   const { error: errorParams } = await searchParams;
-  const { userId } = await requireBusiness();
-  const { success: businessSuccess, currentBusiness } =
-    await getCurrentBusiness(userId);
+  const { currentBusiness } = await getCurrentBusiness();
 
-  if (!businessSuccess || !currentBusiness) {
+  if (!currentBusiness) {
     redirect(pathsConfig.auth.signIn);
   }
 

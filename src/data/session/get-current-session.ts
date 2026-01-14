@@ -11,12 +11,16 @@ export const getCurrentSession = cache(async () => {
     });
 
     return {
-      session,
+      user: session?.user,
+      admin: session?.admin,
+      business: session?.business,
     };
   } catch (error) {
     console.log(error);
     return {
-      session: null,
+      user: null,
+      admin: null,
+      business: null,
     };
   }
 });

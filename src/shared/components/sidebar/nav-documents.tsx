@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/shared/components/ui/sidebar";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export type NavDocumentItem = {
   name: string;
@@ -30,9 +30,15 @@ export type NavDocumentItem = {
   disabled?: boolean;
 };
 
-export function NavDocuments({ items }: { items: Array<NavDocumentItem> }) {
+export function NavDocuments({
+  items,
+  userRole,
+}: {
+  items: Array<NavDocumentItem>;
+  userRole: UserRole;
+}) {
   const { isMobile } = useSidebar();
-  const { hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(userRole);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

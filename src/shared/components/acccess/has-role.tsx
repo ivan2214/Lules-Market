@@ -1,7 +1,7 @@
 "use client";
 
 import type { UserRole } from "@/db/types";
-import { useAccessControl } from "@/shared/providers/auth-provider";
+import { useAccessControl } from "@/shared/hooks/use-access-control";
 
 export function HasRole({
   children,
@@ -10,7 +10,7 @@ export function HasRole({
   children: React.ReactNode;
   role: UserRole;
 }) {
-  const { hasRole } = useAccessControl();
+  const { hasRole } = useAccessControl(role);
 
   if (hasRole(role)) {
     return <>{children}</>;

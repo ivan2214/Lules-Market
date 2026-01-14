@@ -18,7 +18,7 @@ import type { NavSecondaryItem } from "@/shared/components/sidebar/nav-secondary
 export const navPrimaryData: Array<NavPrimaryItem> = [
   {
     title: "Dashboard",
-    url: pathsConfig.dashboard.root,
+    url: pathsConfig.admin.root,
     icon: LayoutDashboard,
   },
 ];
