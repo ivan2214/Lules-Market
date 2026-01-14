@@ -4,57 +4,52 @@
 
 Used only in `/dashboard`.
 
-Correct placement:
-```
+**Correct placement:**
 
+```txt
 app/(dashboard)/dashboard/_components/stats-card.tsx
-
 ```
 
-Incorrect placement:
-```
+**Incorrect placement:**
 
+```txt
 shared/components/stats-card.tsx
-
 ```
 
-Reason:
-- Usage count = 1 feature
-- Scope Rule forbids promotion to shared
+**Reason:**
+
+* Usage count = 1 feature
+* Scope Rule forbids promotion to shared
 
 ---
 
 ## Case 2: Component used by multiple features
 
 Used in:
-- `/shop`
-- `/cart`
-- `/wishlist`
 
-Correct placement:
-```
+* `/shop`
+* `/cart`
+* `/wishlist`
 
+**Correct placement:**
+
+```txt
 shared/components/product-card.tsx
-
 ```
 
-Incorrect placement:
-```
+**Incorrect placement:**
 
+```txt
 app/(shop)/shop/_components/product-card.tsx
-
 ```
 
-Reason:
-- Usage count ≥ 2
-- Duplication is forbidden
-```
+**Reason:**
+
+* Usage count ≥ 2
+* Duplication is forbidden
 
 ---
 
-## `examples/server-vs-client.md`
-
-````md
 # Example: Server vs Client Component Boundaries
 
 ## Server Component (Default)
@@ -67,9 +62,9 @@ export default async function ProfilePage() {
 
   return <ProfileView user={user} />;
 }
-````
+```
 
-Why:
+**Why:**
 
 * Data fetching
 * No interactivity
@@ -95,49 +90,42 @@ export function ProfileView({ user }) {
 }
 ```
 
-Why:
+**Why:**
 
 * Requires browser state
 * Explicit `"use client"`
 * UI-only logic
 
-````
-
 ---
 
-## `examples/refactor-scope.md`
-
-```md
 # Example: Refactoring a Scope Violation
 
 ## Initial (Incorrect)
 
 A utility duplicated across features:
 
-````
-
+```txt
 app/(shop)/shop/_utils/format-price.ts
 app/(cart)/cart/_utils/format-price.ts
-
 ```
 
-Problem:
-- Same logic duplicated
-- Violates Scope Rule
+**Problem:**
+
+* Same logic duplicated
+* Violates Scope Rule
 
 ---
 
 ## Correct Refactor
 
-```
-
+```txt
 shared/utils/format-price.ts
-
 ```
 
 Then imported by both features.
 
-Why:
-- Usage count = 2
-- Shared location is mandatory
-- Single source of truth
+**Why:**
+
+* Usage count = 2
+* Shared location is mandatory
+* Single source of truth
