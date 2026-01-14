@@ -4,11 +4,6 @@ import pathsConfig from "@/config/paths.config";
 import type { AdminWithRelations, UserRole } from "@/db/types";
 import { AppLogo } from "@/shared/components/app-logo";
 import { SearchCommandDialog } from "@/shared/components/search-command-dialog";
-import { NavDocuments } from "@/shared/components/sidebar/nav-documents";
-import { NavPrimary } from "@/shared/components/sidebar/nav-primary";
-import { NavResources } from "@/shared/components/sidebar/nav-resources";
-import { NavSecondary } from "@/shared/components/sidebar/nav-secondary";
-import { NavUser } from "@/shared/components/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -25,6 +20,11 @@ import {
   navSecondaryData,
   searchCommandData,
 } from "./admin-sidebar-data";
+import { NavDocuments } from "./sidebar/nav-documents";
+import { NavPrimary } from "./sidebar/nav-primary";
+import { NavResources } from "./sidebar/nav-resources";
+import { NavSecondary } from "./sidebar/nav-secondary";
+import { NavUser } from "./sidebar/nav-user";
 
 export function AdminSidebar({
   admin,

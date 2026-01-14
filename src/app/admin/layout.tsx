@@ -1,7 +1,6 @@
 import { getCurrentAdmin } from "@/data/admin/get-current-admin";
 import { requireAdmin } from "@/data/admin/require-admin";
 import type { AdminWithRelations, UserRole } from "@/db/types";
-import { AdminSidebar } from "@/shared/components/admin/admin-sidebar";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
 import { Separator } from "@/shared/components/ui/separator";
 import {
@@ -9,6 +8,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
+import { AdminSidebar } from "./_components/admin-sidebar";
 
 export default async function AdminLayout({
   children,

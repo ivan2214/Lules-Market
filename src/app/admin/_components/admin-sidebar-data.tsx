@@ -10,10 +10,10 @@ import {
   Users2,
 } from "lucide-react";
 import pathsConfig from "@/config/paths.config";
-import type { NavDocumentItem } from "@/shared/components/sidebar/nav-documents";
-import type { NavPrimaryItem } from "@/shared/components/sidebar/nav-primary";
-import type { NavResourceItem } from "@/shared/components/sidebar/nav-resources";
-import type { NavSecondaryItem } from "@/shared/components/sidebar/nav-secondary";
+import type { NavDocumentItem } from "./sidebar/nav-documents";
+import type { NavPrimaryItem } from "./sidebar/nav-primary";
+import type { NavResourceItem } from "./sidebar/nav-resources";
+import type { NavSecondaryItem } from "./sidebar/nav-secondary";
 
 export const navPrimaryData: Array<NavPrimaryItem> = [
   {
