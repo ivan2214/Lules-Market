@@ -1,7 +1,7 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Building, Package, Sparkles } from "lucide-react";
-import { PaginationControls } from "@/app/(public)/explorar/_components/pagination-controls";
+import { PaginationControls } from "@/features/explorar/_components/pagination-controls";
 import { api } from "@/lib/eden";
 import { BusinessCard } from "@/shared/components/business-card";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";

@@ -10,10 +10,10 @@ import {
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
+import { DynamicStats } from "@/app/(home)/_components/sections/dynamic-stats";
+import { FeaturedBusinesses } from "@/app/(home)/_components/sections/featured-businesses";
+import { RecentProducts } from "@/app/(home)/_components/sections/recent-products";
 import { env } from "@/env/server";
-import { DynamicStats } from "@/features/(public)/_components/sections/dynamic-stats";
-import { FeaturedBusinesses } from "@/features/(public)/_components/sections/featured-businesses";
-import { RecentProducts } from "@/features/(public)/_components/sections/recent-products";
 import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";

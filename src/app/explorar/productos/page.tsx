@@ -1,40 +1,45 @@
-import { ActiveFilters } from "@/app/(public)/explorar/_components/active-filters";
-import { ResultsCountAndLimitSelector } from "@/app/(public)/explorar/_components/results-count-and-limit-selector";
-import { SearchAndFilters } from "@/app/(public)/explorar/_components/search-and-filters";
+import { ActiveFilters } from "@/features/explorar/_components/active-filters";
+import { ResultsCountAndLimitSelector } from "@/features/explorar/_components/results-count-and-limit-selector";
+import { SearchAndFilters } from "@/features/explorar/_components/search-and-filters";
 import { api } from "@/lib/eden";
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
-import { BusinessGrid } from "./_components/business-grid";
+import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {
   search?: string;
-  sortBy?: "newest" | "oldest";
   category?: string;
+  businessId?: string;
   page?: string;
   limit?: string;
+  sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
 };
 
-export default async function ComerciosPage({
+export default async function ProductosPage({
   searchParams,
 }: {
   searchParams?: Promise<SearchParams>;
 }) {
-  const { limit, page, search, sortBy, category } = (await searchParams) || {};
+  const { limit, page, search, sortBy, category, businessId } =
+    (await searchParams) || {};
 
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
-
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["businesses", category, limit, page, search, sortBy],
+    queryKey: [
+      "products",
+      { businessId, category, limit, page, search, sortBy },
+    ],
     queryFn: async () => {
-      const { data, error } = await api.business.public["list-all"].get({
+      const { data, error } = await api.products.public.list.get({
         query: {
+          businessId,
           category,
           limit: currentLimit,
           page: currentPage,
           search,
-          sortBy,
+          sort: sortBy,
         },
       });
       if (error) throw error;
@@ -43,9 +48,9 @@ export default async function ComerciosPage({
   });
 
   await queryClient.prefetchQuery({
-    queryKey: ["categories"],
+    queryKey: ["businesses"],
     queryFn: async () => {
-      const { data, error } = await api.category.public["list-all"].get();
+      const { data, error } = await api.business.public["list-all"].get();
       if (error) throw error;
       return data;
     },
@@ -57,23 +62,24 @@ export default async function ComerciosPage({
     <>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="mb-2 font-bold text-4xl">Explorar Comercios</h1>
+        <h1 className="mb-2 font-bold text-4xl">Explorar Productos</h1>
         <p className="text-lg text-muted-foreground">
-          Descubre negocios locales y apoya a tu comunidad
+          Descubre productos de comercios locales cerca de ti
         </p>
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters typeExplorer="comercios" params={await searchParams} />
+      <SearchAndFilters params={await searchParams} typeExplorer="productos" />
 
       {/* ACTIVE FILTERS */}
       {hasFilters && (
         <ActiveFilters
-          typeExplorer="comercios"
+          typeExplorer="productos"
           params={{
             search,
             category,
             page,
+            businessId,
             limit,
             sortBy,
           }}
@@ -82,26 +88,29 @@ export default async function ComerciosPage({
 
       {/* Results Count and Limit Selector */}
       <ResultsCountAndLimitSelector
-        typeExplorer="comercios"
+        typeExplorer="productos"
         currentLimit={currentLimit}
-        currentPage={currentPage}
         params={{
           search,
           category,
           page,
+          businessId,
           limit,
           sortBy,
         }}
+        currentPage={currentPage}
       />
 
+      {/* Products Grid */}
       <HydrateClient client={queryClient}>
-        <BusinessGrid
+        <ProductsGrid
+          hasFilters={hasFilters}
           currentLimit={currentLimit}
           currentPage={currentPage}
-          hasFilters={hasFilters}
           search={search}
           category={category}
-          sortBy={sortBy}
+          businessId={businessId}
+          sort={sortBy}
         />
       </HydrateClient>
     </>

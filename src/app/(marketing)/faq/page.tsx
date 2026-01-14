@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 
 export default function FAQPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <div className="mb-8">
+    <section className="flex w-full flex-col items-center justify-center gap-y-16">
+      <div className="text-center">
         <h1 className="mb-4 font-bold text-4xl tracking-tight">
           Preguntas Frecuentes
         </h1>
@@ -26,8 +26,8 @@ export default function FAQPage() {
         </p>
       </div>
 
-      <div className="space-y-8">
-        <section>
+      <div className="flex w-full flex-col items-center justify-center gap-y-10">
+        <section className="w-full">
           <h2 className="mb-4 font-semibold text-2xl">Para Compradores</h2>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
@@ -62,7 +62,7 @@ export default function FAQPage() {
           </Accordion>
         </section>
 
-        <section>
+        <section className="w-full">
           <h2 className="mb-4 font-semibold text-2xl">Para Comercios</h2>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="biz-1">
@@ -102,7 +102,7 @@ export default function FAQPage() {
           </Accordion>
         </section>
 
-        <section>
+        <section className="w-full">
           <h2 className="mb-4 font-semibold text-2xl">Seguridad y Soporte</h2>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="sec-1">
@@ -120,7 +120,7 @@ export default function FAQPage() {
         </section>
       </div>
 
-      <div className="mt-12 text-center text-muted-foreground text-sm">
+      <div className="text-center text-muted-foreground text-sm">
         <p>
           ¿No encontraste lo que buscabas? Escríbenos a{" "}
           <a
@@ -131,6 +131,6 @@ export default function FAQPage() {
           </a>
         </p>
       </div>
-    </div>
+    </section>
   );
 }

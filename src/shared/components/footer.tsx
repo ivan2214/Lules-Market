@@ -3,7 +3,7 @@ import Link from "next/link";
 import { footerNavigation } from "@/shared/constants/footer-navigation";
 import { getCurrentYear } from "@/shared/utils/date";
 
-export async function PublicFooter() {
+export async function Footer() {
   const year = await getCurrentYear();
 
   return (

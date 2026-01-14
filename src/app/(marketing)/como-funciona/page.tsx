@@ -30,8 +30,8 @@ export const metadata: Metadata = {
 
 export default function ComoFuncionaPage() {
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-12">
-      <div className="mb-12 text-center">
+    <section className="flex w-full flex-col items-center justify-center gap-y-16">
+      <div className="text-center">
         <h1 className="mb-4 font-bold text-4xl tracking-tight">
           ¿Cómo Funciona?
         </h1>
@@ -41,7 +41,7 @@ export default function ComoFuncionaPage() {
         </p>
       </div>
 
-      <div className="mb-16 grid gap-8 md:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-3">
         <Card className="border-2">
           <CardContent className="pt-6">
             <div className="flex flex-col items-center space-y-4 text-center">
@@ -94,7 +94,7 @@ export default function ComoFuncionaPage() {
         </Card>
       </div>
 
-      <div className="mb-16 space-y-12">
+      <div className="space-y-12">
         <div className="text-center">
           <h2 className="mb-8 font-bold text-3xl">
             Funcionalidades Principales
@@ -231,6 +231,6 @@ export default function ComoFuncionaPage() {
           </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

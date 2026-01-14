@@ -32,8 +32,8 @@ export const metadata: Metadata = {
 
 export default function PrivacidadPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <div className="mb-8">
+    <div className="flex w-full flex-col items-center justify-center gap-y-16">
+      <div>
         <div className="mb-4 flex items-center gap-2">
           <Badge variant="outline" className="text-sm">
             Ley 25.326 (Habeas Data)

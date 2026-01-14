@@ -62,9 +62,9 @@ export default async function ForBusinessPage() {
   });
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-linear-to-b from-background to-muted px-4">
+    <section className="flex w-full flex-col items-center justify-center gap-y-16">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32">
+      <section className="relative overflow-hidden">
         <div className="container relative z-10">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-balance font-bold text-4xl tracking-tight sm:text-6xl">
@@ -98,7 +98,7 @@ export default async function ForBusinessPage() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-muted/40 py-20">
+      <section className="">
         <div className="container">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-balance font-bold text-3xl tracking-tight sm:text-4xl">
@@ -154,7 +154,7 @@ export default async function ForBusinessPage() {
       </section>
 
       {/* Pricing Preview */}
-      <section className="bg-muted/40 py-20">
+      <section className="">
         <div className="container">
           <div className="relative mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-balance font-bold text-3xl tracking-tight sm:text-4xl">
@@ -172,27 +172,25 @@ export default async function ForBusinessPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="container">
-          <Card className="bg-primary text-primary-foreground">
-            <CardContent className="py-12 text-center">
-              <h2 className="mb-4 text-balance font-bold text-3xl tracking-tight sm:text-4xl">
-                ¿Listo para hacer crecer tu negocio?
-              </h2>
-              <p className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-primary-foreground/90">
-                Únete a cientos de comercios locales que ya están aumentando su
-                visibilidad y ventas
-              </p>
-              <Button asChild size="lg" variant="secondary">
-                <Link href="/auth/sign-up">
-                  Registrar mi Negocio
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+      <section>
+        <Card className="bg-primary text-primary-foreground">
+          <CardContent className="py-12 text-center">
+            <h2 className="mb-4 text-balance font-bold text-3xl tracking-tight sm:text-4xl">
+              ¿Listo para hacer crecer tu negocio?
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-primary-foreground/90">
+              Únete a cientos de comercios locales que ya están aumentando su
+              visibilidad y ventas
+            </p>
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/auth/sign-up">
+                Registrar mi Negocio
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       </section>
-    </div>
+    </section>
   );
 }

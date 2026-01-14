@@ -25,7 +25,7 @@ export const PlanCards = () => {
   });
 
   return (
-    <div className="mx-auto mb-16 grid max-w-6xl gap-8 md:grid-cols-3">
+    <div className="grid w-full max-w-6xl gap-8 md:grid-cols-3">
       {plans?.map((plan) => {
         const Icon =
           plan.type === "FREE" ? Sparkles : plan.type === "BASIC" ? Zap : Crown;

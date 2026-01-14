@@ -50,8 +50,8 @@ export default async function PlanesPage() {
   });
 
   return (
-    <div className="container mx-auto py-16">
-      <div className="mx-auto mb-16 max-w-3xl text-center">
+    <section className="flex w-full flex-col items-center justify-center gap-y-16">
+      <div className="text-center">
         <h1 className="text-balance font-bold text-4xl tracking-tight sm:text-5xl">
           Planes para cada tipo de negocio
         </h1>
@@ -71,7 +71,7 @@ export default async function PlanesPage() {
       </HydrateClient>
 
       {/* FAQ */}
-      <div className="mx-auto mt-16 max-w-3xl">
+      <div>
         <h2 className="mb-8 text-center font-bold text-3xl">
           Preguntas Frecuentes
         </h2>
@@ -135,7 +135,7 @@ export default async function PlanesPage() {
       </div>
 
       {/* CTA */}
-      <div className="mt-16 text-center">
+      <div className="text-center">
         <Card className="mx-auto max-w-3xl bg-primary text-primary-foreground">
           <CardContent className="py-12">
             <h2 className="mb-4 text-balance font-bold text-3xl">
@@ -154,6 +154,6 @@ export default async function PlanesPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </section>
   );
 }

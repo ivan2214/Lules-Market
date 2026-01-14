@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { DynamicStatsSkeletons } from "@/app/(public)/_components/skeletons/dynamic-stats-skeleton";
-import { FeaturedBusinessesSkeletons } from "@/app/(public)/_components/skeletons/featured-businesses-skeleton";
-import { RecentProductsSkeletons } from "@/app/(public)/_components/skeletons/recent-products-skeleton";
+import { DynamicStatsSkeletons } from "@/app/(home)/_components/skeletons/dynamic-stats-skeleton";
+import { FeaturedBusinessesSkeletons } from "@/app/(home)/_components/skeletons/featured-businesses-skeleton";
+import { RecentProductsSkeletons } from "@/app/(home)/_components/skeletons/recent-products-skeleton";
 import { Button } from "@/shared/components/ui/button";
 
 export default function Loading() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { LimitSelector } from "@/app/(public)/explorar/_components/limit-selector";
+import { LimitSelector } from "@/features/explorar/_components/limit-selector";
 import { api } from "@/lib/eden";
 
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";

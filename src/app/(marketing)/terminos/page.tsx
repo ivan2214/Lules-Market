@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 
 export default function TerminosPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <div className="mb-8">
+    <section className="flex w-full flex-col items-center justify-center gap-y-16">
+      <div className="">
         <div className="mb-4 flex items-center gap-2">
           <Badge variant="outline" className="text-sm">
             Última actualización: Diciembre 2025
@@ -47,22 +47,22 @@ export default function TerminosPage() {
         </p>
       </div>
 
-      <div className="mb-8 rounded-lg border bg-muted/50 p-6">
+      <div className="rounded-lg border bg-muted/50 p-6">
         <h2 className="mb-4 font-semibold text-lg">Resumen Rápido</h2>
-        <ul className="grid gap-2 text-sm sm:grid-cols-2">
-          <li className="flex items-start gap-2">
+        <ul className="grid gap-2 text-sm md:grid-cols-2">
+          <li>
             ✅ <strong>Somos intermediarios:</strong> Conectamos compradores y
             vendedores.
           </li>
-          <li className="flex items-start gap-2">
+          <li>
             ✅ <strong>Responsabilidad:</strong> Cada comercio es responsable de
             sus productos.
           </li>
-          <li className="flex items-start gap-2">
+          <li>
             ✅ <strong>Pagos:</strong> Las transacciones se acuerdan entre
             partes (por ahora).
           </li>
-          <li className="flex items-start gap-2">
+          <li>
             ✅ <strong>Jurisdicción:</strong> San Miguel de Tucumán, Argentina.
           </li>
         </ul>
@@ -186,6 +186,6 @@ export default function TerminosPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </section>
   );
 }

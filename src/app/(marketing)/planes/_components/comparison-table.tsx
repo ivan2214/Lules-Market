@@ -15,7 +15,7 @@ export const ComparisonTable = () => {
   });
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="w-full">
       <h2 className="mb-8 text-center font-bold text-3xl">
         Comparación Detallada
       </h2>

@@ -1,26 +1,31 @@
 import type { navigationItem } from "@/shared/types";
 
 export const footerNavigation: {
+  explorar: navigationItem[];
   plataforma: navigationItem[];
   comercio: navigationItem[];
   legal: navigationItem[];
 } = {
   plataforma: [
     {
-      name: "Explorar Productos",
-      href: "/explorar/productos",
+      name: "Qué es Lules Market",
+      href: "/que-es",
     },
     {
-      name: "Explorar Comercios",
-      href: "/explorar/comercios",
+      name: "Cómo funciona",
+      href: "/como-funciona",
+    },
+    {
+      name: "Para clientes",
+      href: "/para-clientes",
+    },
+    {
+      name: "Para comercios",
+      href: "/para-comercios",
     },
     {
       name: "Planes",
       href: "/planes",
-    },
-    {
-      name: "Qué es Lules Market",
-      href: "/que-es",
     },
     {
       name: "Preguntas Frecuentes",
@@ -29,6 +34,16 @@ export const footerNavigation: {
     {
       name: "Roadmap",
       href: "/roadmap",
+    },
+  ],
+  explorar: [
+    {
+      name: "Explorar Productos",
+      href: "/explorar/productos",
+    },
+    {
+      name: "Explorar Comercios",
+      href: "/explorar/comercios",
     },
   ],
   comercio: [

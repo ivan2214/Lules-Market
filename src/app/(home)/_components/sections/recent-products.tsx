@@ -2,7 +2,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { ProductList } from "@/app/(public)/_components/product-list";
+import { ProductList } from "@/app/(home)/_components/product-list";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 

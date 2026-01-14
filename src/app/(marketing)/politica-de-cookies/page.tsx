@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 
 export default function CookiesPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <div className="mb-8">
+    <section className="flex w-full flex-col items-center justify-center gap-y-16">
+      <div>
         <h1 className="mb-4 font-bold text-4xl tracking-tight">
           Política de Cookies
         </h1>
@@ -130,6 +130,6 @@ export default function CookiesPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </section>
   );
 }
