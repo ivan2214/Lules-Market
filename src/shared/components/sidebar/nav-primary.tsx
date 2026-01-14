@@ -4,6 +4,7 @@ import type { UserRole } from "@/db/types";
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -28,6 +29,7 @@ export function NavPrimary({
   const { hasRole } = useAccessControl(userRole);
   return (
     <SidebarGroup>
+      <SidebarGroupLabel>Rutas</SidebarGroupLabel>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {items.map((item) => {

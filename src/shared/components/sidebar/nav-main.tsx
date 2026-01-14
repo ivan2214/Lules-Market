@@ -31,10 +31,10 @@ export type NavMainItem = {
   items?: Array<{
     title: string;
     url: Route;
-    role?: UserRole;
+    role: UserRole;
     disabled?: boolean;
   }>;
-  role?: UserRole;
+  role: UserRole;
   disabled?: boolean;
 };
 

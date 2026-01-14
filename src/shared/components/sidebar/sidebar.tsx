@@ -1,11 +1,11 @@
 "use client";
-import { Search } from "lucide-react";
+import { navPrimaryDataAdmin } from "@/app/admin/_constants";
+import { navPrimaryDataDashboard } from "@/app/dashboard/_constants";
 import pathsConfig from "@/config/paths.config";
-import type { AdminWithRelations, UserRole } from "@/db/types";
+import type { UserRole } from "@/db/types";
 import { AppLogo } from "@/shared/components/app-logo";
-import { SearchCommandDialog } from "@/shared/components/search-command-dialog";
 import {
-  Sidebar,
+  Sidebar as SidebarComponent,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
@@ -13,30 +13,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-import {
-  navDocumentsData,
-  navMainData,
-  navPrimaryData,
-  navResourceShopData,
-  navSecondaryData,
-  searchCommandData,
-} from "./admin-sidebar-data";
-import { NavDocuments } from "./sidebar/nav-documents";
-import { NavMain } from "./sidebar/nav-main";
-import { NavPrimary } from "./sidebar/nav-primary";
-import { NavResources } from "./sidebar/nav-resources";
-import { NavSecondary } from "./sidebar/nav-secondary";
-import { NavUser } from "./sidebar/nav-user";
+import { NavMain } from "./nav-main";
+import { NavPrimary } from "./nav-primary";
+import { NavUser } from "./nav-user";
 
-export function AdminSidebar({
-  admin,
+export function Sidebar({
   userRole,
+  name,
+  email,
+  avatar,
 }: {
-  admin: AdminWithRelations;
   userRole: UserRole;
+  name: string;
+  email: string;
+  avatar?: string | null;
 }) {
   return (
-    <Sidebar variant="inset">
+    <SidebarComponent variant="sidebar">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -56,14 +49,29 @@ export function AdminSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavPrimary items={navPrimaryData} userRole={userRole} />
-        <NavMain items={navMainData} userRole={userRole} />
+        <NavPrimary
+          items={
+            userRole === "ADMIN" ? navPrimaryDataAdmin : navPrimaryDataDashboard
+          }
+          userRole={userRole}
+        />
+        {/*   <NavMain
+          items={
+            userRole === "ADMIN" ? navPrimaryDataAdmin : navPrimaryDataDashboard
+          }
+          userRole={userRole}
+        /> */}
+
+        {/*>
+
         <NavResources
           resource="Shop"
           items={navResourceShopData}
           userRole={userRole}
         />
+
         <NavDocuments items={navDocumentsData} userRole={userRole} />
+
         <NavSecondary
           items={navSecondaryData}
           className="mt-auto"
@@ -88,17 +96,17 @@ export function AdminSidebar({
               </SidebarMenuItem>
             )}
           </SearchCommandDialog>
-        </NavSecondary>
+        </NavSecondary> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser
           user={{
-            name: admin.user?.name ?? "",
-            email: admin.user?.email ?? "",
-            avatar: admin.user?.image ?? undefined,
+            name,
+            email,
+            avatar,
           }}
         />
       </SidebarFooter>
-    </Sidebar>
+    </SidebarComponent>
   );
 }
