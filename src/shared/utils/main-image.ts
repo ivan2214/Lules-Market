@@ -1,4 +1,8 @@
-import type { Image } from "@/db/types";
+type Image = {
+  key: string;
+  url: string;
+  isMainImage: boolean;
+};
 
 export function mainImage({
   images,

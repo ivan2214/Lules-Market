@@ -3,10 +3,10 @@
 import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import type { Business } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
+import type { BusinessDto } from "@/shared/utils/dto";
 
 type SortByBusiness = "newest" | "oldest";
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
@@ -22,7 +22,7 @@ type Params = {
 
 type ActiveFiltersProps = {
   params: Params;
-  businesses?: Business[];
+  businesses?: BusinessDto[];
   typeExplorer: TypeExplorer;
 };
 

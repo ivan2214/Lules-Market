@@ -5,7 +5,6 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { Business, Category } from "@/db/types";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -24,6 +23,7 @@ import {
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
+import type { BusinessDto, CategoryDto } from "@/shared/utils/dto";
 import { BusinessesPills } from "./businesses-pills";
 import { CategoryPills } from "./category-pills";
 
@@ -43,8 +43,8 @@ type SearchAndFiltersProps = {
       | "oldest";
   };
   typeExplorer: TypeExplorer;
-  businesses?: Business[];
-  categories?: Category[];
+  businesses?: BusinessDto[];
+  categories?: CategoryDto[];
 };
 
 export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({

@@ -1,5 +1,7 @@
 import "server-only";
+import { cache } from "react";
 import { api } from "@/lib/eden";
+import { toBusinessDto } from "@/shared/utils/dto";
 
 type SearchParams = {
   search?: string;
@@ -9,7 +11,7 @@ type SearchParams = {
   limit?: string;
 };
 
-export const listAllBusiness = async (params?: SearchParams | null) => {
+export const listAllBusiness = cache(async (params?: SearchParams | null) => {
   const { limit, page, search, sortBy, category } = params || {};
 
   const currentPage = page ? parseInt(page, 10) : 1;
@@ -24,6 +26,17 @@ export const listAllBusiness = async (params?: SearchParams | null) => {
       sortBy,
     },
   });
+
   if (error) throw error;
-  return data;
-};
+
+  return {
+    ...data,
+    businesses: data.businesses.map(toBusinessDto),
+  };
+});
+
+export const getFeaturedBusinesses = cache(async () => {
+  const { data, error } = await api.business.public.featured.get();
+  if (error) throw error;
+  return data.map(toBusinessDto);
+});

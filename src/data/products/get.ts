@@ -1,5 +1,7 @@
 import { api } from "@/lib/eden";
 import "server-only";
+import { cache } from "react";
+import { toProductDto } from "@/shared/utils/dto";
 
 type SearchParams = {
   search?: string;
@@ -10,7 +12,7 @@ type SearchParams = {
   sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
 };
 
-export const listAllProducts = async (searchParams?: SearchParams) => {
+export const listAllProducts = cache(async (searchParams?: SearchParams) => {
   const { limit, page, search, sortBy, category, businessId } =
     searchParams || {};
   const currentPage = page ? parseInt(page, 10) : 1;
@@ -26,6 +28,39 @@ export const listAllProducts = async (searchParams?: SearchParams) => {
       sort: sortBy,
     },
   });
+
   if (error) throw error;
-  return data;
-};
+
+  return {
+    ...data,
+    products: data.products.map(toProductDto),
+  };
+});
+
+export const getRecentProducts = cache(async () => {
+  const { data, error } = await api.products.public.recent.get();
+  if (error) throw error;
+  return data.products.map(toProductDto);
+});
+
+export const getProductById = cache(async (id: string) => {
+  const { data, error } = await api.products.public({ id }).get();
+  if (error) throw error;
+  return data.product ? toProductDto(data.product) : null;
+});
+
+export const getSimilarProducts = cache(
+  async (params: { productId: string; businessId: string; limit?: number }) => {
+    const { data, error } = await api.products
+      .public({ id: params.productId })
+      .similar.get({
+        query: {
+          productId: params.productId,
+          businessId: params.businessId,
+          limit: params.limit,
+        },
+      });
+    if (error) throw error;
+    return data.products.map(toProductDto);
+  },
+);

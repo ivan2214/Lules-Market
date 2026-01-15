@@ -3,12 +3,12 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { Business } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
+import type { BusinessDto } from "@/shared/utils/dto";
 
 type BusinessesPillsProps = {
-  businesses: Business[];
+  businesses: BusinessDto[];
   typeExplorer: TypeExplorer;
   businessId?: string;
 };

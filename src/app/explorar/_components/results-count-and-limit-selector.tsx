@@ -1,6 +1,5 @@
-import { LimitSelector } from "@/features/explorar/_components/limit-selector";
-import type { BusinessModel } from "@/server/modules/business/model";
-import type { ProductModel } from "@/server/modules/products/model";
+import type { BusinessDto, ProductDto } from "@/shared/utils/dto";
+import { LimitSelector } from "./limit-selector";
 
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
 type SortByBusiness = "newest" | "oldest";
@@ -19,8 +18,18 @@ interface ResultsCountAndLimitSelectorProps {
   currentLimit: number;
   currentPage: number;
   params: Params;
-  businessesData?: BusinessModel.ListAllOutput;
-  productsData?: ProductModel.ListAllOutput;
+  businessesData?: {
+    businesses: BusinessDto[];
+    total: number;
+    pages?: number;
+    currentPage?: number;
+  };
+  productsData?: {
+    products: ProductDto[];
+    total: number;
+    pages?: number;
+    currentPage?: number;
+  };
 }
 
 export const ResultsCountAndLimitSelector: React.FC<
