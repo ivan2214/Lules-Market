@@ -13,3 +13,14 @@ export const authClient = createAuthClient({
     customSessionClient<typeof auth>(), // Este plugin infiere los tipos del servidor
   ],
 });
+
+// ✅ EXPORTA los hooks desde authClient
+export const {
+  useSession,
+  requestPasswordReset,
+  signIn,
+  twoFactor,
+  resetPassword,
+  signOut,
+  getSession,
+} = authClient;

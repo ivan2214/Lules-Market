@@ -1,8 +1,11 @@
+import { Users } from "lucide-react";
+import { redirect } from "next/navigation";
+import pathsConfig from "@/config/paths.config";
 import { getCurrentAdmin } from "@/data/admin/get-current-admin";
 import { requireAdmin } from "@/data/admin/require-admin";
-import type { AdminWithRelations, UserRole } from "@/db/types";
-import { AdminSidebar } from "@/shared/components/admin/admin-sidebar";
+import type { UserRole } from "@/db/types";
 import { AppBreadcrumbs } from "@/shared/components/app-breadcrumb";
+import { Sidebar } from "@/shared/components/sidebar/sidebar";
 import { Separator } from "@/shared/components/ui/separator";
 import {
   SidebarInset,
@@ -19,9 +22,18 @@ export default async function AdminLayout({
   const { admin } = await getCurrentAdmin();
   const userRole = admin?.user?.role as UserRole;
 
+  if (!admin || !admin?.user) {
+    redirect(pathsConfig.auth.signIn);
+  }
+
   return (
     <SidebarProvider>
-      <AdminSidebar admin={admin as AdminWithRelations} userRole={userRole} />
+      <Sidebar
+        userRole={userRole}
+        name={admin?.user?.name}
+        email={admin?.user?.email}
+        avatar={admin?.user?.image}
+      />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">

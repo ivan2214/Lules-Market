@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <necesary> */
 import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
 import { db } from "@/db";
@@ -102,7 +103,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
     },
   });
 
-async function getSessionFromHeaders(
+export async function getSessionFromHeaders(
   headers: Headers | Record<string, string>,
 ) {
   const headersObj =

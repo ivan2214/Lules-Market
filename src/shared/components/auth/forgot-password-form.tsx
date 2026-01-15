@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import pathsConfig from "@/config/paths.config";
 import { env } from "@/env/client";
-import { authClient } from "@/lib/auth/auth-client";
+import { requestPasswordReset } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -36,7 +36,7 @@ export function ForgotPasswordForm() {
 
   const onSubmit = (data: ForgotPasswordSchema) => {
     startTransition(async () => {
-      await authClient.requestPasswordReset(
+      await requestPasswordReset(
         {
           email: data.email,
           redirectTo: env.NEXT_PUBLIC_APP_URL + pathsConfig.auth.resetPassword,

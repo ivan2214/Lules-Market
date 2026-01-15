@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import pathsConfig from "@/config/paths.config";
-import { authClient } from "@/lib/auth/auth-client";
+import { signIn } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Input } from "@/shared/components/ui/input";
@@ -32,7 +32,7 @@ export function PasswordSignInForm() {
     },
     onSubmit: ({ value }) => {
       startTransition(() => {
-        authClient.signIn.email(
+        signIn.email(
           {
             email: value.email,
             password: value.password,

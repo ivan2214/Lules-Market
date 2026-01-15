@@ -16,7 +16,6 @@ import { type JSX, useState } from "react";
 import { toast } from "sonner";
 
 import type { Category } from "@/db/types";
-import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -35,6 +34,7 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { MultiStepFormProvider } from "@/shared/hooks/use-multi-step-viewer";
 import { type SignUpSchema, signUpSchema } from "@/shared/validators/auth";
 import { typeboxValidator } from "@/shared/validators/form";
 import {

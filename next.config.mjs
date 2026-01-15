@@ -28,7 +28,8 @@ const nextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
-  allowedDevOrigins: [],
+  // Fix Turbopack bundling issue with better-auth
+  serverExternalPackages: ["better-auth"],
 };
 
 export default nextConfig;

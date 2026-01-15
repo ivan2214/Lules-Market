@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export function AppLogo({ path }: { path?: Route }) {
@@ -7,10 +8,9 @@ export function AppLogo({ path }: { path?: Route }) {
       href={path ?? "/"}
       className="flex items-center gap-2 self-center font-medium"
     >
-      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-        ~
+      <div className="w-24">
+        <Image src="/logo.webp" alt="Logo" width={128} height={128} />
       </div>
-      Next Bard
     </Link>
   );
 }

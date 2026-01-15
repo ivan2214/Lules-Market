@@ -2,7 +2,7 @@ import { and, desc, eq, ilike, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
 import { user as userSchema } from "@/db/schema";
-import { UsersList } from "@/shared/components/admin/users-list";
+import { UsersList } from "../_components/users-list";
 
 export const dynamic = "force-dynamic";
 /* revalidar cada 30 minutos */

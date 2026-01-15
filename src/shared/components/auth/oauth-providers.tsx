@@ -1,7 +1,7 @@
 "use client";
 
 import pathsConfig from "@/config/paths.config";
-import { authClient } from "@/lib/auth/auth-client";
+import { signIn } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 
 const providers = [
@@ -42,7 +42,7 @@ export function OAuthProviders() {
           variant="outline"
           className="w-full"
           onClick={() => {
-            authClient.signIn.social({
+            signIn.social({
               provider: provider.id,
               callbackURL: pathsConfig.dashboard.root,
             });

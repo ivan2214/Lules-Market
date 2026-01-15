@@ -9,9 +9,15 @@ export const businessController = new Elysia({
 });
 
 const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
-  .get("/featured", async () => {
-    return await BusinessService.getFeatured();
-  })
+  .get(
+    "/featured",
+    async () => {
+      return await BusinessService.getFeatured();
+    },
+    {
+      response: BusinessModel.featuredOutput,
+    },
+  )
   .get(
     "/list-all",
     async ({ query }) => {

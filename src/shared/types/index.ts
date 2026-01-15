@@ -128,6 +128,7 @@ export type navigationItem = {
   icon?: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
+  description?: string;
 };
 
 export type ContactMethod = {

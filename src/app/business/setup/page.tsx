@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentSession } from "@/data/session/get-current-session";
 import { requireSession } from "@/data/session/require-session";
-import { PublicFooter as Footer } from "@/features/(public)/_components/footer";
 import { api } from "@/lib/eden";
 import { AppLogo } from "@/shared/components/app-logo";
+import { Footer } from "@/shared/components/footer";
 import { Navigation } from "@/shared/components/navigation";
 import {
   Card,

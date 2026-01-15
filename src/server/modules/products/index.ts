@@ -13,7 +13,7 @@ export const productModule = new Elysia({ prefix: "/products" })
           return { success: true, products };
         },
         {
-          response: ProductModel.arrayProductsOutput, // using a wrapper object success:true is part of default response structure often but here defined explicitly
+          response: ProductModel.recentOutput,
         },
       )
       .get(
@@ -23,7 +23,7 @@ export const productModule = new Elysia({ prefix: "/products" })
         },
         {
           query: ProductModel.listAllInput,
-          response: ProductModel.productsListOutput,
+          response: ProductModel.productsListAllOutput,
         },
       )
       .get(

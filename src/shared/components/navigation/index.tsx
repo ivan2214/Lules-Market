@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { navigation } from "@/shared/constants/navigation";
+import { SearchForm } from "../search-form";
 import { Skeleton } from "../ui/skeleton";
 import { DesktopMenu } from "./desktop-menu";
 import { NavigationWrapper } from "./navigation-wrapper";
@@ -10,7 +11,7 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-50 w-full border-border border-b bg-background/95">
       <div className="flex h-16 items-center justify-between px-4">
-        <div className="flex items-center justify-between">
+        <div className="flex gap-2">
           {/* Logo */}
           <Link href="/" className="w-24 lg:w-32">
             <Image
@@ -36,6 +37,8 @@ export function Navigation() {
             <DesktopMenu />
           </Suspense>
         </div>
+
+        <SearchForm />
 
         {/* Right Actions */}
         <NavigationWrapper />

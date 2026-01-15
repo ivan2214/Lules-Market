@@ -2,7 +2,6 @@
 import type { VariantProps } from "class-variance-authority";
 import { AnimatePresence, type MotionProps, motion } from "motion/react";
 import type * as React from "react";
-import { useMultiStepForm } from "@/hooks/use-multi-step-viewer";
 import { Button, type buttonVariants } from "@/shared/components/ui/button";
 import {
   Stepper,
@@ -11,6 +10,7 @@ import {
   StepperSeparator,
   StepperTrigger,
 } from "@/shared/components/ui/stepper";
+import { useMultiStepForm } from "@/shared/hooks/use-multi-step-viewer";
 
 const NextButton = (
   props: React.ComponentProps<"button"> &
