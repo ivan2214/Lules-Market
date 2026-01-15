@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { navigation } from "@/app/dashboard/_constants";
-import { authClient } from "@/lib/auth/auth-client";
+import { signOut } from "@/lib/auth/auth-client";
 import {
   Avatar,
   AvatarFallback,
@@ -40,7 +40,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const handleSignOut = async () => {
-    await authClient.signOut();
+    await signOut();
     setOpen(false);
     router.push("/");
     router.refresh();

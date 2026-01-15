@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { navigation } from "@/shared/constants/navigation";
+import { SearchForm } from "../search-form";
 import { Skeleton } from "../ui/skeleton";
 import { DesktopMenu } from "./desktop-menu";
 import { NavigationWrapper } from "./navigation-wrapper";
@@ -36,6 +37,8 @@ export function Navigation() {
             <DesktopMenu />
           </Suspense>
         </div>
+
+        <SearchForm />
 
         {/* Right Actions */}
         <NavigationWrapper />

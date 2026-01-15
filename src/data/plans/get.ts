@@ -1,5 +1,5 @@
-import { api } from "@/lib/eden";
 import "server-only";
+import { api } from "@/lib/eden";
 
 export const getPlans = async () => {
   const { data, error } = await api.plan.public["list-all"].get();

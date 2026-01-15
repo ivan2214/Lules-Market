@@ -103,7 +103,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
     },
   });
 
-async function getSessionFromHeaders(
+export async function getSessionFromHeaders(
   headers: Headers | Record<string, string>,
 ) {
   const headersObj =

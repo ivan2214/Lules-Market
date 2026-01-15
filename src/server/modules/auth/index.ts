@@ -1,6 +1,7 @@
 import { APIError } from "better-auth";
 import { Elysia } from "elysia";
 import { AppError } from "@/server/errors";
+import { getSessionFromHeaders } from "@/server/plugins/auth";
 import { AuthModel } from "./model";
 import { AuthService } from "./service";
 
@@ -41,53 +42,64 @@ const getLocalizedMessage = (
 
 export const authController = new Elysia({
   prefix: "/actions",
-}).post(
-  "/signup",
-  async ({ body }) => {
-    console.log({
-      body,
-    });
-
-    try {
-      const response = await AuthService.signUp(body);
+})
+  .post(
+    "/signup",
+    async ({ body }) => {
       console.log({
-        response,
+        body,
       });
 
-      return response;
-    } catch (error) {
-      if (error instanceof APIError) {
-        const { body, status } = error;
-        const errorCode = body?.code;
-        const errorMessage = body?.message;
-        const errorCause = body?.cause;
-
-        console.error("Better Auth APIError:", {
-          status,
-          code: errorCode,
-          message: errorMessage,
-          cause: errorCause,
-          fullBody: body,
+      try {
+        const response = await AuthService.signUp(body);
+        console.log({
+          response,
         });
 
-        const localizedMessage = getLocalizedMessage(errorCode, errorMessage);
+        return response;
+      } catch (error) {
+        if (error instanceof APIError) {
+          const { body, status } = error;
+          const errorCode = body?.code;
+          const errorMessage = body?.message;
+          const errorCause = body?.cause;
 
-        throw new AppError(localizedMessage, "BAD_REQUEST", {
-          success: false,
-          error: localizedMessage,
-          code: errorCode,
-          status,
-          details: body?.details,
-        });
+          console.error("Better Auth APIError:", {
+            status,
+            code: errorCode,
+            message: errorMessage,
+            cause: errorCause,
+            fullBody: body,
+          });
+
+          const localizedMessage = getLocalizedMessage(errorCode, errorMessage);
+
+          throw new AppError(localizedMessage, "BAD_REQUEST", {
+            success: false,
+            error: localizedMessage,
+            code: errorCode,
+            status,
+            details: body?.details,
+          });
+        }
+
+        console.error("Error no APIError:", error);
+        if (error instanceof AppError) throw error;
+
+        throw new AppError(
+          "Error interno del servidor",
+          "INTERNAL_SERVER_ERROR",
+        );
       }
-
-      console.error("Error no APIError:", error);
-      if (error instanceof AppError) throw error;
-
-      throw new AppError("Error interno del servidor", "INTERNAL_SERVER_ERROR");
+    },
+    {
+      body: AuthModel.signUp,
+    },
+  )
+  .get("/get-session", async ({ request: { headers } }) => {
+    if (!headers) {
+      throw new AppError("No headers provided", "BAD_REQUEST");
     }
-  },
-  {
-    body: AuthModel.signUp,
-  },
-);
+    const session = await getSessionFromHeaders(headers);
+    return session;
+  });

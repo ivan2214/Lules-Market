@@ -1,41 +1,31 @@
-﻿import { desc, eq } from "drizzle-orm";
+﻿"use client";
+
 import Link from "next/link";
-import { Suspense } from "react";
-import { getCurrentSession } from "@/data/session/get-current-session";
-import { db } from "@/db";
-import { admin, business, notification, profile } from "@/db/schema";
 import type { Notification } from "@/db/types";
-import { SearchForm } from "@/shared/components/search-form";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { useSession } from "@/shared/hooks/use-session";
 import { MobileMenu } from "./mobile-menu";
 import { Notifications } from "./notifications";
 import { UserMenu } from "./user-menu";
 
-export const NavigationWrapper = async () => {
-  return (
-    <div className="flex w-full items-center justify-between gap-2 lg:w-2/3">
-      {/* Search Button - Mobile */}
-      <SearchForm />
+export const NavigationWrapper = () => {
+  // ✅ Usa isPending para manejar el loading state
+  const { data, isPending, isLoading } = useSession();
 
-      {/* User Menu */}
-      <Suspense
-        fallback={
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-9 w-36" />
-          </div>
-        }
-      >
-        <NavigationWrapperContent />
-      </Suspense>
-    </div>
-  );
-};
+  // Mostrar skeleton mientras carga
+  if (isPending || isLoading) {
+    return (
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-9 w-36" />
+      </div>
+    );
+  }
 
-const NavigationWrapperContent = async () => {
-  const { user } = await getCurrentSession();
+  const { user, admin, business } = data || {};
 
-  if (!user)
+  // Si no hay usuario
+  if (!user) {
     return (
       <>
         <Button asChild className="hidden md:flex">
@@ -44,41 +34,14 @@ const NavigationWrapperContent = async () => {
         <MobileMenu />
       </>
     );
+  }
 
-  const adminDB = await db.query.admin.findFirst({
-    where: eq(admin.userId, user.id),
-    with: {
-      user: true,
-    },
-  });
-
-  const businessDB = await db.query.business.findFirst({
-    where: eq(business.id, user.id),
-    with: { logo: true, coverImage: true },
-  });
-
-  const userProfile = await db.query.profile.findFirst({
-    where: eq(profile.userId, user.id),
-    with: { avatar: true, user: true },
-  });
-
-  const notificationsForUser = await db.query.notification.findMany({
-    where: eq(notification.userId, user.id),
-    orderBy: [desc(notification.createdAt)],
-  });
-
-  const avatar =
-    userProfile?.avatar?.url ||
-    businessDB?.logo?.url ||
-    adminDB?.user?.image ||
-    user.image;
-  const email = userProfile?.user?.email || adminDB?.user?.email || user.email;
-  const name =
-    userProfile?.name || businessDB?.name || adminDB?.user?.name || user.name;
-
-  const isBusiness = !!businessDB;
-
-  const isAdmin = !!adminDB;
+  const avatar = business?.logo?.url || admin?.user?.image || user.image;
+  const email = admin?.user?.email || user.email;
+  const name = business?.name || admin?.user?.name || user.name;
+  const isBusiness = !!business;
+  const isAdmin = !!admin;
+  const notificationsForUser = user.notifications || [];
 
   return (
     <div className="flex items-center gap-2">
@@ -92,11 +55,11 @@ const NavigationWrapperContent = async () => {
           name={name}
           isBusiness={isBusiness}
           isAdmin={isAdmin}
-          businessId={businessDB?.id}
+          businessId={business?.id}
         />
       )}
       {/* Mobile Menu */}
-      <MobileMenu isLoggedIn={!!user} />
+      <MobileMenu isLoggedIn={true} />
     </div>
   );
 };

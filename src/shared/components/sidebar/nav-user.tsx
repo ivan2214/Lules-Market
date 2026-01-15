@@ -2,7 +2,7 @@
 
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth/auth-client";
+import { signOut } from "@/lib/auth/auth-client";
 import {
   Avatar,
   AvatarFallback,
@@ -107,7 +107,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {
-                await authClient.signOut();
+                await signOut();
                 router.refresh();
               }}
             >

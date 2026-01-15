@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { AlertCircle, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { authClient } from "@/lib/auth/auth-client";
+import { twoFactor } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { otpSchema } from "@/shared/validators/auth";
@@ -31,7 +31,7 @@ export function OtpForm() {
     },
     onSubmit: ({ value }) => {
       startTransition(async () => {
-        const res = await authClient.twoFactor.verifyOtp({
+        const res = await twoFactor.verifyOtp({
           code: value.code,
         });
 
@@ -50,7 +50,7 @@ export function OtpForm() {
 
   const requestOTP = async () => {
     startTransition(async () => {
-      await authClient.twoFactor.sendOtp();
+      await twoFactor.sendOtp();
       setMessage("OTP sent to your email");
       setIsError(false);
       setIsOtpSent(true);

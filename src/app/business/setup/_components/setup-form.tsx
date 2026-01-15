@@ -11,7 +11,6 @@ import type { JSX } from "react";
 import { toast } from "sonner";
 import pathsConfig from "@/config/paths.config";
 import type { Category } from "@/db/types";
-import { MultiStepFormProvider } from "@/hooks/use-multi-step-viewer";
 import { api } from "@/lib/eden";
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
@@ -44,6 +43,7 @@ import {
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
+import { MultiStepFormProvider } from "@/shared/hooks/use-multi-step-viewer";
 import { BusinessSetupSchema } from "@/shared/validators/business";
 import { typeboxValidator } from "@/shared/validators/form";
 

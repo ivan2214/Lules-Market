@@ -1,12 +1,8 @@
-/* Pagina para comercios donde le indica que tiene que iniciar sesion o registrarse */
-
 import { ArrowRight, Store, TrendingUp, Zap } from "lucide-react";
 import type { Metadata } from "next";
-
 import Link from "next/link";
 import { getPlans } from "@/data/plans/get";
 import { env } from "@/env/server";
-import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PlanPricingPreview } from "./_components/plan-pricing.preview";

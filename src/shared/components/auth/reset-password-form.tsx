@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
-import { authClient } from "@/lib/auth/auth-client";
+import { resetPassword } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -35,7 +35,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   const onSubmit = async (data: ResetPasswordSchema) => {
     startTransition(async () => {
-      await authClient.resetPassword(
+      await resetPassword(
         {
           newPassword: data.password,
           token,

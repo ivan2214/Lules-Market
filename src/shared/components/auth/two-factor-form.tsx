@@ -2,7 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { authClient } from "@/lib/auth/auth-client";
+import { twoFactor } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { totpSchema } from "@/shared/validators/auth";
@@ -24,7 +24,7 @@ export function TwoFactorForm() {
     },
     onSubmit: async ({ value }) => {
       startTransition(async () => {
-        const res = await authClient.twoFactor.verifyTotp({
+        const res = await twoFactor.verifyTotp({
           code: value.code,
         });
 
