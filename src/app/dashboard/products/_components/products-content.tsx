@@ -1,13 +1,15 @@
 import { MessageCircleWarningIcon, Package } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
 import pathsConfig from "@/config/paths.config";
 import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { ProductCardDashboard } from "@/features//dashboard/_components/product-card-dashboard";
-import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
-import { subscriptionErrors } from "@/features//dashboard/_constants";
+import { ProductCardDashboard } from "@/features/dashboard/_components/product-card-dashboard";
+import { ProductFormDialog } from "@/features/dashboard/_components/product-form-dialog";
+import { subscriptionErrors } from "@/features/dashboard/_constants";
 import { api } from "@/lib/eden";
+
 import {
   Alert,
   AlertDescription,
@@ -22,75 +24,85 @@ export async function ProductsContent() {
     redirect(pathsConfig.business.setup);
   }
 
-  const products = await getBusinessProducts(headers);
+  const [products, categoriesResponse] = await Promise.all([
+    getBusinessProducts(headers),
+    api.category.public["list-all"].get(),
+  ]);
 
-  console.log("Products Count:", products.length);
+  const categories = categoriesResponse.data ?? [];
 
-  const currentPlan = currentBusiness.currentPlan;
+  const plan = currentBusiness.currentPlan;
+  const usedProducts = plan?.productsUsed ?? 0;
+  const maxProducts = plan?.plan?.maxProducts ?? 0;
 
-  const canAdd =
-    (currentPlan?.productsUsed || 0) < (currentPlan?.plan?.maxProducts || 0);
-  const { data: categories } = await api.category.public["list-all"].get();
+  const isUnlimited = maxProducts === 9999;
+  const canAddProducts = isUnlimited || usedProducts < maxProducts;
+
+  const productDialog = (
+    <ProductFormDialog
+      categories={categories}
+      maxImagesPerProduct={plan?.imagesUsed ?? 0}
+      disabled={!canAddProducts}
+    />
+  );
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <header className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Productos</h1>
           <p className="text-muted-foreground">
-            {currentPlan?.productsUsed ?? 0} de {currentPlan?.plan?.maxProducts}
+            {isUnlimited
+              ? "Productos ilimitados"
+              : `${usedProducts} de ${maxProducts} productos`}
           </p>
         </div>
-        <ProductFormDialog
-          categories={categories || []}
-          maxImagesPerProduct={currentPlan?.imagesUsed || 0}
-        />
-      </div>
 
-      {!canAdd && (
+        {productDialog}
+      </header>
+
+      {!canAddProducts && (
         <Alert variant="warning">
-          <AlertTitle className="flex items-center">
-            <MessageCircleWarningIcon className="mr-2 h-4 w-4" />
-            Has alcanzado el límite de productos para tu plan
+          <AlertTitle className="flex items-center gap-2">
+            <MessageCircleWarningIcon className="h-4 w-4" />
+            Límite de productos alcanzado
           </AlertTitle>
           <AlertDescription>
             <Link
               href={`/dashboard/subscription?error=${subscriptionErrors.subscription_limit_reached}`}
               className="font-medium underline"
             >
-              Mejora tu plan para agregar más productos.
+              Mejora tu plan para agregar más productos
             </Link>
           </AlertDescription>
         </Alert>
       )}
 
-      {products?.length === 0 ? (
+      {products.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <Package className="h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 font-semibold text-lg">No tienes productos</h3>
+            <h3 className="mt-4 font-semibold text-lg">
+              No tienes productos aún
+            </h3>
             <p className="mt-2 text-muted-foreground text-sm">
               Comienza agregando tu primer producto
             </p>
-            <div className="mt-4">
-              <ProductFormDialog
-                categories={categories || []}
-                maxImagesPerProduct={currentPlan?.imagesUsed || 0}
-              />
-            </div>
+
+            <div className="mt-4">{productDialog}</div>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {products?.map((product) => (
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
             <ProductCardDashboard
               key={product.id}
               product={product}
-              categories={categories || []}
-              maxImagesPerProduct={currentPlan?.imagesUsed || 0}
+              categories={categories}
+              maxImagesPerProduct={plan?.imagesUsed ?? 0}
             />
           ))}
-        </div>
+        </section>
       )}
     </>
   );

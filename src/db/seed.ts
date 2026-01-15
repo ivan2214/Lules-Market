@@ -425,12 +425,7 @@ async function seedBusinesses(
 
       const { id, name: businessName } = businessInsert[0];
 
-      const productsUsed = faker.number.int({ min: 0, max: plan.maxProducts });
-      // Total images used is tricky with per-product limit, but we'll approximate for now or just set 0
-      const imagesUsed = 0;
-
-      // Fix: Trial logic. Free is not a trial. Trial is a temporary Premium/Basic access.
-      // Randomly assign trial to some non-free plans
+      // Inicializar en 0, se actualizará después de crear productos
       const isTrial =
         planType !== "FREE" && faker.datatype.boolean({ probability: 0.1 });
 
@@ -440,20 +435,17 @@ async function seedBusinesses(
           businessId: id,
           planType,
           planStatus: "ACTIVE",
-          expiresAt: isTrial
-            ? addDays(new Date(), 14) // Trial usage
-            : faker.date.future(),
+          expiresAt: isTrial ? addDays(new Date(), 14) : faker.date.future(),
           activatedAt: new Date(),
           isActive: true,
           isTrial,
-          imagesUsed,
-          productsUsed,
+          imagesUsed: 0,
+          productsUsed: 0,
           hasStatistics,
           listPriority,
         })
         .returning({ id: schema.currentPlan.id });
 
-      // If trial, also insert into trial table if it exists (it was deleted in deleteAllData)
       if (isTrial) {
         await db.insert(schema.trial).values({
           businessId: id,
@@ -477,8 +469,8 @@ async function seedBusinesses(
         userId: owner.id,
         currentPlanId: currentPlanInsert[0].id,
         planType,
-        productsUsed,
-        imagesUsed,
+        productsUsed: 0,
+        imagesUsed: 0,
         maxProducts: plan.maxProducts,
         maxImagesPerProduct: plan.maxImagesPerProduct,
         name: businessName,
@@ -538,18 +530,12 @@ async function seedProducts(
   const imagesData: ImageInsert[] = [];
 
   for (const negocio of businesses) {
-    // Determine product count based on plan limits
-    // We increase the hardcap from 20 to allow Basic plans to fill up (50) and Premium to show more.
-    // However, we avoid generating 9999 for Premium to keep seed fast.
     const maxSeedProducts =
       negocio.maxProducts > 100 ? 50 : negocio.maxProducts;
 
-    const planUpdate = {
-      imagesUsed: 0,
-      productsUsed: maxSeedProducts,
-    };
-
-    // Ensure we don't exceed the actual plan limit (redundant if maxSeed is correct but safe)
+    // Contar solo productos activos para el plan
+    let activeProductsCount = 0;
+    let totalImagesCount = 0;
 
     for (let i = 1; i <= maxSeedProducts; i++) {
       const category = faker.helpers.arrayElement(categories);
@@ -568,21 +554,22 @@ async function seedProducts(
       const discount = faker.number.int({ min: 0, max: 70 });
       const hasDiscount = faker.datatype.boolean({ probability: 0.2 });
 
+      // Determinar si el producto está activo (80% de probabilidad)
+      const isActive = faker.datatype.boolean({ probability: 0.8 });
+
       productsData.push({
         id: productId,
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
         price: Number.parseFloat(faker.commerce.price()),
         discount: hasDiscount ? discount : 0,
-        active: true,
+        active: isActive,
         stock: faker.number.int({ min: 0, max: 150 }),
         brand: getRandomBrandName(),
         businessId: negocio.id,
-
         categoryId: category.id,
         tags: faker.lorem.words(3).split(" "),
         createdAt,
-        // updatedAt se maneja automáticamente
       });
 
       allProducts.push({ id: productId, businessId: negocio.id });
@@ -591,7 +578,12 @@ async function seedProducts(
         min: 1,
         max: negocio.maxImagesPerProduct,
       });
-      planUpdate.imagesUsed += maxSeedImages;
+
+      // Solo contar productos e imágenes si el producto está activo
+      if (isActive) {
+        activeProductsCount++;
+        totalImagesCount += maxSeedImages;
+      }
 
       for (let idx = 0; idx < maxSeedImages; idx++) {
         imagesData.push({
@@ -603,19 +595,18 @@ async function seedProducts(
       }
     }
 
-    // BATCH UPDATE: Plans
+    // Actualizar plan con contadores de productos activos
     await db
       .update(schema.currentPlan)
       .set({
-        imagesUsed: planUpdate.imagesUsed,
-        productsUsed: planUpdate.productsUsed,
+        imagesUsed: totalImagesCount,
+        productsUsed: activeProductsCount,
       })
       .where(eq(schema.currentPlan.id, negocio.currentPlanId));
   }
 
   // BATCH INSERT: Products
   if (productsData.length > 0) {
-    // Split into chunks of 500 to avoid query size limits
     const chunkSize = 500;
     for (let i = 0; i < productsData.length; i += chunkSize) {
       const chunk = productsData.slice(i, i + chunkSize);

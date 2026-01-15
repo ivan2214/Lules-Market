@@ -48,6 +48,7 @@ interface ProductFormDialogProps {
   isViewMode?: boolean;
   categories: Category[];
   maxImagesPerProduct: CurrentPlan["imagesUsed"];
+  disabled?: boolean;
 }
 
 export function ProductFormDialog({
@@ -57,6 +58,7 @@ export function ProductFormDialog({
   isViewMode = false,
   categories,
   maxImagesPerProduct: _maxImagesPerProduct,
+  disabled = false,
 }: ProductFormDialogProps) {
   const [open, setOpen] = useState(false);
 
@@ -120,7 +122,7 @@ export function ProductFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={disabled}>
         {trigger || (
           <Button type="button" className={className}>
             <Plus className="mr-2 h-4 w-4" />
