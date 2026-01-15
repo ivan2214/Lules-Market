@@ -67,6 +67,7 @@ export function UsersList({
         },
         // By default, the column will not be filtered. Set to `true` to enable filtering.
         enableColumnFilter: true,
+        enableSorting: true,
       },
 
       {

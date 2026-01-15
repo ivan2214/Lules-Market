@@ -40,3 +40,36 @@ export const getFeaturedBusinesses = cache(async () => {
   if (error) throw error;
   return data.map(toBusinessDto);
 });
+
+export const getBusinessById = cache(async (id: string) => {
+  const { data, error } = await api.business.public["get-business-by-id"].get({
+    query: { id },
+  });
+  if (error) throw error;
+  return data.business ? toBusinessDto(data.business) : null;
+});
+
+export const getSimilarBusinesses = cache(
+  async (params: { category: string; businessId: string; limit?: number }) => {
+    const { data, error } = await api.business.public["list-similar"].get({
+      query: {
+        category: params.category,
+        businessId: params.businessId,
+        limit: params.limit,
+      },
+    });
+    if (error) throw error;
+    return (data.businesses || []).map(toBusinessDto);
+  },
+);
+
+/**
+ * Specifically for generateStaticParams
+ */
+export const getBusinessIds = cache(async () => {
+  const { data, error } = await api.business.public["list-all"].get({
+    query: { limit: 100 },
+  });
+  if (error) throw error;
+  return data.businesses.map((b) => ({ id: b.id }));
+});

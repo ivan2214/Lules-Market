@@ -55,13 +55,21 @@ export interface BusinessDto {
   name: string;
   description: string | null;
   logoUrl: string | null;
+  coverImageUrl: string | null;
   isActive: boolean;
   category: string | null;
+  categoryValue: string | null;
   userId: string;
   address: string | null;
   verified: boolean;
   whatsapp: string | null;
   phone: string | null;
+  website: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  email: string | null;
+  tags: string[] | null;
+  products?: ProductDto[];
 }
 
 export interface CategoryDto {
@@ -133,18 +141,31 @@ export function toProductDto(product: ProductWithRelations): ProductDto {
 }
 
 export function toBusinessDto(business: BusinessWithRelations): BusinessDto {
+  // Safe cast because products from business relation don't have upstream business
+  const products = (business.products || []).map((p) =>
+    toProductDto(p as ProductWithRelations),
+  );
+
   return {
     id: business.id,
     name: business.name,
     description: business.description,
     logoUrl: business.logo?.url ?? null,
+    coverImageUrl: business.coverImage?.url ?? null,
     isActive: business.isActive ?? false,
     category: business.category?.label ?? null,
+    categoryValue: business.category?.value ?? null,
     userId: business.userId,
     address: business.address ?? null,
     verified: business.verified ?? false,
     whatsapp: business.whatsapp ?? null,
     phone: business.phone ?? null,
+    website: business.website ?? null,
+    facebook: business.facebook ?? null,
+    instagram: business.instagram ?? null,
+    email: business.user?.email ?? null,
+    tags: business.tags ?? null,
+    products,
   };
 }
 

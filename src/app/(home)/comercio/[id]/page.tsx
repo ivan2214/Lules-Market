@@ -7,8 +7,12 @@ import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
+import {
+  getBusinessById,
+  getBusinessIds,
+  getSimilarBusinesses,
+} from "@/data/business/get";
 import { env } from "@/env/server";
-import { BusinessService } from "@/server/modules/business/service";
 import { LocalBusinessSchema } from "@/shared/components/structured-data";
 import { Button } from "@/shared/components/ui/button";
 import { BusinessInfo } from "./_components/business-info";
@@ -20,8 +24,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  // Usar caché interna para evitar latencia de red/cliente
-  const { business } = await BusinessService.getById(id);
+  const business = await getBusinessById(id);
 
   if (!business) {
     notFound();
@@ -29,18 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const ogImages = [];
 
-  if (business.coverImage) {
+  if (business.coverImageUrl) {
     ogImages.push({
-      url: business.coverImage.url,
+      url: business.coverImageUrl,
       width: 1200,
       height: 630,
       alt: business.name,
     });
   }
 
-  if (business.logo) {
+  if (business.logoUrl) {
     ogImages.push({
-      url: business.logo.url,
+      url: business.logoUrl,
       width: 800,
       height: 800,
       alt: `Logo de ${business.name}`,
@@ -53,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const keywords = [
     business.name,
-    business.category?.label || "",
+    business.category || "",
     "comercio local",
     "tienda online",
     "Argentina",
@@ -112,10 +115,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url: `${env.APP_URL}/comercio/${id}`,
       },
     ],
-    category: business.category?.value,
+    category: business.categoryValue ?? undefined,
     other: {
       "business:contact_data:street_address": business.address || "",
-      "business:contact_data:email": business.user?.email || "",
+      "business:contact_data:email": business.email || "",
       "business:contact_data:phone_number": business.phone || "",
       "business:contact_data:website": business.website || "",
     },
@@ -123,28 +126,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const businesses = await BusinessService.getAllIds();
-  if (!businesses.length) {
-    return [];
-  }
-  return businesses.map((business) => ({ id: business.id }));
+  return await getBusinessIds();
 }
 
 export default async function BusinessPage({ params }: Props) {
   const { id } = await params;
-  // Usar caché aquí también
-  const { business } = await BusinessService.getById(id);
+  const business = await getBusinessById(id);
 
   if (!business) {
     notFound();
   }
 
-  const similarBusinesses = await BusinessService.listSimilar({
-    category: business.category?.value || "",
+  const similarBusinesses = await getSimilarBusinesses({
+    category: business.categoryValue || "",
     businessId: id,
-  })
-    .then((res) => res.businesses)
-    .catch(() => []);
+    limit: 4,
+  });
 
   return (
     <div className="container mx-auto space-y-8 py-8">
@@ -157,8 +154,8 @@ export default async function BusinessPage({ params }: Props) {
         description={business.description || ""}
         address={business.address || ""}
         phone={business.phone || ""}
-        email={business.user?.email || ""}
-        image={business.logo?.url || ""}
+        email={business.email || ""}
+        image={business.logoUrl || ""}
         url={`${env.APP_URL}/comercio/${id}`}
       />
       <Button asChild variant="ghost">

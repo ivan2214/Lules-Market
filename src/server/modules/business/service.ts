@@ -539,6 +539,7 @@ export const BusinessService = {
     const cacheKey = CACHE_KEYS.businessesSimilar(
       input.category,
       input.businessId,
+      input.limit?.toString() || "6",
     );
 
     return getCachedOrFetch(
@@ -556,7 +557,7 @@ export const BusinessService = {
             eq(business.isActive, true),
             not(eq(business.id, input.businessId)),
           ),
-          limit: 4,
+          limit: input.limit || 4,
           with: {
             category: true,
             logo: true,

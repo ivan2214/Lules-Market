@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
-import type { BusinessWithRelations } from "@/db/types";
 import { formatCurrency } from "@/lib/format";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@/shared/components/ui/badge";
@@ -22,19 +21,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import type { BusinessDto } from "@/shared/utils/dto";
 import { mainImage } from "@/shared/utils/main-image";
 import { SimilarBusinesses } from "./similar-businesses";
 
 type BusinessInfoProps = {
-  business: BusinessWithRelations;
-  similarBusinesses?: BusinessWithRelations[] | null;
+  business: BusinessDto;
+  similarBusinesses?: BusinessDto[] | null;
 };
 
 export const BusinessInfo: React.FC<BusinessInfoProps> = ({
   business,
   similarBusinesses,
 }) => {
-  const products: BusinessWithRelations["products"] = business?.products;
+  const products = business?.products;
 
   return (
     <section className="container px-4 py-4 md:py-8">
@@ -44,7 +44,7 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
             <div className="aspect-video overflow-hidden rounded-2xl shadow-xl md:aspect-21/9">
               <ImageWithSkeleton
                 src={
-                  business?.coverImage?.url ||
+                  business?.coverImageUrl ||
                   "/placeholder.svg?height=600&width=1400&query=business+cover"
                 }
                 alt={`${business?.name} - Imagen de portada`}
@@ -52,11 +52,11 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
               />
             </div>
             {/* Logo overlay */}
-            {business?.logo?.url && (
+            {business?.logoUrl && (
               <div className="absolute bottom-0 left-6 translate-y-1/2 md:left-8">
                 <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-4 border-background bg-background shadow-xl md:h-32 md:w-32">
                   <ImageWithSkeleton
-                    src={business.logo.url || "/placeholder.svg"}
+                    src={business.logoUrl || "/placeholder.svg"}
                     alt={`${business.name} - Logo`}
                     className="h-full w-full object-cover"
                   />
@@ -77,9 +77,9 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
                     <CardTitle className="text-2xl md:text-3xl">
                       {business?.name}
                     </CardTitle>
-                    {business?.category?.label && (
+                    {business?.category && (
                       <Badge variant="secondary" className="text-sm">
-                        {business.category.label}
+                        {business.category}
                       </Badge>
                     )}
                   </div>
@@ -222,10 +222,10 @@ export const BusinessInfo: React.FC<BusinessInfoProps> = ({
                 <div className="flex-1">
                   <p className="font-medium text-sm">Email</p>
                   <a
-                    href={`mailto:${business?.user?.email}`}
+                    href={`mailto:${business?.email}`}
                     className="break-all text-primary text-sm hover:underline"
                   >
-                    {business?.user?.email}
+                    {business?.email}
                   </a>
                 </div>
               </div>
