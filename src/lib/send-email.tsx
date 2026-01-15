@@ -3,7 +3,10 @@ import { transporter } from "@/config/mail.config";
 import { env } from "@/env/server";
 import {
   AccountDeletedEmail,
+  ChangeEmailTemplate,
+  DeleteAccountConfirmationEmail,
   MagicLinkEmail,
+  OtpEmail,
   PasswordResetEmail,
   VerificationEmail,
   WelcomeEmail,
@@ -43,15 +46,38 @@ interface AccountDeletedEmailParams extends BaseEmailParams {
   supportEmail?: string;
 }
 
+interface ChangeEmailParams extends BaseEmailParams {
+  type: "change-email";
+  newEmail: string;
+  confirmUrl: string;
+  expiresIn?: string;
+}
+
+interface DeleteAccountConfirmationParams extends BaseEmailParams {
+  type: "delete-account-confirmation";
+  confirmUrl: string;
+  expiresIn?: string;
+}
+
+interface OtpEmailParams extends BaseEmailParams {
+  type: "otp";
+  otp: string;
+  expiresIn?: string;
+}
+
 type SendEmailParams =
   | VerificationEmailParams
   | PasswordResetEmailParams
   | WelcomeEmailParams
   | MagicLinkEmailParams
-  | AccountDeletedEmailParams;
+  | AccountDeletedEmailParams
+  | ChangeEmailParams
+  | DeleteAccountConfirmationParams
+  | OtpEmailParams;
 
-const APP_NAME = "LulesMarket";
-const LOGO_URL = "https://lules-market-dev.t3.storage.dev/logo.webp";
+const APP_NAME = "Lules Market";
+const LOGO_URL =
+  "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png";
 
 const subjectMap = {
   verification: `${APP_NAME} - Verifica tu correo electrónico`,
@@ -59,6 +85,9 @@ const subjectMap = {
   welcome: `Bienvenido a ${APP_NAME}`,
   "magic-link": `${APP_NAME} - Enlace de inicio de sesión`,
   "account-deleted": `${APP_NAME} - Cuenta eliminada`,
+  "change-email": `${APP_NAME} - Confirmar cambio de correo`,
+  "delete-account-confirmation": `${APP_NAME} - Confirmar eliminación de cuenta`,
+  otp: `${APP_NAME} - Tu código de verificación`,
 };
 
 export async function sendEmail(params: SendEmailParams) {
@@ -67,60 +96,97 @@ export async function sendEmail(params: SendEmailParams) {
   switch (params.type) {
     case "verification":
       html = await render(
-        <VerificationEmail
-          userFirstname={params.userFirstname}
-          appName={APP_NAME}
-          logoUrl={LOGO_URL}
-          verificationUrl={params.verificationUrl}
-          token={params.token}
-        />,
+        VerificationEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          verificationUrl: params.verificationUrl,
+          token: params.token,
+        }),
       );
       break;
 
     case "password-reset":
       html = await render(
-        <PasswordResetEmail
-          userFirstname={params.userFirstname}
-          appName={APP_NAME}
-          logoUrl={LOGO_URL}
-          resetUrl={params.resetUrl}
-          token={params.token}
-          expiresIn={params.expiresIn}
-        />,
+        PasswordResetEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          resetUrl: params.resetUrl,
+          token: params.token,
+          expiresIn: params.expiresIn,
+        }),
       );
       break;
 
     case "welcome":
       html = await render(
-        <WelcomeEmail
-          userFirstname={params.userFirstname}
-          appName={APP_NAME}
-          logoUrl={LOGO_URL}
-          dashboardUrl={params.dashboardUrl}
-        />,
+        WelcomeEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          dashboardUrl: params.dashboardUrl,
+        }),
       );
       break;
 
     case "magic-link":
       html = await render(
-        <MagicLinkEmail
-          userFirstname={params.userFirstname}
-          appName={APP_NAME}
-          logoUrl={LOGO_URL}
-          magicLinkUrl={params.magicLinkUrl}
-          expiresIn={params.expiresIn}
-        />,
+        MagicLinkEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          magicLinkUrl: params.magicLinkUrl,
+          expiresIn: params.expiresIn,
+        }),
       );
       break;
 
     case "account-deleted":
       html = await render(
-        <AccountDeletedEmail
-          userFirstname={params.userFirstname}
-          appName={APP_NAME}
-          logoUrl={LOGO_URL}
-          supportEmail={params.supportEmail}
-        />,
+        AccountDeletedEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          supportEmail: params.supportEmail,
+        }),
+      );
+      break;
+
+    case "change-email":
+      html = await render(
+        ChangeEmailTemplate({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          newEmail: params.newEmail,
+          confirmUrl: params.confirmUrl,
+          expiresIn: params.expiresIn,
+        }),
+      );
+      break;
+
+    case "delete-account-confirmation":
+      html = await render(
+        DeleteAccountConfirmationEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          confirmUrl: params.confirmUrl,
+          expiresIn: params.expiresIn,
+        }),
+      );
+      break;
+
+    case "otp":
+      html = await render(
+        OtpEmail({
+          userFirstname: params.userFirstname,
+          appName: APP_NAME,
+          logoUrl: LOGO_URL,
+          otp: params.otp,
+          expiresIn: params.expiresIn,
+        }),
       );
       break;
   }

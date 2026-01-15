@@ -1,3 +1,4 @@
+import { env } from "@/env/server";
 import { BaseEmailTemplate } from "./base-email-template";
 
 interface MagicLinkEmailProps {
@@ -32,8 +33,9 @@ export function MagicLinkEmail({
 MagicLinkEmail.PreviewProps = {
   userFirstname: "Carlos",
   appName: "LulesMarket",
-  logoUrl: "https://lules-market-dev.t3.storage.dev/logo.webp",
-  magicLinkUrl: "https://www.lulesmarket.com/auth/magic?token=MAGIC123",
+  logoUrl:
+    "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
+  magicLinkUrl: `${env.APP_URL}/auth/magic?token=MAGIC123`,
   expiresIn: "15 minutos",
 };
 

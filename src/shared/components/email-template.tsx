@@ -29,7 +29,7 @@ const baseUrl = env.APP_URL;
 export const EmailTemplate = ({
   userFirstname,
   appName,
-  logoUrl = "https://lules-market-dev.t3.storage.dev/logo.webp",
+  logoUrl = "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
   title = `${appName} - Notificación`,
   description,
   buttonText,
@@ -94,7 +94,7 @@ EmailTemplate.PreviewProps = {
   description:
     "Alguien solicitó recientemente un cambio de contraseña para tu cuenta. Si fuiste vos, podés establecer una nueva contraseña a continuación.",
   buttonText: "Reestablecer contraseña",
-  buttonUrl: "https://www.lulesmarket.com/reset",
+  buttonUrl: `${env.APP_URL}/reset`,
   footerText: "Gracias por confiar en nosotros!",
 } as EmailTemplateProps;
 

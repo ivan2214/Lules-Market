@@ -1,4 +1,5 @@
 import { Section, Text } from "@react-email/components";
+import { env } from "@/env/server";
 import { BaseEmailTemplate } from "./base-email-template";
 
 interface WelcomeEmailProps {
@@ -64,8 +65,9 @@ const featureItem = {
 WelcomeEmail.PreviewProps = {
   userFirstname: "Carlos",
   appName: "LulesMarket",
-  logoUrl: "https://lules-market-dev.t3.storage.dev/logo.webp",
-  dashboardUrl: "https://www.lulesmarket.com/dashboard",
+  logoUrl:
+    "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
+  dashboardUrl: `${env.APP_URL}/dashboard`,
 };
 
 export default WelcomeEmail;

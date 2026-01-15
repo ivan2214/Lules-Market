@@ -29,7 +29,8 @@ export function AccountDeletedEmail({
 AccountDeletedEmail.PreviewProps = {
   userFirstname: "Carlos",
   appName: "LulesMarket",
-  logoUrl: "https://lules-market-dev.t3.storage.dev/logo.webp",
+  logoUrl:
+    "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
 };
 
 export default AccountDeletedEmail;

@@ -1,3 +1,4 @@
+import { env } from "@/env/server";
 import { BaseEmailTemplate } from "./base-email-template";
 
 interface VerificationEmailProps {
@@ -33,8 +34,9 @@ export function VerificationEmail({
 VerificationEmail.PreviewProps = {
   userFirstname: "Carlos",
   appName: "LulesMarket",
-  logoUrl: "https://lules-market-dev.t3.storage.dev/logo.webp",
-  verificationUrl: "https://www.lulesmarket.com/verify-email?token=ABC123",
+  logoUrl:
+    "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
+  verificationUrl: `${env.APP_URL}/verify-email?token=ABC123`,
   token: "ABC123",
 };
 

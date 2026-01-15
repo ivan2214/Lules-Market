@@ -1,3 +1,4 @@
+import { env } from "@/env/server";
 import { BaseEmailTemplate } from "./base-email-template";
 
 interface PasswordResetEmailProps {
@@ -35,8 +36,9 @@ export function PasswordResetEmail({
 PasswordResetEmail.PreviewProps = {
   userFirstname: "Carlos",
   appName: "LulesMarket",
-  logoUrl: "https://lules-market-dev.t3.storage.dev/logo.webp",
-  resetUrl: "https://www.lulesmarket.com/reset-password?token=XYZ789",
+  logoUrl:
+    "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
+  resetUrl: `${env.APP_URL}/reset-password?token=XYZ789`,
   token: "XYZ789",
   expiresIn: "1 hora",
 };

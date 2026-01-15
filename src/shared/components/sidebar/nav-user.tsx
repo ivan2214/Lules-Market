@@ -108,7 +108,9 @@ export function NavUser({
             <DropdownMenuItem
               onClick={async () => {
                 await signOut();
-                router.refresh();
+                setTimeout(() => {
+                  router.refresh();
+                }, 1000);
               }}
             >
               <LogOut />
