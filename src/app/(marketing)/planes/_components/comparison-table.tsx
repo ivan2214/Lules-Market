@@ -1,19 +1,8 @@
-"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { api } from "@/lib/eden";
+import type { Plan } from "@/db/types";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
-export const ComparisonTable = () => {
-  const { data: plans } = useSuspenseQuery({
-    queryKey: ["plans"],
-    queryFn: async () => {
-      const { data, error } = await api.plan.public["list-all"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
-
+export const ComparisonTable = ({ plans }: { plans: Plan[] }) => {
   return (
     <div className="w-full">
       <h2 className="mb-8 text-center font-bold text-3xl">

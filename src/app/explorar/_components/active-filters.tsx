@@ -1,10 +1,9 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/eden";
+import type { Business } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
@@ -23,28 +22,15 @@ type Params = {
 
 type ActiveFiltersProps = {
   params: Params;
-
+  businesses?: Business[];
   typeExplorer: TypeExplorer;
 };
 
 export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   params,
-
+  businesses,
   typeExplorer,
 }) => {
-  const { data } = useSuspenseQuery({
-    queryKey: ["businesses", params?.category],
-    queryFn: async () => {
-      const { data } = await api.business.public["list-all"].get({
-        query: {
-          category: params?.category,
-        },
-      });
-      return data;
-    },
-  });
-
-  const businesses = data?.businesses || [];
   const router = useRouter();
   const { createUrl } = useSearchUrl({ currentParams: params, typeExplorer });
 
@@ -53,7 +39,7 @@ export const ActiveFilters: React.FC<ActiveFiltersProps> = ({
     search: (v) => `Búsqueda: ${v}`,
     category: (v) => `Categoría: ${v}`,
     businessId: (v) =>
-      `Negocio: ${businesses.find((b) => b.id === v)?.name || v}`,
+      `Negocio: ${businesses?.find((b) => b.id === v)?.name || v}`,
     sortBy: (v) =>
       ({
         price_asc: "Precio: Menor a Mayor",

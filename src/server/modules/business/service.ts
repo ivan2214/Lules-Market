@@ -42,7 +42,7 @@ import type { BusinessModel } from "./model";
 export const BusinessService = {
   // --- MUTATIONS ---
 
-  async setup(input: BusinessModel.setup) {
+  async setup(input: BusinessModel.Setup) {
     try {
       const { category } = input;
 
@@ -138,7 +138,7 @@ export const BusinessService = {
     }
   },
 
-  async update(userId: string, input: BusinessModel.update) {
+  async update(userId: string, input: BusinessModel.Update) {
     const { category } = input;
 
     const currentBusiness = await db.query.business.findFirst({
@@ -333,7 +333,7 @@ export const BusinessService = {
 
   // --- QUERIES (CACHED) ---
 
-  async getFeatured(): Promise<BusinessWithRelations[]> {
+  async getFeatured(): Promise<BusinessModel.FeaturedOutput> {
     return getCachedOrFetch(
       CACHE_KEYS.BUSINESSES_FEATURED,
       async () => {
@@ -384,7 +384,7 @@ export const BusinessService = {
 
   async listAll(
     input?: BusinessModel.listAllInput,
-  ): Promise<BusinessModel.listAllOutput> {
+  ): Promise<BusinessModel.ListAllOutput> {
     const cacheKey = generateCacheKey("businesses:list", input ?? {});
 
     return getCachedOrFetch(
@@ -535,7 +535,7 @@ export const BusinessService = {
 
   async listSimilar(
     input: BusinessModel.listSimilarInput,
-  ): Promise<BusinessModel.listSimilarOutput> {
+  ): Promise<BusinessModel.ListSimilarOutput> {
     const cacheKey = CACHE_KEYS.businessesSimilar(
       input.category,
       input.businessId,

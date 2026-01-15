@@ -1,64 +1,29 @@
-"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Package, ShoppingBag, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/features/explorar/_components/pagination-controls";
-import { api } from "@/lib/eden";
+
+import type { ProductModel } from "@/server/modules/products/model";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
 import { ProductCard } from "@/shared/components/product-card";
 
 type ProductsGridProps = {
-  currentPage: number;
   hasFilters: boolean;
+  currentPage: number;
   currentLimit: number;
-  search?: string;
-  category?: string;
-  businessId?: string;
-  sort?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+  productsData: ProductModel.ListAllOutput;
 };
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({
   hasFilters,
   currentLimit,
   currentPage,
-  search,
-  category,
-  businessId,
-  sort,
+  productsData,
 }) => {
-  const { data } = useSuspenseQuery({
-    queryFn: async () => {
-      const { data, error } = await api.products.public.list.get({
-        query: {
-          businessId,
-          category,
-          limit: currentLimit,
-          page: currentPage,
-          search,
-          sort,
-        },
-      });
-      if (error) throw error;
-      return data;
-    },
-    queryKey: [
-      "products",
-      {
-        businessId,
-        category,
-        limit: currentLimit,
-        page: currentPage,
-        search,
-        sort,
-      },
-    ],
-  });
-
-  const { products, total } = data || {};
+  const { products, total } = productsData || {};
 
   const totalPages = Math.ceil(total / currentLimit);
 
-  if (!products?.length || !total || !data || !products) {
+  if (!products?.length || !total || !productsData || !products) {
     hasFilters ? (
       <EmptyStateSearch
         title="No se encontraron productos"

@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getPlans } from "@/data/plans/get";
 import { env } from "@/env/server";
-import { api } from "@/lib/eden";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -38,16 +38,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PlanesPage() {
-  const queryClient = getQueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["plans"],
-    queryFn: async () => {
-      const { data, error } = await api.plan.public["list-all"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
+  const plans = await getPlans();
 
   return (
     <section className="flex w-full flex-col items-center justify-center gap-y-16">
@@ -61,14 +52,11 @@ export default async function PlanesPage() {
         </p>
       </div>
 
-      <HydrateClient client={queryClient}>
-        <PlanCards />
-      </HydrateClient>
+      <PlanCards plans={plans} />
 
       {/* Comparison Table */}
-      <HydrateClient client={queryClient}>
-        <ComparisonTable />
-      </HydrateClient>
+
+      <ComparisonTable plans={plans} />
 
       {/* FAQ */}
       <div>

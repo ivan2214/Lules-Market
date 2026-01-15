@@ -1,8 +1,6 @@
-"use client";
-
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { LimitSelector } from "@/features/explorar/_components/limit-selector";
-import { api } from "@/lib/eden";
+import type { BusinessModel } from "@/server/modules/business/model";
+import type { ProductModel } from "@/server/modules/products/model";
 
 type SortByProduct = "price_asc" | "price_desc" | "name_asc" | "name_desc";
 type SortByBusiness = "newest" | "oldest";
@@ -21,61 +19,26 @@ interface ResultsCountAndLimitSelectorProps {
   currentLimit: number;
   currentPage: number;
   params: Params;
+  businessesData?: BusinessModel.ListAllOutput;
+  productsData?: ProductModel.ListAllOutput;
 }
 
 export const ResultsCountAndLimitSelector: React.FC<
   ResultsCountAndLimitSelectorProps
-> = ({ typeExplorer, currentLimit, currentPage, params }) => {
-  const { category, search, sortBy, businessId, limit, page } = params;
-  const { data } = useSuspenseQuery({
-    queryKey: ["businesses", category, limit, page, search, sortBy],
-    queryFn: async () => {
-      const { data } = await api.business.public["list-all"].get({
-        query: {
-          category: params?.category,
-          limit: currentLimit,
-          page: currentPage,
-          search,
-          sortBy: sortBy as SortByBusiness,
-        },
-      });
-      return data;
-    },
-  });
+> = ({ typeExplorer, currentLimit, businessesData, productsData }) => {
+  const products = productsData?.products || [];
+  const totalProducts = productsData?.total || 0;
 
-  const businesses = data?.businesses || [];
-  const total = data?.total || 0;
-
-  const { data: dataP } = useSuspenseQuery({
-    queryKey: [
-      "products",
-      { businessId, category, limit, page, search, sortBy },
-    ],
-    queryFn: async () => {
-      const { data } = await api.products.public.list.get({
-        query: {
-          category,
-          search,
-          sort: sortBy as SortByProduct,
-          limit: currentLimit,
-          page: currentPage,
-          businessId,
-        },
-      });
-      return data;
-    },
-  });
-
-  const products = dataP?.products || [];
-  const totalProducts = dataP?.total || 0;
+  const businesses = businessesData?.businesses || [];
+  const totalBusinesses = businessesData?.total || 0;
 
   if (typeExplorer === "comercios") {
     return (
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-sm">
-          Mostrando {businesses.length} de {total} comercios
+          Mostrando {businesses.length} de {totalBusinesses} comercios
         </p>
-        <LimitSelector currentLimit={currentLimit} total={total} />
+        <LimitSelector currentLimit={currentLimit} total={totalBusinesses} />
       </div>
     );
   }

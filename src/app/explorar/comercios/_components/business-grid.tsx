@@ -1,8 +1,6 @@
-"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Building, Package, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/features/explorar/_components/pagination-controls";
-import { api } from "@/lib/eden";
+import type { BusinessModel } from "@/server/modules/business/model";
 import { BusinessCard } from "@/shared/components/business-card";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
@@ -11,42 +9,14 @@ export const BusinessGrid = ({
   currentPage,
   hasFilters,
   currentLimit,
-  search,
-  category,
-  sortBy,
+  businessesData,
 }: {
   currentPage: number;
   hasFilters: boolean;
   currentLimit: number;
-  search?: string;
-  category?: string;
-  sortBy?: "newest" | "oldest";
+  businessesData: BusinessModel.ListAllOutput;
 }) => {
-  const { data } = useSuspenseQuery({
-    queryFn: async () => {
-      const { data, error } = await api.business.public["list-all"].get({
-        query: {
-          category,
-          limit: currentLimit,
-          page: currentPage,
-          search,
-          sortBy,
-        },
-      });
-      if (error) throw error;
-      return data;
-    },
-    queryKey: [
-      "businesses",
-      category,
-      currentLimit,
-      currentPage,
-      search,
-      sortBy,
-    ],
-  });
-
-  const { businesses, total } = data || {};
+  const { businesses, total } = businessesData || {};
   const totalPages = Math.ceil(total / currentLimit);
 
   console.log({

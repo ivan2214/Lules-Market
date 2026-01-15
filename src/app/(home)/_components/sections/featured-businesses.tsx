@@ -1,22 +1,16 @@
 ﻿"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { BusinessList } from "@/app/(home)/_components/business-list";
-import { api } from "@/lib/eden";
+import type { BusinessWithRelations } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 
-export function FeaturedBusinesses() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["featured-businesses"],
-    queryFn: async () => {
-      const { data, error } = await api.business.public.featured.get();
-      if (error) throw error;
-      return data;
-    },
-  });
-
+export function FeaturedBusinesses({
+  data,
+}: {
+  data: BusinessWithRelations[];
+}) {
   const featuredBusinesses = data || [];
 
   return (

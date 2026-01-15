@@ -1,8 +1,9 @@
+import { listAllBusiness } from "@/data/business/get";
+import { listAllCategories } from "@/data/categories/get";
+import { listAllProducts } from "@/data/products/get";
 import { ActiveFilters } from "@/features/explorar/_components/active-filters";
 import { ResultsCountAndLimitSelector } from "@/features/explorar/_components/results-count-and-limit-selector";
 import { SearchAndFilters } from "@/features/explorar/_components/search-and-filters";
-import { api } from "@/lib/eden";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { ProductsGrid } from "./_components/products-grid";
 
 type SearchParams = {
@@ -22,39 +23,16 @@ export default async function ProductosPage({
   const { limit, page, search, sortBy, category, businessId } =
     (await searchParams) || {};
 
+  const params = await searchParams;
+
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
-  const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: [
-      "products",
-      { businessId, category, limit, page, search, sortBy },
-    ],
-    queryFn: async () => {
-      const { data, error } = await api.products.public.list.get({
-        query: {
-          businessId,
-          category,
-          limit: currentLimit,
-          page: currentPage,
-          search,
-          sort: sortBy,
-        },
-      });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ["businesses"],
-    queryFn: async () => {
-      const { data, error } = await api.business.public["list-all"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
+  const [businessesData, productsData, categories] = await Promise.all([
+    listAllBusiness(),
+    listAllProducts(params),
+    listAllCategories(),
+  ]);
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 
@@ -69,7 +47,12 @@ export default async function ProductosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters params={await searchParams} typeExplorer="productos" />
+      <SearchAndFilters
+        params={await searchParams}
+        typeExplorer="productos"
+        businesses={businessesData.businesses}
+        categories={categories}
+      />
 
       {/* ACTIVE FILTERS */}
       {hasFilters && (
@@ -83,6 +66,7 @@ export default async function ProductosPage({
             limit,
             sortBy,
           }}
+          businesses={businessesData.businesses}
         />
       )}
 
@@ -99,20 +83,18 @@ export default async function ProductosPage({
           sortBy,
         }}
         currentPage={currentPage}
+        businessesData={businessesData}
+        productsData={productsData}
       />
 
       {/* Products Grid */}
-      <HydrateClient client={queryClient}>
-        <ProductsGrid
-          hasFilters={hasFilters}
-          currentLimit={currentLimit}
-          currentPage={currentPage}
-          search={search}
-          category={category}
-          businessId={businessId}
-          sort={sortBy}
-        />
-      </HydrateClient>
+
+      <ProductsGrid
+        hasFilters={hasFilters}
+        currentLimit={currentLimit}
+        currentPage={currentPage}
+        productsData={productsData}
+      />
     </section>
   );
 }

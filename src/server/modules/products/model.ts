@@ -30,12 +30,14 @@ export namespace ProductModel {
     categoryId: t.String(),
   });
 
-  export const productsListOutput = t.Object({
+  export const productsListAllOutput = t.Object({
     products: t.Array(models.relations.productWithRelations),
     total: t.Number(),
     pages: t.Optional(t.Number()),
     currentPage: t.Optional(t.Number()),
   });
+
+  export type ListAllOutput = typeof productsListAllOutput.static;
 
   export const productOutput = t.Object({
     product: t.Optional(models.relations.productWithRelations),
@@ -44,4 +46,10 @@ export namespace ProductModel {
   export const arrayProductsOutput = t.Object({
     products: t.Array(models.relations.productWithRelations),
   });
+
+  export const recentOutput = t.Object({
+    products: t.Array(models.relations.productWithRelations),
+  });
+
+  export type RecentOutput = typeof arrayProductsOutput.static;
 }

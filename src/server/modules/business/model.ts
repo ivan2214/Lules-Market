@@ -7,15 +7,15 @@ import {
 
 export namespace BusinessModel {
   export const setup = BusinessSetupSchema;
-  export type setup = typeof setup.static;
+  export type Setup = typeof setup.static;
 
   export const setupOutput = t.Object({
     success: t.Boolean(),
   });
-  export type setupOutput = typeof setupOutput.static;
+  export type SetupOutput = typeof setupOutput.static;
 
   export const update = BusinessUpdateSchema;
-  export type update = typeof update.static;
+  export type Update = typeof update.static;
 
   export const listAllInput = t.Optional(
     t.Object({
@@ -32,7 +32,7 @@ export namespace BusinessModel {
     businesses: t.Array(models.relations.businessWithRelations),
     total: t.Number(),
   });
-  export type listAllOutput = typeof listAllOutput.static;
+  export type ListAllOutput = typeof listAllOutput.static;
 
   export const getByIdInput = t.Object({
     id: t.String(),
@@ -46,7 +46,7 @@ export namespace BusinessModel {
   export const listSimilarOutput = t.Object({
     businesses: t.Array(models.relations.businessWithRelations),
   });
-  export type listSimilarOutput = typeof listSimilarOutput.static;
+  export type ListSimilarOutput = typeof listSimilarOutput.static;
 
   export const trackViewInput = t.Object({
     referrer: t.Optional(t.String()),
@@ -55,4 +55,7 @@ export namespace BusinessModel {
   export const trackViewParams = t.Object({
     businessId: t.String(),
   });
+
+  export const featuredOutput = t.Array(models.relations.businessWithRelations);
+  export type FeaturedOutput = typeof featuredOutput.static;
 }

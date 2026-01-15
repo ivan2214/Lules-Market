@@ -9,13 +9,12 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { connection } from "next/server";
+
 import { DynamicStats } from "@/app/(home)/_components/sections/dynamic-stats";
 import { FeaturedBusinesses } from "@/app/(home)/_components/sections/featured-businesses";
 import { RecentProducts } from "@/app/(home)/_components/sections/recent-products";
 import { env } from "@/env/server";
 import { api } from "@/lib/eden";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -63,37 +62,30 @@ export const metadata: Metadata = {
   },
 };
 
+const getStats = async () => {
+  const { data, error } = await api.analytics.public["home-page-stats"].get();
+  if (error) throw error;
+  return data;
+};
+
+const getFeaturedBusinesses = async () => {
+  const { data, error } = await api.business.public.featured.get();
+  if (error) throw error;
+  return data;
+};
+
+const getRecentProducts = async () => {
+  const { data, error } = await api.products.public.recent.get();
+  if (error) throw error;
+  return data;
+};
+
 export default async function HomePage() {
-  await connection();
-  const queryClient = getQueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["home-page-stats"],
-    queryFn: async () => {
-      const { data, error } =
-        await api.analytics.public["home-page-stats"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ["featured-businesses"],
-    queryFn: async () => {
-      const { data, error } = await api.business.public.featured.get();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ["recent-products"],
-    queryFn: async () => {
-      const { data, error } = await api.products.public.recent.get();
-      if (error) throw error;
-      return data;
-    },
-  });
+  const [stats, featuredBusinesses, recentProducts] = await Promise.all([
+    getStats(),
+    getFeaturedBusinesses(),
+    getRecentProducts(),
+  ]);
 
   return (
     <main className="container mx-auto space-y-20 px-4 py-8 lg:p-0">
@@ -133,10 +125,9 @@ export default async function HomePage() {
       </section>
 
       {/* Stats - Dynamic */}
-      <HydrateClient client={queryClient}>
-        <DynamicStats />
-        <FeaturedBusinesses />
-      </HydrateClient>
+
+      <DynamicStats data={stats} />
+      <FeaturedBusinesses data={featuredBusinesses} />
 
       {/* For Customers Section */}
       <section className="mb-24 grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -208,11 +199,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Recent Products */}
-      <HydrateClient client={queryClient}>
-        <RecentProducts />
-      </HydrateClient>
-
+      <RecentProducts data={recentProducts} />
       {/* For Businesses Call to Action */}
       <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
         {/* Side glows */}

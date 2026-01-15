@@ -1,8 +1,8 @@
+import { listAllBusiness } from "@/data/business/get";
+import { listAllCategories } from "@/data/categories/get";
 import { ActiveFilters } from "@/features/explorar/_components/active-filters";
 import { ResultsCountAndLimitSelector } from "@/features/explorar/_components/results-count-and-limit-selector";
 import { SearchAndFilters } from "@/features/explorar/_components/search-and-filters";
-import { api } from "@/lib/eden";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { BusinessGrid } from "./_components/business-grid";
 
 type SearchParams = {
@@ -23,33 +23,12 @@ export default async function ComerciosPage({
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
 
-  const queryClient = getQueryClient();
+  const params = await searchParams;
 
-  await queryClient.prefetchQuery({
-    queryKey: ["businesses", category, limit, page, search, sortBy],
-    queryFn: async () => {
-      const { data, error } = await api.business.public["list-all"].get({
-        query: {
-          category,
-          limit: currentLimit,
-          page: currentPage,
-          search,
-          sortBy,
-        },
-      });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  await queryClient.prefetchQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data, error } = await api.category.public["list-all"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
+  const [businessesData, categories] = await Promise.all([
+    listAllBusiness(params),
+    listAllCategories(),
+  ]);
 
   const hasFilters = Object.entries((await searchParams) || {}).length > 0;
 
@@ -64,7 +43,12 @@ export default async function ComerciosPage({
       </div>
 
       {/* Search and Filters */}
-      <SearchAndFilters typeExplorer="comercios" params={await searchParams} />
+      <SearchAndFilters
+        typeExplorer="comercios"
+        params={await searchParams}
+        businesses={businessesData.businesses}
+        categories={categories}
+      />
 
       {/* ACTIVE FILTERS */}
       {hasFilters && (
@@ -77,6 +61,7 @@ export default async function ComerciosPage({
             limit,
             sortBy,
           }}
+          businesses={businessesData.businesses}
         />
       )}
 
@@ -92,18 +77,15 @@ export default async function ComerciosPage({
           limit,
           sortBy,
         }}
+        businessesData={businessesData}
       />
 
-      <HydrateClient client={queryClient}>
-        <BusinessGrid
-          currentLimit={currentLimit}
-          currentPage={currentPage}
-          hasFilters={hasFilters}
-          search={search}
-          category={category}
-          sortBy={sortBy}
-        />
-      </HydrateClient>
+      <BusinessGrid
+        currentLimit={currentLimit}
+        currentPage={currentPage}
+        hasFilters={hasFilters}
+        businessesData={businessesData}
+      />
     </section>
   );
 }

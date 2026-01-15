@@ -1,21 +1,10 @@
-﻿"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
+﻿import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { ProductList } from "@/app/(home)/_components/product-list";
-import { api } from "@/lib/eden";
+import type { ProductModel } from "@/server/modules/products/model";
 import { Button } from "@/shared/components/ui/button";
 
-export function RecentProducts() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["recent-products"],
-    queryFn: async () => {
-      const { data, error } = await api.products.public.recent.get();
-      if (error) throw error;
-      return data;
-    },
-  });
-
+export function RecentProducts({ data }: { data: ProductModel.RecentOutput }) {
   return (
     <section className="rounded-3xl bg-muted/30">
       <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">

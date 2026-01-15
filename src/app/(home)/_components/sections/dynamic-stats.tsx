@@ -1,8 +1,6 @@
-﻿"use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Package, Store } from "lucide-react";
-import { api } from "@/lib/eden";
+﻿import { Package, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { AnalyticsModel } from "@/server/modules/analytics/model";
 import {
   Card,
   CardContent,
@@ -11,17 +9,11 @@ import {
 } from "@/shared/components/ui/card";
 import { calcTrend } from "@/shared/utils/calc-trend";
 
-export function DynamicStats() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["home-page-stats"],
-    queryFn: async () => {
-      const { data, error } =
-        await api.analytics.public["home-page-stats"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
-
+export function DynamicStats({
+  data,
+}: {
+  data: AnalyticsModel.HomePageStatsOutput;
+}) {
   const {
     activeBusinessesTotal,
     activeBusinessesLastMonth,

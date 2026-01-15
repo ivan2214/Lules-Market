@@ -37,4 +37,7 @@ export namespace AnalyticsModel {
     totalViews: t.Number(),
     dailyViews: t.Array(t.Object({ date: t.String(), views: t.Number() })),
   });
+  export type HomePageStatsOutput = Static<typeof homePageStatsOutput>;
+  export type StatsOutput = Static<typeof statsOutput>;
+  export type ProductStatsOutput = Static<typeof productStatsOutput>;
 }

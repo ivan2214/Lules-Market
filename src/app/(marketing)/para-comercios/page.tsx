@@ -4,9 +4,9 @@ import { ArrowRight, Store, TrendingUp, Zap } from "lucide-react";
 import type { Metadata } from "next";
 
 import Link from "next/link";
+import { getPlans } from "@/data/plans/get";
 import { env } from "@/env/server";
 import { api } from "@/lib/eden";
-import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PlanPricingPreview } from "./_components/plan-pricing.preview";
@@ -51,15 +51,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ForBusinessPage() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["plans"],
-    queryFn: async () => {
-      const { data, error } = await api.plan.public["list-all"].get();
-      if (error) throw error;
-      return data;
-    },
-  });
+  const plans = await getPlans();
 
   return (
     <section className="flex w-full flex-col items-center justify-center gap-y-16">
@@ -165,9 +157,7 @@ export default async function ForBusinessPage() {
             </p>
           </div>
 
-          <HydrateClient client={queryClient}>
-            <PlanPricingPreview />
-          </HydrateClient>
+          <PlanPricingPreview plans={plans} />
         </div>
       </section>
 

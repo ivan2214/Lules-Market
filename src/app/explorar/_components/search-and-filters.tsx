@@ -1,12 +1,11 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { api } from "@/lib/eden";
+import type { Business, Category } from "@/db/types";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -44,38 +43,16 @@ type SearchAndFiltersProps = {
       | "oldest";
   };
   typeExplorer: TypeExplorer;
+  businesses?: Business[];
+  categories?: Category[];
 };
 
 export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   params,
   typeExplorer,
+  businesses,
+  categories,
 }) => {
-  const { data } = useSuspenseQuery({
-    queryKey: ["businesses", params?.category],
-    queryFn: async () => {
-      const { data } = await api.business.public["list-all"].get({
-        query: {
-          category: params?.category,
-        },
-      });
-      return data;
-    },
-  });
-
-  const businesses = data?.businesses || [];
-
-  const { data: categories } = useSuspenseQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data } = await api.category.public["list-all"].get({
-        query: {
-          category: params?.category,
-        },
-      });
-      return data;
-    },
-  });
-
   const { search, sortBy, businessId, category } = params || {};
   const [searchValue, setSearchValue] = useState(search || "");
   const router = useRouter();
@@ -158,14 +135,16 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             </section>
           )}
           {/* Business Pills */}
-          <section className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Comercios</h2>
-            <BusinessesPills
-              typeExplorer={typeExplorer}
-              businesses={businesses}
-              businessId={businessId}
-            />
-          </section>
+          {businesses && (
+            <section className="flex flex-col gap-4">
+              <h2 className="font-bold text-2xl">Comercios</h2>
+              <BusinessesPills
+                typeExplorer={typeExplorer}
+                businesses={businesses}
+                businessId={businessId}
+              />
+            </section>
+          )}
         </SheetContent>
       </Sheet>
     </div>
