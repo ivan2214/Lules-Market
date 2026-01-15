@@ -73,3 +73,15 @@ export const getBusinessIds = cache(async () => {
   if (error) throw error;
   return data.businesses.map((b) => ({ id: b.id }));
 });
+
+export const getBusinessProducts = cache(async (headers: Headers) => {
+  const { data, error } = await api.business.private["my-products"].get({
+    headers,
+  });
+  if (error) {
+    console.log(error);
+
+    throw new Error("Error obteniendo produtos");
+  }
+  return data;
+});

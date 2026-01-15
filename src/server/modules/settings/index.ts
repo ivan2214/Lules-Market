@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { AppError } from "@/server/errors";
 import { authPlugin } from "@/server/plugins/auth";
 import { SettingsModel } from "./model";
 import { SettingsService } from "./service";
@@ -9,20 +10,22 @@ export const settingsRouter = new Elysia({
   .use(authPlugin)
   .patch(
     "/account",
-    async ({ body, user }) => {
+    async ({ body, isUser, user }) => {
+      if (!isUser || !user) throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await SettingsService.updateAccount(user.id, body);
     },
     {
       body: SettingsModel.updateAccountBody,
-      auth: true, // Assuming this is how permissions are checked or just documentation
+      isUser: true,
     },
   )
   .delete(
     "/account",
-    async ({ user }) => {
+    async ({ isUser, user }) => {
+      if (!isUser || !user) throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await SettingsService.deleteAccount(user.id);
     },
     {
-      auth: true,
+      isUser: true,
     },
   );

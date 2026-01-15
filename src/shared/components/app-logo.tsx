@@ -9,7 +9,7 @@ export function AppLogo({ path }: { path?: Route }) {
       className="flex items-center gap-2 self-center font-medium"
     >
       <div className="w-24">
-        <Image src="/logo.webp" alt="Logo" width={128} height={128} />
+        <Image src="/logo.webp" alt="Logo" width={98} height={30} />
       </div>
     </Link>
   );

@@ -33,12 +33,11 @@ export const analyticsModule = new Elysia()
       .use(authPlugin)
       .get(
         "/stats",
-        async ({ currentBusiness, query }) => {
+        async ({ query, isBusiness, business }) => {
+          if (!isBusiness || !business)
+            throw new AppError("Unauthorized", "UNAUTHORIZED");
           try {
-            return await AnalyticsService.getStats(
-              currentBusiness.id,
-              query.period,
-            );
+            return await AnalyticsService.getStats(business.id, query.period);
           } catch (error) {
             console.error(
               "Error al obtener estadísticas de la página de inicio:",
@@ -52,17 +51,19 @@ export const analyticsModule = new Elysia()
         },
         {
           isBusiness: true,
-          currentBusiness: true,
+
           response: AnalyticsModel.statsOutput,
           query: AnalyticsModel.statsQuery,
         },
       )
       .get(
         "/product-stats/:productId",
-        async ({ currentBusiness, query, params }) => {
+        async ({ query, params, isBusiness, business }) => {
+          if (!isBusiness || !business)
+            throw new AppError("Unauthorized", "UNAUTHORIZED");
           try {
             return await AnalyticsService.getProductStats({
-              businessId: currentBusiness.id,
+              businessId: business.id,
               period: query.period,
               productId: params.productId,
             });
@@ -79,7 +80,6 @@ export const analyticsModule = new Elysia()
         },
         {
           isBusiness: true,
-          currentBusiness: true,
           response: AnalyticsModel.productStatsOutput,
           query: AnalyticsModel.statsQuery,
         },

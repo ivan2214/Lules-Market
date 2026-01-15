@@ -2,12 +2,12 @@ import { MessageCircleWarningIcon, Package } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { ProductCardDashboard } from "@/features//dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features//dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features//dashboard/_constants";
 import { api } from "@/lib/eden";
-
 import {
   Alert,
   AlertDescription,
@@ -16,15 +16,15 @@ import {
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export async function ProductsContent() {
-  const { currentBusiness } = await getCurrentBusiness();
+  const { currentBusiness, headers } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 
-  const { data } = await api.products.private["by-business"].get();
+  const products = await getBusinessProducts(headers);
 
-  const { products } = data || {};
+  console.log("Products Count:", products.length);
 
   const currentPlan = currentBusiness.currentPlan;
 

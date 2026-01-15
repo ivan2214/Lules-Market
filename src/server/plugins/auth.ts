@@ -1,118 +1,59 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <necesary> */
-import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
-import { db } from "@/db";
-import { business as businessSchema } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { AppError } from "../errors";
 
 export const authPlugin = new Elysia({ name: "better-auth" })
   .mount(auth.handler)
   .macro({
-    auth: {
-      async resolve({ status, request: { headers } }) {
-        const { user, session } = await resolveAuthUser(headers);
-
-        if (!session || !user) return status(401);
-
-        return {
-          user,
-          session,
-        };
-      },
-    },
-    // ahora segun el role
     isBusiness: {
-      async resolve({ status, request: { headers } }) {
-        const { user, session } = await resolveAuthUser(headers);
-
-        if (!session) return status(401);
+      async resolve({ request: { headers } }) {
+        const { user, session, business } = await resolveAuthUser(headers);
 
         const isBusiness = user?.role === "BUSINESS";
-        if (!isBusiness) throw new AppError("Unauthorized", "UNAUTHORIZED");
+        if (!isBusiness || !session || !user)
+          throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
-          user,
           session,
+          business,
           isBusiness,
         };
       },
     },
     isAdmin: {
-      async resolve({ status, request: { headers } }) {
-        const { user, session } = await resolveAuthUser(headers);
-
-        if (!session) return status(401);
+      async resolve({ request: { headers } }) {
+        const { user, session, admin } = await resolveAuthUser(headers);
 
         const isAdmin = user?.role === "ADMIN";
-        if (!isAdmin) throw new AppError("Unauthorized", "UNAUTHORIZED");
+        if (!isAdmin || !admin || !session)
+          throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
-          user,
-          session,
+          admin,
           isAdmin,
         };
       },
     },
     isUser: {
-      async resolve({ status, request: { headers } }) {
+      async resolve({ request: { headers } }) {
         const { user, session } = await resolveAuthUser(headers);
-
-        if (!session) return status(401);
 
         const isUser = user?.role === "USER";
-        if (!isUser) throw new AppError("Unauthorized", "UNAUTHORIZED");
+        if (!isUser || !user || !session)
+          throw new AppError("Unauthorized", "UNAUTHORIZED");
 
         return {
           user,
-          session,
           isUser,
-        };
-      },
-    },
-    currentBusiness: {
-      async resolve({ status, request: { headers } }) {
-        const { user, session } = await resolveAuthUser(headers);
-
-        if (!session || !user) return status(401);
-
-        const business = await db.query.business.findFirst({
-          where: eq(businessSchema.userId, user.id),
-          with: {
-            logo: true,
-            coverImage: true,
-            category: true,
-            currentPlan: {
-              with: {
-                plan: true,
-              },
-            },
-            products: true,
-            user: true,
-          },
-        });
-
-        if (!business) throw new AppError("Unauthorized", "UNAUTHORIZED");
-
-        return {
-          user,
-          session,
-          currentBusiness: business,
         };
       },
     },
   });
 
-export async function getSessionFromHeaders(
-  headers: Headers | Record<string, string>,
-) {
-  const headersObj =
-    headers instanceof Headers
-      ? headers
-      : new Headers(headers as Record<string, string>);
-
+export async function getSessionFromHeaders(headers: Headers) {
   return auth.api.getSession({
-    headers: headersObj,
+    headers,
   });
 }
 
@@ -121,6 +62,8 @@ async function resolveAuthUser(headers: Headers) {
   return {
     user: session?.user ?? null,
     session: session?.session ?? null,
+    business: session?.business ?? null,
+    admin: session?.admin ?? null,
   };
 }
 

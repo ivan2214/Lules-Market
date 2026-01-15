@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { AppError } from "@/server/errors";
 import { authPlugin } from "@/server/plugins/auth";
 import { ProductModel } from "./model";
 import { ProductService } from "./service";
@@ -67,51 +68,39 @@ export const productModule = new Elysia({ prefix: "/products" })
   .use(
     new Elysia({ prefix: "/private" })
       .use(authPlugin)
-      .get(
-        "/by-business",
-        async ({ currentBusiness }) => {
-          const products = await ProductService.getByBusiness(
-            currentBusiness.id,
-          );
-          return { success: true, products };
-        },
-        {
-          currentBusiness: true,
-          isBusiness: true,
-        },
-      )
+
       .post(
         "/",
-        async ({ body, currentBusiness }) => {
-          return await ProductService.create(body, currentBusiness.id);
+        async ({ body, isBusiness, business }) => {
+          if (!isBusiness || !business)
+            throw new AppError("Unauthorized", "UNAUTHORIZED");
+          return await ProductService.create(body, business.id);
         },
         {
-          currentBusiness: true,
           isBusiness: true,
           body: ProductModel.createBody,
         },
       )
       .put(
         "/",
-        async ({ body, currentBusiness }) => {
-          return await ProductService.update(body, currentBusiness.id);
+        async ({ body, isBusiness, business }) => {
+          if (!isBusiness || !business)
+            throw new AppError("Unauthorized", "UNAUTHORIZED");
+          return await ProductService.update(body, business.id);
         },
         {
-          currentBusiness: true,
           isBusiness: true,
           body: ProductModel.updateBody,
         },
       )
       .delete(
         "/",
-        async ({ query, currentBusiness }) => {
-          return await ProductService.delete(
-            query.productId,
-            currentBusiness.id,
-          );
+        async ({ query, isBusiness, business }) => {
+          if (!isBusiness || !business)
+            throw new AppError("Unauthorized", "UNAUTHORIZED");
+          return await ProductService.delete(query.productId, business.id);
         },
         {
-          currentBusiness: true,
           isBusiness: true,
           query: ProductModel.deleteQuery,
         },

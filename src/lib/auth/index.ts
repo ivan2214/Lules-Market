@@ -122,6 +122,12 @@ export const auth = betterAuth({
           user: true,
           logo: true,
           coverImage: true,
+          currentPlan: {
+            with: {
+              plan: true,
+            },
+          },
+          category: true,
         },
       });
 

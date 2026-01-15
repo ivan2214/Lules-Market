@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { AppError } from "@/server/errors";
 import { authPlugin } from "@/server/plugins/auth";
 import { BusinessModel } from "./model";
 import { BusinessService } from "./service";
@@ -72,23 +73,27 @@ const privateRoutes = new Elysia({ prefix: "/private" })
   .use(authPlugin)
   .get(
     "/my-products",
-    async ({ query, currentBusiness }) => {
+    async ({ query, isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+
       return await BusinessService.getMyProducts(
-        currentBusiness.id,
+        business.id,
         query.limit ?? 12,
         ((query.page ?? 1) - 1) * (query.limit ?? 12),
       );
     },
     {
-      currentBusiness: true,
       isBusiness: true,
       query: BusinessModel.listAllInput, // Reusing limit/offset from listAllInput for pagination
     },
   )
   .post(
     "/update",
-    async ({ body, user }) => {
-      return await BusinessService.update(user.id, body);
+    async ({ body, isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await BusinessService.update(business.id, body);
     },
     {
       body: BusinessModel.update,
@@ -97,8 +102,10 @@ const privateRoutes = new Elysia({ prefix: "/private" })
   )
   .delete(
     "/delete",
-    async ({ user }) => {
-      return await BusinessService.delete(user.id);
+    async ({ isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await BusinessService.delete(business.id);
     },
     {
       isBusiness: true,
