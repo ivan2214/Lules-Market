@@ -1,151 +1,377 @@
-# Gitflow - Flujo de trabajo recomendado
+# Gitflow - Flujo de Trabajo Automatizado
 
-Este documento describe un flujo de trabajo Gitflow simple y efectivo para equipos de desarrollo, ideal para mantener un proyecto limpio, organizado y con producción estable.
+Este documento describe el flujo de trabajo GitFlow automatizado del proyecto, diseñado para mantener un repositorio limpio, organizado y con producción estable.
 
----
-
-## 1️⃣ Clonar el repositorio desde cero
-
-Si perdiste tu carpeta `.git` o querés empezar limpio:
-
-```bash
-# Clonamos solo la última versión de main (sin historial antiguo)
-git clone --depth=1 https://github.com/ivan2214/Lules-Market.git
-cd Lules-Market
-````
+> 🚀 **NUEVO**: Ahora con scripts de automatización y workflows para agilizar tu trabajo.
 
 ---
 
-## 2️⃣ Crear la rama de desarrollo `dev`
+## 📋 Tabla de Contenidos
 
-* `main` → rama de producción
-* `dev` → rama de integración de cambios antes de pasar a producción
+1. [Filosofía del Flujo](#filosofía-del-flujo)
+2. [Automatización con Scripts](#automatización-con-scripts)
+3. [Workflows Disponibles](#workflows-disponibles)
+4. [Flujo Completo Paso a Paso](#flujo-completo-paso-a-paso)
+5. [Reglas Importantes](#reglas-importantes)
 
-```bash
-git checkout -b dev      # Crear rama dev local
-git push -u origin dev   # Subir al remoto y establecer upstream
+---
+
+## 🎯 Filosofía del Flujo
+
+### Ramas Principales
+
+* **`main`** → Producción, siempre estable
+  * ⚠️ **NUNCA se toca directamente en local**
+  * Solo se actualiza mediante PRs desde `dev` en GitHub
+  * Se sincroniza localmente con `git fetch origin main:main`
+
+* **`dev`** → Integración y desarrollo
+  * Rama base para todo el trabajo
+  * Siempre sincronizada con `main` después de cada merge
+  * Aquí se integran todas las features
+
+* **`feature/*`** o **`fix/*`** → Ramas de trabajo
+  * Se crean desde `dev`
+  * Una rama por funcionalidad o fix
+  * Se eliminan después de mergear
+
+### Flujo Visual
+
+```
+feature/nueva-funcionalidad
+    ↓ (PR con Squash and Merge)
+  dev
+    ↓ (PR con Rebase and Merge)
+  main (producción)
 ```
 
 ---
 
-## 3️⃣ Crear ramas de features
+## 🤖 Automatización con Scripts
 
-Para cualquier nueva funcionalidad, creamos una rama a partir de `dev`:
+Hemos creado scripts para automatizar las tareas más comunes:
 
-```bash
-git checkout dev
-git checkout -b feature/nombre-de-la-feature
+### Para Windows (PowerShell)
+
+```powershell
+# Crear nueva feature
+.\scripts\git-flow.ps1 new-feature -Name "nombre-de-la-feature"
+
+# Crear nuevo fix
+.\scripts\git-flow.ps1 new-fix -Name "nombre-del-fix"
+
+# Sincronizar después de merge
+.\scripts\git-flow.ps1 sync
+
+# Ver estado del repositorio
+.\scripts\git-flow.ps1 status
 ```
 
-Trabajás en la feature y haces commits normalmente:
+### Para Linux/Mac (Bash)
 
 ```bash
-git add .
-git commit -m "feat: descripción del cambio"
-git push -u origin feature/nombre-de-la-feature
-```
+# Dar permisos de ejecución (solo la primera vez)
+chmod +x scripts/git-flow.sh
 
----
+# Crear nueva feature
+./scripts/git-flow.sh new-feature nombre-de-la-feature
 
-## 4️⃣ Mantener la rama de feature sincronizada con `dev`
+# Crear nuevo fix
+./scripts/git-flow.sh new-fix nombre-del-fix
 
-Antes de subir tu feature o abrir un PR, asegurate de tener los últimos cambios de dev:
+# Sincronizar después de merge
+./scripts/git-flow.sh sync
 
-* **Opción 1: Merge** (historial con commits de merge)
-
-```bash
-git checkout feature/nombre-de-la-feature
-git merge dev
-```
-
-* **Opción 2: Rebase** (historial lineal, más limpio)
-
-```bash
-git checkout feature/nombre-de-la-feature
-git fetch origin dev
-git rebase origin/dev
-```
-
-> ⚠️ Solo hacé rebase en ramas locales que no hayan sido compartidas o, si ya subiste la rama, recordá usar `git push -f` después del rebase.
-
----
-
-## 5️⃣ Pull Requests (PR) y tipo de merge
-
-Cuando la feature está lista, se hace **Pull Request hacia `dev`**:
-
-* **Feature → Dev:**
-
-  * **Merge recomendado:** `Squash and merge` ✅
-  * **Por qué:** mantiene `dev` limpia, un commit por feature, evita commits intermedios sucios.
-
-Cuando dev está estable y testeada, se hace **PR de `dev` → `main`**:
-
-* **Dev → Main:**
-
-  * **Merge recomendado:** `Create a merge commit (--no-ff)` ✅
-  * **Por qué:** mantiene histórico de todas las features integradas, reflejando exactamente cuándo dev se pasó a producción.
-
-> 💡 Tip: Siempre actualizá tu rama antes de abrir un PR, usando merge o rebase según prefieras.
-
----
-
-## 6️⃣ Integrar `dev` en `main` (Producción)
-
-Después de aprobar el PR de dev → main:
-
-```bash
-git checkout main
-git pull origin main
-git merge --no-ff dev    # Mantener histórico de merges
-git push origin main
+# Ver estado del repositorio
+./scripts/git-flow.sh status
 ```
 
 ---
 
-## 7️⃣ Mantener ramas actualizadas
+## 📝 Workflows Disponibles
 
-Cada vez que trabajes:
+Los workflows son guías paso a paso que puedes seguir. Están en `.agent/workflows/`:
 
+### `/new-feature`
+Crea una nueva feature branch desde `dev`.
+
+**Uso:**
 ```bash
-# Actualizar dev con cambios remotos
+# El workflow te guiará para crear la rama
+# Ejemplo: feature/login-social
+```
+
+### `/push-feature`
+Sube tu feature branch y te guía para crear un PR a `dev`.
+
+**Tipo de merge:** Squash and merge ✅
+
+### `/create-pr-to-main`
+Crea un PR de `dev` → `main` para desplegar a producción.
+
+**Tipo de merge:** Rebase and merge ✅
+
+### `/sync-after-merge`
+Sincroniza tu repositorio local después de mergear un PR.
+
+**Cuándo usar:**
+- Después de mergear feature → dev
+- Después de mergear dev → main
+
+---
+
+## 🔄 Flujo Completo Paso a Paso
+
+### 1. Iniciar Nueva Feature
+
+**Opción A: Con script (recomendado)**
+```powershell
+# Windows
+.\scripts\git-flow.ps1 new-feature -Name "login-social"
+
+# Linux/Mac
+./scripts/git-flow.sh new-feature login-social
+```
+
+**Opción B: Manual**
+```bash
 git checkout dev
 git pull origin dev
-
-# Actualizar feature con dev (merge o rebase)
-git checkout feature/nombre-de-la-feature
-git merge dev          # o git rebase dev
+git checkout -b feature/login-social
 ```
 
-Esto evita conflictos grandes y mantiene el código limpio.
+---
+
+### 2. Trabajar en la Feature
+
+```bash
+# Hacer cambios en tu código
+git add .
+git commit -m "feat: add social login with Google"
+
+# Más cambios...
+git add .
+git commit -m "feat: add social login with GitHub"
+```
 
 ---
 
-## 8️⃣ Resumen de ramas y flujo
+### 3. Subir Feature y Crear PR
 
-* **main** → Producción, estable.
-* **dev** → Integración, testeos antes de producción.
-* **feature/** → Desarrollo de nuevas funcionalidades.
+```bash
+# Push de la feature
+git push -u origin feature/login-social
 
-**Flujo típico:**
+# Crear PR en GitHub (manual o con GitHub CLI)
+gh pr create --base dev --title "feat: Social login" --body "Implementa login con Google y GitHub"
+```
 
-1. Crear feature desde dev
-2. Hacer commits en feature
-3. Mantener feature actualizada con dev (**merge o rebase**)
-4. PR de feature → dev (**Squash and merge**)
-5. Testear dev
-6. PR de dev → main (**Merge commit --no-ff**)
-7. Deploy a producción desde main
-
----
-
-## 9️⃣ Consejos adicionales
-
-* Usar nombres claros en las ramas: `feature/login`, `feature/cart`, `hotfix/bug-123`.
-* Hacer commits pequeños y claros.
-* Siempre actualizar tu rama antes de mergear: `git pull origin dev` o rebase.
-* Mantener main limpia y estable, solo merges testeados desde dev.
+**En GitHub:**
+1. Ir a la página del repositorio
+2. Crear Pull Request de `feature/login-social` → `dev`
+3. Revisar cambios
+4. Mergear con **"Squash and merge"** ✅
 
 ---
 
-Este flujo mantiene el proyecto organizado, facilita trabajo en equipo y asegura una producción estable.
+### 4. Sincronizar Después del Merge
+
+**Opción A: Con script (recomendado)**
+```powershell
+# Windows
+.\scripts\git-flow.ps1 sync
+
+# Linux/Mac
+./scripts/git-flow.sh sync
+```
+
+**Opción B: Manual**
+```bash
+git checkout dev
+git fetch origin
+git rebase origin/main
+git push origin dev --force
+git fetch origin main:main
+```
+
+---
+
+### 5. Desplegar a Producción
+
+Cuando `dev` esté listo para producción:
+
+```bash
+# Crear PR en GitHub
+gh pr create --base main --head dev --title "Release: v1.2.0" --body "## Cambios\n- Feature 1\n- Feature 2"
+```
+
+**En GitHub:**
+1. Crear Pull Request de `dev` → `main`
+2. Revisar todos los cambios
+3. Mergear con **"Rebase and merge"** ✅
+
+**Después del merge:**
+```powershell
+# Sincronizar todo
+.\scripts\git-flow.ps1 sync
+```
+
+---
+
+### 6. Limpiar Feature Branches
+
+Después de sincronizar, elimina las ramas locales mergeadas:
+
+```bash
+# Eliminar feature branch local
+git branch -d feature/login-social
+
+# Ver ramas locales
+git branch
+```
+
+---
+
+## ⚠️ Reglas Importantes
+
+### 🚫 NUNCA Hacer
+
+1. **NUNCA hacer checkout a `main` localmente**
+   ```bash
+   # ❌ NO HACER ESTO
+   git checkout main
+   git merge dev
+   git push origin main
+   ```
+
+2. **NUNCA hacer commits directos en `dev` o `main`**
+   - Siempre trabajar en feature/fix branches
+
+3. **NUNCA hacer force push sin confirmar**
+   - Solo hacer force push en `dev` después de sincronizar
+
+### ✅ SIEMPRE Hacer
+
+1. **SIEMPRE partir de `dev` actualizado**
+   ```bash
+   git checkout dev
+   git pull origin dev
+   ```
+
+2. **SIEMPRE usar los tipos de merge correctos**
+   - Feature → Dev: **Squash and merge**
+   - Dev → Main: **Rebase and merge**
+
+3. **SIEMPRE sincronizar después de mergear a `main`**
+   ```bash
+   .\scripts\git-flow.ps1 sync
+   ```
+
+4. **SIEMPRE usar nombres descriptivos**
+   - ✅ `feature/login-social`
+   - ✅ `fix/button-alignment`
+   - ❌ `feature/test`
+   - ❌ `fix/bug`
+
+---
+
+## 🎨 Convenciones de Commits
+
+Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+feat: nueva funcionalidad
+fix: corrección de bug
+docs: cambios en documentación
+style: cambios de formato (no afectan el código)
+refactor: refactorización de código
+test: agregar o modificar tests
+chore: tareas de mantenimiento
+```
+
+**Ejemplos:**
+```bash
+git commit -m "feat: add user authentication"
+git commit -m "fix: resolve login redirect issue"
+git commit -m "docs: update API documentation"
+```
+
+---
+
+## 📊 Verificar Estado
+
+En cualquier momento puedes verificar el estado:
+
+```powershell
+# Con script
+.\scripts\git-flow.ps1 status
+
+# Manual
+git status
+git branch -vv
+git log --oneline --graph --all -8
+```
+
+---
+
+## 🆘 Solución de Problemas
+
+### Conflictos durante Rebase
+
+```bash
+# 1. Resolver conflictos en los archivos
+# 2. Agregar archivos resueltos
+git add .
+
+# 3. Continuar rebase
+git rebase --continue
+
+# Si quieres cancelar el rebase
+git rebase --abort
+```
+
+### Olvidaste Sincronizar
+
+```bash
+# No hay problema, simplemente ejecuta:
+.\scripts\git-flow.ps1 sync
+```
+
+### Feature Branch Desactualizada
+
+```bash
+git checkout feature/mi-feature
+git rebase dev
+# Resolver conflictos si hay
+git push --force-with-lease
+```
+
+---
+
+## 🚀 Resumen Rápido
+
+```bash
+# 1. Nueva feature
+.\scripts\git-flow.ps1 new-feature -Name "mi-feature"
+
+# 2. Trabajar y commitear
+git add .
+git commit -m "feat: descripción"
+
+# 3. Push y PR
+git push -u origin feature/mi-feature
+# Crear PR en GitHub: feature → dev (Squash and merge)
+
+# 4. Sincronizar
+.\scripts\git-flow.ps1 sync
+
+# 5. Cuando dev esté listo
+# Crear PR en GitHub: dev → main (Rebase and merge)
+
+# 6. Sincronizar de nuevo
+.\scripts\git-flow.ps1 sync
+```
+
+---
+
+Este flujo mantiene el proyecto organizado, facilita el trabajo en equipo y asegura una producción estable. 🎉
