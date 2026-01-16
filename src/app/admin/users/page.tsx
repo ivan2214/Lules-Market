@@ -4,10 +4,6 @@ import { db } from "@/db";
 import { user as userSchema } from "@/db/schema";
 import { UsersList } from "../_components/users-list";
 
-export const dynamic = "force-dynamic";
-/* revalidar cada 30 minutos */
-export const revalidate = 1800;
-
 const searchSchema = z.object({
   page: z.coerce.number().min(1).default(1),
   perPage: z.coerce.number().min(1).default(10),

@@ -17,9 +17,6 @@ import {
 } from "@/shared/components/ui/card";
 import { SetupForm } from "./_components/setup-form";
 
-export const dynamic = "force-dynamic"; // Añade esta línea
-export const revalidate = 60;
-
 export default async function BusinessSetup() {
   const { data: categories } = await api.category.public["list-all"].get();
   await requireSession();

@@ -11,7 +11,6 @@ await jiti.import("./src/env/client.ts");
 const nextConfig = {
   typedRoutes: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -28,6 +27,7 @@ const nextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
+  cacheComponents: true,
   // Fix Turbopack bundling issue with better-auth
   serverExternalPackages: ["better-auth"],
 };

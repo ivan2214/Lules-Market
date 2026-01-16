@@ -22,10 +22,6 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 
-export const dynamic = "force-dynamic";
-/* revalidar cada 30 minutos */
-export const revalidate = 1800;
-
 type SearchParams = {
   page?: string;
   role?: string;

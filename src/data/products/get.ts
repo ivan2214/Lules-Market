@@ -1,7 +1,8 @@
-import { api } from "@/lib/eden";
 import "server-only";
+import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 import { db } from "@/db";
+import { api } from "@/lib/eden";
 import { toProductDto } from "@/shared/utils/dto";
 
 type SearchParams = {
@@ -13,7 +14,10 @@ type SearchParams = {
   sortBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
 };
 
-export const listAllProducts = cache(async (searchParams?: SearchParams) => {
+export async function listAllProducts(searchParams?: SearchParams) {
+  "use cache";
+  cacheTag("products");
+  cacheLife("minutes");
   const { limit, page, search, sortBy, category, businessId } =
     searchParams || {};
   const currentPage = page ? parseInt(page, 10) : 1;
@@ -36,29 +40,39 @@ export const listAllProducts = cache(async (searchParams?: SearchParams) => {
     ...data,
     products: data.products.map(toProductDto),
   };
-});
+}
 
-export const getRecentProducts = cache(async () => {
+export async function getRecentProducts() {
+  "use cache";
+  cacheTag("products");
+  cacheLife("hours");
   const { data, error } = await api.products.public.recent.get();
   if (error) throw error;
   return data.products.map(toProductDto);
-});
+}
 
-export const getProductById = cache(async (id: string) => {
+export async function getProductById(id: string) {
+  "use cache";
+  cacheTag("products");
+  cacheLife("hours");
   const { data, error } = await api.products.public({ id }).get();
   if (error) throw error;
   return data.product ? toProductDto(data.product) : null;
-});
+}
 
-export const getSimilarProducts = cache(
-  async (params: { productId: string; limit?: number }) => {
-    const { data, error } = await api.products
-      .public({ id: params.productId })
-      .similar.get();
-    if (error) throw error.value.message;
-    return data.products.map(toProductDto);
-  },
-);
+export async function getSimilarProducts(params: {
+  productId: string;
+  limit?: number;
+}) {
+  "use cache";
+  cacheTag("products");
+  cacheLife("days");
+  const { data, error } = await api.products
+    .public({ id: params.productId })
+    .similar.get();
+  if (error) throw error.value.message;
+  return data.products.map(toProductDto);
+}
 
 /**
  * Specifically for generateStaticParams

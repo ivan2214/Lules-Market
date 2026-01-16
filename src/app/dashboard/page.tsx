@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import type { ProductDto } from "@/shared/utils/dto";
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
@@ -150,7 +151,7 @@ async function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {productsBusiness?.slice(0, 5).map((product) => (
+              {productsBusiness?.slice(0, 5).map((product: ProductDto) => (
                 <div
                   key={product.id}
                   className="flex items-center justify-between"

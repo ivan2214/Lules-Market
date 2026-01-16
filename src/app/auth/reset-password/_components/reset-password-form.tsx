@@ -4,16 +4,16 @@ import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { resetPassword } from "@/lib/auth/auth-client";
+import { AuthError } from "@/shared/components/auth/auth-error";
+import { AuthSuccess } from "@/shared/components/auth/auth-success";
 import { Button } from "@/shared/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field";
 import { Input } from "@/shared/components/ui/input";
 import {
   type ResetPasswordSchema,
   resetPasswordSchema,
 } from "@/shared/validators/auth";
 import { typeboxValidator } from "@/shared/validators/form";
-import { Field, FieldError, FieldLabel } from "../ui/field";
-import { AuthError } from "./auth-error";
-import { AuthSuccess } from "./auth-success";
 
 export function ResetPasswordForm({ token }: { token: string }) {
   const [pending, startTransition] = useTransition();

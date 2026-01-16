@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-
-import { TwoFactorForm } from "@/shared/components/auth/two-factor-form";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -12,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { TwoFactorForm } from "./_components/two-factor-form";
 
 export default function TwoFactorPage() {
   return (
