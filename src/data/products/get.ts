@@ -51,17 +51,11 @@ export const getProductById = cache(async (id: string) => {
 });
 
 export const getSimilarProducts = cache(
-  async (params: { productId: string; businessId: string; limit?: number }) => {
+  async (params: { productId: string; limit?: number }) => {
     const { data, error } = await api.products
       .public({ id: params.productId })
-      .similar.get({
-        query: {
-          productId: params.productId,
-          businessId: params.businessId,
-          limit: params.limit,
-        },
-      });
-    if (error) throw error;
+      .similar.get();
+    if (error) throw error.value.message;
     return data.products.map(toProductDto);
   },
 );

@@ -4,8 +4,6 @@ import { getCurrentSession } from "@/data/session/get-current-session";
 
 export const UploadService = {
   async handleBusinessCoverUpload() {
-    console.log("handleBusinessCoverUpload");
-
     const uniqueKey = uuidv4();
     return {
       objectInfo: {
@@ -15,8 +13,6 @@ export const UploadService = {
   },
 
   async handleBusinessLogoUpload() {
-    console.log("handleBusinessLogoUpload");
-
     const uniqueKey = uuidv4();
     return {
       objectInfo: {

@@ -1,3 +1,4 @@
+// your custom error (unchanged)
 export class AppError extends Error {
   status = 418;
   constructor(
@@ -15,21 +16,8 @@ export class AppError extends Error {
   }
   toResponse() {
     return Response.json(
-      {
-        error: this.message,
-        code: this.status,
-      },
-      {
-        status: this.status,
-      },
+      { error: this.message, code: this.code, details: this.details },
+      { status: this.status },
     );
   }
 }
-
-export const errorCodes = {
-  BAD_REQUEST: 400,
-  UNAUTHORIZED: 401,
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
-} as const;

@@ -106,7 +106,6 @@ async function ProductContent({ productId }: { productId: string }) {
 
   const similarProducts = await getSimilarProducts({
     productId: product.id,
-    businessId: product.businessId,
     limit: 4,
   });
 

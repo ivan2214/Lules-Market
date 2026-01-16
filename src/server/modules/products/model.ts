@@ -26,8 +26,9 @@ export namespace ProductModel {
   });
 
   export const similarParams = t.Object({
-    id: t.String(),
-    categoryId: t.String(),
+    id: t.String({
+      error: "El campo id es requerido",
+    }),
   });
 
   export const productsListAllOutput = t.Object({

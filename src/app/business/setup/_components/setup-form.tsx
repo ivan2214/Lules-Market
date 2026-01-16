@@ -118,7 +118,6 @@ export function SetupForm({
     route: "businessCover",
     api: "/api/upload",
     onUploadComplete: ({ file }) => {
-      console.log("file", file);
       form.setFieldValue("coverImage.key", file.objectInfo?.key);
     },
     onError({ message }) {
@@ -131,7 +130,6 @@ export function SetupForm({
     route: "businessLogo",
     api: "/api/upload",
     onUploadComplete: ({ file }) => {
-      console.log("file", file);
       form.setFieldValue("logo.key", file.objectInfo?.key);
     },
     onError({ message }) {
@@ -555,7 +553,6 @@ export function SetupForm({
                         }}
                         multiple={false}
                         uploadOverride={(file) => {
-                          console.log("FileS:", file);
                           field.handleChange({
                             file: file,
                             isMainImage: true,
@@ -623,7 +620,6 @@ export function SetupForm({
                         }}
                         multiple={false}
                         uploadOverride={(file) => {
-                          console.log("FileS:", file);
                           field.handleChange({
                             file: file,
                             isMainImage: true,

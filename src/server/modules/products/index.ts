@@ -40,8 +40,13 @@ export const productModule = new Elysia({ prefix: "/products" })
       .get(
         "/:id/similar",
         async ({ params }) => {
+          const { product } = await ProductService.getById(params.id);
+          if (!product?.categoryId) {
+            throw new AppError("Product not found", "NOT_FOUND");
+          }
+
           const products = await ProductService.getSimilar(
-            params.categoryId,
+            product.categoryId,
             params.id,
           );
           return { products };

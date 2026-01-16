@@ -45,7 +45,6 @@ export const BusinessService = {
   async setup(input: BusinessModel.Setup) {
     try {
       const { category } = input;
-      console.log("input que llego a setup", input);
 
       /*  const existingBusiness = await db.query.business.findFirst({
         where: eq(businesSchema.name, input.name),
