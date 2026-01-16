@@ -3,9 +3,6 @@ import { env } from "@/env/server";
 import { BusinessService } from "@/server/modules/business/service";
 import { ProductService } from "@/server/modules/products/service";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 3600; // opcional: revalidar cada hora
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.APP_URL;
 
@@ -87,11 +84,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Obtener productos dinámicos
-  const productsResult = await ProductService.listAll({
-    limit: 1000,
-    page: 1,
-  });
-  const products = productsResult?.products;
+  const productsResult = await ProductService.listAllProductsForSitemap();
+  const products = productsResult;
 
   const productPages: MetadataRoute.Sitemap =
     products?.map((product) => ({
@@ -103,14 +97,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Obtener comercios dinámicos
   // Obtener comercios dinámicos
-  const { businesses } = await BusinessService.listAll();
+  const businessesResult = await BusinessService.listAllBusinessesForSitemap();
+  const businesses = businessesResult;
 
   const businessPages: MetadataRoute.Sitemap =
     businesses?.map((business) => ({
       url: `${baseUrl}/comercio/${business.id}`,
       lastModified: business.updatedAt ?? undefined,
       changeFrequency: "weekly" as const,
-      priority: 0.7,
+      priority: 0.8,
     })) || [];
 
   return [...staticPages, ...productPages, ...businessPages];
