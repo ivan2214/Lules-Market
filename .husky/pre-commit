@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "Running lint-staged..."
-pnpm run lint-staged
+pnpm  lint-staged
 
 echo "Security check (all deps)..."
 pnpm audit --audit-level=high || {
