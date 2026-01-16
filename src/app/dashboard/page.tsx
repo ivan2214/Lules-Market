@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { api } from "@/lib/eden";
+import { listAllCategories } from "@/data/categories/get";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -22,11 +22,13 @@ async function DashboardContent() {
     redirect(pathsConfig.business.setup);
   }
 
-  const productsBusiness = await getBusinessProducts(currentBusiness.id);
+  const [productsBusiness, categories] = await Promise.all([
+    getBusinessProducts(currentBusiness.id),
+    listAllCategories(),
+  ]);
 
   const productCount = productsBusiness?.length || 0;
   const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
-  const { data: categories } = await api.category.public["list-all"].get();
 
   return (
     <>

@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import type { JSX } from "react";
 import { toast } from "sonner";
 import pathsConfig from "@/config/paths.config";
-import type { Category } from "@/db/types";
 import { api } from "@/lib/eden";
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
@@ -44,6 +43,7 @@ import {
 import { Textarea } from "@/shared/components/ui/textarea";
 import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
 import { MultiStepFormProvider } from "@/shared/hooks/use-multi-step-viewer";
+import type { CategoryDto } from "@/shared/utils/dto";
 import { BusinessSetupSchema } from "@/shared/validators/business";
 import { typeboxValidator } from "@/shared/validators/form";
 
@@ -76,7 +76,7 @@ export function SetupForm({
   categories,
   userEmail,
 }: {
-  categories: Category[];
+  categories: CategoryDto[];
   userEmail: string;
 }) {
   const router = useRouter();

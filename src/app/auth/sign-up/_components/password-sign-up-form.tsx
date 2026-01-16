@@ -15,7 +15,6 @@ import Image from "next/image";
 import { type JSX, useState } from "react";
 import { toast } from "sonner";
 import { EmailVerificationCard } from "@/app/auth/verify/_components/email-verification-card";
-import type { Category } from "@/db/types";
 import { api } from "@/lib/eden";
 import { AuthError } from "@/shared/components/auth/auth-error";
 import { AuthSuccess } from "@/shared/components/auth/auth-success";
@@ -49,6 +48,7 @@ import {
 import { Textarea } from "@/shared/components/ui/textarea";
 import { UploadDropzone } from "@/shared/components/ui/upload-dropzone";
 import { MultiStepFormProvider } from "@/shared/hooks/use-multi-step-viewer";
+import type { CategoryDto } from "@/shared/utils/dto";
 import { type SignUpSchema, signUpSchema } from "@/shared/validators/auth";
 import { typeboxValidator } from "@/shared/validators/form";
 
@@ -80,7 +80,11 @@ const defaultValues: SignUpSchema = {
   },
 };
 
-export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
+export function PasswordSignUpForm({
+  categories,
+}: {
+  categories: CategoryDto[];
+}) {
   /* const [isBusiness, setIsBusiness] = useState(false); */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

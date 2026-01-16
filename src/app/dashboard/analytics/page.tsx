@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getAnalyticsStats } from "@/data/analytics/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import type { CurrentPlan } from "@/db/types";
 import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
-import { api } from "@/lib/eden";
 import { subscriptionErrors } from "../_constants";
+
 import { AnalyticsContent } from "./_components/analytics-content";
 import type { AnalyticsData } from "./_types";
 
@@ -16,8 +17,9 @@ export default async function AnalyticsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+
   const period = params.period || "30d";
-  const { currentBusiness, headers } = await getCurrentBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
@@ -32,12 +34,7 @@ export default async function AnalyticsPage({
     );
   }
 
-  const { data: analytics } = await api.analytics.private.stats.get({
-    query: {
-      period,
-    },
-    headers,
-  });
+  const analytics = await getAnalyticsStats(currentBusiness.id, period);
 
   const data: AnalyticsData = {
     totalViews: analytics?.totalViews ?? 0,

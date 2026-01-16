@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import type React from "react";
 import { type HTMLAttributes, useState } from "react";
-import type { Category, CurrentPlan } from "@/db/types";
+import type { CurrentPlan } from "@/db/types";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -35,7 +35,7 @@ import {
 } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
 import { Textarea } from "@/shared/components/ui/textarea";
-import type { ProductDto } from "@/shared/utils/dto";
+import type { CategoryDto, ProductDto } from "@/shared/utils/dto";
 import {
   ProductCreateSchema,
   ProductUpdateSchema,
@@ -48,7 +48,7 @@ interface ProductFormDialogProps {
   trigger?: React.ReactNode;
   className?: HTMLAttributes<"button">["className"];
   isViewMode?: boolean;
-  categories: Category[];
+  categories: CategoryDto[];
   maxImagesPerProduct: CurrentPlan["imagesUsed"];
   disabled?: boolean;
 }

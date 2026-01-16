@@ -29,7 +29,11 @@ const nextConfig = {
   },
   cacheComponents: true,
   // Fix Turbopack bundling issue with better-auth
-  serverExternalPackages: ["better-auth"],
+  serverExternalPackages: [
+    "better-auth",
+    "@neondatabase/serverless",
+    "drizzle-orm",
+  ],
 };
 
 export default nextConfig;

@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/env/server";
-import { api } from "@/lib/eden";
-
 import { BusinessService } from "@/server/modules/business/service";
+import { ProductService } from "@/server/modules/products/service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 3600; // opcional: revalidar cada hora
@@ -88,8 +87,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Obtener productos dinámicos
-  const { data: dataProducts } = await api.products.public.list.get();
-  const products = dataProducts?.products;
+  const productsResult = await ProductService.listAll({
+    limit: 1000,
+    page: 1,
+  });
+  const products = productsResult?.products;
 
   const productPages: MetadataRoute.Sitemap =
     products?.map((product) => ({
