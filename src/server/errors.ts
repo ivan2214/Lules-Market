@@ -1,18 +1,21 @@
-// your custom error (unchanged)
+const typeCodes = {
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;
 export class AppError extends Error {
-  status = 418;
   constructor(
     public message: string,
-    public code:
-      | "BAD_REQUEST"
-      | "UNAUTHORIZED"
-      | "FORBIDDEN"
-      | "NOT_FOUND"
-      | "INTERNAL_SERVER_ERROR" = "INTERNAL_SERVER_ERROR",
+    public code: keyof typeof typeCodes,
     public details?: unknown,
+    public status?: number,
   ) {
     super(message);
     this.name = "AppError";
+    this.status = typeCodes[code];
+    this.code = code;
   }
   toResponse() {
     return Response.json(

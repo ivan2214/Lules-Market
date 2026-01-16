@@ -61,8 +61,8 @@ export const app = new Elysia({
     // 2️⃣ Any other error → fallback to generic AppError
     const generic = new AppError(
       error instanceof Error ? error.message : "Internal Server Error",
-      "INTERNAL_SERVER_ERROR",
-      error,
+      error instanceof AppError ? error.code : "INTERNAL_SERVER_ERROR",
+      error instanceof AppError ? error.details : error,
     );
     return generic.toResponse();
   })
