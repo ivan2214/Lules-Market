@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { listAllCategories } from "@/data/categories/get";
-import { api } from "@/lib/eden";
 import {
   Card,
   CardContent,
