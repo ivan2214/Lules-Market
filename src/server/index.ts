@@ -1,6 +1,6 @@
 import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
-import { type Context, Elysia } from "elysia";
+import { type Context, Elysia, type ValidationError } from "elysia";
 import { auth } from "@/lib/auth";
 import { AppError } from "./errors";
 import { adminRouter } from "./modules/admin";
@@ -40,11 +40,31 @@ export const app = new Elysia({
   .error({
     AppError,
   })
-  .onError(({ error, code, status }) => {
-    switch (code) {
-      case "AppError":
-        return status(error.status, error.message);
+  .onError(({ code, error }) => {
+    // 1️⃣ Validation → turn into AppError
+    if (code === "VALIDATION") {
+      // `error` is a ValidationError from TypeBox
+      const messages = (error as ValidationError).all.map(
+        ({ summary }) => `${summary}`,
+      );
+      // you can pick the first, join them, or keep the array
+      const appErr = new AppError(
+        error.message,
+        "BAD_REQUEST",
+        messages, // optional extra details
+      );
+      // Elysia expects a plain object or a Response.
+      // We return the object produced by `toResponse()`:
+      return appErr.toResponse();
     }
+
+    // 2️⃣ Any other error → fallback to generic AppError
+    const generic = new AppError(
+      error instanceof Error ? error.message : "Internal Server Error",
+      error instanceof AppError ? error.code : "INTERNAL_SERVER_ERROR",
+      error instanceof AppError ? error.details : error,
+    );
+    return generic.toResponse();
   })
   .use(cors())
   .all("/api/auth/*", betterAuthView)

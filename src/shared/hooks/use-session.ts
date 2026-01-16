@@ -17,10 +17,6 @@ export function useSession() {
     };
   }
 
-  console.log({
-    data,
-  });
-
   return {
     data: data.data,
     isLoading,

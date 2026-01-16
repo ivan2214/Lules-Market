@@ -45,7 +45,6 @@ export const BusinessService = {
   async setup(input: BusinessModel.Setup) {
     try {
       const { category } = input;
-      console.log("input que llego a setup", input);
 
       /*  const existingBusiness = await db.query.business.findFirst({
         where: eq(businesSchema.name, input.name),
@@ -509,9 +508,7 @@ export const BusinessService = {
     );
   },
 
-  async getById(
-    id: string,
-  ): Promise<{ business: BusinessWithRelations | undefined }> {
+  async getById(id: string): Promise<BusinessModel.GetByIdOutput> {
     return getCachedOrFetch(
       CACHE_KEYS.business(id),
       async () => {
@@ -529,9 +526,11 @@ export const BusinessService = {
                 images: true,
               },
             },
+            user: true,
           },
         });
-        return { business: businessData as BusinessWithRelations | undefined };
+
+        return { business: businessData };
       },
       CACHE_TTL.BUSINESS_BY_ID,
     );

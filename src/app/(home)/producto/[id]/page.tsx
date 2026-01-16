@@ -106,7 +106,6 @@ async function ProductContent({ productId }: { productId: string }) {
 
   const similarProducts = await getSimilarProducts({
     productId: product.id,
-    businessId: product.businessId,
     limit: 4,
   });
 
@@ -307,7 +306,7 @@ async function ProductContent({ productId }: { productId: string }) {
             <h2 className="flex flex-col gap-2 font-bold text-2xl tracking-tight">
               Productos similares
             </h2>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] place-items-center gap-4">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] place-items-center gap-4">
               {similarProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

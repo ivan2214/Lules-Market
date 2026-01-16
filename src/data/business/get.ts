@@ -47,6 +47,7 @@ export const getBusinessById = cache(async (id: string) => {
     query: { id },
   });
   if (error) throw error;
+
   return data.business ? toBusinessDto(data.business) : null;
 });
 
