@@ -36,7 +36,7 @@ VerificationEmail.PreviewProps = {
   appName: "LulesMarket",
   logoUrl:
     "https://lules-market.t3.storage.dev/AIEnhancer_unnamed-removebg-preview.png",
-  verificationUrl: `${env.APP_URL}/verify-email?token=ABC123`,
+  verificationUrl: `${env.APP_URL}/auth/verify?token=ABC123`,
   token: "ABC123",
 };
 

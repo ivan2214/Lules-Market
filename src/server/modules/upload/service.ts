@@ -3,7 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { getCurrentSession } from "@/data/session/get-current-session";
 
 export const UploadService = {
-  handleBusinessCoverUpload() {
+  async handleBusinessCoverUpload() {
+    console.log("handleBusinessCoverUpload");
+
     const uniqueKey = uuidv4();
     return {
       objectInfo: {
@@ -12,7 +14,9 @@ export const UploadService = {
     };
   },
 
-  handleBusinessLogoUpload() {
+  async handleBusinessLogoUpload() {
+    console.log("handleBusinessLogoUpload");
+
     const uniqueKey = uuidv4();
     return {
       objectInfo: {

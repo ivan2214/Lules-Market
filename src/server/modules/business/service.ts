@@ -46,7 +46,7 @@ export const BusinessService = {
     try {
       const { category } = input;
 
-      const existingBusiness = await db.query.business.findFirst({
+      /*  const existingBusiness = await db.query.business.findFirst({
         where: eq(businesSchema.name, input.name),
       });
 
@@ -55,7 +55,7 @@ export const BusinessService = {
           "Ya existe un comercio con ese nombre",
           "BAD_REQUEST",
         );
-      }
+      } */
 
       const user = await db.query.user.findFirst({
         where: eq(userSchema.email, input.userEmail),

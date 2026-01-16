@@ -21,5 +21,11 @@ export namespace AuthModel {
     ]),
   });
 
-  export type signUp = typeof signUp.static;
+  export type SignUp = typeof signUp.static;
+
+  export const signUpOutput = t.Object({
+    success: t.Boolean(),
+    message: t.Optional(t.String()),
+  });
+  export type SignUpOutput = typeof signUpOutput.static;
 }

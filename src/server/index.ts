@@ -1,3 +1,4 @@
+import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { type Context, Elysia } from "elysia";
 import { auth } from "@/lib/auth";
@@ -36,24 +37,16 @@ export const app = new Elysia({
   name: "Lules Market API",
   tags: ["Lules Market API"],
 })
-  .onError(({ error, set }) => {
-    if (error instanceof AppError) {
-      set.status = error.code === "NOT_FOUND" ? 404 : 400;
-      return {
-        success: false,
-        element: null,
-        message: error.message,
-      };
-    }
-    console.log({
-      error,
-    });
-    // Handle other errors
-    return {
-      success: false,
-      message: "Internal Server Error",
-    };
+  .error({
+    AppError,
   })
+  .onError(({ error, code, status }) => {
+    switch (code) {
+      case "AppError":
+        return status(error.status, error.message);
+    }
+  })
+  .use(cors())
   .all("/api/auth/*", betterAuthView)
   .use(authPlugin)
   .use(businessModule)
