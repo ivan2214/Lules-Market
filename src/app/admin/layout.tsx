@@ -32,7 +32,9 @@ export default function AdminLayout({
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <AppBreadcrumbs />
+            <Suspense fallback={<Skeleton className="h-4 w-32" />}>
+              <AppBreadcrumbs />
+            </Suspense>
           </div>
         </header>
         <div className="flex flex-1 p-4 pt-0">
