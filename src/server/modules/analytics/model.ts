@@ -6,13 +6,10 @@ export namespace AnalyticsModel {
   export type AnalyticsPeriod = Static<typeof AnalyticsPeriodSchema>;
 
   export const homePageStatsOutput = t.Object({
-    stats: t.Object({
-      activeBusinessesTotal: t.Number(),
-      activeBusinessesLastMonth: t.Number(),
-      productsTotal: t.Number(),
-      productsLastMonth: t.Number(),
-    }),
-    success: t.Boolean(),
+    activeBusinessesTotal: t.Number(),
+    activeBusinessesLastMonth: t.Number(),
+    productsTotal: t.Number(),
+    productsLastMonth: t.Number(),
   });
 
   export const statsQuery = t.Optional(

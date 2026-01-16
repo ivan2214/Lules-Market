@@ -70,7 +70,7 @@ async function fetchHomePageStats(): Promise<HomePageStats> {
 }
 
 export const AnalyticsService = {
-  async getHomePageStats(): Promise<HomePageStats> {
+  async getHomePageStats(): Promise<AnalyticsModel.HomePageStatsOutput> {
     return getCachedOrFetch(
       CACHE_KEYS.HOMEPAGE_STATS,
       fetchHomePageStats,
@@ -78,7 +78,10 @@ export const AnalyticsService = {
     );
   },
 
-  async getStats(businessId: string, period?: AnalyticsModel.AnalyticsPeriod) {
+  async getStats(
+    businessId: string,
+    period?: AnalyticsModel.AnalyticsPeriod,
+  ): Promise<AnalyticsModel.StatsOutput> {
     const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);

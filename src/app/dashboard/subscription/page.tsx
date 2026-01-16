@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { api } from "@/lib/eden";
+import { getPaymentHistory } from "@/data/payments/get";
+import { getPlans } from "@/data/plans/get";
 import { formatCurrency } from "@/lib/format";
 import {
   Alert,
@@ -34,9 +35,10 @@ export default async function SubscriptionPage({
     redirect(pathsConfig.auth.signIn);
   }
 
-  const { data: payments } = await api.payment.history.get();
-
-  const { data: plans } = await api.plan.public["list-all"].get();
+  const [payments, plans] = await Promise.all([
+    getPaymentHistory(),
+    getPlans(),
+  ]);
 
   const message = errorParams ? subscriptionErrors[errorParams] : null;
 

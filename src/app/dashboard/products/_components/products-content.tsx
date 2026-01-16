@@ -5,11 +5,10 @@ import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
+import { listAllCategories } from "@/data/categories/get";
 import { ProductCardDashboard } from "@/features/dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features/dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features/dashboard/_constants";
-import { api } from "@/lib/eden";
-
 import {
   Alert,
   AlertDescription,
@@ -24,12 +23,10 @@ export async function ProductsContent() {
     redirect(pathsConfig.business.setup);
   }
 
-  const [products, categoriesResponse] = await Promise.all([
+  const [products, categories] = await Promise.all([
     getBusinessProducts(currentBusiness.id),
-    api.category.public["list-all"].get(),
+    listAllCategories(),
   ]);
-
-  const categories = categoriesResponse.data ?? [];
 
   const plan = currentBusiness.currentPlan;
   const usedProducts = plan?.productsUsed ?? 0;

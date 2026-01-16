@@ -5,7 +5,6 @@ import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
-import type { Category } from "@/db/types";
 import { api } from "@/lib/eden";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import {
@@ -22,14 +21,14 @@ import {
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/shared/components/ui/card";
-import type { ProductDto } from "@/shared/utils/dto";
+import type { CategoryDto, ProductDto } from "@/shared/utils/dto";
 import { mainImage } from "@/shared/utils/main-image";
 import { ProductFormDialog } from "./product-form-dialog";
 
 interface ProductCardProps {
   product: ProductDto;
 
-  categories: Category[];
+  categories: CategoryDto[];
   maxImagesPerProduct: number;
 }
 

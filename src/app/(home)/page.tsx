@@ -13,11 +13,11 @@ import Link from "next/link";
 import { DynamicStats } from "@/app/(home)/_components/sections/dynamic-stats";
 import { FeaturedBusinesses } from "@/app/(home)/_components/sections/featured-businesses";
 import { RecentProducts } from "@/app/(home)/_components/sections/recent-products";
+import { getHomePageStats } from "@/data/analytics/get";
 import { getFeaturedBusinesses } from "@/data/business/get";
 import { getRecentProducts } from "@/data/products/get";
 
 import { env } from "@/env/server";
-import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -66,15 +66,9 @@ export const metadata: Metadata = {
   },
 };
 
-const getStats = async () => {
-  const { data, error } = await api.analytics.public["home-page-stats"].get();
-  if (error) throw error;
-  return data;
-};
-
 export default async function HomePage() {
   const [stats, featuredBusinesses, recentProducts] = await Promise.all([
-    getStats(),
+    getHomePageStats(),
     getFeaturedBusinesses(),
     getRecentProducts(),
   ]);

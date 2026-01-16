@@ -19,7 +19,7 @@ export function DynamicStats({
     activeBusinessesLastMonth,
     productsTotal,
     productsLastMonth,
-  } = data?.stats || {};
+  } = data || {};
 
   const stats = {
     businesses: {

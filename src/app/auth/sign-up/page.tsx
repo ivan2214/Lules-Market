@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { listAllCategories } from "@/data/categories/get";
 import { api } from "@/lib/eden";
 import {
   Card,
@@ -11,7 +12,7 @@ import {
 import { PasswordSignUpForm } from "./_components/password-sign-up-form";
 
 export default async function SignUpPage() {
-  const { data: categories } = await api.category.public["list-all"].get();
+  const categories = await listAllCategories();
   return (
     <Card className="w-full max-w-xl">
       <CardHeader className="text-center">
