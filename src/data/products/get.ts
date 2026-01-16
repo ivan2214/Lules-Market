@@ -1,6 +1,7 @@
 import { api } from "@/lib/eden";
 import "server-only";
 import { cache } from "react";
+import { db } from "@/db";
 import { toProductDto } from "@/shared/utils/dto";
 
 type SearchParams = {
@@ -64,3 +65,11 @@ export const getSimilarProducts = cache(
     return data.products.map(toProductDto);
   },
 );
+
+/**
+ * Specifically for generateStaticParams
+ */
+export const getProductIds = cache(async () => {
+  const products = await db.query.product.findMany();
+  return products.map((p) => ({ id: p.id }));
+});

@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { db } from "@/db";
 import { api } from "@/lib/eden";
 import { toBusinessDto } from "@/shared/utils/dto";
 
@@ -67,11 +68,8 @@ export const getSimilarBusinesses = cache(
  * Specifically for generateStaticParams
  */
 export const getBusinessIds = cache(async () => {
-  const { data, error } = await api.business.public["list-all"].get({
-    query: { limit: 100 },
-  });
-  if (error) throw error;
-  return data.businesses.map((b) => ({ id: b.id }));
+  const businesses = await db.query.business.findMany();
+  return businesses.map((b) => ({ id: b.id }));
 });
 
 export const getBusinessProducts = cache(async (headers: Headers) => {

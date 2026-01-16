@@ -9,7 +9,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense, use } from "react";
-import { getProductById, getSimilarProducts } from "@/data/products/get";
+import {
+  getProductById,
+  getProductIds,
+  getSimilarProducts,
+} from "@/data/products/get";
 import { env } from "@/env/server";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -26,11 +30,6 @@ import { Separator } from "@/shared/components/ui/separator";
 import { mainImage } from "@/shared/utils/main-image";
 import { ProductImages } from "./_components/product-images";
 import { ProductViewTracker } from "./_components/product-view-tracker";
-
-// ... (dynamic and revalidate unchanged)
-
-export const dynamic = "force-dynamic";
-export const revalidate = 3600;
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -80,6 +79,10 @@ export async function generateMetadata({
       images: [imageUrl],
     },
   };
+}
+
+export async function generateStaticParams() {
+  return await getProductIds();
 }
 
 export default function ProductLayout({ params }: ProductPageProps) {
