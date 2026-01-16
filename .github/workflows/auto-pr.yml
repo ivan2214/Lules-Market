@@ -3,6 +3,7 @@ name: Auto Create PR with AI Description
 on:
   push:
     branches:
+      - "feat/**"
       - "feature/**"
       - "refactor/**"
       - "bugfix/**"
