@@ -2,6 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { CheckCircle2, Key, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
@@ -22,6 +23,7 @@ export function TokenForm({
   onStatusChange,
 }: TokenFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -47,6 +49,7 @@ export function TokenForm({
         } else {
           onStatusChange?.("verified");
           onVerificationComplete?.(true);
+          router.refresh();
         }
       } catch (err) {
         const errorMessage =

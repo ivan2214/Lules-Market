@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -33,6 +34,7 @@ export function EmailVerificationCard({
 }: EmailVerificationCardProps) {
   const [status, setStatus] = useState<VerificationStatus>(initialStatus);
   const [error, setError] = useState<string | undefined>(initialError);
+  const router = useRouter();
 
   const verifyToken = useCallback(async (verificationToken: string) => {
     setStatus("verifying");
@@ -50,6 +52,7 @@ export function EmailVerificationCard({
       } else {
         setStatus("verified");
         setError(undefined);
+        router.refresh();
       }
     } catch (err) {
       setStatus("error");
