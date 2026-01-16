@@ -2,6 +2,7 @@ import { XCircle } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getPaymentById } from "@/data/payments/get";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -26,10 +27,7 @@ export default async function PaymentFailurePage({
 
   await api.payment.failure.post({ paymentIdDB });
 
-  const { data: paymentData } = await api.payment.getPayment.get({
-    query: { paymentIdDB },
-  });
-  const payment = paymentData?.payment;
+  const payment = await getPaymentById(paymentIdDB);
 
   if (!payment) {
     redirect(pathsConfig.dashboard.subscription.root);

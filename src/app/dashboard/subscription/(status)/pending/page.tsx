@@ -2,7 +2,8 @@ import { Clock } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
-import { api } from "@/lib/eden";
+import { getPaymentById } from "@/data/payments/get";
+
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -24,10 +25,7 @@ export default async function PaymentPendingPage({
     redirect(pathsConfig.dashboard.subscription.root);
   }
 
-  const { data: paymentData } = await api.payment.getPayment.get({
-    query: { paymentIdDB },
-  });
-  const payment = paymentData?.payment;
+  const payment = await getPaymentById(paymentIdDB);
 
   if (!payment) {
     redirect(pathsConfig.dashboard.subscription.root);

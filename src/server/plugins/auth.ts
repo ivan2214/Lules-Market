@@ -52,7 +52,7 @@ export const authPlugin = new Elysia({ name: "better-auth" })
   });
 
 export async function getSessionFromHeaders(headers: Headers) {
-  return auth.api.getSession({
+  return await auth.api.getSession({
     headers,
   });
 }
