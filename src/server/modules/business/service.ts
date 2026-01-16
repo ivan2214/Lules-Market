@@ -35,7 +35,6 @@ import {
   generateCacheKey,
   getCachedOrFetch,
   invalidateCache,
-  invalidateCacheKeys,
 } from "@/lib/cache";
 import { AppError } from "@/server/errors";
 import type { BusinessModel } from "./model";
@@ -130,7 +129,7 @@ export const BusinessService = {
 
       // Invalidar caché
       void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
-      void invalidateCacheKeys(CACHE_KEYS.HOMEPAGE_STATS);
+      void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
 
       return { success: true };
     } catch (error) {
@@ -224,7 +223,7 @@ export const BusinessService = {
 
     // Invalidar caché de negocios
     void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
-    void invalidateCacheKeys(CACHE_KEYS.business(updated.id));
+    void invalidateCache(CACHE_KEYS.business(updated.id));
 
     return {
       success: true,
@@ -306,9 +305,9 @@ export const BusinessService = {
 
       // Invalidar caché de negocios y productos
       void invalidateCache(CACHE_KEYS.PATTERNS.ALL_BUSINESSES);
-      void invalidateCacheKeys(CACHE_KEYS.business(currentBusiness.id));
+      void invalidateCache(CACHE_KEYS.business(currentBusiness.id));
       void invalidateCache(CACHE_KEYS.PATTERNS.ALL_PRODUCTS);
-      void invalidateCacheKeys(CACHE_KEYS.HOMEPAGE_STATS);
+      void invalidateCache(CACHE_KEYS.HOMEPAGE_STATS);
 
       return { success: true };
     } catch (error) {
@@ -575,26 +574,21 @@ export const BusinessService = {
   },
 
   async getMyProducts(businessId: string, limit: number, offset: number) {
-    return getCachedOrFetch(
-      CACHE_KEYS.businessMyProducts(businessId, limit, offset),
-      async () => {
-        const where: SQL[] = [
-          eq(productSchema.businessId, businessId),
-          eq(productSchema.active, true),
-        ];
-
-        return await db.query.product.findMany({
-          where: and(...where),
-          limit: limit,
-          offset: offset,
-          orderBy: [desc(productSchema.createdAt)],
-          with: {
-            images: true,
-          },
-        });
+    const where: SQL[] = [
+      eq(productSchema.businessId, businessId),
+      eq(productSchema.active, true),
+    ];
+    const products = await db.query.product.findMany({
+      where: and(...where),
+      limit: limit,
+      offset: offset,
+      orderBy: [desc(productSchema.createdAt)],
+      with: {
+        images: true,
       },
-      CACHE_TTL.PRODUCTS_LIST,
-    );
+    });
+
+    return products;
   },
   // Para generateParams - Cache larga (1 hora o más)
   async getAllIds(): Promise<{ id: string }[]> {

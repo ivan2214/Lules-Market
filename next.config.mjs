@@ -11,8 +11,19 @@ await jiti.import("./src/env/client.ts");
 const nextConfig = {
   typedRoutes: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
       {
         protocol: "https",
         hostname: "**.amazonaws.com",
@@ -28,8 +39,13 @@ const nextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
+  cacheComponents: true,
   // Fix Turbopack bundling issue with better-auth
-  serverExternalPackages: ["better-auth"],
+  serverExternalPackages: [
+    "better-auth",
+    "@neondatabase/serverless",
+    "drizzle-orm",
+  ],
 };
 
 export default nextConfig;

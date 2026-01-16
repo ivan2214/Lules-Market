@@ -1,6 +1,4 @@
 import Link from "next/link";
-
-import { ResetPasswordForm } from "@/shared/components/auth/reset-password-form";
 import {
   Card,
   CardContent,
@@ -8,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { ResetPasswordForm } from "./_components/reset-password-form";
 
 export default async function ResetPasswordPage({
   searchParams,

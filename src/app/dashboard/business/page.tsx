@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { api } from "@/lib/eden";
+import { listAllCategories } from "@/data/categories/get";
 import {
   Card,
   CardContent,
@@ -18,7 +18,7 @@ export default async function BusinessPage() {
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
-  const { data: categories } = await api.category.public["list-all"].get();
+  const categories = await listAllCategories();
 
   return (
     <div className="space-y-6">

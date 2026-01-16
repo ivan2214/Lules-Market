@@ -1,8 +1,9 @@
 import "server-only";
+import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 import { db } from "@/db";
-import { api } from "@/lib/eden";
-import { toBusinessDto } from "@/shared/utils/dto";
+import { BusinessService } from "@/server/modules/business/service";
+import { toBusinessDto, toProductDto } from "@/shared/utils/dto";
 
 type SearchParams = {
   search?: string;
@@ -12,75 +13,75 @@ type SearchParams = {
   limit?: string;
 };
 
-export const listAllBusiness = cache(async (params?: SearchParams | null) => {
+export async function listAllBusiness(params?: SearchParams | null) {
+  "use cache";
+  cacheTag("businesses");
+  cacheLife("minutes");
   const { limit, page, search, sortBy, category } = params || {};
 
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
 
-  const { data, error } = await api.business.public["list-all"].get({
-    query: {
-      category,
-      limit: currentLimit,
-      page: currentPage,
-      search,
-      sortBy,
-    },
+  const data = await BusinessService.listAll({
+    category,
+    limit: currentLimit,
+    page: currentPage,
+    search,
+    sortBy,
   });
-
-  if (error) throw error;
 
   return {
     ...data,
     businesses: data.businesses.map(toBusinessDto),
   };
-});
+}
 
-export const getFeaturedBusinesses = cache(async () => {
-  const { data, error } = await api.business.public.featured.get();
-  if (error) throw error;
+export async function getFeaturedBusinesses() {
+  "use cache";
+  cacheTag("businesses");
+  cacheLife("hours");
+  const data = await BusinessService.getFeatured();
   return data.map(toBusinessDto);
-});
+}
 
-export const getBusinessById = cache(async (id: string) => {
-  const { data, error } = await api.business.public["get-business-by-id"].get({
-    query: { id },
+export async function getBusinessById(id: string) {
+  "use cache";
+  cacheTag("businesses");
+  cacheLife("hours");
+  const { business } = await BusinessService.getById(id);
+  return business ? toBusinessDto(business) : null;
+}
+
+export async function getSimilarBusinesses(params: {
+  category: string;
+  businessId: string;
+  limit?: number;
+}) {
+  "use cache";
+  cacheTag("businesses");
+  cacheLife("days");
+  const { businesses } = await BusinessService.listSimilar({
+    category: params.category,
+    businessId: params.businessId,
+    limit: params.limit,
   });
-  if (error) throw error;
+  return (businesses || []).map(toBusinessDto);
+}
 
-  return data.business ? toBusinessDto(data.business) : null;
-});
-
-export const getSimilarBusinesses = cache(
-  async (params: { category: string; businessId: string; limit?: number }) => {
-    const { data, error } = await api.business.public["list-similar"].get({
-      query: {
-        category: params.category,
-        businessId: params.businessId,
-        limit: params.limit,
-      },
-    });
-    if (error) throw error;
-    return (data.businesses || []).map(toBusinessDto);
-  },
-);
-
-/**
- * Specifically for generateStaticParams
- */
-export const getBusinessIds = cache(async () => {
-  const businesses = await db.query.business.findMany();
+// Optimizado: Solo trae IDs y con un límite razonable
+export const getBusinessIds = cache(async (limit: number = 100) => {
+  const businesses = await db.query.business.findMany({
+    limit: limit,
+    columns: { id: true }, // ⚡ MUCHO más rápido
+    orderBy: (table, { desc }) => [desc(table.createdAt)],
+  });
   return businesses.map((b) => ({ id: b.id }));
 });
 
-export const getBusinessProducts = cache(async (headers: Headers) => {
-  const { data, error } = await api.business.private["my-products"].get({
-    headers,
-  });
-  if (error) {
-    console.log(error);
-
-    throw new Error("Error obteniendo produtos");
-  }
-  return data;
-});
+export async function getBusinessProducts(businessId: string) {
+  "use cache";
+  cacheTag("businesses");
+  cacheLife("minutes");
+  const data = await BusinessService.getMyProducts(businessId, 50, 0);
+  return data.map(toProductDto);
+}

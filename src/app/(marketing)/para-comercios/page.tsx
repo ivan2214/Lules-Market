@@ -7,8 +7,6 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PlanPricingPreview } from "./_components/plan-pricing.preview";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Para Comercios - Lules Market | Tu Vitrina Digital",
   description:

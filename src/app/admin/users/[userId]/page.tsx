@@ -1,9 +1,3 @@
-import { cookies } from "next/headers";
-
-export const dynamic = "force-dynamic";
-/* revalidar cada 30 minutos */
-export const revalidate = 1800;
-
 export default async function UserPage({
   params,
 }: {
@@ -11,11 +5,6 @@ export default async function UserPage({
 }) {
   const { userId } = await params;
   console.log(userId);
-
-  const cookieStore = await cookies();
-  const _sessionToken = cookieStore
-    .get("better-auth.session_token")
-    ?.value.split(".")[0];
 
   /*  const { sessions } = await auth.api.listUserSessions({
     body: {

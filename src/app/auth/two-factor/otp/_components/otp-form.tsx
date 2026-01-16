@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { twoFactor } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
+import { Field, FieldLabel } from "@/shared/components/ui/field";
 import { Input } from "@/shared/components/ui/input";
 import { otpSchema } from "@/shared/validators/auth";
 import { typeboxValidator } from "@/shared/validators/form";
-import { Field, FieldLabel } from "../ui/field";
 
 export function OtpForm() {
   const router = useRouter();

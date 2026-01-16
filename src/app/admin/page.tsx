@@ -1,4 +1,3 @@
-import { desc, eq } from "drizzle-orm";
 import {
   ArrowRight,
   Ban,
@@ -10,9 +9,7 @@ import {
   UserX,
 } from "lucide-react";
 import Link from "next/link";
-import { db } from "@/db";
-import { user as userSchema } from "@/db/schema";
-import type { UserRole } from "@/db/types";
+import { getAdminRecentUsers, getAdminTotalUsersCount } from "@/data/admin/get";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -22,46 +19,11 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 
-export const dynamic = "force-dynamic";
-/* revalidar cada 30 minutos */
-export const revalidate = 1800;
-
-type SearchParams = {
-  page?: string;
-  role?: string;
-  perPage?: string;
-};
-
-export default async function AdminPage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const { page, role, perPage } = await searchParams;
-
-  const data = await db.query.user.findMany({
-    limit: perPage ? parseInt(perPage, 10) : 5,
-    offset: page
-      ? (parseInt(page, 10) - 1) * (perPage ? parseInt(perPage, 10) : 5)
-      : 0,
-    orderBy: desc(userSchema.createdAt),
-    with: {
-      sessions: true,
-      accounts: true,
-    },
-    where: role ? eq(userSchema.role, role as UserRole) : undefined,
-  });
-
-  const totalUsers = data.length;
-  const recentUsers = await db.query.user.findMany({
-    limit: 5,
-    offset: 0,
-    orderBy: desc(userSchema.createdAt),
-    with: {
-      sessions: true,
-      accounts: true,
-    },
-  });
+export default async function AdminPage() {
+  const [totalUsers, recentUsers] = await Promise.all([
+    getAdminTotalUsersCount(),
+    getAdminRecentUsers(5),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">

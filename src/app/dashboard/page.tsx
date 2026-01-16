@@ -1,11 +1,10 @@
 import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
-import { api } from "@/lib/eden";
+import { listAllCategories } from "@/data/categories/get";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -13,32 +12,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-
-// import { ProductFormDialog } from "./_components/product-form-dialog";
-
-const ProductFormDialog = dynamic(
-  () =>
-    import("./_components/product-form-dialog").then(
-      (mod) => mod.ProductFormDialog,
-    ),
-  {
-    loading: () => <Button disabled>Cargando...</Button>,
-  },
-);
+import type { ProductDto } from "@/shared/utils/dto";
+import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
-  const { currentBusiness, headers } = await getCurrentBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 
-  /*   const productsBusiness = await getBusinessProducts(headers);
-  const { data: categories } = await api.category.public["list-all"].get(); */
-
-  const [productsBusiness, { data: categories }] = await Promise.all([
-    getBusinessProducts(headers),
-    api.category.public["list-all"].get(),
+  const [productsBusiness, categories] = await Promise.all([
+    getBusinessProducts(currentBusiness.id),
+    listAllCategories(),
   ]);
 
   const productCount = productsBusiness?.length || 0;
@@ -167,7 +153,7 @@ async function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {productsBusiness?.slice(0, 5).map((product) => (
+              {productsBusiness?.slice(0, 5).map((product: ProductDto) => (
                 <div
                   key={product.id}
                   className="flex items-center justify-between"

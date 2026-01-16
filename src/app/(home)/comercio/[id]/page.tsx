@@ -123,7 +123,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  return await getBusinessIds();
+  // Solo pre-renderizamos los 100 más recientes para mantener el build rápido
+  return await getBusinessIds(100);
 }
 
 export default async function BusinessPage({ params }: Props) {

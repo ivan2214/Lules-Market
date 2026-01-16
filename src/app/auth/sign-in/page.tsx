@@ -1,7 +1,5 @@
 import Link from "next/link";
 
-import { OAuthProviders } from "@/shared/components/auth/oauth-providers";
-import { PasswordSignInForm } from "@/shared/components/auth/password-sign-in-form";
 import {
   Card,
   CardContent,
@@ -9,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { OAuthProviders } from "../_components/oauth-providers";
+import { PasswordSignInForm } from "./_components/password-sign-in-form";
 
 export default function SignInPage() {
   return (

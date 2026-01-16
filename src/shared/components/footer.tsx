@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { navigationWithTitles } from "@/shared/constants/navigation-with-titles";
 import { getCurrentYear } from "@/shared/utils/date";
 import { Separator } from "./ui/separator";
 
-export async function Footer() {
-  const year = await getCurrentYear();
-
+export function Footer() {
   return (
     <footer className="container mx-auto mt-auto flex flex-col gap-8 border-t p-5 lg:p-10">
       <div className="flex flex-col items-start gap-2">
@@ -49,8 +48,15 @@ export async function Footer() {
       </div>
 
       <div className="mt-8 border-t pt-8 text-center text-muted-foreground text-sm">
-        <p>&copy; {year} Lules Market. Todos los derechos reservados.</p>
+        <Suspense fallback={<p>Loading...</p>}>
+          <FooterCurrentYear />
+        </Suspense>
       </div>
     </footer>
   );
 }
+
+const FooterCurrentYear = async () => {
+  const year = await getCurrentYear();
+  return <p>&copy; {year} Lules Market. Todos los derechos reservados.</p>;
+};

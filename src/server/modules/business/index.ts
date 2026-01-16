@@ -10,7 +10,7 @@ export const businessController = new Elysia({
 });
 
 const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
-  .get(
+  /*  .get(
     "/featured",
     async () => {
       return await BusinessService.getFeatured();
@@ -52,7 +52,7 @@ const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
       query: BusinessModel.listSimilarInput,
       response: BusinessModel.listSimilarOutput,
     },
-  )
+  ) */
   .post(
     "/trackView/:businessId",
     async ({ params, body }) => {
@@ -76,7 +76,7 @@ const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
 
 const privateRoutes = new Elysia({ prefix: "/private" })
   .use(authPlugin)
-  .get(
+  /*  .get(
     "/my-products",
     async ({ query, isBusiness, business }) => {
       if (!isBusiness || !business)
@@ -92,7 +92,7 @@ const privateRoutes = new Elysia({ prefix: "/private" })
       isBusiness: true,
       query: BusinessModel.listAllInput, // Reusing limit/offset from listAllInput for pagination
     },
-  )
+  ) */
   .post(
     "/update",
     async ({ body, isBusiness, business }) => {

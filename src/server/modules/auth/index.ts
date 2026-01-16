@@ -1,5 +1,4 @@
 import { Elysia } from "elysia";
-import { AppError } from "@/server/errors";
 import { getSessionFromHeaders } from "@/server/plugins/auth";
 import { AuthModel } from "./model";
 import { AuthService } from "./service";
@@ -17,7 +16,7 @@ export const authController = new Elysia({
 
         return {
           success: response.success,
-          mesaage: response.message,
+          message: response.message,
         };
       }
 
@@ -28,10 +27,7 @@ export const authController = new Elysia({
       response: AuthModel.signUpOutput,
     },
   )
-  .get("/get-session", async ({ request: { headers } }) => {
-    if (!headers) {
-      throw new AppError("No headers provided", "BAD_REQUEST");
-    }
-    const session = await getSessionFromHeaders(headers);
+  .get("/get-session", async ({ request }) => {
+    const session = await getSessionFromHeaders(request.headers);
     return session;
   });

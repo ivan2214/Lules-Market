@@ -1,10 +1,15 @@
+// src/data/categories/get.ts
 import "server-only";
-import { cache } from "react";
-import { api } from "@/lib/eden";
+import { cacheLife, cacheTag } from "next/cache";
+import { CategoryService } from "@/server/modules/category/service";
 import { toCategoryDto } from "@/shared/utils/dto";
 
-export const listAllCategories = cache(async () => {
-  const { data, error } = await api.category.public["list-all"].get();
-  if (error) throw error;
-  return data.map(toCategoryDto);
-});
+export async function listAllCategories() {
+  "use cache";
+  cacheTag("categories");
+  cacheLife("weeks");
+
+  // ✅ Llamada directa al servicio, sin HTTP overhead
+  const categories = await CategoryService.listAll();
+  return categories.map(toCategoryDto);
+}

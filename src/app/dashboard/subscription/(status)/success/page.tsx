@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getPaymentById } from "@/data/payments/get";
 import { auth } from "@/lib/auth";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
@@ -42,10 +43,7 @@ export default async function PaymentSuccessPage({
 
   await api.payment.success.post({ paymentIdMP, paymentIdDB });
 
-  const { data: paymentData } = await api.payment.getPayment.get({
-    query: { paymentIdDB },
-  });
-  const payment = paymentData?.payment;
+  const payment = await getPaymentById(paymentIdDB);
 
   if (!payment) {
     redirect("/dashboard/subscription");
