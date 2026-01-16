@@ -13,6 +13,9 @@ import Link from "next/link";
 import { DynamicStats } from "@/app/(home)/_components/sections/dynamic-stats";
 import { FeaturedBusinesses } from "@/app/(home)/_components/sections/featured-businesses";
 import { RecentProducts } from "@/app/(home)/_components/sections/recent-products";
+import { getFeaturedBusinesses } from "@/data/business/get";
+import { getRecentProducts } from "@/data/products/get";
+
 import { env } from "@/env/server";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
@@ -24,6 +27,7 @@ import {
 } from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
+  // ... (keeping existing metadata unchanged)
   title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
   description:
     "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio con nuestra plataforma diseñada para comercios locales.",
@@ -64,18 +68,6 @@ export const metadata: Metadata = {
 
 const getStats = async () => {
   const { data, error } = await api.analytics.public["home-page-stats"].get();
-  if (error) throw error;
-  return data;
-};
-
-const getFeaturedBusinesses = async () => {
-  const { data, error } = await api.business.public.featured.get();
-  if (error) throw error;
-  return data;
-};
-
-const getRecentProducts = async () => {
-  const { data, error } = await api.products.public.recent.get();
   if (error) throw error;
   return data;
 };

@@ -2,15 +2,11 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { BusinessList } from "@/app/(home)/_components/business-list";
-import type { BusinessWithRelations } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
+import type { BusinessDto } from "@/shared/utils/dto";
 
-export function FeaturedBusinesses({
-  data,
-}: {
-  data: BusinessWithRelations[];
-}) {
+export function FeaturedBusinesses({ data }: { data: BusinessDto[] }) {
   const featuredBusinesses = data || [];
 
   return (

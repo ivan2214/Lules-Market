@@ -3,12 +3,12 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { Category } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { type TypeExplorer, useSearchUrl } from "@/shared/hooks/use-search-url";
+import type { CategoryDto } from "@/shared/utils/dto";
 
 type CategoryPillsProps = {
-  categories: Category[];
+  categories: CategoryDto[];
   typeExplorer: TypeExplorer;
   category?: string;
 };

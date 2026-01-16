@@ -1,11 +1,10 @@
 import "server-only";
 import { auth } from "@/lib/auth";
-import { AppError } from "@/server/errors";
 import { BusinessService } from "../business/service";
 import type { AuthModel } from "./model";
 
 export const AuthService = {
-  async signUp(input: AuthModel.signUp) {
+  async signUp(input: AuthModel.SignUp): Promise<AuthModel.SignUpOutput> {
     try {
       const { name, email, password, businessData } = input;
       const {
@@ -32,14 +31,15 @@ export const AuthService = {
       });
 
       if (!user) {
-        throw new AppError("Usuario no encontrado", "NOT_FOUND", {
-          message: "Usuario no encontrado",
-        });
+        return {
+          success: false,
+          message: "Algo salio mal",
+        };
       }
 
-      const data = await BusinessService.setup({
-        coverImage: coverImage.file,
-        logo: logo.file,
+      const { success } = await BusinessService.setup({
+        coverImage: coverImage,
+        logo: logo,
         name: businessName,
         address,
         category,
@@ -54,11 +54,14 @@ export const AuthService = {
       });
 
       return {
-        success: !!data?.success,
+        success: !!success,
       };
     } catch (error) {
-      console.log({ error });
-      throw error;
+      const errorMessage =
+        error instanceof Error ? error.message : "Error en el servicio";
+
+      console.error(errorMessage);
+      throw errorMessage;
     }
   },
 };

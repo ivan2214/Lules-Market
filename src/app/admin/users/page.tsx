@@ -12,7 +12,10 @@ const searchSchema = z.object({
   page: z.coerce.number().min(1).default(1),
   perPage: z.coerce.number().min(1).default(10),
   name: z.string().optional(),
-  role: z.enum(["ADMIN", "USER", "SUPER_ADMIN", "BUSINESS"]).optional(),
+  role: z.preprocess(
+    (val) => (typeof val === "string" ? val.toUpperCase() : val),
+    z.enum(["ADMIN", "USER", "SUPER_ADMIN", "BUSINESS"]).optional(),
+  ),
   sort: z
     .string()
     .transform((val) => {
@@ -26,19 +29,27 @@ const searchSchema = z.object({
     .default([]),
 });
 
+type SearchParams = {
+  page?: string;
+  perPage?: string;
+  name?: string;
+  role?: string;
+  sort?: string;
+};
+
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    page: string;
-    perPage: string;
-    name: string;
-    role: string;
-    sort: string;
-  }>;
+  searchParams?: Promise<SearchParams>;
 }) {
   const search = await searchParams;
-  const { page, perPage, name, role, sort: _sort } = searchSchema.parse(search);
+  const {
+    page,
+    perPage,
+    name,
+    role,
+    sort: _sort,
+  } = searchSchema.parse(search || {});
 
   const where: SQL[] = [];
 

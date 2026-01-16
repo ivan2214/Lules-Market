@@ -1,10 +1,10 @@
 ﻿import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { ProductList } from "@/app/(home)/_components/product-list";
-import type { ProductModel } from "@/server/modules/products/model";
 import { Button } from "@/shared/components/ui/button";
+import type { ProductDto } from "@/shared/utils/dto";
 
-export function RecentProducts({ data }: { data: ProductModel.RecentOutput }) {
+export function RecentProducts({ data }: { data: ProductDto[] }) {
   return (
     <section className="rounded-3xl bg-muted/30">
       <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
@@ -28,7 +28,7 @@ export function RecentProducts({ data }: { data: ProductModel.RecentOutput }) {
         </Button>
       </div>
 
-      <ProductList products={data?.products || []} />
+      <ProductList products={data || []} />
     </section>
   );
 }

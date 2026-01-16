@@ -182,8 +182,8 @@ export const CACHE_KEYS = {
   product: (id: string) => `product:${id}`,
   plan: (type: PlanType) => `plan:${type}`,
   business: (id: string) => `business:${id}`,
-  businessesSimilar: (category: string, businessId: string) =>
-    `businesses:similar:${category}:${businessId}`,
+  businessesSimilar: (category: string, businessId: string, limit: string) =>
+    `businesses:similar:${category}:${businessId}:${limit}`,
   productsSimilar: (categoryId: string, productId: string) =>
     `products:similar:${categoryId}:${productId}`,
 } as const;

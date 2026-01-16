@@ -11,7 +11,7 @@ export const requireBusiness = async () => {
   const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
-    redirect(pathsConfig.business.setup);
+    return redirect(pathsConfig.business.setup);
   }
 
   const isAdmin = await db.query.admin.findFirst({
@@ -19,6 +19,6 @@ export const requireBusiness = async () => {
   });
 
   if (isAdmin) {
-    redirect("/admin");
+    return redirect("/admin");
   }
 };

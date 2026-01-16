@@ -1,4 +1,5 @@
 export class AppError extends Error {
+  status = 418;
   constructor(
     public message: string,
     public code:
@@ -11,6 +12,17 @@ export class AppError extends Error {
   ) {
     super(message);
     this.name = "AppError";
+  }
+  toResponse() {
+    return Response.json(
+      {
+        error: this.message,
+        code: this.status,
+      },
+      {
+        status: this.status,
+      },
+    );
   }
 }
 

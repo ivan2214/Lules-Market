@@ -1,5 +1,4 @@
 ﻿import Link from "next/link";
-import type { ProductWithRelations } from "@/db/types";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
@@ -11,10 +10,11 @@ import {
   CardFooter,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { mainImage } from "@/shared/utils/main-image";
+import type { ProductDto } from "@/shared/utils/dto";
+import { mainImage } from "../utils/main-image";
 
 interface ProductCardProps {
-  product: ProductWithRelations;
+  product: ProductDto;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -93,7 +93,7 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 bg-muted">
               <ImageWithSkeleton
-                src={product.business?.logo?.url || "/placeholder.svg"}
+                src={product.business?.logoUrl || "/placeholder.svg"}
                 alt={product.business?.name || "Comercio Local"}
                 className="h-full w-full object-cover"
               />

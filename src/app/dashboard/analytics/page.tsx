@@ -17,7 +17,7 @@ export default async function AnalyticsPage({
 }) {
   const params = await searchParams;
   const period = params.period || "30d";
-  const { currentBusiness } = await getCurrentBusiness();
+  const { currentBusiness, headers } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
@@ -36,6 +36,7 @@ export default async function AnalyticsPage({
     query: {
       period,
     },
+    headers,
   });
 
   const data: AnalyticsData = {

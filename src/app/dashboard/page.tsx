@@ -2,6 +2,7 @@ import { CreditCard, Eye, Package, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
+import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
@@ -14,21 +15,15 @@ import {
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
-  const { currentBusiness } = await getCurrentBusiness();
+  const { currentBusiness, headers } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 
-  const { data: productsBusiness } = await api.business.private[
-    "my-products"
-  ].get({
-    query: {
-      limit: 5,
-    },
-  });
+  const productsBusiness = await getBusinessProducts(headers);
 
-  const productCount = currentBusiness.products?.length || 0;
+  const productCount = productsBusiness?.length || 0;
   const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
   const { data: categories } = await api.category.public["list-all"].get();
 

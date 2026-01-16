@@ -1,6 +1,5 @@
 import { MapPin } from "lucide-react";
 import Link from "next/link";
-import type { BusinessWithRelations } from "@/db/types";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -10,9 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { mainImage } from "../utils/main-image";
+import type { BusinessDto } from "@/shared/utils/dto";
 
-type BusinessCardProps = { business: BusinessWithRelations };
+type BusinessCardProps = { business: BusinessDto };
 
 export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
   return (
@@ -26,7 +25,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
           className="relative aspect-video w-full overflow-hidden p-0"
         >
           <ImageWithSkeleton
-            src={mainImage({ image: business.logo })}
+            src={business.logoUrl || "/placeholder.svg"}
             alt={business.name}
             className="h-full w-full object-cover transition-transform hover:scale-105"
           />
@@ -40,7 +39,7 @@ export const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
 
       <CardContent className="flex h-full flex-col justify-between gap-y-3 p-3">
         <CardTitle className="line-clamp-1">{business.name}</CardTitle>
-        <Badge variant="secondary">{business.category?.label}</Badge>
+        <Badge variant="secondary">{business.category}</Badge>
         <CardDescription className="line-clamp-5">
           {business.description}
         </CardDescription>

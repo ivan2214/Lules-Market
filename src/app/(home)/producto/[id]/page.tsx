@@ -9,8 +9,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense, use } from "react";
+import {
+  getProductById,
+  getProductIds,
+  getSimilarProducts,
+} from "@/data/products/get";
 import { env } from "@/env/server";
-import { api } from "@/lib/eden";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "@/shared/components/product-card";
@@ -27,30 +31,15 @@ import { mainImage } from "@/shared/utils/main-image";
 import { ProductImages } from "./_components/product-images";
 import { ProductViewTracker } from "./_components/product-view-tracker";
 
-// Configuración de revalidación para ISR (Incremental Static Regeneration)
-// Se regenera cada hora
-export const dynamic = "force-dynamic";
-export const revalidate = 3600;
-
 interface ProductPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const resolvedParams = await params;
-  const productId = resolvedParams.id;
-
-  const { data: dataProduct } = await api.products
-    .public({
-      id: productId,
-    })
-    .get();
-
-  const { product } = dataProduct || {};
+  const product = await getProductById(resolvedParams.id);
 
   if (!product) {
     return {
@@ -92,8 +81,11 @@ export async function generateMetadata({
   };
 }
 
+export async function generateStaticParams() {
+  return await getProductIds();
+}
+
 export default function ProductLayout({ params }: ProductPageProps) {
-  // Desempaquetar params usando React.use()
   const resolvedParams = use(params);
 
   return (
@@ -105,34 +97,18 @@ export default function ProductLayout({ params }: ProductPageProps) {
   );
 }
 
-// Componente principal que carga los datos
 async function ProductContent({ productId }: { productId: string }) {
-  const { data: dataProduct } = await api.products
-    .public({
-      id: productId,
-    })
-    .get();
-
-  const { product } = dataProduct || {};
+  const product = await getProductById(productId);
 
   if (!product || !product.business) {
     notFound();
   }
 
-  // Cargar productos similares
-  const { data: similarProductsData } = await api.products
-    .public({
-      id: productId,
-    })
-    .similar.get({
-      query: {
-        productId: product.id,
-        businessId: product.businessId,
-        limit: 4,
-      },
-    });
-
-  const { products: similarProducts } = similarProductsData || {};
+  const similarProducts = await getSimilarProducts({
+    productId: product.id,
+    businessId: product.businessId,
+    limit: 4,
+  });
 
   const planType = product.business?.currentPlan?.plan?.type || "FREE";
   const isPremium = planType === "PREMIUM";
@@ -291,7 +267,7 @@ async function ProductContent({ productId }: { productId: string }) {
                 <div className="flex items-start gap-4">
                   <Avatar className="h-14 w-14 border-2">
                     <AvatarImage
-                      src={product.business.logo?.url || "/placeholder.svg"}
+                      src={product.business.logoUrl || "/placeholder.svg"}
                     />
                     <AvatarFallback className="font-bold text-lg">
                       {product.business.name[0]}

@@ -4,8 +4,9 @@ import { useId } from "react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
 
-type UploadDropzoneProps = {
-  control: UploadHookControl<true>;
+type UploadDropzoneProps<TMultiple extends boolean> = {
+  control: UploadHookControl<TMultiple>;
+  multiple?: TMultiple;
   id?: string;
   accept?: string;
   metadata?: Record<string, unknown>;
@@ -17,36 +18,71 @@ type UploadDropzoneProps = {
       }
     | string;
   uploadOverride?: (
-    ...args: Parameters<UploadHookControl<true>["upload"]>
+    ...args: Parameters<UploadHookControl<TMultiple>["upload"]>
   ) => void;
 
   // Add any additional props you need.
   isAvatarVariant?: boolean;
 };
 
-export function UploadDropzone({
+export function UploadDropzone<TMultiple extends boolean = false>({
   control: { upload, isPending },
+  multiple,
   id: _id,
   accept,
   metadata,
   description,
   uploadOverride,
   isAvatarVariant,
-}: UploadDropzoneProps) {
+}: UploadDropzoneProps<TMultiple>) {
   const id = useId();
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: (files) => {
       if (files.length > 0 && !isPending) {
-        if (uploadOverride) {
-          uploadOverride(files, { metadata });
+        const options = { metadata };
+
+        if (multiple) {
+          // When multiple is true, pass the files array
+          if (uploadOverride) {
+            (
+              uploadOverride as (
+                input: File[],
+                options?: { metadata?: Record<string, unknown> },
+              ) => void
+            )(files, options);
+          } else {
+            (
+              upload as unknown as (
+                input: File[],
+                options?: { metadata?: Record<string, unknown> },
+              ) => void
+            )(files, options);
+          }
         } else {
-          upload(files, { metadata });
+          // When multiple is false, pass a single file
+          const file = files[0];
+          if (uploadOverride) {
+            (
+              uploadOverride as (
+                input: File,
+                options?: { metadata?: Record<string, unknown> },
+              ) => void
+            )(file, options);
+          } else {
+            (
+              upload as unknown as (
+                input: File,
+                options?: { metadata?: Record<string, unknown> },
+              ) => void
+            )(file, options);
+          }
         }
       }
       inputRef.current.value = "";
     },
     noClick: true,
+    multiple: multiple ?? false,
   });
 
   return (
@@ -110,7 +146,7 @@ export function UploadDropzone({
           <input
             {...getInputProps()}
             type="file"
-            multiple
+            multiple={multiple}
             id={_id || id}
             accept={accept}
             disabled={isPending}

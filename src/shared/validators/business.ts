@@ -1,5 +1,4 @@
 import { t } from "elysia";
-import { ImageInputSchema } from "@/shared/validators/image";
 
 export const BusinessSetupSchema = t.Object({
   name: t.String({ minLength: 1, error: "El nombre es requerido" }),
@@ -12,8 +11,26 @@ export const BusinessSetupSchema = t.Object({
   whatsapp: t.Optional(t.String()),
   facebook: t.Optional(t.String()),
   instagram: t.Optional(t.String()),
-  logo: ImageInputSchema,
-  coverImage: ImageInputSchema,
+  logo: t.Object({
+    isMainImage: t.Boolean(),
+    file: t.Optional(
+      t.File({
+        minItems: 1,
+        error: "Upload at least one file.",
+      }),
+    ),
+    key: t.Optional(t.String()),
+  }),
+  coverImage: t.Object({
+    isMainImage: t.Boolean(),
+    file: t.Optional(
+      t.File({
+        minItems: 1,
+        error: "Upload at least one file.",
+      }),
+    ),
+    key: t.Optional(t.String()),
+  }),
   tags: t.Optional(t.Array(t.String())),
 });
 

@@ -16,7 +16,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import {
   account,
-  business,
+  business as businesSchema,
   businessView as businessViewSchema,
   category as categorySchema,
   currentPlan as currentPlanSchema,
@@ -45,9 +45,10 @@ export const BusinessService = {
   async setup(input: BusinessModel.Setup) {
     try {
       const { category } = input;
+      console.log("input que llego a setup", input);
 
-      const existingBusiness = await db.query.business.findFirst({
-        where: eq(business.name, input.name),
+      /*  const existingBusiness = await db.query.business.findFirst({
+        where: eq(businesSchema.name, input.name),
       });
 
       if (existingBusiness) {
@@ -55,7 +56,7 @@ export const BusinessService = {
           "Ya existe un comercio con ese nombre",
           "BAD_REQUEST",
         );
-      }
+      } */
 
       const user = await db.query.user.findFirst({
         where: eq(userSchema.email, input.userEmail),
@@ -85,7 +86,7 @@ export const BusinessService = {
       }
 
       const [newBusiness] = await db
-        .insert(business)
+        .insert(businesSchema)
         .values({
           name: input.name,
           description: input.description,
@@ -142,7 +143,7 @@ export const BusinessService = {
     const { category } = input;
 
     const currentBusiness = await db.query.business.findFirst({
-      where: eq(business.userId, userId),
+      where: eq(businesSchema.userId, userId),
       with: {
         logo: true,
         coverImage: true,
@@ -204,7 +205,7 @@ export const BusinessService = {
     }
 
     const [updated] = await db
-      .update(business)
+      .update(businesSchema)
       .set({
         name: input.name,
         description: input.description,
@@ -216,7 +217,7 @@ export const BusinessService = {
         address: input.address ?? null,
         categoryId,
       })
-      .where(eq(business.id, currentBusiness.id))
+      .where(eq(businesSchema.id, currentBusiness.id))
       .returning();
 
     revalidatePath(`/comercio/${updated.id}`);
@@ -233,7 +234,7 @@ export const BusinessService = {
 
   async delete(userId: string) {
     const currentBusiness = await db.query.business.findFirst({
-      where: eq(business.userId, userId),
+      where: eq(businesSchema.userId, userId),
       with: {
         logo: true,
         coverImage: true,
@@ -294,7 +295,9 @@ export const BusinessService = {
       ]);
 
       // Delete business
-      await db.delete(business).where(eq(business.id, currentBusiness.id));
+      await db
+        .delete(businesSchema)
+        .where(eq(businesSchema.id, currentBusiness.id));
 
       // Delete user
       await db
@@ -339,14 +342,14 @@ export const BusinessService = {
       async () => {
         // 1. Obtener IDs ordenados por prioridad del plan y fecha de creación
         const sortedIds = await db
-          .select({ id: business.id })
-          .from(business)
+          .select({ id: businesSchema.id })
+          .from(businesSchema)
           .innerJoin(
             currentPlanSchema,
-            eq(business.id, currentPlanSchema.businessId),
+            eq(businesSchema.id, currentPlanSchema.businessId),
           )
           .innerJoin(plan, eq(currentPlanSchema.planType, plan.type))
-          .where(and(eq(business.isActive, true)))
+          .where(and(eq(businesSchema.isActive, true)))
           .orderBy(
             sql`CASE
           WHEN ${plan.type} = 'PREMIUM' THEN 3
@@ -354,7 +357,7 @@ export const BusinessService = {
           WHEN ${plan.type} = 'FREE' THEN 1
           ELSE 0
         END DESC`,
-            desc(business.createdAt),
+            desc(businesSchema.createdAt),
           )
           .limit(6);
 
@@ -364,7 +367,7 @@ export const BusinessService = {
 
         // 2. Obtener data completa usando la API relacional para mantener estructura
         const featuredBusinesses = await db.query.business.findMany({
-          where: inArray(business.id, ids),
+          where: inArray(businesSchema.id, ids),
           with: {
             category: true,
             logo: true,
@@ -393,13 +396,13 @@ export const BusinessService = {
         const { search, category, page = 1, limit = 12, sortBy } = input ?? {};
 
         // Build where conditions
-        const conditions: SQL<unknown>[] = [eq(business.isActive, true)];
+        const conditions: SQL[] = [eq(businesSchema.isActive, true)];
 
         if (search) {
           conditions.push(
             or(
-              ilike(business.name, `%${search}%`),
-              ilike(business.description, `%${search}%`),
+              ilike(businesSchema.name, `%${search}%`),
+              ilike(businesSchema.description, `%${search}%`),
             ) as SQL<string>,
           );
         }
@@ -409,7 +412,8 @@ export const BusinessService = {
             where: eq(categorySchema.value, category),
           });
 
-          categoryDB && conditions.push(eq(business.categoryId, categoryDB.id));
+          categoryDB &&
+            conditions.push(eq(businesSchema.categoryId, categoryDB.id));
         }
 
         const whereClause = and(...conditions);
@@ -425,23 +429,23 @@ export const BusinessService = {
         END DESC`;
 
         if (sortBy === "oldest") {
-          orderBy.push(asc(business.createdAt));
+          orderBy.push(asc(businesSchema.createdAt));
         } else if (sortBy === "newest") {
-          orderBy.push(desc(business.createdAt));
+          orderBy.push(desc(businesSchema.createdAt));
         } else {
           // Default sort: Priority
           orderBy.push(prioritySort);
         }
 
-        orderBy.push(desc(business.createdAt), desc(business.id));
+        orderBy.push(desc(businesSchema.createdAt), desc(businesSchema.id));
 
         const [idsResult, totalResult] = await Promise.all([
           db
-            .select({ id: business.id })
-            .from(business)
+            .select({ id: businesSchema.id })
+            .from(businesSchema)
             .innerJoin(
               currentPlanSchema,
-              eq(business.id, currentPlanSchema.businessId),
+              eq(businesSchema.id, currentPlanSchema.businessId),
             )
             .where(whereClause)
             .orderBy(...orderBy)
@@ -449,10 +453,10 @@ export const BusinessService = {
             .limit(limit),
           db
             .select({ count: count() })
-            .from(business)
+            .from(businesSchema)
             .innerJoin(
               currentPlanSchema,
-              eq(business.id, currentPlanSchema.businessId),
+              eq(businesSchema.id, currentPlanSchema.businessId),
             )
             .where(whereClause),
         ]);
@@ -471,7 +475,7 @@ export const BusinessService = {
         const ids = idsResult.map((row) => row.id);
 
         const businesses = await db.query.business.findMany({
-          where: inArray(business.id, ids),
+          where: inArray(businesSchema.id, ids),
           with: {
             products: {
               where: eq(product.active, true),
@@ -512,7 +516,7 @@ export const BusinessService = {
       CACHE_KEYS.business(id),
       async () => {
         const businessData = await db.query.business.findFirst({
-          where: eq(business.id, id),
+          where: eq(businesSchema.id, id),
           with: {
             category: true,
             logo: true,
@@ -539,6 +543,7 @@ export const BusinessService = {
     const cacheKey = CACHE_KEYS.businessesSimilar(
       input.category,
       input.businessId,
+      input.limit?.toString() || "6",
     );
 
     return getCachedOrFetch(
@@ -552,11 +557,11 @@ export const BusinessService = {
 
         const businesses = await db.query.business.findMany({
           where: and(
-            eq(business.categoryId, categoryId.id),
-            eq(business.isActive, true),
-            not(eq(business.id, input.businessId)),
+            eq(businesSchema.categoryId, categoryId.id),
+            eq(businesSchema.isActive, true),
+            not(eq(businesSchema.id, input.businessId)),
           ),
-          limit: 4,
+          limit: input.limit || 4,
           with: {
             category: true,
             logo: true,
@@ -570,8 +575,12 @@ export const BusinessService = {
   },
 
   async getMyProducts(businessId: string, limit: number, offset: number) {
+    const where: SQL[] = [
+      eq(productSchema.businessId, businessId),
+      eq(productSchema.active, true),
+    ];
     const products = await db.query.product.findMany({
-      where: eq(productSchema.businessId, businessId),
+      where: and(...where),
       limit: limit,
       offset: offset,
       orderBy: [desc(productSchema.createdAt)],
@@ -588,9 +597,9 @@ export const BusinessService = {
       "businesses:-ids", // Key estática simple
       async () => {
         return await db.query.business.findMany({
-          where: eq(business.isActive, true),
+          where: eq(businesSchema.isActive, true),
           columns: { id: true },
-          orderBy: desc(business.createdAt),
+          orderBy: desc(businesSchema.createdAt),
           limit: 50,
         });
       },

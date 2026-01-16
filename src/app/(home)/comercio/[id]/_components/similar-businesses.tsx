@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { BusinessWithRelations } from "@/db/types";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -8,9 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import type { BusinessDto } from "@/shared/utils/dto";
 
 type Props = {
-  businesses: BusinessWithRelations[];
+  businesses: BusinessDto[];
 };
 
 export function SimilarBusinesses({ businesses }: Props) {
@@ -35,7 +35,7 @@ export function SimilarBusinesses({ businesses }: Props) {
                 <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg md:h-24 md:w-24">
                   <ImageWithSkeleton
                     src={
-                      business.logo?.url ||
+                      business.logoUrl ||
                       "/placeholder.svg?height=100&width=100&query=business+logo"
                     }
                     alt={business.name}
@@ -47,9 +47,9 @@ export function SimilarBusinesses({ businesses }: Props) {
                     <h3 className="line-clamp-1 font-semibold text-base leading-snug">
                       {business.name}
                     </h3>
-                    {business.category?.label && (
+                    {business.category && (
                       <Badge variant="secondary" className="shrink-0 text-xs">
-                        {business.category.label}
+                        {business.category}
                       </Badge>
                     )}
                   </div>

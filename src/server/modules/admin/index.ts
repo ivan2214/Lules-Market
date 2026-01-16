@@ -21,7 +21,9 @@ export const adminRouter = new Elysia({
   )
   .post(
     "/plans/createPlan",
-    async ({ body }) => {
+    async ({ body, isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.createPlan(body);
     },
     {
@@ -31,7 +33,9 @@ export const adminRouter = new Elysia({
   )
   .post(
     "/deleteAllLogs",
-    async () => {
+    async ({ isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.deleteAllLogs();
     },
     {
@@ -40,7 +44,9 @@ export const adminRouter = new Elysia({
   )
   .get(
     "/dashboard/stats",
-    async () => {
+    async ({ isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       const { stats } = await AdminService.getDashboardStats();
       return { stats };
     },
@@ -51,7 +57,9 @@ export const adminRouter = new Elysia({
   )
   .get(
     "/dashboard/analytics",
-    async () => {
+    async ({ isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.getAnalyticsData();
     },
     {
@@ -61,7 +69,9 @@ export const adminRouter = new Elysia({
   )
   .get(
     "/plans",
-    async () => {
+    async ({ isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.getPlans();
     },
     {
@@ -71,22 +81,24 @@ export const adminRouter = new Elysia({
   )
   .get(
     "/check-permission",
-    async ({ body }) => {
+    async ({ body, isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.checkPermission(body.adminId, body.permission);
     },
     {
+      isAdmin: true,
       body: AdminModel.checkPermissionBody,
       response: t.Boolean({
         default: false,
-      }), // Changed to explicit t.Boolean() although it was already there. checking if 'default' or something is breaking it.
-      // Wait, is 'response: t.Boolean(...)' causing 'true is not an Object' if something else returns just true?
-      // "true" is valid response if it's Just the boolean value, but TypeBox schema is an object.
-      // t.Boolean() returns a TBoolean schema object.
+      }),
     },
   )
   .delete(
     "/business",
-    async ({ body }) => {
+    async ({ body, isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.deleteBusinessByIds(body.ids);
     },
     {
@@ -96,7 +108,9 @@ export const adminRouter = new Elysia({
   )
   .get(
     "/trials/get-trials-and-active-count",
-    async () => {
+    async ({ isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
       return await AdminService.getTrialsAndActiveCount();
     },
     {
@@ -105,8 +119,10 @@ export const adminRouter = new Elysia({
   )
   .post(
     "/trials/create-trial",
-    async ({ body, user }) => {
-      return await AdminService.createTrial({ ...body, adminId: user.id });
+    async ({ body, isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await AdminService.createTrial({ ...body, adminId: admin.userId });
     },
     {
       isAdmin: true,
@@ -115,11 +131,12 @@ export const adminRouter = new Elysia({
   )
   .get(
     "/me",
-    async ({ user }) => {
-      if (!user) throw new AppError("No autenticado", "UNAUTHORIZED");
-      const admin = await AdminService.getCurrentAdmin(user.id);
+    async ({ isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      const adminMe = await AdminService.getCurrentAdmin(admin.userId);
       if (!admin) throw new AppError("No es admin", "FORBIDDEN");
-      return admin;
+      return adminMe;
     },
     {
       isAdmin: true,

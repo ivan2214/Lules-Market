@@ -9,7 +9,7 @@ export const requireSession = async () => {
     const { user } = await getCurrentSession();
 
     if (!user) {
-      redirect(pathsConfig.auth.signIn);
+      return redirect(pathsConfig.auth.signIn);
     }
   } catch (error) {
     console.log(error);

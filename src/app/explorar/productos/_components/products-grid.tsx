@@ -1,16 +1,22 @@
 import { Package, ShoppingBag, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/features/explorar/_components/pagination-controls";
 
-import type { ProductModel } from "@/server/modules/products/model";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
 import { ProductCard } from "@/shared/components/product-card";
+
+import type { ProductDto } from "@/shared/utils/dto";
 
 type ProductsGridProps = {
   hasFilters: boolean;
   currentPage: number;
   currentLimit: number;
-  productsData: ProductModel.ListAllOutput;
+  productsData: {
+    products: ProductDto[];
+    total: number;
+    pages?: number;
+    currentPage?: number;
+  };
 };
 
 export const ProductsGrid: React.FC<ProductsGridProps> = ({

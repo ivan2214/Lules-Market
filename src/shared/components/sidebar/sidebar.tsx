@@ -13,7 +13,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/shared/components/ui/sidebar";
-import { NavMain } from "./nav-main";
 import { NavPrimary } from "./nav-primary";
 import { NavUser } from "./nav-user";
 

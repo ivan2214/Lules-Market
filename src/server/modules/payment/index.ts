@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { AppError } from "@/server/errors";
 import { authPlugin } from "@/server/plugins/auth";
 import { PaymentModel } from "./model";
 import { PaymentService } from "./service";
@@ -20,8 +21,10 @@ export const paymentRouter = new Elysia({
   )
   .post(
     "/createPreference",
-    async ({ body, user }) => {
-      return await PaymentService.createPreference(user.id, body.planType);
+    async ({ body, isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await PaymentService.createPreference(business.id, body.planType);
     },
     {
       isBusiness: true,
@@ -30,8 +33,10 @@ export const paymentRouter = new Elysia({
   )
   .post(
     "/upgrade",
-    async ({ body, user }) => {
-      return await PaymentService.upgrade(user.id, body.plan);
+    async ({ body, isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await PaymentService.upgrade(business.id, body.plan);
     },
     {
       isBusiness: true,
@@ -40,8 +45,10 @@ export const paymentRouter = new Elysia({
   )
   .post(
     "/cancel",
-    async ({ user }) => {
-      return await PaymentService.cancel(user.id);
+    async ({ business, isBusiness }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await PaymentService.cancel(business.id);
     },
     {
       isBusiness: true,
@@ -49,8 +56,10 @@ export const paymentRouter = new Elysia({
   )
   .get(
     "/history",
-    async ({ user }) => {
-      return await PaymentService.history(user.id);
+    async ({ isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await PaymentService.history(business.id);
     },
     {
       isBusiness: true,
@@ -58,8 +67,10 @@ export const paymentRouter = new Elysia({
   )
   .post(
     "/startTrial",
-    async ({ body, user }) => {
-      return await PaymentService.startTrial(user.id, body.plan);
+    async ({ body, isBusiness, business }) => {
+      if (!isBusiness || !business)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+      return await PaymentService.startTrial(business.id, body.plan);
     },
     {
       isBusiness: true,

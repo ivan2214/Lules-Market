@@ -41,6 +41,7 @@ export namespace BusinessModel {
   export const listSimilarInput = t.Object({
     category: t.String(),
     businessId: t.String(),
+    limit: t.Optional(t.Number()),
   });
   export type listSimilarInput = typeof listSimilarInput.static;
   export const listSimilarOutput = t.Object({

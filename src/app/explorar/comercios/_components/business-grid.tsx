@@ -1,9 +1,10 @@
 import { Building, Package, Sparkles } from "lucide-react";
 import { PaginationControls } from "@/features/explorar/_components/pagination-controls";
-import type { BusinessModel } from "@/server/modules/business/model";
 import { BusinessCard } from "@/shared/components/business-card";
 import { EmptyStateCustomMessage } from "@/shared/components/empty-state/empty-state-custom-message";
 import EmptyStateSearch from "@/shared/components/empty-state/empty-state-search";
+
+import type { BusinessDto } from "@/shared/utils/dto";
 
 export const BusinessGrid = ({
   currentPage,
@@ -14,17 +15,15 @@ export const BusinessGrid = ({
   currentPage: number;
   hasFilters: boolean;
   currentLimit: number;
-  businessesData: BusinessModel.ListAllOutput;
+  businessesData: {
+    businesses: BusinessDto[];
+    total: number;
+    pages?: number;
+    currentPage?: number;
+  };
 }) => {
   const { businesses, total } = businessesData || {};
   const totalPages = Math.ceil(total / currentLimit);
-
-  console.log({
-    totalPages,
-    total,
-    currentLimit,
-    businesses: businesses?.length,
-  });
 
   if (!businesses?.length || !total || !businesses) {
     hasFilters ? (

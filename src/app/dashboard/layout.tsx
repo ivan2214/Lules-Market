@@ -34,7 +34,7 @@ export default async function DashboardLayout({
         userRole={currentBusiness?.user?.role}
         name={currentBusiness?.user?.name}
         email={currentBusiness?.user?.email}
-        avatar={currentBusiness?.user?.image}
+        avatar={currentBusiness?.logo?.url || currentBusiness?.user?.image}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">

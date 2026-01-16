@@ -1,6 +1,6 @@
 "use client";
 
-import { useUploadFiles } from "@better-upload/client";
+import { useUploadFile } from "@better-upload/client";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -63,13 +63,11 @@ const defaultValues: SignUpSchema = {
     category: "",
     coverImage: {
       isMainImage: true,
-      file: [],
       key: "",
     },
     description: "",
     logo: {
       isMainImage: true,
-      file: [],
       key: "",
     },
     name: "",
@@ -91,11 +89,6 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     mutationKey: ["authentications", "signup"],
     mutationFn: async (data: SignUpSchema) => {
       const { data: response, error } = await api.actions.signup.post(data);
-      console.log({
-        response,
-        error,
-      });
-
       if (error) {
         throw error;
       }
@@ -105,34 +98,34 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     onSuccess() {
       toast.success("Cuenta creada exitosamente");
     },
-    onError(error) {
-      console.log({
-        error: JSON.stringify(error, null, 2),
-      });
-      toast.error(error.message);
+    onError({ message }) {
+      toast.error(message);
     },
   });
 
-  const uploaderCover = useUploadFiles({
+  const uploaderCover = useUploadFile({
     route: "businessCover",
-    onUploadComplete: ({ files }) => {
-      form.setFieldValue(
-        "businessData.coverImage.key",
-        files[0].objectInfo.key,
-      );
+    api: "/api/upload",
+    onUploadComplete: ({ file }) => {
+      console.log("file", file);
+      form.setFieldValue("businessData.coverImage.key", file.objectInfo?.key);
     },
-    onError(error) {
-      toast.error(error.message);
+    onError({ message }) {
+      toast.error("Error al subir el cover", {
+        description: message,
+      });
     },
   });
-  const uploaderLogo = useUploadFiles({
+  const uploaderLogo = useUploadFile({
     route: "businessLogo",
-    onUploadComplete: ({ files }) => {
-      form.setFieldValue("businessData.logo.key", files[0].objectInfo.key);
+    api: "/api/upload",
+    onUploadComplete: ({ file }) => {
+      console.log("file", file);
+      form.setFieldValue("businessData.logo.key", file.objectInfo?.key);
     },
-    onError(error) {
-      toast.error(error.message, {
-        description: JSON.stringify(error),
+    onError({ message }) {
+      toast.error("Erro al subir el logo", {
+        description: message,
       });
     },
   });
@@ -142,9 +135,11 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     validators: {
       onSubmit: typeboxValidator(signUpSchema),
     },
-    onSubmit: async (data) => {
-      const { email, password, name } = data.value;
-      const { businessData } = data.value || {};
+    onSubmit: async ({ value }) => {
+      await uploaderCover.upload(value.businessData.coverImage.file as File);
+      await uploaderLogo.upload(value.businessData.logo.file as File);
+      const { email, password, name } = value;
+      const { businessData } = value || {};
 
       const {
         address,
@@ -160,20 +155,9 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         website,
         whatsapp,
       } = businessData || {};
-      const { files: uploadedCoverFiles } = await uploaderCover.upload(
-        coverImage.file,
-      );
-      const { files: uploadedLogoFiles } = await uploaderLogo.upload(logo.file);
 
-      const coverImageWithKey = {
-        ...coverImage,
-        key: uploadedCoverFiles[0]?.objectInfo.key,
-      };
-
-      const logoWithKey = {
-        ...logo,
-        key: uploadedLogoFiles[0]?.objectInfo.key,
-      };
+      console.log("coverImage", coverImage);
+      console.log("logo", logo);
 
       mutate({
         name: name,
@@ -182,9 +166,9 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         businessData: {
           address,
           category,
-          coverImage: coverImageWithKey,
+          coverImage,
           description,
-          logo: logoWithKey,
+          logo,
           name: businessName,
           facebook,
           instagram,
@@ -540,42 +524,34 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
+                const file = field.state.value.file;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
-                    {field.state.value && field.state.value.file.length > 0 ? (
+                    {file ? (
                       <div className="flex flex-col items-center justify-center">
-                        {field.state.value.file.map((file) => (
-                          /* imagen y boton para sacar la imagen subida */
-                          <div
-                            key={file.name}
-                            className="relative flex items-center gap-2"
+                        <div className="relative flex items-center gap-2">
+                          <Image
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            width={100}
+                            height={100}
+                          />
+                          <Button
+                            variant="destructive"
+                            type="button"
+                            className="-top-5 -right-5 absolute h-6 w-6"
+                            onClick={() => {
+                              field.handleChange({
+                                file: undefined,
+                                isMainImage: true,
+                                key: "",
+                              });
+                            }}
                           >
-                            <Image
-                              src={URL.createObjectURL(file)}
-                              alt={file.name}
-                              width={100}
-                              height={100}
-                            />
-                            <Button
-                              variant="destructive"
-                              type="button"
-                              className="-top-5 -right-5 absolute h-6 w-6"
-                              onClick={() => {
-                                field.handleChange({
-                                  file:
-                                    field.state.value?.file?.filter(
-                                      (f) => f !== file,
-                                    ) || [],
-                                  isMainImage: true,
-                                  key: "",
-                                });
-                              }}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     ) : (
                       <UploadDropzone
@@ -586,9 +562,11 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
                           maxFiles: 5,
                           maxFileSize: "5MB",
                         }}
-                        uploadOverride={(files) => {
+                        multiple={false}
+                        uploadOverride={(file) => {
+                          console.log("FileS:", file);
                           field.handleChange({
-                            file: Array.from(files),
+                            file: file,
                             isMainImage: true,
                             key: "",
                           });
@@ -613,45 +591,36 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
+                const file = field.state.value.file;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>
                       Imagen de portada
                     </FieldLabel>
-                    {field.state.value && field.state.value.file.length > 0 ? (
+                    {file ? (
                       <div className="flex flex-col items-center justify-center">
-                        {field.state.value.file.map((file) => (
-                          /* imagen y boton para sacar la imagen subida */
-                          <div
-                            key={file.name}
-                            className="relative flex items-center gap-2"
+                        <div className="relative flex items-center gap-2">
+                          <Image
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            width={100}
+                            height={100}
+                          />
+                          <Button
+                            variant="destructive"
+                            type="button"
+                            className="-top-5 -right-5 absolute h-6 w-6"
+                            onClick={() => {
+                              field.handleChange({
+                                file: undefined,
+                                isMainImage: true,
+                                key: "",
+                              });
+                            }}
                           >
-                            <Image
-                              src={URL.createObjectURL(file)}
-                              alt={file.name}
-                              width={100}
-                              height={100}
-                              className="aspect-auto h-full w-full object-cover"
-                            />
-                            <Button
-                              variant="destructive"
-                              type="button"
-                              className="-top-5 -right-5 absolute h-6 w-6"
-                              onClick={() => {
-                                field.handleChange({
-                                  file:
-                                    field.state.value?.file?.filter(
-                                      (f) => f !== file,
-                                    ) || [],
-                                  isMainImage: true,
-                                  key: "",
-                                });
-                              }}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     ) : (
                       <UploadDropzone
@@ -661,9 +630,11 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
                           maxFiles: 5,
                           maxFileSize: "5MB",
                         }}
-                        uploadOverride={(files) => {
+                        multiple={false}
+                        uploadOverride={(file) => {
+                          console.log("FileS:", file);
                           field.handleChange({
-                            file: Array.from(files),
+                            file: file,
                             isMainImage: true,
                             key: "",
                           });
@@ -673,8 +644,8 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
                     {isInvalid && (
                       <FieldError
                         errors={
-                          uploaderCover.error
-                            ? [{ message: uploaderCover.error.message }]
+                          uploaderLogo.error
+                            ? [{ message: uploaderLogo.error.message }]
                             : field.state.meta.errors
                         }
                       />
@@ -868,21 +839,6 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
       </form>
       {isError && <AuthError error={error.message} />}
       {isSuccess && <AuthSuccess message={"Registro exitoso"} />}
-      {/*   {!isBusiness && (
-        <>
-          <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
-            <span className="relative z-10 bg-card px-2 text-muted-foreground">
-              O continuar con
-            </span>
-          </div>
-          <OAuthProviders isBusiness={isBusiness} />
-          <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
-            <span className="relative z-10 bg-card px-2 text-muted-foreground">
-              Con correo y contraseña
-            </span>
-          </div>
-        </>
-      )} */}
     </>
   );
 }

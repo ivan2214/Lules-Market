@@ -1,4 +1,3 @@
-import type { Image } from "@/db/types";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import {
   Carousel,
@@ -9,7 +8,13 @@ import {
 } from "@/shared/components/ui/carousel";
 
 type Props = {
-  images?: Image[] | null;
+  images?:
+    | {
+        key: string;
+        url: string;
+        isMainImage: boolean;
+      }[]
+    | null;
   name: string;
 };
 

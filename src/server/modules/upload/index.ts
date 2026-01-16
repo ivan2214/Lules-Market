@@ -7,20 +7,20 @@ import { UploadService } from "./service";
 const router: Router = {
   client: s3,
   bucketName: env.S3_BUCKET_NAME,
-
   routes: {
     businessCover: route({
       fileTypes: ["image/*"],
       multipleFiles: false,
       onBeforeUpload: async () => {
-        return UploadService.handleBusinessCoverUpload();
+        return await UploadService.handleBusinessCoverUpload();
       },
     }),
     businessLogo: route({
       fileTypes: ["image/*"],
       multipleFiles: false,
+
       onBeforeUpload: async () => {
-        return UploadService.handleBusinessLogoUpload();
+        return await UploadService.handleBusinessLogoUpload();
       },
     }),
     productsImages: route({
@@ -34,10 +34,11 @@ const router: Router = {
   },
 };
 
-export const uploadRoute = new Elysia()
-  .get("/upload", () => {
-    return "hola mundo";
-  })
-  .post("/upload", ({ request }) => {
+export const uploadRoute = new Elysia().post("/upload", ({ request }) => {
+  try {
     return handleRequest(request, router);
-  });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+});
