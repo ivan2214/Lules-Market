@@ -186,4 +186,11 @@ export const CACHE_KEYS = {
     `businesses:similar:${category}:${businessId}:${limit}`,
   productsSimilar: (categoryId: string, productId: string) =>
     `products:similar:${categoryId}:${productId}`,
+  productsByBusiness: (businessId: string) =>
+    `products:by-business:${businessId}`,
+  businessMyProducts: (
+    businessId: string,
+    limit: number | string,
+    offset: number | string,
+  ) => `business:${businessId}:my-products:${limit}:${offset}`,
 } as const;

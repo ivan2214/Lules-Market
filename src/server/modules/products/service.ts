@@ -31,6 +31,7 @@ import {
   generateCacheKey,
   getCachedOrFetch,
   invalidateCache,
+  invalidateCacheKeys,
 } from "@/lib/cache";
 import { AppError } from "@/server/errors";
 import type { ProductModel } from "./model";
@@ -339,13 +340,19 @@ export const ProductService = {
   },
 
   async getByBusiness(businessId: string) {
-    return await db.query.product.findMany({
-      where: eq(productSchema.businessId, businessId),
-      with: {
-        images: true,
-        category: true,
+    return getCachedOrFetch(
+      CACHE_KEYS.productsByBusiness(businessId),
+      async () => {
+        return await db.query.product.findMany({
+          where: eq(productSchema.businessId, businessId),
+          with: {
+            images: true,
+            category: true,
+          },
+        });
       },
-    });
+      CACHE_TTL.PRODUCTS_LIST,
+    );
   },
 
   // --- MUTATIONS ---
@@ -424,8 +431,9 @@ export const ProductService = {
       .where(eq(productSchema.id, product.id));
 
     void invalidateCache(CACHE_KEYS.PATTERNS.ALL_PRODUCTS);
-    void invalidateCache(CACHE_KEYS.product(product.id));
-    void invalidateCache(CACHE_KEYS.business(businessId));
+    void invalidateCacheKeys(CACHE_KEYS.product(product.id));
+    void invalidateCacheKeys(CACHE_KEYS.business(businessId));
+    void invalidateCacheKeys(CACHE_KEYS.productsByBusiness(businessId));
 
     return { success: true, product };
   },
@@ -457,7 +465,7 @@ export const ProductService = {
       .where(eq(productSchema.id, productId))
       .returning();
 
-    void invalidateCache(CACHE_KEYS.product(productId));
+    void invalidateCacheKeys(CACHE_KEYS.product(productId));
 
     return { success: true, product: updated };
   },
@@ -472,7 +480,7 @@ export const ProductService = {
         ),
       );
 
-    void invalidateCache(CACHE_KEYS.product(productId));
+    void invalidateCacheKeys(CACHE_KEYS.product(productId));
     return { success: true };
   },
 
