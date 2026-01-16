@@ -14,7 +14,7 @@ import {
 import Image from "next/image";
 import { type JSX, useState } from "react";
 import { toast } from "sonner";
-
+import { EmailVerificationCard } from "@/app/auth/verify/_components/email-verification-card";
 import type { Category } from "@/db/types";
 import { api } from "@/lib/eden";
 import { Button } from "@/shared/components/ui/button";
@@ -788,57 +788,69 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
 
   return (
     <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-        className="space-y-4"
-      >
-        <MultiStepFormProvider
-          /* stepsFields={
+      {!isSuccess && !error && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <MultiStepFormProvider
+            /* stepsFields={
             isBusiness
               ? [...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]
               : stepsFieldsNoBusiness
           } */
-          stepsFields={[...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]}
-        >
-          <MultiStepFormContent>
-            <FormHeader />
-            <StepFields />
-            <FormFooter>
-              <PreviousButton>
-                <ChevronLeft />
-                Previous
-              </PreviousButton>
-              <NextButton>
-                Next <ChevronRight />
-              </NextButton>
-              <ResetButton
-                onClick={() => {
-                  form.reset();
-                  uploaderCover.reset();
-                  uploaderLogo.reset();
-                }}
-              />
-              <SubmitButton
-                type="submit"
-                disabled={
-                  isPending ||
-                  form.state.isSubmitting ||
-                  uploaderCover.isPending ||
-                  uploaderLogo.isPending
-                }
-              >
-                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isPending ? "Registrando..." : "Registrarse"}
-              </SubmitButton>
-            </FormFooter>
-          </MultiStepFormContent>
-        </MultiStepFormProvider>
-      </form>
+            stepsFields={[...stepsFieldsNoBusiness, ...stepsFieldsIsBusiness]}
+          >
+            <MultiStepFormContent>
+              <FormHeader />
+              <StepFields />
+              <FormFooter>
+                <PreviousButton>
+                  <ChevronLeft />
+                  Previous
+                </PreviousButton>
+                <NextButton>
+                  Next <ChevronRight />
+                </NextButton>
+                <ResetButton
+                  onClick={() => {
+                    form.reset();
+                    uploaderCover.reset();
+                    uploaderLogo.reset();
+                  }}
+                />
+                <SubmitButton
+                  type="submit"
+                  disabled={
+                    isPending ||
+                    form.state.isSubmitting ||
+                    uploaderCover.isPending ||
+                    uploaderLogo.isPending
+                  }
+                >
+                  {isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {isPending ? "Registrando..." : "Registrarse"}
+                </SubmitButton>
+              </FormFooter>
+            </MultiStepFormContent>
+          </MultiStepFormProvider>
+        </form>
+      )}
       {isError && <AuthError error={error.message} />}
       {isSuccess && <AuthSuccess message={"Registro exitoso"} />}
+      {isSuccess && (
+        <div className="flex w-full flex-col items-center justify-center">
+          <EmailVerificationCard
+            email={form.state.values.email}
+            initialStatus="pending"
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -26,6 +26,12 @@ export default function SignInPage() {
         </div>
         <PasswordSignInForm />
         <div className="text-center text-sm">
+          ¿No has verificado tu cuenta?{" "}
+          <Link href="/auth/verify" className="underline underline-offset-4">
+            Verificar
+          </Link>
+        </div>
+        <div className="text-center text-sm">
           No tienes una cuenta?{" "}
           <Link href="/auth/sign-up" className="underline underline-offset-4">
             Registrate
