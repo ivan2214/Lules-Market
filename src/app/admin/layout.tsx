@@ -1,4 +1,3 @@
-import { Users } from "lucide-react";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentAdmin } from "@/data/admin/get-current-admin";
