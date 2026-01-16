@@ -4,6 +4,5 @@
       "path": "/api/cron/check-plan-expired",
       "schedule": "0 10 * * *"
     }
-  ],
-  "bunVersion": "1.x"
+  ]
 }

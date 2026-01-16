@@ -1,6 +1,6 @@
 import "server-only";
 import { addMonths, format, startOfMonth, subMonths } from "date-fns";
-import { and, count, eq, gte, inArray, lt, sum } from "drizzle-orm";
+import { and, count, desc, eq, gte, inArray, lt, sum } from "drizzle-orm";
 import { db } from "@/db";
 import {
   admin,
@@ -11,6 +11,7 @@ import {
   product,
   log as schemaLog,
   trial,
+  user as userSchema,
 } from "@/db/schema";
 import type {
   LogInsert,
@@ -18,6 +19,7 @@ import type {
   PlanInsert,
   Trial,
   TrialWithRelations,
+  UserRole,
 } from "@/db/types";
 import { AppError } from "@/server/errors";
 import type { Analytics } from "@/shared/types";
@@ -353,6 +355,41 @@ export const AdminService = {
         daysRemaining: calculateDaysRemaining(t.expiresAt),
       })),
     };
+  },
+
+  async getPaginatedUsers(options: {
+    page: number;
+    perPage: number;
+    role?: UserRole;
+  }) {
+    const { page, perPage, role } = options;
+    return await db.query.user.findMany({
+      limit: perPage,
+      offset: (page - 1) * perPage,
+      orderBy: desc(userSchema.createdAt),
+      with: {
+        sessions: true,
+        accounts: true,
+      },
+      where: role ? eq(userSchema.role, role) : undefined,
+    });
+  },
+
+  async getRecentUsers(limit = 5) {
+    return await db.query.user.findMany({
+      limit,
+      offset: 0,
+      orderBy: desc(userSchema.createdAt),
+      with: {
+        sessions: true,
+        accounts: true,
+      },
+    });
+  },
+
+  async getTotalUsersCount() {
+    const result = await db.select({ count: count() }).from(userSchema);
+    return result[0]?.count ?? 0;
   },
 
   // --- MUTATIONS ---

@@ -123,7 +123,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  return await getBusinessIds();
+  const businesses = await getBusinessIds();
+  return businesses.slice(0, 1);
 }
 
 export default async function BusinessPage({ params }: Props) {

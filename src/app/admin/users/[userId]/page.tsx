@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-
 export default async function UserPage({
   params,
 }: {
@@ -7,11 +5,6 @@ export default async function UserPage({
 }) {
   const { userId } = await params;
   console.log(userId);
-
-  const cookieStore = await cookies();
-  const _sessionToken = cookieStore
-    .get("better-auth.session_token")
-    ?.value.split(".")[0];
 
   /*  const { sessions } = await auth.api.listUserSessions({
     body: {

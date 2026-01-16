@@ -2,17 +2,17 @@
 . "$(dirname "$0")/_/husky.sh"
 
 echo "Running Type Check..."
-bun type-check
+pnpm type-check
 
 echo "Running Biome Check..."
-bun check
+pnpm check
 
 echo "Running Security Audit..."
-bun audit --audit-level=high || {
+pnpm audit --audit-level=high || {
   echo "❌ No se permite pushear con vulnerabilidades altas."
   exit 1
 }
 
 echo "Running Build..."
 
-#bun run build
+#pnpm run build
