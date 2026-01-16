@@ -67,7 +67,7 @@ export const app = new Elysia({
     return generic.toResponse();
   })
   .use(cors())
-  .all("/api/auth/*", betterAuthView)
+  .all("/auth/*", betterAuthView)
   .use(adminModule)
   .use(businessModule)
   .use(productModule)

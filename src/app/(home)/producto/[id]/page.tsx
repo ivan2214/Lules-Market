@@ -82,7 +82,8 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  return await getProductIds();
+  const products = await getProductIds();
+  return products.slice(0, 1);
 }
 
 export default function ProductLayout({ params }: ProductPageProps) {
