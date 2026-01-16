@@ -2,7 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 import { db } from "@/db";
-import { api } from "@/lib/eden";
+import { ProductService } from "@/server/modules/products/service";
 import { toProductDto } from "@/shared/utils/dto";
 
 type SearchParams = {
@@ -23,18 +23,14 @@ export async function listAllProducts(searchParams?: SearchParams) {
   const currentPage = page ? parseInt(page, 10) : 1;
   const currentLimit = limit ? parseInt(limit, 10) : 12;
 
-  const { data, error } = await api.products.public.list.get({
-    query: {
-      businessId,
-      category,
-      limit: currentLimit,
-      page: currentPage,
-      search,
-      sort: sortBy,
-    },
+  const data = await ProductService.listAll({
+    businessId,
+    category,
+    limit: currentLimit,
+    page: currentPage,
+    search,
+    sort: sortBy,
   });
-
-  if (error) throw error;
 
   return {
     ...data,
@@ -46,18 +42,16 @@ export async function getRecentProducts() {
   "use cache";
   cacheTag("products");
   cacheLife("hours");
-  const { data, error } = await api.products.public.recent.get();
-  if (error) throw error;
-  return data.products.map(toProductDto);
+  const products = await ProductService.getRecent();
+  return products.map(toProductDto);
 }
 
 export async function getProductById(id: string) {
   "use cache";
   cacheTag("products");
   cacheLife("hours");
-  const { data, error } = await api.products.public({ id }).get();
-  if (error) throw error;
-  return data.product ? toProductDto(data.product) : null;
+  const { product } = await ProductService.getById(id);
+  return product ? toProductDto(product) : null;
 }
 
 export async function getSimilarProducts(params: {
@@ -67,11 +61,17 @@ export async function getSimilarProducts(params: {
   "use cache";
   cacheTag("products");
   cacheLife("days");
-  const { data, error } = await api.products
-    .public({ id: params.productId })
-    .similar.get();
-  if (error) throw error.value.message;
-  return data.products.map(toProductDto);
+
+  // Replicate logic from API: get product first to find category
+  const { product } = await ProductService.getById(params.productId);
+  if (!product?.categoryId) throw new Error("Product not found");
+
+  const products = await ProductService.getSimilar(
+    product.categoryId,
+    params.productId,
+  );
+
+  return products.map(toProductDto);
 }
 
 /**

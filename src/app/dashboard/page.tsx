@@ -16,13 +16,13 @@ import type { ProductDto } from "@/shared/utils/dto";
 import { ProductFormDialog } from "./_components/product-form-dialog";
 
 async function DashboardContent() {
-  const { currentBusiness, headers } = await getCurrentBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 
-  const productsBusiness = await getBusinessProducts(headers);
+  const productsBusiness = await getBusinessProducts(currentBusiness.id);
 
   const productCount = productsBusiness?.length || 0;
   const productLimit = currentBusiness.currentPlan?.plan?.maxProducts || 0;
