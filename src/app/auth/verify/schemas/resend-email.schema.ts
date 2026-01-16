@@ -13,7 +13,7 @@ export const tokenSchema = z.object({
   token: z
     .string()
     .min(6, "El token debe tener al menos 6 caracteres")
-    .max(100, "El token es demasiado largo"),
+    .max(200, "El token es demasiado largo"),
 });
 
 export type TokenSchema = z.infer<typeof tokenSchema>;

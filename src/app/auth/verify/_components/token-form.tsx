@@ -5,8 +5,8 @@ import { CheckCircle2, Key, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/shared/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field";
 import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import { tokenSchema } from "../schemas/resend-email.schema";
 
 interface TokenFormProps {
@@ -77,45 +77,39 @@ export function TokenForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          e.stopPropagation();
           form.handleSubmit();
         }}
         className="space-y-4"
       >
-        <form.Field
-          name="token"
-          validators={{
-            onChange: tokenSchema.shape.token,
+        <form.Field name="token">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name} className="sr-only">
+                  Código de verificación
+                </FieldLabel>
+                <div className="relative">
+                  <Key className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="text"
+                    placeholder="Ingresa tu código"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
+                    className="pl-10 font-mono tracking-wider"
+                    disabled={isSubmitting}
+                    autoComplete="one-time-code"
+                  />
+                </div>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
           }}
-        >
-          {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name} className="sr-only">
-                Código de verificación
-              </Label>
-              <div className="relative">
-                <Key className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="text"
-                  placeholder="Ingresa tu código"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  className="pl-10 font-mono tracking-wider"
-                  disabled={isSubmitting}
-                  autoComplete="one-time-code"
-                />
-              </div>
-              {field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0 && (
-                  <p className="text-destructive text-xs">
-                    {field.state.meta.errors.join(", ")}
-                  </p>
-                )}
-            </div>
-          )}
         </form.Field>
 
         <Button type="submit" disabled={isSubmitting} className="w-full gap-2">
