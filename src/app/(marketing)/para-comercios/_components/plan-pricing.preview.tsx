@@ -39,7 +39,7 @@ export const PlanPricingPreview = ({ plans }: { plans: Plan[] }) => {
               className="w-full"
               variant={plan.type === "BASIC" ? "default" : "outline"}
             >
-              <Link href="/auth/sign-up">Comenzar </Link>
+              <Link href="/auth/sign-up">Comenzar Gratis</Link>
             </Button>
             {plan.type === "BASIC" && (
               <Badge className="-top-3 -right-3 absolute">Más Popular</Badge>

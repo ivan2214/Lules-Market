@@ -3,7 +3,7 @@
 
 ## Tipo de cambio
 <!-- Por favor, elimina las opciones que no sean relevantes -->
-- [ ] Corrección de error (cambio no disruptivo que soluciona un problema) 
+- [ ] Corrección de error (cambio no disruptivo que soluciona un problema)
 - [ ] Nueva funcionalidad (cambio no disruptivo que añade funcionalidad)
 - [ ] Cambio disruptivo (corrección o funcionalidad que haría que la funcionalidad existente no funcionara como se esperaba)
 - [ ] Refactorización (mejora del código sin cambiar la funcionalidad)

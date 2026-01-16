@@ -1,7 +1,6 @@
 "use client";
 
 import { Eye, Package, Store, TrendingUp } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -11,16 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-
-// import { AnalyticsChart } from "./analytics-chart"; // Removed direct import
-
-const AnalyticsChart = dynamic(
-  () => import("./analytics-chart").then((mod) => mod.AnalyticsChart),
-  {
-    loading: () => <div className="h-[250px] w-full animate-pulse bg-muted" />,
-    ssr: false,
-  },
-);
+import { AnalyticsChart } from "./analytics-chart";
 
 type AnalyticsData = {
   totalViews: number;
