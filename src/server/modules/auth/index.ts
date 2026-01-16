@@ -1,35 +1,33 @@
 import { Elysia } from "elysia";
-
+import { getSessionFromHeaders } from "@/server/plugins/auth";
 import { AuthModel } from "./model";
 import { AuthService } from "./service";
 
 export const authController = new Elysia({
   prefix: "/actions",
-}).post(
-  "/signup",
-  async ({ body }) => {
-    const response = await AuthService.signUp(body);
+})
+  .post(
+    "/signup",
+    async ({ body }) => {
+      const response = await AuthService.signUp(body);
 
-    if (!response.success) {
-      console.log("No funciono");
+      if (!response.success) {
+        console.log("No funciono");
 
-      return {
-        success: response.success,
-        mesaage: response.message,
-      };
-    }
+        return {
+          success: response.success,
+          message: response.message,
+        };
+      }
 
-    return response;
-  },
-  {
-    body: AuthModel.signUp,
-    response: AuthModel.signUpOutput,
-  },
-);
-/*   .get("/get-session", async ({ request: { headers } }) => {
-    if (!headers) {
-      throw new AppError("No headers provided", "BAD_REQUEST");
-    }
-    const session = await getSessionFromHeaders(headers);
+      return response;
+    },
+    {
+      body: AuthModel.signUp,
+      response: AuthModel.signUpOutput,
+    },
+  )
+  .get("/get-session", async ({ request }) => {
+    const session = await getSessionFromHeaders(request.headers);
     return session;
-  }) */
+  });

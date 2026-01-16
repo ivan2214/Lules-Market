@@ -27,5 +27,5 @@ export async function getPaymentPlan(planType: "FREE" | "BASIC" | "PREMIUM") {
 
 export async function getPaymentById(paymentId: string) {
   // Payment info is sensitive, might not want to cache globally or use strictly user-specific cache
-  return await PaymentService.getPayment(paymentId);
+  return (await PaymentService.getPayment(paymentId)).payment;
 }

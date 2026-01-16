@@ -3,12 +3,14 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Activity, startTransition, useEffect, useRef, useState } from "react";
-import type { ProductWithRelations } from "@/db/types";
-import { api } from "@/lib/eden";
+import { Activity, useEffect, useRef, useState } from "react";
+
+import { searchProductsAction } from "@/lib/actions/products";
+
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { mainImage } from "@/shared/utils/main-image";
+import type { ProductDto } from "../utils/dto";
 import { ImageWithSkeleton } from "./image-with-skeleton";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -17,7 +19,7 @@ export const SearchForm = () => {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const [results, setResults] = useState<{
-    products: ProductWithRelations[];
+    products: ProductDto[];
     total: number;
   }>({ products: [], total: 0 });
 
@@ -43,15 +45,9 @@ export const SearchForm = () => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
-    debounceRef.current = window.setTimeout(() => {
-      startTransition(async () => {
-        const { data } = await api.products.public.list.get({
-          query: {
-            search: value,
-          },
-        });
-        setResults({ products: data?.products || [], total: data?.total || 0 });
-      });
+    debounceRef.current = window.setTimeout(async () => {
+      const data = await searchProductsAction(value);
+      setResults({ products: data?.products || [], total: data?.total || 0 });
     }, 300);
   };
 
