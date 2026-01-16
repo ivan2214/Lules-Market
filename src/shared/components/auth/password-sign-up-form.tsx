@@ -88,8 +88,6 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
   const { mutate, isSuccess, error, isError, isPending } = useMutation({
     mutationKey: ["authentications", "signup"],
     mutationFn: async (data: SignUpSchema) => {
-      await uploaderCover.upload(data.businessData.coverImage.file as File);
-      await uploaderLogo.upload(data.businessData.logo.file as File);
       const { data: response, error } = await api.actions.signup.post(data);
       if (error) {
         throw error;
@@ -109,6 +107,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     route: "businessCover",
     api: "/api/upload",
     onUploadComplete: ({ file }) => {
+      console.log("file", file);
       form.setFieldValue("businessData.coverImage.key", file.objectInfo?.key);
     },
     onError({ message }) {
@@ -121,6 +120,7 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
     route: "businessLogo",
     api: "/api/upload",
     onUploadComplete: ({ file }) => {
+      console.log("file", file);
       form.setFieldValue("businessData.logo.key", file.objectInfo?.key);
     },
     onError({ message }) {
@@ -136,6 +136,8 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
       onSubmit: typeboxValidator(signUpSchema),
     },
     onSubmit: async ({ value }) => {
+      await uploaderCover.upload(value.businessData.coverImage.file as File);
+      await uploaderLogo.upload(value.businessData.logo.file as File);
       const { email, password, name } = value;
       const { businessData } = value || {};
 
@@ -153,6 +155,9 @@ export function PasswordSignUpForm({ categories }: { categories: Category[] }) {
         website,
         whatsapp,
       } = businessData || {};
+
+      console.log("coverImage", coverImage);
+      console.log("logo", logo);
 
       mutate({
         name: name,

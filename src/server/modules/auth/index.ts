@@ -1,4 +1,3 @@
-import { APIError } from "better-auth";
 import { Elysia } from "elysia";
 import { AppError } from "@/server/errors";
 import { getSessionFromHeaders } from "@/server/plugins/auth";
@@ -10,7 +9,7 @@ export const authController = new Elysia({
 })
   .post(
     "/signup",
-    async ({ body, status }) => {
+    async ({ body }) => {
       const response = await AuthService.signUp(body);
 
       if (!response.success) {

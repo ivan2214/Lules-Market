@@ -38,8 +38,8 @@ export const AuthService = {
       }
 
       const { success } = await BusinessService.setup({
-        coverImage: coverImage.file,
-        logo: logo.file,
+        coverImage: coverImage,
+        logo: logo,
         name: businessName,
         address,
         category,
