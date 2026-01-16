@@ -32,10 +32,15 @@ const publicRoutes = new Elysia({ prefix: "/public", tags: ["Business"] })
   .get(
     "/get-business-by-id",
     async ({ query }) => {
-      return await BusinessService.getById(query.id);
+      const { business } = await BusinessService.getById(query.id);
+
+      if (!business) throw new AppError("Business not found", "NOT_FOUND");
+
+      return { business };
     },
     {
       query: BusinessModel.getByIdInput,
+      response: BusinessModel.getByIdOutput,
     },
   )
   .get(

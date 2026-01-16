@@ -24,7 +24,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card
       key={product.id}
-      className="group hover:-translate-y-1 h-full overflow-hidden border p-0 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl"
+      className="group hover:-translate-y-1 h-full max-w-xs overflow-hidden border p-0 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl"
     >
       <Link href={`/producto/${product.id}`}>
         <div className="relative aspect-4/3 overflow-hidden bg-muted">

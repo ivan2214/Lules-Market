@@ -37,6 +37,12 @@ export namespace BusinessModel {
   export const getByIdInput = t.Object({
     id: t.String(),
   });
+  export type GetByIdInput = typeof getByIdInput.static;
+
+  export const getByIdOutput = t.Object({
+    business: t.Optional(models.relations.businessWithRelations),
+  });
+  export type GetByIdOutput = typeof getByIdOutput.static;
 
   export const listSimilarInput = t.Object({
     category: t.String(),
