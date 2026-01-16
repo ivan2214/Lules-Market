@@ -1,4 +1,5 @@
 import { MessageCircleWarningIcon, Package } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -6,7 +7,6 @@ import pathsConfig from "@/config/paths.config";
 import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { ProductCardDashboard } from "@/features/dashboard/_components/product-card-dashboard";
-import { ProductFormDialog } from "@/features/dashboard/_components/product-form-dialog";
 import { subscriptionErrors } from "@/features/dashboard/_constants";
 import { api } from "@/lib/eden";
 
@@ -15,7 +15,18 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/shared/components/ui/alert";
+import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
+
+const ProductFormDialog = dynamic(
+  () =>
+    import("@/features/dashboard/_components/product-form-dialog").then(
+      (mod) => mod.ProductFormDialog,
+    ),
+  {
+    loading: () => <Button disabled>Cargando...</Button>,
+  },
+);
 
 export async function ProductsContent() {
   const { currentBusiness, headers } = await getCurrentBusiness();
