@@ -18,14 +18,14 @@ import {
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export async function ProductsContent() {
-  const { currentBusiness, headers } = await getCurrentBusiness();
+  const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
     redirect(pathsConfig.business.setup);
   }
 
   const [products, categoriesResponse] = await Promise.all([
-    getBusinessProducts(headers),
+    getBusinessProducts(currentBusiness.id),
     api.category.public["list-all"].get(),
   ]);
 
