@@ -43,6 +43,26 @@ type ProductUpdateInput = typeof ProductModel.updateBody.static;
 export const ProductService = {
   // --- QUERIES ---
 
+  async listAllProductsForSitemap() {
+    const cacheKey = generateCacheKey("products:list", {});
+
+    return getCachedOrFetch(
+      cacheKey,
+      async () => {
+        const products = await db.query.product.findMany({
+          where: eq(productSchema.active, true),
+          columns: {
+            id: true,
+            updatedAt: true,
+          },
+        });
+
+        return products;
+      },
+      CACHE_TTL.PRODUCTS_LIST,
+    );
+  },
+
   async listAll(input: typeof ProductModel.listAllInput.static) {
     const cacheKey = generateCacheKey("products:list", input ?? {});
 

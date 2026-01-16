@@ -384,6 +384,26 @@ export const BusinessService = {
     );
   },
 
+  async listAllBusinessesForSitemap() {
+    const cacheKey = generateCacheKey("businesses:list", {});
+
+    return getCachedOrFetch(
+      cacheKey,
+      async () => {
+        const businesses = await db.query.business.findMany({
+          where: eq(businesSchema.isActive, true),
+          columns: {
+            id: true,
+            updatedAt: true,
+          },
+        });
+
+        return businesses;
+      },
+      CACHE_TTL.BUSINESSES_LIST,
+    );
+  },
+
   async listAll(
     input?: BusinessModel.listAllInput,
   ): Promise<BusinessModel.ListAllOutput> {

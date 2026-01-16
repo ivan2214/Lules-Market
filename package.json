@@ -26,11 +26,6 @@
     "test:e2e:file": "playwright test",
     "test:e2e:codegen": "playwright codegen"
   },
-  "trustedDependencies": [
-    "@tailwindcss/oxide",
-    "esbuild",
-    "sharp"
-  ],
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
       "biome check --write --no-errors-on-unmatched"
@@ -159,5 +154,24 @@
     "typescript": "5.9.3",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^4.0.16"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": "^0.25.0"
+    },
+    "peerDependencyRules": {
+      "allowAny": [
+        "react",
+        "react-dom",
+        "drizzle-orm",
+        "@types/react",
+        "@types/react-dom"
+      ]
+    },
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
+    ]
   }
 }
