@@ -74,10 +74,12 @@ export async function getSimilarProducts(params: {
   return products.map(toProductDto);
 }
 
-/**
- * Specifically for generateStaticParams
- */
-export const getProductIds = cache(async () => {
-  const products = await db.query.product.findMany();
+// Optimizado: Solo trae IDs y con un límite razonable
+export const getProductIds = cache(async (limit: number = 100) => {
+  const products = await db.query.product.findMany({
+    limit: limit,
+    columns: { id: true }, // ⚡ MUCHO más rápido: no trae descripción, imágenes, etc.
+    orderBy: (table, { desc }) => [desc(table.createdAt)],
+  });
   return products.map((p) => ({ id: p.id }));
 });

@@ -68,11 +68,13 @@ export async function getSimilarBusinesses(params: {
   return (businesses || []).map(toBusinessDto);
 }
 
-/**
- * Specifically for generateStaticParams
- */
-export const getBusinessIds = cache(async () => {
-  const businesses = await db.query.business.findMany();
+// Optimizado: Solo trae IDs y con un límite razonable
+export const getBusinessIds = cache(async (limit: number = 100) => {
+  const businesses = await db.query.business.findMany({
+    limit: limit,
+    columns: { id: true }, // ⚡ MUCHO más rápido
+    orderBy: (table, { desc }) => [desc(table.createdAt)],
+  });
   return businesses.map((b) => ({ id: b.id }));
 });
 
