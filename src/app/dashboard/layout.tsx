@@ -12,10 +12,6 @@ import {
   SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
 
-export const dynamic = "force-dynamic";
-/* revalidar cada 30 minutos */
-export const revalidate = 1800;
-
 export default async function DashboardLayout({
   children,
 }: {

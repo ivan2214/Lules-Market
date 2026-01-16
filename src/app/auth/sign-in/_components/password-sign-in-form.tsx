@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import pathsConfig from "@/config/paths.config";
 import { signIn } from "@/lib/auth/auth-client";
+import { AuthError } from "@/shared/components/auth/auth-error";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
+import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field";
 import { Input } from "@/shared/components/ui/input";
 import { signInSchema } from "@/shared/validators/auth";
 import { typeboxValidator } from "@/shared/validators/form";
-import { Field, FieldError, FieldLabel } from "../ui/field";
-import { AuthError } from "./auth-error";
 
 export function PasswordSignInForm() {
   const router = useRouter();

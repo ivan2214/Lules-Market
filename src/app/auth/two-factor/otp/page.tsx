@@ -1,6 +1,5 @@
 "use client";
 
-import { OtpForm } from "@/shared/components/auth/otp-form";
 import {
   Card,
   CardContent,
@@ -8,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { OtpForm } from "./_components/otp-form";
 
 export default function OtpPage() {
   return (

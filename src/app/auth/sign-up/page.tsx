@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { api } from "@/lib/eden";
-import { PasswordSignUpForm } from "@/shared/components/auth/password-sign-up-form";
 import {
   Card,
   CardContent,
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { PasswordSignUpForm } from "./_components/password-sign-up-form";
 
 export default async function SignUpPage() {
   const { data: categories } = await api.category.public["list-all"].get();
