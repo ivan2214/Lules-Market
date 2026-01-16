@@ -4,21 +4,11 @@ import { authPlugin } from "@/server/plugins/auth";
 import { PaymentModel } from "./model";
 import { PaymentService } from "./service";
 
-export const paymentRouter = new Elysia({
+export const paymentModule = new Elysia({
   prefix: "/payment",
 })
   .use(authPlugin)
-  .get(
-    "/plan",
-    async ({ query }) => {
-      return await PaymentService.getPlan(
-        query.planType as "FREE" | "BASIC" | "PREMIUM",
-      );
-    },
-    {
-      query: PaymentModel.planTypeQuery,
-    },
-  )
+
   .post(
     "/createPreference",
     async ({ body, isBusiness, business }) => {
@@ -54,7 +44,7 @@ export const paymentRouter = new Elysia({
       isBusiness: true,
     },
   )
-  .get(
+  /*   .get(
     "/history",
     async ({ isBusiness, business }) => {
       if (!isBusiness || !business)
@@ -64,7 +54,7 @@ export const paymentRouter = new Elysia({
     {
       isBusiness: true,
     },
-  )
+  ) */
   .post(
     "/startTrial",
     async ({ body, isBusiness, business }) => {
@@ -87,7 +77,7 @@ export const paymentRouter = new Elysia({
       body: PaymentModel.failureBody,
     },
   )
-  .get(
+  /*   .get(
     "/getPayment",
     async ({ query }) => {
       return await PaymentService.getPayment(query.paymentIdDB);
@@ -96,7 +86,7 @@ export const paymentRouter = new Elysia({
       isBusiness: true,
       query: PaymentModel.getPaymentQuery,
     },
-  )
+  ) */
   .post(
     "/success",
     async ({ body }) => {

@@ -16,3 +16,15 @@ export async function getAnalyticsStats(
 ) {
   return await AnalyticsService.getStats(businessId, period);
 }
+
+export async function getProductAnalyticsStats(
+  productId: string,
+  businessId: string,
+  period?: "7d" | "30d" | "90d",
+) {
+  return await AnalyticsService.getProductStats({
+    businessId,
+    productId,
+    period,
+  });
+}
