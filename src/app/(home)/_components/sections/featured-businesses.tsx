@@ -1,5 +1,4 @@
-﻿"use client";
-import { ArrowRight } from "lucide-react";
+﻿import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { BusinessList } from "@/app/(home)/_components/business-list";
 import { Badge } from "@/shared/components/ui/badge";
