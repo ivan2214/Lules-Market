@@ -1,8 +1,70 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
     {
       "path": "/api/cron/check-plan-expired",
       "schedule": "0 10 * * *"
     }
-  ]
+  ],
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "all"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "all"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ],
+  "firewall": {
+    "rules": [
+      {
+        "name": "Allow Sitemap and Robots",
+        "description": "Permitir acceso público a sitemap.xml y robots.txt",
+        "action": {
+          "mitigate": {
+            "action": "allow"
+          }
+        },
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "eq",
+                "value": "/sitemap.xml"
+              }
+            ]
+          },
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "eq",
+                "value": "/robots.txt"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

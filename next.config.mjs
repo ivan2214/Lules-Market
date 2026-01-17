@@ -46,7 +46,7 @@ const nextConfig = {
     "@neondatabase/serverless",
     "drizzle-orm",
   ],
-  // Headers para SEO
+  // Headers para SEO y seguridad
   async headers() {
     return [
       {
@@ -57,23 +57,13 @@ const nextConfig = {
             value: "application/xml; charset=utf-8",
           },
           {
-            key: "Cache-Control",
-            value:
-              "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
-          },
-        ],
-      },
-      {
-        source: "/sitemap-:id.xml",
-        headers: [
-          {
-            key: "Content-Type",
-            value: "application/xml; charset=utf-8",
+            key: "x-vercel-disable-early-hints",
+            value: "1",
           },
           {
             key: "Cache-Control",
             value:
-              "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
+              "public, max-age=0, s-maxage=86400, stale-while-revalidate=3600",
           },
         ],
       },
@@ -87,6 +77,27 @@ const nextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=3600, s-maxage=3600",
+          },
+        ],
+      },
+      {
+        source: "/((?!sitemap.xml|robots.txt).*)",
+        headers: [
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "origin-when-cross-origin",
           },
         ],
       },
