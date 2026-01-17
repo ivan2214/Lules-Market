@@ -25,21 +25,23 @@
   }
   ```
 
-### 3. **Rate Limiting (HTTP 429)**
-- **Problema**: Demasiadas consultas a la base de datos generando el sitemap
-- **Solución**: Implementado `generateSitemaps()` para dividir en múltiples archivos
+### 3. **Error de XML Parsing**
+- **Problema**: Error `xmlParseEntityRef: no name` en producción
+- **Causa**: Implementación incorrecta de `generateSitemaps()` sin índice principal
+- **Solución**: Simplificado a sitemap único optimizado
 - **Beneficios**:
-  - Reduce carga en cada request
-  - Evita timeouts
-  - Mejor rendimiento con Cache Components
-  - Caché independiente por tipo de contenido
+  - XML válido sin errores de parsing
+  - Más simple de mantener
+  - Mejor rendimiento con caché
+  - Compatible con Cache Components
 
-### 4. **Optimización para Cache Components**
-- **Implementación**: Sitemaps divididos en 3 archivos:
-  - `/sitemap-static.xml` - Páginas estáticas
-  - `/sitemap-products.xml` - Productos
-  - `/sitemap-businesses.xml` - Comercios
-- **Ventaja**: Cada sitemap se cachea independientemente
+### 4. **Optimizado para Cache Components**
+- **Implementación**: Sitemap único en `/sitemap.xml`
+- **Incluye**:
+  - Páginas estáticas
+  - Productos (con caché de DB)
+  - Comercios (con caché de DB)
+- **Ventaja**: Caché eficiente y manejo robusto de errores
 
 ## Estructura de Archivos
 
@@ -55,11 +57,13 @@ next.config.mjs         # Headers para Content-Type correcto
 
 Después del deploy, tendrás:
 
-- `https://lulesmarket.vercel.app/robots.txt`
-- `https://lulesmarket.vercel.app/sitemap.xml` (índice)
-- `https://lulesmarket.vercel.app/sitemap-static.xml`
-- `https://lulesmarket.vercel.app/sitemap-products.xml`
-- `https://lulesmarket.vercel.app/sitemap-businesses.xml`
+- `https://lulesmarket.vercel.app/robots.txt` ✅
+- `https://lulesmarket.vercel.app/sitemap.xml` ✅
+
+El sitemap incluye automáticamente:
+- Todas las páginas estáticas
+- Todos los productos activos
+- Todos los comercios activos
 
 ## Configuración de Google Search Console
 
