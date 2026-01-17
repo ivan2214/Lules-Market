@@ -74,7 +74,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.3,
     },
-
     {
       url: `${baseUrl}/politica-de-cookies`,
       lastModified: new Date(),
@@ -83,30 +82,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Obtener productos dinámicos
-  const productsResult = await ProductService.listAllProductsForSitemap();
-  const products = productsResult;
+  try {
+    // Obtener datos en paralelo con manejo de errores
+    const [productsResult, businessesResult] = await Promise.allSettled([
+      ProductService.listAllProductsForSitemap(),
+      BusinessService.listAllBusinessesForSitemap(),
+    ]);
 
-  const productPages: MetadataRoute.Sitemap =
-    products?.map((product) => ({
-      url: `${baseUrl}/producto/${product.id}`,
-      lastModified: product.updatedAt ?? undefined,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })) || [];
+    const productPages: MetadataRoute.Sitemap =
+      productsResult.status === "fulfilled" && productsResult.value
+        ? productsResult.value.map((product) => ({
+            url: `${baseUrl}/producto/${product.id}`,
+            lastModified: product.updatedAt ?? new Date(),
+            changeFrequency: "weekly" as const,
+            priority: 0.8,
+          }))
+        : [];
 
-  // Obtener comercios dinámicos
-  // Obtener comercios dinámicos
-  const businessesResult = await BusinessService.listAllBusinessesForSitemap();
-  const businesses = businessesResult;
+    const businessPages: MetadataRoute.Sitemap =
+      businessesResult.status === "fulfilled" && businessesResult.value
+        ? businessesResult.value.map((business) => ({
+            url: `${baseUrl}/comercio/${business.id}`,
+            lastModified: business.updatedAt ?? new Date(),
+            changeFrequency: "weekly" as const,
+            priority: 0.8,
+          }))
+        : [];
 
-  const businessPages: MetadataRoute.Sitemap =
-    businesses?.map((business) => ({
-      url: `${baseUrl}/comercio/${business.id}`,
-      lastModified: business.updatedAt ?? undefined,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })) || [];
-
-  return [...staticPages, ...productPages, ...businessPages];
+    return [...staticPages, ...productPages, ...businessPages];
+  } catch (error) {
+    console.error("Error generating sitemap:", error);
+    // En caso de error crítico, retornar al menos las páginas estáticas
+    return staticPages;
+  }
 }
