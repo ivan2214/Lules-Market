@@ -114,20 +114,28 @@ Host: https://lulesmarket.vercel.app
    git push
    ```
 
-2. **Verificar en producción**:
+2. **Configurar Firewall de Vercel** (IMPORTANTE):
+   - Ir a: Vercel Dashboard → Settings → Firewall
+   - Crear regla: "Allow Sitemap"
+     - Condition: Path equals `/sitemap.xml`
+     - Action: Allow
+   - Crear regla: "Allow Robots"
+     - Condition: Path equals `/robots.txt`
+     - Action: Allow
+   - **Ver `VERCEL_FIREWALL_CONFIG.md` para instrucciones detalladas**
+
+3. **Limpiar caché de Vercel**:
+   - Settings → Data Cache → Purge Everything
+
+4. **Verificar en producción**:
    - Visitar `https://lulesmarket.vercel.app/sitemap.xml`
-   - Verificar Content-Type en DevTools (debe ser `application/xml`)
-   - Comprobar que no hay errores 429
+   - Debe mostrar XML válido (no el error que viste antes)
+   - Content-Type debe ser `application/xml; charset=utf-8`
+   - No debe redirigir a Security Checkpoint
 
-3. **Enviar a Google Search Console**:
-   - Ir a Search Console
-   - Sitemaps → Agregar nuevo sitemap
-   - URL: `https://lulesmarket.vercel.app/sitemap.xml`
+5. **Enviar a Google Search Console**:
+   - Agregar sitemap: `https://lulesmarket.vercel.app/sitemap.xml`
    - Esperar 24-48 horas para indexación
-
-4. **Validar con herramientas**:
-   - [XML Sitemap Validator](https://www.xml-sitemaps.com/validate-xml-sitemap.html)
-   - [Google Rich Results Test](https://search.google.com/test/rich-results)
 
 ## Notas Importantes
 
