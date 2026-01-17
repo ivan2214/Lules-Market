@@ -1,116 +1,26 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/env/server";
-import { BusinessService } from "@/server/modules/business/service";
-import { ProductService } from "@/server/modules/products/service";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function robots(): MetadataRoute.Robots {
   const baseUrl = env.APP_URL;
 
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/explorar/productos`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/explorar/comercios`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/que-es`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/para-clientes`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/para-comercios`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/planes`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/roadmap`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/terminos`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/privacidad`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/politica-de-cookies`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
-  ];
-
-  try {
-    // Las llamadas a la DB hacen que esto sea dinámico automáticamente
-    const [productsResult, businessesResult] = await Promise.allSettled([
-      ProductService.listAllProductsForSitemap(),
-      BusinessService.listAllBusinessesForSitemap(),
-    ]);
-
-    const productPages: MetadataRoute.Sitemap =
-      productsResult.status === "fulfilled" && productsResult.value
-        ? productsResult.value.map((product) => ({
-            url: `${baseUrl}/producto/${product.id}`,
-            lastModified: product.updatedAt ?? new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 0.8,
-          }))
-        : [];
-
-    const businessPages: MetadataRoute.Sitemap =
-      businessesResult.status === "fulfilled" && businessesResult.value
-        ? businessesResult.value.map((business) => ({
-            url: `${baseUrl}/comercio/${business.id}`,
-            lastModified: business.updatedAt ?? new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 0.8,
-          }))
-        : [];
-
-    return [...staticPages, ...productPages, ...businessPages];
-  } catch (error) {
-    console.error("Error generating sitemap:", error);
-    return staticPages;
-  }
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/", "/_next/", "/auth/", "/admin/"],
+      },
+      {
+        userAgent: "GPTBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "ChatGPT-User",
+        disallow: "/",
+      },
+    ],
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
+  };
 }
