@@ -33,38 +33,5 @@
         }
       ]
     }
-  ],
-  "firewall": {
-    "rules": [
-      {
-        "name": "Allow Sitemap and Robots",
-        "description": "Permitir acceso público a sitemap.xml y robots.txt",
-        "action": {
-          "mitigate": {
-            "action": "allow"
-          }
-        },
-        "conditionGroup": [
-          {
-            "conditions": [
-              {
-                "type": "path",
-                "op": "eq",
-                "value": "/sitemap.xml"
-              }
-            ]
-          },
-          {
-            "conditions": [
-              {
-                "type": "path",
-                "op": "eq",
-                "value": "/robots.txt"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  ]
 }
