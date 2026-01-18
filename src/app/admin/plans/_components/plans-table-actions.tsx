@@ -35,6 +35,9 @@ export function PlansTableActions({ plan }: PlansTableActionsProps) {
   const [editMaxProducts, setEditMaxProducts] = useState(
     plan.maxProducts.toString(),
   );
+  const [editMaxImages, setEditMaxImages] = useState(
+    plan.maxImagesPerProduct.toString(),
+  );
 
   const { updatePlan, pausePlan, reactivatePlan } = usePlanMutations();
 
@@ -176,6 +179,18 @@ export function PlansTableActions({ plan }: PlansTableActionsProps) {
                 type="number"
                 value={editMaxProducts}
                 onChange={(e) => setEditMaxProducts(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="maxImages" className="text-right">
+                Max Imágenes
+              </Label>
+              <Input
+                id="maxImages"
+                type="number"
+                value={editMaxImages}
+                onChange={(e) => setEditMaxImages(e.target.value)}
                 className="col-span-3"
               />
             </div>

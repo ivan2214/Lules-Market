@@ -23,14 +23,14 @@ interface AdminChartsProps {
 const revenueConfig = {
   revenue: {
     label: "Ingresos",
-    color: "hsl(var(--primary))",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
 const growthConfig = {
   count: {
     label: "Nuevos Comercios",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 

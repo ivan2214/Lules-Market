@@ -132,7 +132,7 @@ async function PlansTable() {
           <TableHead>Nombre</TableHead>
           <TableHead>Precio</TableHead>
           <TableHead>Max Productos</TableHead>
-          <TableHead>Max Imágenes</TableHead>
+          <TableHead>Max Imágenes por Producto</TableHead>
           <TableHead>Estado</TableHead>
           <TableHead className="text-right">Acciones</TableHead>
         </TableRow>
