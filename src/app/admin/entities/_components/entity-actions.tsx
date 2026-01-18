@@ -23,13 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { useEntityMutations } from "../../_hooks/use-admin-mutations";
-import { EntityDetailsModal } from "./entity-details-modal";
-
-type Entity = {
-  id: string;
-  name: string;
-  status: string;
-};
+import { type Entity, EntityDetailsModal } from "./entity-details-modal";
 
 interface EntityActionsProps {
   type: "user" | "business";
@@ -89,7 +83,7 @@ export function EntityActions({ type, entity }: EntityActionsProps) {
     banBusiness.isPending ||
     activateBusiness.isPending;
 
-  const isSuspended = entity.status === "SUSPENDED";
+  const isSuspended = "status" in entity && entity.status === "SUSPENDED";
 
   return (
     <>
