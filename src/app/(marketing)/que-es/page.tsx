@@ -1,6 +1,7 @@
 import { MapPin, Store, Target, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { env } from "@/env/server";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -14,6 +15,24 @@ export const metadata: Metadata = {
   title: "¿Qué es Lules Market? - La solución para el comercio local",
   description:
     "Lules Market nace para conectar comercios locales con clientes de forma simple y centralizada en Lules, Tucumán.",
+  openGraph: {
+    title: "¿Qué es Lules Market?",
+    description:
+      "Lules Market nace para conectar comercios locales con clientes en Lules, Tucumán.",
+    url: `${env.APP_URL}/que-es`,
+    images: [
+      {
+        url: `${env.APP_URL}/logo.webp`,
+        width: 512,
+        height: 512,
+        alt: "Lules Market Logo",
+      },
+    ],
+    type: "website",
+  },
+  alternates: {
+    canonical: `${env.APP_URL}/que-es`,
+  },
 };
 
 export default function QueEsPage() {

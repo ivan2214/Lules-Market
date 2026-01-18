@@ -28,78 +28,35 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+
   title: {
-    default: "Lules Market - Productos y Comercios Locales en Lules, Tucumán",
+    default: "Lules Market - Productos y Comercios en Lules, Tucumán",
     template: "%s | Lules Market",
   },
+
   description:
-    "Descubrí productos y comercios locales en Lules, Tucumán. Encontrá todo lo que necesitás: alimentos, ropa, servicios y más de negocios de tu zona.",
-  keywords: [
-    "Lules",
-    "Lules Tucumán",
-    "productos Lules",
-    "comercios Lules",
-    "comprar en Lules",
-    "negocios Lules",
-    "tiendas Lules",
-    "emprendimientos Lules",
-    "marketplace Lules",
-    "comercios locales Tucumán",
-    "productos locales Tucumán",
-    "vitrina digital",
-    "negocios locales",
-    "compras locales",
-  ],
-  authors: [{ name: "Lules Market" }],
-  creator: "Lules Market",
-  publisher: "Lules Market",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+    "Plataforma de comercio local en Lules, Tucumán. Descubrí productos, comercios y servicios de tu zona. Conectamos vecinos con negocios locales.",
+
   verification: {
     google: "8NkhaNOxnwiM0xa44M867a1R-phEJqisP8XMcJYaQfE",
   },
+
   openGraph: {
     type: "website",
     locale: "es_AR",
     siteName: "Lules Market",
-    title: "Lules Market - Productos y Comercios Locales en Lules",
-    description:
-      "Descubrí productos y comercios locales en Lules, Tucumán. Tu vitrina digital para comprar y vender en tu comunidad.",
-    images: [
-      {
-        url: "/logo.webp",
-        width: 512,
-        height: 512,
-        alt: "Lules Market - Tu vitrina digital",
-      },
-    ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "Lules Market - Productos y Comercios en Lules",
-    description: "Descubrí productos y comercios locales en Lules, Tucumán.",
-    images: ["/logo.webp"],
-    creator: "@lulesmarket",
+    creator: "@bongiovanniDev",
   },
+
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  alternates: {
-    canonical: "/",
   },
 };
-
 export default async function RootLayout({
   children,
 }: Readonly<{
