@@ -2,6 +2,7 @@ import {
   Building2,
   CreditCard,
   HandCoins,
+  Layers,
   LayoutDashboard,
   Package,
   ScrollText,
@@ -51,6 +52,12 @@ export const navPrimaryDataAdmin: Array<NavPrimaryItem> = [
     title: "Products",
     url: pathsConfig.admin.products,
     icon: Package,
+    role: "ADMIN",
+  },
+  {
+    title: "Plans",
+    url: pathsConfig.admin.plans,
+    icon: Layers,
     role: "ADMIN",
   },
 ];
