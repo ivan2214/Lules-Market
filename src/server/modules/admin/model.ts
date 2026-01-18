@@ -100,6 +100,49 @@ export namespace AdminModel {
     endDate: t.Date(),
   });
 
+  // Pagination params
+  export const paginationQuery = t.Object({
+    page: t.Optional(t.Numeric({ minimum: 1 })),
+    perPage: t.Optional(t.Numeric({ minimum: 1, maximum: 100 })),
+  });
+
+  // Entity IDs
+  export const idParam = t.Object({
+    id: t.String(),
+  });
+
+  // Filters
+  export const logsFilterQuery = t.Object({
+    page: t.Optional(t.Numeric({ minimum: 1 })),
+    perPage: t.Optional(t.Numeric({ minimum: 1, maximum: 100 })),
+    entityType: t.Optional(t.String()),
+    action: t.Optional(t.String()),
+  });
+
+  export const paymentsFilterQuery = t.Object({
+    page: t.Optional(t.Numeric({ minimum: 1 })),
+    perPage: t.Optional(t.Numeric({ minimum: 1, maximum: 100 })),
+    status: t.Optional(t.String()),
+  });
+
+  export const productsFilterQuery = t.Object({
+    page: t.Optional(t.Numeric({ minimum: 1 })),
+    perPage: t.Optional(t.Numeric({ minimum: 1, maximum: 100 })),
+    active: t.Optional(t.BooleanString()),
+    businessId: t.Optional(t.String()),
+  });
+
+  export const businessFilterQuery = t.Object({
+    page: t.Optional(t.Numeric({ minimum: 1 })),
+    perPage: t.Optional(t.Numeric({ minimum: 1, maximum: 100 })),
+    status: t.Optional(t.String()),
+  });
+
+  // Trial extension
+  export const extendTrialBody = t.Object({
+    newEndDate: t.Date(),
+  });
+
   // Outputs
   export const analyticsDataOutput = t.Object({
     planDistribution: PlanDistributionSchema,
@@ -112,4 +155,9 @@ export namespace AdminModel {
   });
 
   export const plansListOutput = t.Array(t.Object(models.select.plan));
+
+  export const successResponse = t.Object({
+    success: t.Boolean(),
+    message: t.String(),
+  });
 }
