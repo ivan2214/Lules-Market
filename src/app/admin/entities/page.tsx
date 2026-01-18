@@ -61,7 +61,7 @@ export default function AdminEntitiesPage() {
                 Todos los usuarios registrados en la plataforma.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="mx-auto max-w-4xl overflow-x-auto">
               <Suspense fallback={<TableSkeleton />}>
                 <UsersTable />
               </Suspense>
@@ -77,7 +77,7 @@ export default function AdminEntitiesPage() {
                 Todos los comercios registrados en la plataforma.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="mx-auto max-w-4xl overflow-x-auto">
               <Suspense fallback={<TableSkeleton />}>
                 <BusinessesTable />
               </Suspense>
@@ -113,7 +113,7 @@ async function UsersTable() {
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="max-w-3xl overflow-x-auto">
           {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell className="font-medium">

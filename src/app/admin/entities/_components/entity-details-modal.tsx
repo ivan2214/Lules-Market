@@ -1,6 +1,7 @@
 "use client";
 
 import { Building2, Calendar, Info, Shield, User } from "lucide-react";
+import type { BusinessWithRelations, UserWithRelations } from "@/db/types";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -14,31 +15,15 @@ import {
 } from "@/shared/components/ui/dialog";
 import { Separator } from "@/shared/components/ui/separator";
 
-// Define flexible types to match what's passed from the table
+export type UserEnhanced = Omit<UserWithRelations, "business"> & {
+  business?: BusinessWithRelations | null;
+};
+
+export type Entity = UserEnhanced | BusinessWithRelations;
+
 interface EntityDetailsModalProps {
   type: "user" | "business";
-  entity: {
-    id: string;
-    name: string;
-    email?: string;
-    status: string;
-    createdAt?: string | null;
-    role?: string;
-    business?: {
-      name: string;
-      owner: string;
-      plan: string;
-      currentPlan?: {
-        plan: {
-          name: string;
-        };
-      };
-    };
-    user?: {
-      name: string;
-      email: string;
-    };
-  }; // Using any here to allow flexibility as we normalize data inside
+  entity: Entity;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -59,10 +44,17 @@ export function EntityDetailsModal({
     <Building2 className="h-5 w-5" />
   );
 
+  // Helper casts for type safety within conditional blocks
+  const userEntity = isUser ? (entity as UserEnhanced) : null;
+  const businessEntity = !isUser ? (entity as BusinessWithRelations) : null;
+
   // Normalize data for display
   const name = entity.name || "Sin nombre";
-  const email = isUser ? entity.email : entity.user?.email;
-  const status = entity.status; // User might not have status in schema but business does
+  const email = isUser ? userEntity?.email : businessEntity?.user?.email;
+
+  // Status is primarily for Business (from businessStatusEnum), User currently doesn't have a status field in schema
+  const status = !isUser ? businessEntity?.status : null;
+
   const createdAt = new Date(entity.createdAt || "").toLocaleDateString(
     "es-AR",
     {
@@ -73,12 +65,18 @@ export function EntityDetailsModal({
   );
 
   // Specific fields
-  const role = isUser ? entity.role : null;
-  const businessName = isUser ? entity.business?.name : entity.name;
-  const ownerName = !isUser ? entity.user?.name || "Sin nombre" : null;
+  const role = isUser ? userEntity?.role : null;
+  const businessName = isUser
+    ? userEntity?.business?.name
+    : businessEntity?.name;
+  const ownerName = !isUser ? businessEntity?.user?.name || "Sin nombre" : null;
+
+  // Plan name logic
+  // If User: check their associated business -> currentPlan -> plan
+  // If Business: check currentPlan -> plan
   const planName = !isUser
-    ? entity.business?.currentPlan?.plan?.name || "Gratis"
-    : entity.business?.currentPlan?.plan?.name;
+    ? businessEntity?.currentPlan?.plan?.name || "Gratis"
+    : userEntity?.business?.currentPlan?.plan?.name;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
