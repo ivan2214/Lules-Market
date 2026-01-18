@@ -1,10 +1,4 @@
-import {
-  CheckCircle,
-  Clock,
-  CreditCard,
-  DollarSign,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle, Clock, DollarSign, XCircle } from "lucide-react";
 import { Suspense } from "react";
 import {
   getAdminPayments,
