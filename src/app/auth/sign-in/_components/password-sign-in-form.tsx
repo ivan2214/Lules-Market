@@ -31,13 +31,12 @@ export function PasswordSignInForm() {
       onChange: typeboxValidator(signInSchema),
     },
     onSubmit: ({ value }) => {
-      startTransition(() => {
-        signIn.email(
+      startTransition(async () => {
+        const { error, data: _data } = await signIn.email(
           {
             email: value.email,
             password: value.password,
             rememberMe: value.rememberMe,
-            callbackURL: pathsConfig.dashboard.root,
           },
           {
             onSuccess: (context) => {
@@ -51,6 +50,7 @@ export function PasswordSignInForm() {
             },
           },
         );
+        if (error) setError(error.message || "Something went wrong");
       });
     },
   });

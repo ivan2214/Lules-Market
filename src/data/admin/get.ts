@@ -32,7 +32,19 @@ export async function getTrialsAndActiveCount() {
   cacheTag("admin", "trials");
   cacheLife("minutes");
 
-  return await AdminService.getTrialsAndActiveCount();
+  const { trials, activeTrials } = await AdminService.getTrialsAndActiveCount();
+
+  const trialsWithDays = trials.map((trial) => ({
+    ...trial,
+    daysRemaining: trial.expiresAt
+      ? Math.ceil(
+          (new Date(trial.expiresAt).getTime() - Date.now()) /
+            (1000 * 60 * 60 * 24),
+        )
+      : 0,
+  }));
+
+  return { trials: trialsWithDays, activeTrials };
 }
 
 export async function getAdminPaginatedUsers(options: {
