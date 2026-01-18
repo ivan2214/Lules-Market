@@ -18,6 +18,7 @@ export const PathsSchema = z.object({
     logs: z.custom<Route>(),
     entities: z.custom<Route>(),
     products: z.custom<Route>(),
+    plans: z.custom<Route>(),
   }),
   dashboard: z.object({
     root: z.custom<Route>(),
@@ -59,6 +60,7 @@ const pathsConfig = PathsSchema.parse({
     logs: "/admin/logs",
     entities: "/admin/entities",
     products: "/admin/products",
+    plans: "/admin/plans",
   },
   dashboard: {
     root: "/dashboard",
