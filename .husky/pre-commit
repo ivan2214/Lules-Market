@@ -1,5 +1,5 @@
-echo "Running lint-staged..."
-pnpm  lint-staged
+echo "Running Biome Check..."
+pnpm  check
 
 echo "Security check (all deps)..."
 pnpm audit --audit-level=high || {

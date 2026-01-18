@@ -96,8 +96,8 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
         {/* Side glows */}
-        <div className="absolute top-1/2 left-0 h-[420px] w-[420px] -translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
-        <div className="absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
+        <div className="-translate-x-1/3 -translate-y-1/2 absolute top-1/2 left-0 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[140px]" />
+        <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
         <div className="relative mx-auto max-w-4xl space-y-8">
           <h1 className="text-balance font-extrabold text-4xl tracking-tight drop-shadow-sm md:text-6xl lg:text-7xl">
             Conecta con tu comunidad local
@@ -207,8 +207,8 @@ export default async function HomePage() {
       {/* For Businesses Call to Action */}
       <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
         {/* Side glows */}
-        <div className="absolute top-1/2 left-0 h-[420px] w-[420px] -translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
-        <div className="absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
+        <div className="-translate-x-1/3 -translate-y-1/2 absolute top-1/2 left-0 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[140px]" />
+        <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
 
         <div className="relative mx-auto max-w-4xl space-y-8">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
