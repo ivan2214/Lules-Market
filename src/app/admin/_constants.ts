@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Package,
   ScrollText,
-  Users,
 } from "lucide-react";
 import pathsConfig from "@/config/paths.config";
 import type { NavPrimaryItem } from "@/shared/components/sidebar/nav-primary";
@@ -18,12 +17,7 @@ export const navPrimaryDataAdmin: Array<NavPrimaryItem> = [
     icon: LayoutDashboard,
     role: "ADMIN",
   },
-  {
-    title: "Users",
-    url: pathsConfig.admin.users,
-    icon: Users,
-    role: "ADMIN",
-  },
+
   {
     title: "Grants",
     url: pathsConfig.admin.grants,
@@ -43,7 +37,7 @@ export const navPrimaryDataAdmin: Array<NavPrimaryItem> = [
     role: "ADMIN",
   },
   {
-    title: "Entities",
+    title: "Usuarios y Negocios",
     url: pathsConfig.admin.entities,
     icon: Building2,
     role: "ADMIN",
