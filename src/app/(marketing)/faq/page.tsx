@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { env } from "@/env/server";
 import {
   Accordion,
   AccordionContent,
@@ -11,6 +12,24 @@ export const metadata: Metadata = {
   description:
     "Resuelve tus dudas sobre Lules Market. Preguntas frecuentes para compradores y comercios.",
   keywords: "faq, preguntas frecuentes, ayuda, soporte, lules market",
+  openGraph: {
+    title: "Preguntas Frecuentes - Lules Market",
+    description:
+      "Resuelve tus dudas sobre Lules Market. Preguntas frecuentes para compradores y comercios.",
+    url: `${env.APP_URL}/faq`,
+    images: [
+      {
+        url: `${env.APP_URL}/logo.webp`,
+        width: 512,
+        height: 512,
+        alt: "Lules Market Logo",
+      },
+    ],
+    type: "website",
+  },
+  alternates: {
+    canonical: `${env.APP_URL}/faq`,
+  },
 };
 
 export default function FAQPage() {

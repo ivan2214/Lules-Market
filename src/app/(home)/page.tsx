@@ -27,27 +27,13 @@ import {
 } from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Lules Market - Productos y Comercios Locales en Lules, Tucumán",
+  title: "Productos y Comercios Locales en Lules, Tucumán",
   description:
-    "Descubrí productos y comercios locales en Lules, Tucumán. Conectá con negocios de tu zona, encontrá ofertas exclusivas y apoyá a tu comunidad.",
-  keywords: [
-    "Lules Market",
-    "Lules Tucumán",
-    "productos Lules",
-    "comercios Lules",
-    "comprar en Lules",
-    "negocios locales Lules",
-    "tiendas Lules",
-    "marketplace Lules",
-    "emprendimientos Lules",
-    "ofertas Lules",
-    "vitrina digital",
-    "comercio local Argentina",
-  ],
+    "Descubrí productos y comercios locales en Lules, Tucumán. Explorá negocios de tu zona, encontrá productos cerca tuyo y contactá directamente con cada comercio.",
   openGraph: {
     title: "Lules Market - Productos y Comercios Locales",
     description:
-      "Descubrí productos y comercios locales en Lules, Tucumán. Tu vitrina digital para comprar y vender en tu comunidad.",
+      "Descubrí productos y comercios locales en Lules, Tucumán. Explorá negocios de tu zona, encontrá productos cerca tuyo y contactá directamente con cada comercio.",
     url: env.APP_URL,
     siteName: "Lules Market",
     images: [
@@ -64,23 +50,17 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Lules Market - Productos y Comercios en Lules",
-    description: "Descubrí productos y comercios locales en Lules, Tucumán.",
+    description:
+      "Descubrí productos y comercios locales en Lules, Tucumán. Explorá negocios de tu zona, encontrá productos cerca tuyo y contactá directamente con cada comercio.",
     images: [`${env.APP_URL}/logo.webp`],
     creator: "@lulesmarket",
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
   alternates: {
-    canonical: "/",
+    canonical: env.APP_URL,
   },
 };
 
@@ -100,12 +80,12 @@ export default async function HomePage() {
         <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
         <div className="relative mx-auto max-w-4xl space-y-8">
           <h1 className="text-balance font-extrabold text-4xl tracking-tight drop-shadow-sm md:text-6xl lg:text-7xl">
-            Conecta con tu comunidad local
+            Productos y comercios locales en Lules, Tucumán
           </h1>
           <p className="mx-auto max-w-2xl text-balance text-lg text-muted-foreground md:text-2xl">
-            La plataforma donde los comercios de Lules brillan. Descubre
-            productos únicos, apoya a tus vecinos y encuentra todo lo que
-            necesitas cerca de casa.
+            Descubrí productos y comercios locales en Lules, Tucumán. Explorá
+            negocios de tu zona, encontrá productos cerca tuyo y contactá
+            directamente con cada comercio.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button

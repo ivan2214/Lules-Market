@@ -58,6 +58,9 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: {
+      canonical: `${env.APP_URL}/producto/${resolvedParams.id}`,
+    },
     openGraph: {
       title,
       description,

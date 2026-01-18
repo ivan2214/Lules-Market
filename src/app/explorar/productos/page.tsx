@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   alternates: {
-    canonical: "/explorar/productos",
+    canonical: `${env.APP_URL}/explorar/productos`,
   },
 };
 
