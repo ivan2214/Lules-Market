@@ -177,3 +177,82 @@ export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
     />
   );
 }
+
+interface WebSiteSchemaProps {
+  name: string;
+  url: string;
+  searchUrl?: string;
+}
+
+/**
+ * WebSite Schema con SearchAction para habilitar la caja de búsqueda en Google
+ */
+export function WebSiteSchema({ name, url, searchUrl }: WebSiteSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name,
+    url,
+    ...(searchUrl && {
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: searchUrl,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    }),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+interface ItemListSchemaProps {
+  name: string;
+  description?: string;
+  items: Array<{
+    name: string;
+    url: string;
+    position: number;
+    image?: string;
+  }>;
+}
+
+/**
+ * ItemList Schema para páginas de listado (productos, comercios)
+ */
+export function ItemListSchema({
+  name,
+  description,
+  items,
+}: ItemListSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    description,
+    numberOfItems: items.length,
+    itemListElement: items.map((item) => ({
+      "@type": "ListItem",
+      position: item.position,
+      name: item.name,
+      url: item.url,
+      ...(item.image && { image: item.image }),
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data requires this
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

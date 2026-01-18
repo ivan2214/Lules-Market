@@ -27,24 +27,35 @@ import {
 } from "@/shared/components/ui/card";
 
 export const metadata: Metadata = {
-  // ... (keeping existing metadata unchanged)
-  title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
+  title: "Lules Market - Productos y Comercios Locales en Lules, Tucumán",
   description:
-    "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio con nuestra plataforma diseñada para comercios locales.",
-  keywords:
-    "comercios locales, vitrina digital, productos locales, negocios, emprendedores, marketplace",
+    "Descubrí productos y comercios locales en Lules, Tucumán. Conectá con negocios de tu zona, encontrá ofertas exclusivas y apoyá a tu comunidad.",
+  keywords: [
+    "Lules Market",
+    "Lules Tucumán",
+    "productos Lules",
+    "comercios Lules",
+    "comprar en Lules",
+    "negocios locales Lules",
+    "tiendas Lules",
+    "marketplace Lules",
+    "emprendimientos Lules",
+    "ofertas Lules",
+    "vitrina digital",
+    "comercio local Argentina",
+  ],
   openGraph: {
-    title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
+    title: "Lules Market - Productos y Comercios Locales",
     description:
-      "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio.",
+      "Descubrí productos y comercios locales en Lules, Tucumán. Tu vitrina digital para comprar y vender en tu comunidad.",
     url: env.APP_URL,
     siteName: "Lules Market",
     images: [
       {
         url: `${env.APP_URL}/logo.webp`,
-        width: 1200,
-        height: 630,
-        alt: "Lules Market - Plataforma para comercios locales",
+        width: 512,
+        height: 512,
+        alt: "Lules Market - Tu vitrina digital en Lules, Tucumán",
       },
     ],
     locale: "es_AR",
@@ -52,17 +63,24 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lules Market - Tu Vitrina Digital para Comercios Locales",
-    description:
-      "Conecta con clientes de tu zona. Publica tus productos, aumenta tu visibilidad y haz crecer tu negocio.",
+    title: "Lules Market - Productos y Comercios en Lules",
+    description: "Descubrí productos y comercios locales en Lules, Tucumán.",
     images: [`${env.APP_URL}/logo.webp`],
+    creator: "@lulesmarket",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   alternates: {
-    canonical: env.APP_URL,
+    canonical: "/",
   },
 };
 
@@ -78,8 +96,8 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
         {/* Side glows */}
-        <div className="-translate-y-1/2 -translate-x-1/3 absolute top-1/2 left-0 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[140px]" />
-        <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
+        <div className="absolute top-1/2 left-0 h-[420px] w-[420px] -translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
+        <div className="absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
         <div className="relative mx-auto max-w-4xl space-y-8">
           <h1 className="text-balance font-extrabold text-4xl tracking-tight drop-shadow-sm md:text-6xl lg:text-7xl">
             Conecta con tu comunidad local
@@ -189,8 +207,8 @@ export default async function HomePage() {
       {/* For Businesses Call to Action */}
       <section className="relative overflow-hidden rounded-3xl px-6 py-20 text-center shadow-2xl md:px-12 md:py-32">
         {/* Side glows */}
-        <div className="-translate-y-1/2 -translate-x-1/3 absolute top-1/2 left-0 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[140px]" />
-        <div className="-translate-y-1/2 absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 rounded-full bg-primary/20 blur-[140px]" />
+        <div className="absolute top-1/2 left-0 h-[420px] w-[420px] -translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
+        <div className="absolute top-1/2 right-0 h-[420px] w-[420px] translate-x-1/3 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]" />
 
         <div className="relative mx-auto max-w-4xl space-y-8">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
