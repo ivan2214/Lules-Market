@@ -23,20 +23,24 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { useEntityMutations } from "../../_hooks/use-admin-mutations";
+import { EntityDetailsModal } from "./entity-details-modal";
+
+type Entity = {
+  id: string;
+  name: string;
+  status: string;
+};
 
 interface EntityActionsProps {
   type: "user" | "business";
-  entity: {
-    id: string;
-    name?: string | null;
-    status?: string;
-  };
+  entity: Entity;
 }
 
 export function EntityActions({ type, entity }: EntityActionsProps) {
   const { banUser, activateUser, banBusiness, activateBusiness } =
     useEntityMutations();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const confirmBan = async () => {
     try {
@@ -99,8 +103,7 @@ export function EntityActions({ type, entity }: EntityActionsProps) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {/* Details modal could be added here similar to products if needed */}
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsDetailsOpen(true)}>
             <Eye className="mr-2 h-4 w-4" />
             Ver detalles
           </DropdownMenuItem>
@@ -121,6 +124,13 @@ export function EntityActions({ type, entity }: EntityActionsProps) {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <EntityDetailsModal
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
+        type={type}
+        entity={entity}
+      />
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
