@@ -1,14 +1,22 @@
-import { Users } from "lucide-react";
+import {
+  Building2,
+  CreditCard,
+  HandCoins,
+  LayoutDashboard,
+  Package,
+  ScrollText,
+  Users,
+} from "lucide-react";
 import pathsConfig from "@/config/paths.config";
 import type { NavPrimaryItem } from "@/shared/components/sidebar/nav-primary";
 
-/* grants
-payments
-logs
-entities
-products */
-
 export const navPrimaryDataAdmin: Array<NavPrimaryItem> = [
+  {
+    title: "Dashboard",
+    url: pathsConfig.admin.root,
+    icon: LayoutDashboard,
+    role: "ADMIN",
+  },
   {
     title: "Users",
     url: pathsConfig.admin.users,
@@ -18,31 +26,31 @@ export const navPrimaryDataAdmin: Array<NavPrimaryItem> = [
   {
     title: "Grants",
     url: pathsConfig.admin.grants,
-    icon: Users,
+    icon: HandCoins,
     role: "ADMIN",
   },
   {
     title: "Payments",
     url: pathsConfig.admin.payments,
-    icon: Users,
+    icon: CreditCard,
     role: "ADMIN",
   },
   {
     title: "Logs",
     url: pathsConfig.admin.logs,
-    icon: Users,
+    icon: ScrollText,
     role: "ADMIN",
   },
   {
     title: "Entities",
     url: pathsConfig.admin.entities,
-    icon: Users,
+    icon: Building2,
     role: "ADMIN",
   },
   {
     title: "Products",
     url: pathsConfig.admin.products,
-    icon: Users,
+    icon: Package,
     role: "ADMIN",
   },
 ];
