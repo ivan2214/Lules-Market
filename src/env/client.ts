@@ -5,10 +5,12 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BETTER_AUTH_URL: z.string(),
     NEXT_PUBLIC_APP_URL: z.string(),
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
   },
   runtimeEnv: {
     NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   },
   emptyStringAsUndefined: true,
 });
