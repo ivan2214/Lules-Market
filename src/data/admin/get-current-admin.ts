@@ -1,5 +1,4 @@
-"use server";
-
+import "server-only";
 import { cache } from "react";
 import type { AdminWithRelations } from "@/db/types";
 import { getCurrentSession } from "../session/get-current-session";

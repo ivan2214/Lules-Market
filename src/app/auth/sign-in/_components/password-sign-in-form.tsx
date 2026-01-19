@@ -37,6 +37,7 @@ export function PasswordSignInForm() {
             email: value.email,
             password: value.password,
             rememberMe: value.rememberMe,
+            callbackURL: pathsConfig.dashboard.root,
           },
           {
             onSuccess: (context) => {

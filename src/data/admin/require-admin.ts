@@ -1,5 +1,4 @@
-"use server";
-
+import "server-only";
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
 import { getCurrentAdmin } from "./get-current-admin";
