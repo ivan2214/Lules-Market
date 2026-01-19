@@ -1,4 +1,5 @@
 import "server-only";
+import { addMonths } from "date-fns";
 import {
   and,
   asc,
@@ -120,6 +121,32 @@ export const BusinessService = {
           coverBusinessId: newBusiness.id,
         });
       }
+
+      // asignar plan gratis por defecto
+      const freePlan = await db.query.plan.findFirst({
+        where: eq(plan.type, "FREE"),
+      });
+
+      if (!freePlan) {
+        throw new AppError("Plan gratis no encontrado", "NOT_FOUND");
+      }
+
+      const activatedAt = new Date();
+      const expiresAt = addMonths(activatedAt, 1);
+
+      await db.insert(currentPlanSchema).values({
+        businessId: newBusiness.id,
+        productsUsed: 0,
+        imagesUsed: 0,
+        expiresAt,
+        planType: freePlan.type,
+        hasStatistics: freePlan.hasStatistics,
+        isActive: true,
+        isTrial: false,
+        listPriority: "Estandar",
+        planStatus: "ACTIVE",
+        activatedAt,
+      });
 
       // Update user role to BUSINESS
       await db

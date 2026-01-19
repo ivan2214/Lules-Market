@@ -4,6 +4,7 @@ import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { getPaymentHistory } from "@/data/payments/get";
 import { getPlans } from "@/data/plans/get";
 import { formatCurrency } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import {
   Alert,
   AlertDescription,
@@ -41,6 +42,7 @@ export default async function SubscriptionPage({
   ]);
 
   const message = errorParams ? subscriptionErrors[errorParams] : null;
+  const isTrial = currentBusiness.currentPlan?.isTrial;
 
   return (
     <div className="space-y-8">
@@ -54,6 +56,7 @@ export default async function SubscriptionPage({
           <AlertDescription>{message.description}</AlertDescription>
         </Alert>
       )}
+
       <Card>
         <CardHeader>
           <CardTitle>Plan Actual</CardTitle>
@@ -62,21 +65,32 @@ export default async function SubscriptionPage({
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-bold text-2xl">
-                {currentBusiness.currentPlan?.planType}
-              </p>
+              <div className={cn(isTrial && "flex items-center gap-2")}>
+                <p className="font-bold text-2xl">
+                  {currentBusiness.currentPlan?.planType}
+                </p>
+                {isTrial && (
+                  <Badge variant="secondary" className="text-xs">
+                    Trial
+                  </Badge>
+                )}
+              </div>
               <p className="text-muted-foreground text-sm">
                 Estado:{" "}
                 <Badge
                   variant={
-                    currentBusiness.currentPlan?.planStatus === "ACTIVE"
-                      ? "default"
-                      : "secondary"
+                    currentBusiness.currentPlan
+                      ? currentBusiness.currentPlan?.planStatus === "ACTIVE"
+                        ? "default"
+                        : "secondary"
+                      : "destructive"
                   }
                 >
-                  {currentBusiness.currentPlan?.planStatus === "ACTIVE"
-                    ? "Activo"
-                    : currentBusiness.currentPlan?.planStatus}
+                  {currentBusiness.currentPlan
+                    ? currentBusiness.currentPlan?.planStatus === "ACTIVE"
+                      ? "Activo"
+                      : currentBusiness.currentPlan?.planStatus
+                    : "Sin plan"}
                 </Badge>
               </p>
               {currentBusiness.currentPlan?.expiresAt && (

@@ -46,6 +46,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
   return (
     <Card
       className={cn(
+        "justify-between",
         plan.type === "BASIC" && "relative border-primary shadow-lg",
         currentPlan === plan.type && "cursor-not-allowed opacity-50",
       )}
@@ -56,7 +57,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
         </Badge>
       )}
       <CardHeader>
-        <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           {getIcon(plan.type)}
           {isCurrent && <Badge>Actual</Badge>}
         </div>
@@ -76,7 +77,7 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
         <div className="space-y-2">
           {(plan.maxProducts || plan.type === "PREMIUM") && (
             <div className="flex items-start gap-2">
-              <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <Check className="h-5 w-5 shrink-0 text-primary" />
               <span
                 className={cn(
                   "text-sm",
@@ -87,14 +88,14 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
                   ? "Productos Ilimitados"
                   : `${plan.maxProducts} Productos`}
                 {plan.type === "PREMIUM" && (
-                  <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                  <InfinityIcon className="h-5 w-5 shrink-0 text-primary" />
                 )}
               </span>
             </div>
           )}
           {(plan.maxImagesPerProduct || plan.type === "PREMIUM") && (
             <div className="flex items-start gap-2">
-              <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <Check className="h-5 w-5 shrink-0 text-primary" />
               <span
                 className={cn(
                   "text-sm",
@@ -105,14 +106,14 @@ export function PlanCard({ plan, currentPlan }: PlanCardProps) {
                   ? "Imágenes Ilimitadas"
                   : `${plan.maxImagesPerProduct} imágenes por producto`}
                 {plan.type === "PREMIUM" && (
-                  <InfinityIcon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                  <InfinityIcon className="h-5 w-5 shrink-0 text-primary" />
                 )}
               </span>
             </div>
           )}
           {plan.features.map((feature) => (
             <div key={feature} className="flex items-start gap-2">
-              <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <Check className="h-5 w-5 shrink-0 text-primary" />
               <span className="text-sm">{feature}</span>
             </div>
           ))}

@@ -2,6 +2,18 @@ import { t } from "elysia";
 import { models } from "@/db/model";
 
 export namespace AdminModel {
+  export const ModifyUsageBody = t.Object({
+    used: t.Object({
+      productsUsed: t.Number(),
+      imagesUsed: t.Number(),
+    }),
+  });
+
+  export const ModifyUsageResponse = t.Object({
+    success: t.Boolean(),
+    message: t.String(),
+  });
+
   export const TrendSchema = t.Object({
     percentage: t.Number(),
     isPositive: t.Boolean(),

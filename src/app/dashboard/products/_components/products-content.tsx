@@ -8,7 +8,7 @@ import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { listAllCategories } from "@/data/categories/get";
 import { ProductCardDashboard } from "@/features/dashboard/_components/product-card-dashboard";
 import { ProductFormDialog } from "@/features/dashboard/_components/product-form-dialog";
-import { subscriptionErrors } from "@/features/dashboard/_constants";
+import { subscriptionErrorsType } from "@/features/dashboard/_constants";
 import {
   Alert,
   AlertDescription,
@@ -28,9 +28,10 @@ export async function ProductsContent() {
     listAllCategories(),
   ]);
 
-  const plan = currentBusiness.currentPlan;
-  const usedProducts = plan?.productsUsed ?? 0;
-  const maxProducts = plan?.plan?.maxProducts ?? 0;
+  const plan = currentBusiness.currentPlan?.plan;
+  const currentPlan = currentBusiness.currentPlan;
+  const usedProducts = currentPlan?.productsUsed ?? 0;
+  const maxProducts = plan?.maxProducts ?? 0;
 
   const isUnlimited = maxProducts === 9999;
   const canAddProducts = isUnlimited || usedProducts < maxProducts;
@@ -38,7 +39,7 @@ export async function ProductsContent() {
   const productDialog = (
     <ProductFormDialog
       categories={categories}
-      maxImagesPerProduct={plan?.imagesUsed ?? 0}
+      maxImagesPerProduct={plan?.maxImagesPerProduct ?? 0}
       disabled={!canAddProducts}
     />
   );
@@ -66,7 +67,7 @@ export async function ProductsContent() {
           </AlertTitle>
           <AlertDescription>
             <Link
-              href={`/dashboard/subscription?error=${subscriptionErrors.subscription_limit_reached}`}
+              href={`/dashboard/subscription?error=${subscriptionErrorsType.subscription_limit_reached}`}
               className="font-medium underline"
             >
               Mejora tu plan para agregar más productos
@@ -96,7 +97,7 @@ export async function ProductsContent() {
               key={product.id}
               product={product}
               categories={categories}
-              maxImagesPerProduct={plan?.imagesUsed ?? 0}
+              maxImagesPerProduct={plan?.maxImagesPerProduct ?? 0}
             />
           ))}
         </section>

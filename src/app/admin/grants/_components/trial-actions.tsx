@@ -1,8 +1,8 @@
 "use client";
 
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Calendar, MoreHorizontal, XCircle } from "lucide-react";
+import { Calendar, Edit, MoreHorizontal, XCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { TrialWithRelations } from "@/db/types";
@@ -25,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import { Input } from "@/shared/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -38,11 +39,19 @@ interface TrialActionsProps {
 
 export function TrialActions({ trial }: TrialActionsProps) {
   const [extendOpen, setExtendOpen] = useState(false);
+  const [usedOpen, setUsedOpen] = useState(false);
   const [newEndDate, setNewEndDate] = useState<Date>(
-    addDays(new Date(trial.expiresAt || addDays(new Date(), 30)), 30),
+    new Date(trial.expiresAt || new Date()),
   );
+  const [used, setUsed] = useState<{
+    productsUsed: number;
+    imagesUsed: number;
+  }>({
+    productsUsed: trial.business?.currentPlan?.productsUsed || 0,
+    imagesUsed: trial.business?.currentPlan?.imagesUsed || 0,
+  });
 
-  const { extendTrial, cancelTrial } = useTrialMutations();
+  const { extendTrial, deleteTrial, modifyTrialUsage } = useTrialMutations();
 
   const handleExtend = async () => {
     try {
@@ -59,16 +68,31 @@ export function TrialActions({ trial }: TrialActionsProps) {
     }
   };
 
-  const handleCancel = async () => {
+  const handleDelete = async () => {
     try {
-      await cancelTrial.mutateAsync(trial.id);
-      toast.success("Trial cancelado", {
-        description: "El período de prueba ha sido cancelado.",
+      await deleteTrial.mutateAsync(trial.id);
+      toast.success("Trial eliminado", {
+        description: "El período de prueba ha sido eliminado.",
       });
     } catch (error) {
       console.log(error);
       toast.error("Error", {
-        description: "No se pudo cancelar el trial",
+        description: "No se pudo eliminar el trial",
+      });
+    }
+  };
+
+  const handleModifyUsage = async () => {
+    try {
+      await modifyTrialUsage.mutateAsync({ id: trial.id, used });
+      toast.success("Trial modificado", {
+        description: "El uso ha sido actualizado.",
+      });
+      setUsedOpen(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Error", {
+        description: "No se pudo modificar el uso del trial",
       });
     }
   };
@@ -89,16 +113,20 @@ export function TrialActions({ trial }: TrialActionsProps) {
             <Calendar className="mr-2 h-4 w-4" />
             Extender
           </DropdownMenuItem>
-          {trial.isActive && (
-            <DropdownMenuItem
-              onClick={handleCancel}
-              disabled={cancelTrial.isPending}
-              className="text-destructive"
-            >
-              <XCircle className="mr-2 h-4 w-4" />
-              Cancelar
-            </DropdownMenuItem>
-          )}
+
+          <DropdownMenuItem onClick={() => setUsedOpen(true)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Modificar usos
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={handleDelete}
+            disabled={deleteTrial.isPending}
+            className="text-destructive"
+          >
+            <XCircle className="mr-2 h-4 w-4" />
+            Eliminar
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -127,7 +155,9 @@ export function TrialActions({ trial }: TrialActionsProps) {
                   mode="single"
                   selected={newEndDate}
                   onSelect={(date) => date && setNewEndDate(date)}
-                  disabled={(date) => date < new Date()}
+                  disabled={(date) =>
+                    date < new Date(trial.expiresAt || new Date())
+                  }
                   initialFocus
                 />
               </PopoverContent>
@@ -139,6 +169,51 @@ export function TrialActions({ trial }: TrialActionsProps) {
             </Button>
             <Button onClick={handleExtend} disabled={extendTrial.isPending}>
               {extendTrial.isPending ? "Extendiendo..." : "Extender"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={usedOpen} onOpenChange={setUsedOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Modificar usos</DialogTitle>
+            <DialogDescription>
+              Modifica la cantidad de usos para el trial de{" "}
+              {trial.business?.name}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              type="number"
+              value={used.productsUsed}
+              onChange={(e) =>
+                setUsed({ ...used, productsUsed: Number(e.target.value) })
+              }
+              min={0}
+              max={trial.business?.currentPlan?.plan?.maxProducts}
+            />
+          </div>
+          <div className="py-4">
+            <Input
+              type="number"
+              value={used.imagesUsed}
+              onChange={(e) =>
+                setUsed({ ...used, imagesUsed: Number(e.target.value) })
+              }
+              min={0}
+              max={trial.business?.currentPlan?.plan?.maxImagesPerProduct}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setUsedOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleModifyUsage}
+              disabled={modifyTrialUsage.isPending}
+            >
+              {modifyTrialUsage.isPending ? "Modificando..." : "Modificar"}
             </Button>
           </DialogFooter>
         </DialogContent>

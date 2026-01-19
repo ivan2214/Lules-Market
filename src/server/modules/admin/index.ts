@@ -201,16 +201,30 @@ export const adminModule = new Elysia({
       body: AdminModel.extendTrialBody,
     },
   )
-  .patch(
-    "/trials/:id/cancel",
+  .delete(
+    "/trials/:id",
     async ({ params, isAdmin, admin }) => {
       if (!isAdmin || !admin)
         throw new AppError("Unauthorized", "UNAUTHORIZED");
 
-      return await AdminService.cancelTrial(params.id, admin.userId);
+      return await AdminService.deleteTrial(params.id, admin.userId);
     },
     {
       isAdmin: true,
       params: AdminModel.idParam,
+    },
+  )
+  .patch(
+    "/trials/:id/used",
+    async ({ params, body, isAdmin, admin }) => {
+      if (!isAdmin || !admin)
+        throw new AppError("Unauthorized", "UNAUTHORIZED");
+
+      return await AdminService.modifyUsage(params.id, body.used, admin.userId);
+    },
+    {
+      isAdmin: true,
+      params: AdminModel.idParam,
+      body: AdminModel.ModifyUsageBody,
     },
   );

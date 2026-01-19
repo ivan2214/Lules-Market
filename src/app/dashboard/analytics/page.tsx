@@ -4,8 +4,7 @@ import { getAnalyticsStats } from "@/data/analytics/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import type { CurrentPlan } from "@/db/types";
 import { PeriodSelector } from "@/features/dashboard/_components/period-selector";
-import { subscriptionErrors } from "../_constants";
-
+import { subscriptionErrorsType } from "../_constants";
 import { AnalyticsContent } from "./_components/analytics-content";
 import type { AnalyticsData } from "./_types";
 
@@ -30,7 +29,7 @@ export default async function AnalyticsPage({
 
   if (!currentPlan) {
     redirect(
-      `/dashboard/subscription?error=${subscriptionErrors.subscription_required}`,
+      `/dashboard/subscription?error=${subscriptionErrorsType.subscription_required}`,
     );
   }
 
