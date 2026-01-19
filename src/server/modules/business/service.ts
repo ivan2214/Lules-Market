@@ -375,7 +375,12 @@ export const BusinessService = {
             eq(businesSchema.id, currentPlanSchema.businessId),
           )
           .innerJoin(plan, eq(currentPlanSchema.planType, plan.type))
-          .where(and(eq(businesSchema.isActive, true)))
+          .where(
+            and(
+              eq(businesSchema.isActive, true),
+              eq(businesSchema.status, "ACTIVE"),
+            ),
+          )
           .orderBy(
             sql`CASE
           WHEN ${plan.type} = 'PREMIUM' THEN 3
