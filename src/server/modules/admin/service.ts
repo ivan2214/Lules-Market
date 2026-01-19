@@ -22,6 +22,7 @@ import type {
   TrialWithRelations,
   UserRole,
 } from "@/db/types";
+import { CACHE_KEYS, invalidateCache } from "@/lib/cache";
 import { AppError } from "@/server/errors";
 import type { Analytics } from "@/shared/types";
 import { calcTrend } from "@/shared/utils/calc-trend";
@@ -759,7 +760,7 @@ export const AdminService = {
 
       await db
         .update(business)
-        .set({ status: "SUSPENDED", updatedAt: new Date() })
+        .set({ status: "SUSPENDED", updatedAt: new Date(), isActive: false })
         .where(eq(business.id, businessId));
 
       await createLog({
@@ -773,7 +774,10 @@ export const AdminService = {
       });
 
       revalidateTag("businesses", "max");
+      revalidateTag("admin", "max");
       revalidateTag("entities", "max");
+      invalidateCache(CACHE_KEYS.BUSINESSES_FEATURED);
+
       return { success: true, message: "Business banned successfully" };
     } catch (error) {
       console.error("Error banning business:", error);
@@ -794,7 +798,7 @@ export const AdminService = {
 
       await db
         .update(business)
-        .set({ status: "ACTIVE", updatedAt: new Date() })
+        .set({ status: "ACTIVE", updatedAt: new Date(), isActive: true })
         .where(eq(business.id, businessId));
 
       await createLog({
@@ -808,7 +812,9 @@ export const AdminService = {
       });
 
       revalidateTag("businesses", "max");
+      revalidateTag("admin", "max");
       revalidateTag("entities", "max");
+      invalidateCache(CACHE_KEYS.BUSINESSES_FEATURED);
       return { success: true, message: "Business activated successfully" };
     } catch (error) {
       console.error("Error activating business:", error);

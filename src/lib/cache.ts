@@ -73,6 +73,8 @@ export async function invalidateCache(pattern: string): Promise<void> {
       console.log(
         `[CACHE INVALIDATE] Deleted ${keysToDelete.length} keys matching: ${pattern}`,
       );
+    } else {
+      console.log(`[CACHE INVALIDATE] No keys found matching: ${pattern}`);
     }
   } catch (error) {
     console.error(

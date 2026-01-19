@@ -196,7 +196,11 @@ async function BusinessesTable() {
                   ? "Activo"
                   : business.status === "SUSPENDED"
                     ? "Suspendido"
-                    : "Pendiente"}
+                    : business.status === "INACTIVE"
+                      ? "Inactivo"
+                      : business.status === "PENDING_VERIFICATION"
+                        ? "Pendiente de verificación"
+                        : business.status}
               </Badge>
             </TableCell>
             <TableCell>
