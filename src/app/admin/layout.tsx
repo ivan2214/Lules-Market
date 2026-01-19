@@ -48,7 +48,6 @@ export default function AdminLayout({
 }
 
 async function AdminSidebarWrapper() {
-  await connection();
   const { admin } = await getCurrentAdmin();
 
   if (!admin || !admin?.user) {

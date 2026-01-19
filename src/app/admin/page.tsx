@@ -8,6 +8,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import pathsConfig from "@/config/paths.config";
 import {
   getAdminAnalyticsData,
   getAdminDashboardStats,
@@ -155,7 +156,7 @@ export default async function AdminPage() {
             </div>
             <div className="mt-4 border-t pt-4">
               <Button variant="ghost" className="w-full" asChild>
-                <Link href="/admin/users">
+                <Link href={pathsConfig.admin.entities}>
                   Ver todos los usuarios <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

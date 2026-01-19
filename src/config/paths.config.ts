@@ -12,7 +12,7 @@ export const PathsSchema = z.object({
 
   admin: z.object({
     root: z.custom<Route>(),
-    users: z.custom<Route>(),
+
     grants: z.custom<Route>(),
     payments: z.custom<Route>(),
     logs: z.custom<Route>(),
@@ -54,7 +54,7 @@ const pathsConfig = PathsSchema.parse({
 
   admin: {
     root: "/admin",
-    users: "/admin/users",
+
     grants: "/admin/grants",
     payments: "/admin/payments",
     logs: "/admin/logs",
