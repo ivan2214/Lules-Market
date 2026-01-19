@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
@@ -11,7 +11,7 @@ export const requireBusiness = async () => {
   const { currentBusiness } = await getCurrentBusiness();
 
   if (!currentBusiness) {
-    return redirect(pathsConfig.business.setup);
+    redirect(pathsConfig.business.setup);
   }
 
   const isAdmin = await db.query.admin.findFirst({
@@ -19,6 +19,6 @@ export const requireBusiness = async () => {
   });
 
   if (isAdmin) {
-    return redirect("/admin");
+    redirect("/admin");
   }
 };
