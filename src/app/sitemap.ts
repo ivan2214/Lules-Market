@@ -91,8 +91,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Obtener datos en paralelo con manejo de errores
     const [productsResult, businessesResult] = await Promise.allSettled([
-      ProductService.listAllProductsForSitemap(),
-      BusinessService.listAllBusinessesForSitemap(),
+      ProductService.listAllProductsForSitemap(true),
+      BusinessService.listAllBusinessesForSitemap(true),
     ]);
 
     const productPages: MetadataRoute.Sitemap =
