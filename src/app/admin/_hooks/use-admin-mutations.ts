@@ -187,7 +187,7 @@ export function useEntityMutations() {
     mutationFn: async (businessId: string) => {
       const res = await api.admin.entities
         .business({ id: businessId })
-        .ban.patch({});
+        .ban.patch();
       if (res.error)
         throw new Error(res.error.value?.message || "Error banning business");
       return res.data;
@@ -201,7 +201,7 @@ export function useEntityMutations() {
     mutationFn: async (businessId: string) => {
       const res = await api.admin.entities
         .business({ id: businessId })
-        .activate.patch({});
+        .activate.patch();
       if (res.error)
         throw new Error(
           res.error.value?.message || "Error activating business",

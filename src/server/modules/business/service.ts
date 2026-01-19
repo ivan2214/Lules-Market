@@ -366,51 +366,55 @@ export const BusinessService = {
     return getCachedOrFetch(
       CACHE_KEYS.BUSINESSES_FEATURED,
       async () => {
-        // 1. Obtener IDs ordenados por prioridad del plan y fecha de creación
-        const sortedIds = await db
-          .select({ id: businesSchema.id })
+        const rows = await db
+          .select({
+            business: businesSchema,
+            category: categorySchema,
+            logo: image,
+            currentPlan: currentPlanSchema,
+            plan: plan,
+          })
           .from(businesSchema)
           .innerJoin(
             currentPlanSchema,
-            eq(businesSchema.id, currentPlanSchema.businessId),
+            eq(currentPlanSchema.businessId, businesSchema.id),
           )
-          .innerJoin(plan, eq(currentPlanSchema.planType, plan.type))
+          .innerJoin(plan, eq(plan.type, currentPlanSchema.planType))
+          .leftJoin(
+            categorySchema,
+            eq(categorySchema.id, businesSchema.categoryId),
+          )
+          .leftJoin(image, eq(image.logoBusinessId, businesSchema.id))
           .where(
             and(
               eq(businesSchema.isActive, true),
               eq(businesSchema.status, "ACTIVE"),
+              eq(currentPlanSchema.isActive, true),
             ),
           )
           .orderBy(
-            sql`CASE
-          WHEN ${plan.type} = 'PREMIUM' THEN 3
-          WHEN ${plan.type} = 'BASIC' THEN 2
-          WHEN ${plan.type} = 'FREE' THEN 1
-          ELSE 0
-        END DESC`,
+            desc(sql`
+            CASE ${currentPlanSchema.listPriority}
+              WHEN 'Alta' THEN 3
+              WHEN 'Media' THEN 2
+              WHEN 'Estandar' THEN 1
+              ELSE 0
+            END
+          `),
             desc(businesSchema.createdAt),
           )
           .limit(6);
 
-        if (sortedIds.length === 0) return [];
-
-        const ids = sortedIds.map((row) => row.id);
-
-        // 2. Obtener data completa usando la API relacional para mantener estructura
-        const featuredBusinesses = await db.query.business.findMany({
-          where: inArray(businesSchema.id, ids),
-          with: {
-            category: true,
-            logo: true,
+        // Adaptar el shape al modelo esperado
+        return rows.map((row) => ({
+          ...row.business,
+          category: row.category,
+          logo: row.logo,
+          currentPlan: {
+            ...row.currentPlan,
+            plan: row.plan,
           },
-        });
-
-        // 3. Reordenar según el orden de los IDs obtenidos
-        const orderedBusinesses = featuredBusinesses.sort((a, b) => {
-          return ids.indexOf(a.id) - ids.indexOf(b.id);
-        });
-
-        return orderedBusinesses as BusinessWithRelations[];
+        }));
       },
       CACHE_TTL.BUSINESSES_FEATURED,
     );
