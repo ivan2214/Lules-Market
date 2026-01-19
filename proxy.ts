@@ -4,7 +4,15 @@ import { type NextRequest, NextResponse } from "next/server";
 import pathsConfig from "@/config/paths.config";
 import { auth } from "@/lib/auth";
 
-const protectedAdminRoutes = [pathsConfig.admin.root, pathsConfig.admin.users];
+const protectedAdminRoutes = [
+  pathsConfig.admin.root,
+  pathsConfig.admin.entities,
+  pathsConfig.admin.grants,
+  pathsConfig.admin.logs,
+  pathsConfig.admin.payments,
+  pathsConfig.admin.plans,
+  pathsConfig.admin.products,
+];
 
 const protectedBusinessRoutes = [
   pathsConfig.dashboard.root,
