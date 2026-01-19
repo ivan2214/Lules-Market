@@ -38,11 +38,11 @@ export default function DashboardLayout({
             </Suspense>
           </div>
         </header>
-        <div className="flex flex-1 p-4 pt-0">
+        <section className="flex flex-1 p-4 pt-0">
           <Suspense fallback={<DashboardLoading />}>
             <DashboardContentWrapper>{children}</DashboardContentWrapper>
           </Suspense>
-        </div>
+        </section>
       </SidebarInset>
     </SidebarProvider>
   );
@@ -79,7 +79,7 @@ async function DashboardContentWrapper({
     redirect(pathsConfig.auth.signIn);
   }
 
-  return <>{children}</>;
+  return <section className="w-full">{children}</section>;
 }
 
 function DashboardSidebarFallback() {

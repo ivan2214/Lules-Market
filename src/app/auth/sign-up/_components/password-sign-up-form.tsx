@@ -138,8 +138,12 @@ export function PasswordSignUpForm({
       onSubmit: typeboxValidator(signUpSchema),
     },
     onSubmit: async ({ value }) => {
-      await uploaderCover.upload(value.businessData.coverImage.file as File);
-      await uploaderLogo.upload(value.businessData.logo.file as File);
+      if (value.businessData.coverImage.file) {
+        await uploaderCover.upload(value.businessData.coverImage.file as File);
+      }
+      if (value.businessData.logo.file) {
+        await uploaderLogo.upload(value.businessData.logo.file as File);
+      }
       const { email, password, name } = value;
       const { businessData } = value || {};
 

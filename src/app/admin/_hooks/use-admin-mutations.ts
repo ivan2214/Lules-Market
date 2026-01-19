@@ -113,11 +113,11 @@ export function useTrialMutations() {
     },
   });
 
-  const cancelTrial = useMutation({
+  const deleteTrial = useMutation({
     mutationFn: async (id: string) => {
-      const res = await api.admin.trials({ id }).cancel.patch({});
+      const res = await api.admin.trials({ id }).delete();
       if (res.error)
-        throw new Error(res.error.value?.message || "Error canceling trial");
+        throw new Error(res.error.value?.message || "Error deleting trial");
       return res.data;
     },
     onSuccess: () => {
@@ -125,7 +125,29 @@ export function useTrialMutations() {
     },
   });
 
-  return { createTrial, extendTrial, cancelTrial };
+  const modifyTrialUsage = useMutation({
+    mutationFn: async ({
+      id,
+      used,
+    }: {
+      id: string;
+      used: { productsUsed: number; imagesUsed: number };
+    }) => {
+      const res = await api.admin.trials({ id }).used.patch({
+        used,
+      });
+      if (res.error)
+        throw new Error(
+          res.error.value?.message || "Error modifying trial usage",
+        );
+      return res.data;
+    },
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+
+  return { createTrial, extendTrial, deleteTrial, modifyTrialUsage };
 }
 
 // =====================

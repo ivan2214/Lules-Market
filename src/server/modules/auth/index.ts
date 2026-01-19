@@ -12,8 +12,6 @@ export const authController = new Elysia({
       const response = await AuthService.signUp(body);
 
       if (!response.success) {
-        console.log("No funciono");
-
         return {
           success: response.success,
           message: response.message,

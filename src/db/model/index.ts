@@ -185,7 +185,7 @@ const paymentWithRelationsSchema = t.Object({
 // Trial relates to Business
 const trialWithRelationsSchema = t.Object({
   ...trialBase.properties,
-  business: t.Optional(t.Nullable(businessBase)),
+  business: t.Optional(t.Nullable(businessWithRelationsSchema)),
 });
 
 // BusinessView relates to Business

@@ -33,6 +33,12 @@ export const subscriptionErrors: Record<
   },
 };
 
+export const subscriptionErrorsType: Record<SubscriptionErrorType, string> = {
+  subscription_expired: "subscription_expired",
+  subscription_required: "subscription_required",
+  subscription_limit_reached: "subscription_limit_reached",
+};
+
 export const navigation: navigationItem[] = [
   { name: "Inicio", href: "/dashboard", icon: LayoutDashboard },
   { name: "Productos", href: "/dashboard/products", icon: Package },
@@ -42,6 +48,12 @@ export const navigation: navigationItem[] = [
 ];
 
 export const navPrimaryDataDashboard: Array<NavPrimaryItem> = [
+  {
+    title: "Dashboard",
+    url: pathsConfig.dashboard.root,
+    icon: LayoutDashboard,
+    role: "BUSINESS",
+  },
   {
     title: "Products",
     url: pathsConfig.dashboard.products,

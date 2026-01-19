@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -75,23 +74,7 @@ async function SetupFormWrapper() {
           categories={categories || []}
           userEmail={user.email as string}
         />
-        <div className="text-center text-sm">
-          Todavia no tenes una cuenta?{" "}
-          <Link
-            href={pathsConfig.auth.signUp}
-            className="underline underline-offset-4"
-          >
-            Registrate
-          </Link>
-        </div>
       </CardContent>
-      <CardFooter>
-        <div className="text-balance text-center text-muted-foreground text-xs [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
-          Al registrarte, aceptas nuestros{" "}
-          <Link href="#">Terminos de Servicio</Link> y{" "}
-          <Link href="#">Política de Privacidad</Link>.
-        </div>
-      </CardFooter>
     </Card>
   );
 }

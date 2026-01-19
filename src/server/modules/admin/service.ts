@@ -1,7 +1,7 @@
 import "server-only";
 import { addMonths, format, startOfMonth, subMonths } from "date-fns";
 import { and, count, desc, eq, gte, inArray, lt, sum } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "@/db";
 import {
   admin,
@@ -336,7 +336,17 @@ export const AdminService = {
 
     const [trials, activeTrials] = await Promise.all([
       db.query.trial.findMany({
-        with: { business: true },
+        with: {
+          business: {
+            with: {
+              currentPlan: {
+                with: {
+                  plan: true,
+                },
+              },
+            },
+          },
+        },
       }),
       db.query.trial.findMany({
         where: eq(trial.isActive, true),
@@ -481,7 +491,7 @@ export const AdminService = {
         where: eq(trial.businessId, businessId),
       });
       if (alreadyHasTrial) {
-        throw new AppError("Business already has a trial", "BAD_REQUEST");
+        throw new AppError("El negocio ya tiene un trial", "BAD_REQUEST");
       }
 
       // creamos el nuevo trial
@@ -489,12 +499,29 @@ export const AdminService = {
         .insert(trial)
         .values({
           businessId,
-          plan: planType,
+          plan: planDB.type,
           isActive: true,
           expiresAt: endDate,
           activatedAt: new Date(),
         })
         .returning();
+
+      await db
+        .update(currentPlan)
+        .set({
+          activatedAt: new Date(),
+          businessId: businessId,
+          expiresAt: endDate,
+          hasStatistics: planDB.hasStatistics,
+          imagesUsed: 0,
+          productsUsed: 0,
+          isActive: true,
+          listPriority: planDB.listPriority,
+          planStatus: "ACTIVE",
+          planType: planDB.type,
+          isTrial: true,
+        })
+        .where(eq(currentPlan.businessId, businessId));
 
       // creamos log logic directly here
       await createLog({
@@ -511,11 +538,12 @@ export const AdminService = {
       });
 
       revalidateTag("trials", "max");
+      revalidatePath("/dashboard/subscription");
       return { success: true };
     } catch (error) {
       console.error("Error creating trial:", error);
       if (error instanceof AppError) throw error;
-      throw new AppError("Error creating trial", "INTERNAL_SERVER_ERROR");
+      throw new AppError("No se pudo crear el trial", "INTERNAL_SERVER_ERROR");
     }
   },
 
@@ -532,6 +560,53 @@ export const AdminService = {
       console.error("Error getting current admin:", error);
       throw new AppError(
         "Error al obtener el administrador",
+        "INTERNAL_SERVER_ERROR",
+      );
+    }
+  },
+
+  async modifyUsage(
+    trialId: string,
+    used: { productsUsed: number; imagesUsed: number },
+    adminId: string,
+  ) {
+    try {
+      const trialDB = await db.query.trial.findFirst({
+        where: eq(trial.id, trialId),
+      });
+      if (!trialDB) throw new AppError("Trial not found", "NOT_FOUND");
+
+      await db
+        .update(currentPlan)
+        .set({
+          productsUsed: used.productsUsed,
+          imagesUsed: used.imagesUsed,
+        })
+        .where(eq(currentPlan.businessId, trialDB.businessId));
+
+      // creamos log logic directly here
+      await createLog({
+        businessId: trialDB.businessId,
+        entityType: "PLAN",
+        action: "MODIFY",
+        entityId: trialDB.businessId,
+        adminId,
+        timestamp: new Date(),
+        details: {
+          productsUsed: used.productsUsed,
+          imagesUsed: used.imagesUsed,
+        },
+      });
+
+      revalidateTag("trials", "max");
+      revalidateTag("admin", "max");
+      revalidatePath("/dashboard/subscription");
+      return { success: true };
+    } catch (error) {
+      console.error("Error modifying trial:", error);
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        "No se pudo modificar el trial",
         "INTERNAL_SERVER_ERROR",
       );
     }
@@ -965,6 +1040,14 @@ export const AdminService = {
         .set({ expiresAt: newEndDate, updatedAt: new Date() })
         .where(eq(trial.id, trialId));
 
+      await db
+        .update(currentPlan)
+        .set({
+          expiresAt: newEndDate,
+          updatedAt: new Date(),
+        })
+        .where(eq(currentPlan.businessId, trialDB.businessId));
+
       await createLog({
         businessId: trialDB.businessId,
         adminId,
@@ -987,7 +1070,7 @@ export const AdminService = {
     }
   },
 
-  async cancelTrial(trialId: string, adminId: string) {
+  async deleteTrial(trialId: string, adminId: string) {
     try {
       const trialDB = await db.query.trial.findFirst({
         where: eq(trial.id, trialId),
@@ -997,27 +1080,26 @@ export const AdminService = {
         throw new AppError("Trial not found", "NOT_FOUND");
       }
 
-      await db
-        .update(trial)
-        .set({ isActive: false, updatedAt: new Date() })
-        .where(eq(trial.id, trialId));
+      await db.delete(trial).where(eq(trial.id, trialId));
 
       await createLog({
         businessId: trialDB.businessId,
         adminId,
         entityType: "TRIAL",
-        action: "CANCEL",
+        action: "DELETE",
         entityId: trialId,
         timestamp: new Date(),
-        details: { previousIsActive: trialDB.isActive },
+        details: {
+          deletedAt: new Date(),
+        },
       });
 
       revalidateTag("trials", "max");
-      return { success: true, message: "Trial cancelled successfully" };
+      return { success: true, message: "Trial deleted successfully" };
     } catch (error) {
-      console.error("Error cancelling trial:", error);
+      console.error("Error deleting trial:", error);
       if (error instanceof AppError) throw error;
-      throw new AppError("Error cancelling trial", "INTERNAL_SERVER_ERROR");
+      throw new AppError("Error deleting trial", "INTERNAL_SERVER_ERROR");
     }
   },
 

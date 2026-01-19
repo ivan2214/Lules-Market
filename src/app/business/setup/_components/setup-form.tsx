@@ -149,8 +149,12 @@ export function SetupForm({
     }: {
       value: Static<typeof BusinessSetupSchemaForm>;
     }) => {
-      await uploaderCover.upload(value.coverImage.file as File);
-      await uploaderLogo.upload(value.logo.file as File);
+      if (value.coverImage.file) {
+        await uploaderCover.upload(value.coverImage.file as File);
+      }
+      if (value.logo.file) {
+        await uploaderLogo.upload(value.logo.file as File);
+      }
       const {
         address,
         category,
