@@ -6,7 +6,7 @@ import pathsConfig from "@/config/paths.config";
 import { getBusinessProducts } from "@/data/business/get";
 import { getCurrentBusiness } from "@/data/business/get-current-business";
 import { listAllCategories } from "@/data/categories/get";
-import { ProductCardDashboard } from "@/features/dashboard/_components/product-card-dashboard";
+
 import { ProductFormDialog } from "@/features/dashboard/_components/product-form-dialog";
 import { subscriptionErrorsType } from "@/features/dashboard/_constants";
 import {
@@ -15,6 +15,7 @@ import {
   AlertTitle,
 } from "@/shared/components/ui/alert";
 import { Card, CardContent } from "@/shared/components/ui/card";
+import { ProductTable } from "./product-table";
 
 export async function ProductsContent() {
   const { currentBusiness } = await getCurrentBusiness();
@@ -91,16 +92,11 @@ export async function ProductsContent() {
           </CardContent>
         </Card>
       ) : (
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCardDashboard
-              key={product.id}
-              product={product}
-              categories={categories}
-              maxImagesPerProduct={plan?.maxImagesPerProduct ?? 0}
-            />
-          ))}
-        </section>
+        <ProductTable
+          items={products}
+          categories={categories}
+          maxImagesPerProduct={plan?.maxImagesPerProduct ?? 0}
+        />
       )}
     </>
   );

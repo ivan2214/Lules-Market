@@ -633,6 +633,7 @@ export const BusinessService = {
       orderBy: [desc(productSchema.createdAt)],
       with: {
         images: true,
+        category: true,
       },
     });
 
