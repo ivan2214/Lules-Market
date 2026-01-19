@@ -121,8 +121,8 @@ export async function getCachedOrFetch<T>(
   console.log(`[CACHE MISS] ${key} - Fetching fresh data`);
   const fresh = await fetchFn();
 
-  // Guardar en caché (no esperar a que termine)
-  void setCache(key, fresh, ttl);
+  // Guardar en caché (esperar para evitar errores en build/prerender con fetch sueltos)
+  await setCache(key, fresh, ttl);
 
   return fresh;
 }
