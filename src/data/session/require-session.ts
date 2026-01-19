@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { redirect } from "next/navigation";
 import pathsConfig from "@/config/paths.config";
@@ -8,6 +8,6 @@ export const requireSession = async () => {
   const { user } = await getCurrentSession();
 
   if (!user) {
-    return redirect(pathsConfig.auth.signIn);
+    redirect(pathsConfig.auth.signIn);
   }
 };
