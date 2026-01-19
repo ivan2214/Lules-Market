@@ -384,24 +384,25 @@ export const BusinessService = {
     );
   },
 
-  async listAllBusinessesForSitemap() {
+  async listAllBusinessesForSitemap(skipCache = false) {
+    const fetchFn = async () => {
+      const businesses = await db.query.business.findMany({
+        where: eq(businesSchema.isActive, true),
+        columns: {
+          id: true,
+          updatedAt: true,
+        },
+      });
+      return businesses;
+    };
+
+    if (skipCache) {
+      return fetchFn();
+    }
+
     const cacheKey = generateCacheKey("businesses:list", {});
 
-    return getCachedOrFetch(
-      cacheKey,
-      async () => {
-        const businesses = await db.query.business.findMany({
-          where: eq(businesSchema.isActive, true),
-          columns: {
-            id: true,
-            updatedAt: true,
-          },
-        });
-
-        return businesses;
-      },
-      CACHE_TTL.BUSINESSES_LIST,
-    );
+    return getCachedOrFetch(cacheKey, fetchFn, CACHE_TTL.BUSINESSES_LIST);
   },
 
   async listAll(
